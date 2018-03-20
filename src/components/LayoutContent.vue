@@ -7,9 +7,8 @@
 export default {
   name: 'LayoutContent',
   data () {
-    return {
-     }
-  },
+    return {}
+  }
 }
 </script>
 
