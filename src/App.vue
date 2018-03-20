@@ -25,7 +25,7 @@ html,body{
   color: rgba(0, 0, 0, 0.65);
   background-color: #fff;
 }
-ul,li{
+ul,li,p{
     margin: 0;
     padding: 0;
     list-style: none;
