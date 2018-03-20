@@ -1,7 +1,7 @@
 <template>
     <div class="loginBody">
         <div class="loginTopLogo">
-            <img src="../assets/logo.png"/>
+            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/logo.png"/>
         </div>
         <div class="loginFormContent">
             <h1>眼镜新零售综合业务管理平台</h1>
@@ -53,7 +53,7 @@ export default {
 
 <style scoped lang="scss">
     .loginBody{
-        background: url('../assets/image_loginbg.png');
+        background: url('http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/image_loginbg.png');
         width: 100%;
         height: 100%;
         background-size: cover;
