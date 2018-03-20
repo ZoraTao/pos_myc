@@ -80,6 +80,7 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    width: 100%;
     .navTab{
         flex:3;
         height: 78px;
