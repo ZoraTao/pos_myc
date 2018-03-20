@@ -58,10 +58,27 @@ export default {
     background: url('http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/image_loginbg.png');
     width: 100%;
     height: 100%;
+    overflow-y: auto;
     background-size: cover;
     display: -webkit-flex;
     justify-content: center;
     align-items: center;
+    ::-webkit-scrollbar{
+      width: 8px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track{
+      background: #d4d2d2;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb{
+      background: #999999;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-corner{
+      background: #E6E6E6;
+    }
+
     .login-content-wrap {
       width: 503px;
       height: 450px;

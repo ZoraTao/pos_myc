@@ -57,8 +57,7 @@
 export default {
   name: 'LayoutTop',
   data () {
-    return {
-     }
+    return { }
   },
   // methods: {
   //   addTab(targetName) {
@@ -83,7 +82,6 @@ export default {
   //         }
   //       });
   //     }
-      
   //     this.editableTabsValue2 = activeName;
   //     this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
   //   }
