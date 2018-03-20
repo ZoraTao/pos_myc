@@ -10,7 +10,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 *{
   box-sizing: border-box;
 }
@@ -39,16 +39,14 @@ a {
     transition: color .3s ease;
 }
 a:focus {
-    text-decoration: underline;
-    text-decoration-skip: ink;
+    text-decoration: none;
 }
 a:focus {
-    outline: 5px auto -webkit-focus-ring-color;
-    outline-offset: -2px;
+    outline: none;
 }
 a:focus, a:hover {
     color: #23527c;
-    text-decoration: underline;
+    text-decoration: none;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -58,5 +56,26 @@ a:focus, a:hover {
   color: #2c3e50;
   width: 100%;
   height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  ::-webkit-scrollbar{
+    width: 8px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track{
+    background: #d4d2d2;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb{
+    background: #999999;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-corner{
+    background: #E6E6E6;
+  }
 }
+  .content-wrapper{
+    margin: 10px 15px;
+    background: #ffffff;
+  }
 </style>
