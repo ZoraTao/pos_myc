@@ -14,7 +14,7 @@
       </ul>
       <div class="header-top-right">
         <a href="javascript:;" class="am-ft-FF2601">
-          <i class="anticon anticon-notification"></i>
+          <i class="el-icon-bell"></i>
           您有一个折扣签批已审核
         </a>
         <el-dropdown>
@@ -24,10 +24,6 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>黄金糕</el-dropdown-item>
-            <el-dropdown-item>狮子头</el-dropdown-item>
-            <el-dropdown-item>螺蛳粉</el-dropdown-item>
-            <el-dropdown-item disabled>双皮奶</el-dropdown-item>
-            <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-dropdown>
@@ -36,14 +32,10 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>黄金糕</el-dropdown-item>
-            <el-dropdown-item>狮子头</el-dropdown-item>
-            <el-dropdown-item>螺蛳粉</el-dropdown-item>
-            <el-dropdown-item disabled>双皮奶</el-dropdown-item>
-            <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <a href="javascript:;" class="am-ft-white">
-          <i class="anticon anticon-setting"></i>
+        <a href="javascript:;" class="am-ft-white mgr15">
+          <i class="el-icon-setting"></i>
         </a>
       </div>
     </div>
@@ -58,38 +50,17 @@ export default {
   name: 'LayoutTop',
   data () {
     return { }
-  },
-  // methods: {
-  //   addTab(targetName) {
-  //     let newTabName = ++this.tabIndex + '';
-  //     this.editableTabs2.push({
-  //       title: 'New Tab',
-  //       name: newTabName,
-  //       content: 'New Tab content'
-  //     });
-  //     this.editableTabsValue2 = newTabName;
-  //   },
-  //   removeTab(targetName) {
-  //     let tabs = this.editableTabs2;
-  //     let activeName = this.editableTabsValue2;
-  //     if (activeName === targetName) {
-  //       tabs.forEach((tab, index) => {
-  //         if (tab.name === targetName) {
-  //           let nextTab = tabs[index + 1] || tabs[index - 1];
-  //           if (nextTab) {
-  //             activeName = nextTab.name;
-  //           }
-  //         }
-  //       });
-  //     }
-  //     this.editableTabsValue2 = activeName;
-  //     this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
-  //   }
-  // }
+  }
 }
 </script>
 
 <style scoped lang="scss">
+  .mgr15{
+    margin-right:15px;
+  }
+  .am-ft-white{
+    color:#fff;
+  }
   .logo {
     width: 120px;
     height: 31px;
@@ -152,6 +123,10 @@ export default {
     height: 100%;
     text-align: right;
     color:#fff;
+  }
+  .el-dropdown{
+    font-size: 12px;
+    margin-right: 10px;
   }
   .el-dropdown-link{
     color:#fff;
