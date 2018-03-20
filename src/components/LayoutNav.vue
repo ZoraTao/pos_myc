@@ -3,7 +3,7 @@
 <div class="navContent">
     <div class="navTab">
         <ul>
-            <li v-for="item in menu" :class="{'activeNav':item.isActived}" v-on:click="changeRoute(item)">
+            <li v-for="item in menu"  :key="item.name" v-on:click="changeRoute(item)">
                 <span><img class="tabImg" :src="item.isActived?item.imgSrc:item.wimgSrc"/></span>
                 <p>{{item.name}}</p>
                 <img class="lineImg" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/line.png">
