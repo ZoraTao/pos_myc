@@ -92,4 +92,12 @@
     margin: 10px 15px;
     min-height: 600px;
   }
+  .el-input__inner{
+    height: 30px !important;
+    line-height: 30px !important;
+    font-size: 12px;
+  }
+  .el-input__icon{
+    line-height: 30px !important;
+  }
 </style>

@@ -157,3 +157,18 @@ $radius3: $h3 solid #E1E1E1;
 .mgr25{
   margin-right: $h25;
 }
+
+.before-none{
+  &:before{
+    content: ' ';
+    width: 0 !important;
+    height: 0 !important;
+  }
+}
+.after-none{
+  &:after{
+    content: ' ';
+    width: 0 !important;
+    height: 0 !important;
+  }
+}

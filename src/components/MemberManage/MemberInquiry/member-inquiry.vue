@@ -1,5 +1,6 @@
 <template>
   <div class="content-out-wrapper">
+    <!--part1-->
     <el-row class="inquiry-row">
       <el-col :span="4">
         <div class="inquiry-item">
@@ -33,11 +34,24 @@
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="inquiry-item">
+          <div class="inquiry-item after-none">
             <span>普卡</span>
             <strong>34530</strong>
           </div>
         </el-col>
+      </el-col>
+    </el-row>
+    <!--part2-->
+    <el-row class="inquiry-row mgt6">
+      <el-col :span="24">
+        <el-col :span="4">
+          <el-input
+            placeholder="输入会员姓名/手机号／卡号"
+            v-model="input1">
+            <i slot="suffix" class="el-input__icon el-icon-search"></i>
+          </el-input>
+        </el-col>
+
       </el-col>
     </el-row>
   </div>
@@ -47,7 +61,9 @@
   export default {
     name: "member-inquiry",
     data() {
-      return {}
+      return {
+        input1: '',
+      }
     }
   }
 </script>
@@ -60,6 +76,17 @@
     padding: $h15 $h20;
     .inquiry-item{
       text-align: center;
+      position: relative;
+      &:after{
+        content: ' ';
+        width: 1px;
+        height: 24px;
+        background: #dddddd;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        margin-top: -12px;
+      }
       span{
         font-size: $h14;
         display: block;
@@ -71,4 +98,5 @@
       }
     }
   }
+
 </style>
