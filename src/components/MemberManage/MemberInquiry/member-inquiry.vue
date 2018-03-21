@@ -63,7 +63,7 @@
       <!--高级搜索-->
       <el-col :span="24" v-if="true">
         <el-col :span="24">
-          <el-form :inline="true" :model="formInline" class="demo-form-inline">
+          <el-form :inline="true" :model="formInline" class="demo-form-inline am-ft-left">
             <el-form-item label="卡类型：">
               <el-select v-model="formInline.select1" placeholder="请选择">
                 <el-option label="普卡" value="1"></el-option>

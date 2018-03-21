@@ -192,8 +192,18 @@ $radius3: $h3 solid #E1E1E1;
   background-color: #009fcf;
   border-color: #009fcf;
 }
+//对齐方式
 .align-center{
   display: -webkit-flex;
   justify-content: center;
   align-items: center;
+}
+.am-ft-left{
+  text-align: left;
+}
+.am-ft-center{
+  text-align: center;
+}
+.am-ft-right{
+  text-align: right;
 }

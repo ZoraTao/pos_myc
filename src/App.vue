@@ -118,8 +118,10 @@
   .el-form-item__label{
     font-size: 12px;
     font-weight: 700;
+    padding: 0;
   }
   .el-form--inline .el-form-item{
     margin-bottom: 12px;
+    margin-right: 20px;
   }
 </style>
