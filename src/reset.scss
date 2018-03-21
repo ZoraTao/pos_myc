@@ -172,3 +172,28 @@ $radius3: $h3 solid #E1E1E1;
     height: 0 !important;
   }
 }
+
+.fn-left{
+  float: left;
+}
+.fn-right{
+  float: right;
+}
+
+.el-button--primary {
+  color: #fff;
+  background-color: #00AFE4;
+  border-color: #00AFE4;
+  padding: 8px 20px;
+  font-size: 12px;
+}
+.el-button--primary.is-active,
+.el-button--primary:active{
+  background-color: #009fcf;
+  border-color: #009fcf;
+}
+.align-center{
+  display: -webkit-flex;
+  justify-content: center;
+  align-items: center;
+}
