@@ -1,82 +1,95 @@
 <template>
   <div id="app">
-      <router-view></router-view> 
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 
-export default {
-  name: 'App'
-}
+  export default {
+    name: 'App'
+  }
 </script>
 
 <style lang="scss">
-*{
-  box-sizing: border-box;
-}
-html,body{
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  margin: 0;
-  font-family: "Helvetica Neue For Number", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  line-height: 1.5;
-  color: rgba(0, 0, 0, 0.65);
-  background-color: #fff;
-}
-ul,li,h1,h2,h3,h4,h5,h6,p{
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    font-family: "MicrosoftYaHei","Helvetica Neue For Number", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.65);
+    background-color: #f4f4f5;
+  }
+
+  ul, li, h1, h2, h3, h4, h5, h6, p {
     margin: 0;
     padding: 0;
     list-style: none;
-}
-a {
+  }
+
+  a {
     color: #108ee9;
     background: transparent;
     text-decoration: none;
     outline: none;
     cursor: pointer;
     transition: color .3s ease;
-}
-a:focus {
+  }
+
+  a:focus {
     text-decoration: none;
-}
-a:focus {
+  }
+
+  a:focus {
     outline: none;
-}
-a:focus, a:hover {
+  }
+
+  a:focus, a:hover {
     color: #23527c;
     text-decoration: none;
-}
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  &::-webkit-scrollbar{
-    width: 8px;
-    height: 6px;
   }
-  &::-webkit-scrollbar-track{
-    background: #d4d2d2;
-    border-radius: 4px;
+
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #d4d2d2;
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #999999;
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-corner {
+      background: #E6E6E6;
+    }
   }
-  &::-webkit-scrollbar-thumb{
-    background: #999999;
-    border-radius: 4px;
-  }
-  &::-webkit-scrollbar-corner{
-    background: #E6E6E6;
-  }
-}
-  .content-wrapper{
+
+  .content-wrapper {
     margin: 10px 15px;
     background: #ffffff;
+  }
+
+  .content-out-wrapper {
+    margin: 10px 15px;
+    min-height: 600px;
   }
 </style>
