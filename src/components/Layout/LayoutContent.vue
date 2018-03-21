@@ -1,29 +1,24 @@
 <template>
     <main>
       <header>
-          <LayoutTop></LayoutTop>
           <LayoutNav></LayoutNav>
       </header>
       <article>
-        <LayoutContent></LayoutContent>
+          <router-view></router-view>
       </article>
     </main>
 </template>
 
 <script>
-import LayoutTop from './LayoutTop.vue'
 import LayoutNav from './LayoutNav.vue'
-import LayoutContent from './LayoutContent.vue'
 
 export default {
-  name: 'Layout',
+  name: 'LayoutContent',
   data () {
-    return { }
+    return {}
   },
-  components: {
-    LayoutTop,
-    LayoutNav,
-    LayoutContent
+  components:{
+    LayoutNav
   }
 }
 </script>

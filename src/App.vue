@@ -1,10 +1,11 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+      <router-view></router-view> 
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'App'
 }
@@ -25,7 +26,7 @@ html,body{
   color: rgba(0, 0, 0, 0.65);
   background-color: #fff;
 }
-ul,li,p{
+ul,li,h1,h2,h3,h4,h5,h6,p{
     margin: 0;
     padding: 0;
     list-style: none;
@@ -58,19 +59,19 @@ a:focus, a:hover {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  ::-webkit-scrollbar{
+  &::-webkit-scrollbar{
     width: 8px;
     height: 6px;
   }
-  ::-webkit-scrollbar-track{
+  &::-webkit-scrollbar-track{
     background: #d4d2d2;
     border-radius: 4px;
   }
-  ::-webkit-scrollbar-thumb{
+  &::-webkit-scrollbar-thumb{
     background: #999999;
     border-radius: 4px;
   }
-  ::-webkit-scrollbar-corner{
+  &::-webkit-scrollbar-corner{
     background: #E6E6E6;
   }
 }

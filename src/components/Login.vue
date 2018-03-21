@@ -33,7 +33,7 @@
             </select>
           </div>
           <div class="formItem">
-            <input type="button" class="loginBtn" value="登  录"/>
+            <input type="button" class="loginBtn" value="登  录" v-on:click="goHome()"/>
           </div>
           <div class="formItem">
             <span class="forgotPwd">忘记密码?</span>
@@ -49,6 +49,11 @@ export default {
   name: 'login',
   data () {
     return {}
+  },
+  methods:{
+    goHome(){
+      this.$router.push('/base')
+    }
   }
 }
 </script>
@@ -63,19 +68,19 @@ export default {
     display: -webkit-flex;
     justify-content: center;
     align-items: center;
-    ::-webkit-scrollbar{
+    &::-webkit-scrollbar{
       width: 8px;
       height: 6px;
     }
-    ::-webkit-scrollbar-track{
+    &::-webkit-scrollbar-track{
       background: #d4d2d2;
       border-radius: 4px;
     }
-    ::-webkit-scrollbar-thumb{
+    &::-webkit-scrollbar-thumb{
       background: #999999;
       border-radius: 4px;
     }
-    ::-webkit-scrollbar-corner{
+    &::-webkit-scrollbar-corner{
       background: #E6E6E6;
     }
 

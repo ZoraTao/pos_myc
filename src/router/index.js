@@ -1,67 +1,73 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Layout from '@/components/Layout'
-import Login from '@/components/Login'
-import MemberIndex from '@/components/MemberManage/MemberIndex/member-index'
-import MemberAdd from '@/components/MemberManage/MemberAdd/member-add'
-import MemberInquiry from '@/components/MemberManage/MemberInquiry/member-inquiry'
-import MemberDetail from '@/components/MemberManage/MemberInquiry/member-detail'
-import MemberComplaints from '@/components/MemberManage/MemberComplaints/member-complaints'
-import MemberReturnVisit from '@/components/MemberManage/MemberReturnVisit/member-return-visit'
-import MemberRights from '@/components/MemberManage/MemberRights/member-rights'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    // 一级路由跟路由重定向到login
     {
       path: '/',
-      name: 'Layout',
-      component: Layout
+      redirect: '/login'
     },
     {
       path: '/login',
-      name: 'login',
-      component: Login
+      component: resolve => require(['../components/Login.vue'], resolve)
     },
-    //会员管理
     {
-      path: '/member', component: MemberIndex,
+      path: '/',
+      component: resolve => require(['../components/Layout/Layout.vue'], resolve),
+      // 二级路由拥有layout与layoutcontent
       children: [
-        //会员首页
         {
-          path: 'memberIndex',
-          component: MemberIndex
-        },
-        //会员查询
+          path: 'base',
+          component: resolve => require(['../components/Layout/LayoutContent.vue'], resolve),
+          children: [
+            { path: 'homeIndex', component: resolve => require(['../components/Home/HomeIndex/home-index.vue'], resolve) },
+            { path: 'memberIndex', component: resolve => require(['../components/MemberManage/memberIndex/member-index.vue'], resolve) }
+          ]
+        }
+      ]
+    },
+    // 三级路由只拥有layout
+    {
+      path: '/bills',
+      component: resolve => require(['../components/Layout/Layout.vue'], resolve),
+      children: [
         {
-          path: 'memberInquiry',
-          component: MemberInquiry
-        },
-        //会员详情
-        // {
-        //   path: 'memberInquiry/MemberDetail',
-        //   component: MemberDetail
-        // },
-        //新增会员
+          path: 'timeoutBill',
+          component: resolve => require(['../components/Bills/timeoutBill/timeout-bill.vue'], resolve)
+        }
+      ]
+    },
+    // 三级路由只拥有layout
+    {
+      path: '/member',
+      component: resolve => require(['../components/Layout/Layout.vue'], resolve),
+      children: [
         {
           path: 'memberAdd',
-          component: MemberAdd
+          component: resolve => require(['../components/MemberManage/MemberAdd/member-add.vue'], resolve)
         },
-        //会员投诉
         {
-          path: 'MemberComplaints',
-          component: MemberComplaints
+          path: 'memberInquiry',
+          component: resolve => require(['../components/MemberManage/MemberInquiry/member-inquiry.vue'], resolve)
         },
-        //会员回访
         {
-          path: 'MemberReturnVisit',
-          component: MemberReturnVisit
+          path: 'memberDetail',
+          component: resolve => require(['../components/MemberManage/MemberInquiry/member-detail.vue'], resolve)
         },
-        //会员权益
         {
-          path: 'MemberRights',
-          component: MemberRights
+          path: 'memberComplaints',
+          component: resolve => require(['../components/MemberManage/MemberComplaints/member-complaints.vue'], resolve)
+        },
+        {
+          path: 'memberReturnVisit',
+          component: resolve => require(['../components/MemberManage/MemberReturnVisit/member-return-visit.vue'], resolve)
+        },
+        {
+          path: 'memberRights',
+          component: resolve => require(['../components/MemberManage/MemberRights/member-rights.vue'], resolve)
         }
       ]
     }
