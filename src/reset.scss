@@ -41,6 +41,15 @@ $radius3: $h3 solid #E1E1E1;
 .am-ft-yellow{
   color: $yellow;
 }
+.am-text-normal{
+  color: $gary-normal;
+}
+.am-text-secondary{
+  color: $gary-secondary;
+}
+.am-text-placeholder{
+  color: $gary-placeholder;
+}
 //font-size
 .am-ft-12{
   font-size: $h12;
@@ -157,6 +166,10 @@ $radius3: $h3 solid #E1E1E1;
 .mgr25{
   margin-right: $h25;
 }
+.mgr30{
+  margin-right: $h30;
+}
+
 
 .before-none{
   &:before{
@@ -184,13 +197,24 @@ $radius3: $h3 solid #E1E1E1;
   color: #fff;
   background-color: #00AFE4;
   border-color: #00AFE4;
-  padding: 8px 20px;
+  padding: 8px 28px;
   font-size: 12px;
+}
+.el-button--primary.is-plain{
+  color: #00AFE4;
+  background: transparent;
+  border-color: #00AFE4;
 }
 .el-button--primary.is-active,
 .el-button--primary:active{
   background-color: #009fcf;
   border-color: #009fcf;
+}
+.el-button--primary.is-plain:active {
+  background: #009fcf;
+  border-color: #009fcf;
+  color: #fff;
+  outline: 0;
 }
 //对齐方式
 .align-center{
@@ -206,4 +230,16 @@ $radius3: $h3 solid #E1E1E1;
 }
 .am-ft-right{
   text-align: right;
+}
+.fn-line{
+  display: inline;
+}
+.fn-block{
+  display: block;
+}
+.fn-line-block{
+  display: inline-block;
+}
+i,em{
+  font-style: normal;
 }
