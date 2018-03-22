@@ -41,7 +41,7 @@ export default {
         },
         {
           name: "零售管理",
-          url: "/base",
+          url: "/base/retailIndex",
           imgSrc:
             "http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_lingshougl.png",
           wimgSrc:
