@@ -5,7 +5,11 @@
       <img class="member-logo" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_huiyuangl.png"/>
       <div class="info-det">
         <p>
-          <span class="am-ft-16">李依依<img class="sex-icon" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_female.png"/></span>
+          <span class="am-ft-16">李依依
+            <img class="sex-icon" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_female.png"/>
+            <!--性别为男时显示图片-->
+            <!--<img class="sex-icon" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_male.png"/>-->
+          </span>
           <span class="level-card mgr5">金卡</span>
           <span class="am-ft-yellow"><img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_jifen.png"/>1200积分</span>
         </p>
@@ -64,7 +68,6 @@
     }
   }
 </script>
-
 <style lang="scss">
   @import "../../../reset";
 

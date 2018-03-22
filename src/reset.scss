@@ -68,7 +68,15 @@ $radius3: $h3 solid #E1E1E1;
 .am-ft-16 {
     font-size: $h16;
 }
-
+.am-ft-18 {
+  font-size: $h18;
+}
+.am-ft-20 {
+  font-size: $h20;
+}
+.am-ft-22 {
+  font-size: 22px;
+}
 //margin-top
 .mgt0 {
     margin-top: 0;
@@ -297,4 +305,10 @@ i,em{
 
 .am-ft-right {
     text-align: right;
+}
+.am-ft-bold{
+  font-weight: bold;
+}
+.am-ft-norm{
+  font-weight: normal;
 }
