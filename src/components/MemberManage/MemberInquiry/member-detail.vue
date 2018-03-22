@@ -137,6 +137,7 @@
       font-weight: bold;
     }
     .el-tabs--border-card>.el-tabs__header .el-tabs__item{
+      color: #666666;
       border: 0;
     }
 

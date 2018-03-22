@@ -1,14 +1,21 @@
 <template>
-<div>验光记录</div>
+  <div>
+    <optometryOrderCu></optometryOrderCu>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "member-optometry-record",
-      data() {
-        return {}
-      }
+  import optometryOrderCu from '../../Bills/optometryOrder/optometryOrderCu/optometry-order-cu'
+
+  export default {
+    name: "member-optometry-record",
+    components: {
+      optometryOrderCu
+    },
+    data() {
+      return {}
     }
+  }
 </script>
 
 <style scoped>

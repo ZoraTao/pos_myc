@@ -3,6 +3,8 @@ $dark-red: #D0021B;
 $white: #FFFFFF;
 $blue: #00A2DE;
 $yellow: #EA9100;
+$orange: #FF6600;
+
 $gary-import: #303133;
 $gary-normal: #606266;
 $gary-secondary: #909399;
@@ -41,6 +43,9 @@ $radius3: $h3 solid #E1E1E1;
 
 .am-ft-yellow {
     color: $yellow;
+}
+.am-ft-orange{
+    color: $orange;
 }
 .am-text-normal{
   color: $gary-normal;
