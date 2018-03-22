@@ -18,71 +18,83 @@
     <div id="getBills">
         <!--body-content-->
         <div class="clearfix">
-            <div class="getBillsContent">
+            <div v-bind:class="{ getBillsContent: value==1, getBillsContent1: value==2 }">
                 <div class="getBillsItem">
                     <div class="memberBillInfo">
                         <div class="tabImgLeft">
-                            <img style="width:85px;height:85px;" src="">
+                            <img src="">
                         </div>
                         <div class="tabTextLeft">
                             <div>
                                 <p>资质名称</p>
-                                <h6>到期时间：<span>2017-03-24</span></h6>
+                                <h6><i>到期时间：</i>
+                                    <span>2017-03-24</span>
+                                    <span class="fn-right" v-show="value==2">还有<b class="am-ft-F58B8B">6</b>天</span>
+                                </h6>
                             </div>
                         </div>
                     </div>
-                    <div class="getBillButton">
+                    <div class="getBillButton" v-show="value==1">
                         <span>还有<b class="am-ft-F58B8B">6</b>天</span>
                     </div>
                 </div>
                 <div class="getBillsItem">
                     <div class="memberBillInfo">
                         <div class="tabImgLeft">
-                            <img style="width:85px;height:85px;" src="">
+                            <img src="">
                         </div>
                         <div class="tabTextLeft">
                             <div>
                                 <p>资质名称</p>
-                                <h6>到期时间：<span>2017-03-24</span></h6>
+                                <h6><i>到期时间：</i>
+                                    <span>2017-03-24</span>
+                                    <span class="fn-right" v-show="value==2">还有<b class="am-ft-F58B8B">6</b>天</span>
+                                </h6>
                             </div>
                         </div>
                     </div>
-                    <div class="getBillButton">
+                    <div class="getBillButton" v-show="value==1">
                         <span>还有<b class="am-ft-F58B8B">6</b>天</span>
                     </div>
-                </div>
+                </div>   
                 <div class="getBillsItem">
                     <div class="memberBillInfo">
                         <div class="tabImgLeft">
-                            <img style="width:85px;height:85px;" src="">
+                            <img src="">
                         </div>
                         <div class="tabTextLeft">
                             <div>
                                 <p>资质名称</p>
-                                <h6>到期时间：<span>2017-03-24</span></h6>
+                                <h6><i>到期时间：</i>
+                                    <span>2017-03-24</span>
+                                    <span class="fn-right" v-show="value==2">还有<b class="am-ft-F58B8B">6</b>天</span>
+                                </h6>
                             </div>
                         </div>
                     </div>
-                    <div class="getBillButton">
+                    <div class="getBillButton" v-show="value==1">
                         <span>还有<b class="am-ft-F58B8B">6</b>天</span>
                     </div>
-                </div>
+                </div>   
                 <div class="getBillsItem">
                     <div class="memberBillInfo">
                         <div class="tabImgLeft">
-                            <img style="width:85px;height:85px;" src="">
+                            <img src="">
                         </div>
                         <div class="tabTextLeft">
                             <div>
                                 <p>资质名称</p>
-                                <h6>到期时间：<span>2017-03-24</span></h6>
+                                <h6><i>到期时间：</i>
+                                    <span>2017-03-24</span>
+                                    <span class="fn-right" v-show="value==2">还有<b class="am-ft-F58B8B">6</b>天</span>
+                                </h6>
                             </div>
                         </div>
                     </div>
-                    <div class="getBillButton">
+                    <div class="getBillButton" v-show="value==1">
                         <span>还有<b class="am-ft-F58B8B">6</b>天</span>
                     </div>
-                </div>
+                </div>                
             </div>
         </div>
     </div>
@@ -95,22 +107,13 @@
         data() {
             return {
                 options: [{
-                    value: "选项1",
-                    label: "黄金糕"
+                    value: "1",
+                    label: "小图模式"
                 }, {
-                    value: "选项2",
-                    label: "双皮奶"
-                }, {
-                    value: "选项3",
-                    label: "蚵仔煎"
-                }, {
-                    value: "选项4",
-                    label: "龙须面"
-                }, {
-                    value: "选项5",
-                    label: "北京烤鸭"
+                    value: "2",
+                    label: "大图模式"
                 }],
-                value: "",
+                value: "1",
             }
         }
     };
@@ -144,6 +147,65 @@
         color: #00afe4;
     }
     #getBills{
+        .getBillsContent1{
+            overflow: hidden;
+            padding: 2px 20px;
+            .getBillsItem{
+                width: calc(100% / 3);
+                min-width: 250px;
+                float: left;
+                overflow: hidden;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-bottom: 1px solid #EFEFEF;
+                .memberBillInfo{
+                    width: calc(100% - 40px);
+                    min-width: 250px;
+                    float: left;
+                    padding: 15px 20px;
+                    .tabImgLeft{
+                        width: 100%;
+                        float: left;
+                        img{
+                            height: 210px;
+                            width: 210px;
+                            object-fit: cover;
+                        }
+                    }
+                    .tabTextLeft{
+                        width: 100%;
+                        text-align: left;
+                        width: 210px;
+                        margin: 0 auto;
+                        div{
+                            line-height: 24.5px;
+                            p{
+                                font-size: 16px;
+                                color: #333333;
+                            }
+                            h6{
+                                font-size: 12px;
+                                color: #999999;
+                                i{
+                                    vertical-align: text-top;
+                                }
+                                span{
+                                    vertical-align: text-top;
+                                    color: #666666;
+                                    b{
+                                        font-size: 24px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                &:hover{
+                    background: #E8F6FC;
+                }
+            }
+        }
         .getBillsContent{
             padding: 2px 20px;
             .getBillsItem{

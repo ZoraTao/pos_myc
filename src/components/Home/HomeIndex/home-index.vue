@@ -38,9 +38,9 @@
           <h3>9</h3>
           <p>验光预约(人)</p>
         </div>        
-        <div class="hcNumItem">
+        <div class="hcNumItem" @click="dialogAptitudeDue = true">
           <h3>120</h3>
-          <p>待取件(单)</p>
+          <p>资质即将到期</p>
         </div>      
       </div>
     </div>
@@ -122,15 +122,24 @@
       </div>
     </div>
   </div>
+  <el-dialog title="资质即将到期" :visible.sync="dialogAptitudeDue">
+    <aptitudeDue></aptitudeDue>
+  </el-dialog>
 </div>
 </template>
 
 <script>
 
+import AptitudeDue from '../../Bills/aptitudeDue/aptitudeDue.vue'
 export default {
   name: 'Home',
   data () {
-    return { }
+    return { 
+      dialogAptitudeDue: false,
+    }
+  },
+  components: {
+    AptitudeDue
   },
   methods:{
     goBills(type){

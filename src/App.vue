@@ -57,9 +57,6 @@
   }
 
   #app {
-    font-family: '微软雅黑';
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
     width: 100%;
@@ -126,5 +123,32 @@
   }
   .el-table th {
     background: #B3E3F6 !important;
+}
+.el-dialog__header {
+    background: url(/static/img/modal-top.2ccc913.png) no-repeat;
+    padding: 0;
+    padding-bottom: 7px !important;
+    padding-top: 7px !important;
+    border-bottom: none !important;
+    background-size: 100%;
+    color: #fff;
+    text-align: left;
+    .el-dialog__title{
+      font-size: 16px;
+      color: #FFFFFF;
+      text-align: left;
+      margin-left: 20px;
+    }
+    .el-dialog__headerbtn{
+      top: 10px;
+      right: 10px;
+      font-size: 16px;
+      i{
+        color: #fff;
+      }
+    }
+}
+.el-dialog__body{
+  padding: 15px 0;
 }
 </style>
