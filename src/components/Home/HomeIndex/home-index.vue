@@ -18,11 +18,11 @@
           <h3>120</h3>
           <p>今日待取件(单)</p>
         </div>    
-        <div class="hcNumItem" v-on:click="goBills()">
+        <div class="hcNumItem" v-on:click="goBills(1)">
           <h3 class="am-ft-red">6</h3>
           <p>超期单据(单)</p>
         </div>    
-        <div class="hcNumItem" >
+        <div class="hcNumItem" v-on:click="goBills(2)">
           <h3>12</h3>
           <p>即将到期隐形镜(盒)</p>
         </div>    
@@ -34,7 +34,7 @@
           <h3>21</h3>
           <p>待回访客户(个)</p>
         </div>        
-        <div class="hcNumItem">
+        <div class="hcNumItem" v-on:click="goBills(3)">
           <h3>9</h3>
           <p>验光预约(人)</p>
         </div>        
@@ -133,8 +133,18 @@ export default {
     return { }
   },
   methods:{
-    goBills(){
-      this.$router.push('/bills/timeoutBill')
+    goBills(type){
+      switch (type){
+        case 1:
+          this.$router.push('/bills/timeoutBill')
+        break;
+        case 2:
+          this.$router.push('/bills/aboutExpireClBill')
+        break;
+        case 3:
+          this.$router.push('/bills/optometryAppointmentBill')
+        break;
+      }
     }
   }
 }
