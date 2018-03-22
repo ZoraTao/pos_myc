@@ -124,7 +124,6 @@
     .optometry_list_top {
         height: 42px;
         line-height: 42px;
-        width: 100%;
         margin: 0 20px;
         border-bottom: 1px solid #EFEFEF;
         overflow: hidden;

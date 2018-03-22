@@ -124,4 +124,7 @@
     margin-bottom: 12px;
     margin-right: 20px;
   }
+  .el-table th {
+    background: #B3E3F6 !important;
+}
 </style>
