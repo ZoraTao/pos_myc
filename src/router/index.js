@@ -31,7 +31,11 @@ export default new Router({
             path: 'memberIndex',
             name: 'memberIndex',
             component: resolve => require(['../components/MemberManage/memberIndex/member-index.vue'], resolve)
-          }
+          },
+          {
+            path: 'retailIndex',
+            name: 'retailIndex',
+            component: resolve => require(['../components/Retail/RetailIndex/retail-index.vue'], resolve) }
         ]
       }]
     },
@@ -58,6 +62,16 @@ export default new Router({
         path: 'aptitudeDue',
         name: 'aptitudeDue',
         component: resolve => require(['../components/Bills/aptitudeDue/aptitudeDue.vue'], resolve)
+      },
+      {
+        path: 'optometryOrderList',
+        name: 'optometryOrderList',
+        component: resolve => require(['../components/Bills/optometryOrder/optometryOrderList/optometry-order-list.vue'], resolve)
+      },
+      {
+        path: 'optometryOrderCu',
+        name: 'optometryOrderCu',
+        component: resolve => require(['../components/Bills/optometryOrder/optometryOrderCu/optometry-order-cu.vue'], resolve)
       }]
     },
     // 三级路由只拥有layout

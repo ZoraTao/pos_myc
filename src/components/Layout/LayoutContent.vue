@@ -3,7 +3,7 @@
       <header>
           <LayoutNav></LayoutNav>
       </header>
-      <article>
+      <article class="mg10">
           <router-view></router-view>
       </article>
     </main>
@@ -24,4 +24,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.mg10{
+  margin: 10px;
+}
 </style>

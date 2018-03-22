@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="layoutBody">
     <LayoutTop></LayoutTop>
     <router-view></router-view>
   </div>
@@ -20,4 +20,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.layoutBody{
+  width: 100%;
+  height: 100%;
+}
 </style>

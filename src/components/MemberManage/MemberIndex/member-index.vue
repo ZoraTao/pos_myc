@@ -1,5 +1,5 @@
 <template>
-  <div class="content-wrapper">
+  <div class="">
     <!--banner-->
     <div class="member-banner">
       <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/huiyuan_banner.png"/>
@@ -82,9 +82,11 @@
   }
 
   .member-menus {
-    width: 90%;
-    margin: 80px auto 20px;
+    width: 100%;
+    margin: 10px auto;
     overflow: hidden;
+    background: #fff;
+    padding: 60px;
     .member-item {
       img {
         display: block;

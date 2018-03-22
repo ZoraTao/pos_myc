@@ -57,7 +57,6 @@
   }
 
   #app {
-    text-align: center;
     color: #2c3e50;
     width: 100%;
     height: 100%;
@@ -150,5 +149,8 @@
 }
 .el-dialog__body{
   padding: 15px 0;
+}
+.el-input{
+  width: auto;
 }
 </style>

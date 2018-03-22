@@ -52,6 +52,11 @@ $radius3: $h3 solid #E1E1E1;
   color: $gary-placeholder;
 }
 
+
+.am-bg-white{
+    background: $white;
+}
+
 //font-size
 .am-ft-12 {
     font-size: $h12;
@@ -77,6 +82,10 @@ $radius3: $h3 solid #E1E1E1;
 .am-ft-22 {
   font-size: 22px;
 }
+.am-ft-20{
+    font-size: 20px;
+}
+
 //margin-top
 .mgt0 {
     margin-top: 0;
@@ -228,6 +237,9 @@ $radius3: $h3 solid #E1E1E1;
   margin-right: $h30;
 }
 
+.pt10{
+    padding-top: 10px;
+}
 
 .before-none {
     &:before {
@@ -309,6 +321,35 @@ i,em{
 .am-ft-bold{
   font-weight: bold;
 }
-.am-ft-norm{
+.am-ft-norm {
   font-weight: normal;
 }
+  .am-ft-gray3 {
+    color: #333333 !important;
+  }
+  .am-ft-gray6 {
+    color: #666666 !important;
+  }
+  .am-ft-gray9 {
+    color: #999999 !important;
+  }
+  .ft_bold {
+    font-weight: bold;
+  }
+
+  .w90 {
+    width: 90px !important;
+  }
+
+  .w50 {
+    width: 50px !important;
+  }
+  .clearfix:before, .clearfix:after {
+    content: " ";
+    display: table;
+  }
+  .content_box {
+    padding: 13px;
+    background: #f4f4f4;
+    height: 100%;
+  }
