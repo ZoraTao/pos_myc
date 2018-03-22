@@ -117,9 +117,10 @@
       }
     }
     .el-tabs--border-card {
+      min-height: 500px;
       border: 1px solid #f3f4f5;
-      -webkit-box-shadow: 0 5px 6px 0 rgba(0, 0, 0, .12), 0 0 6px 0 rgba(0, 0, 0, .04);
-      box-shadow: 0 5px 6px 0 rgba(0, 0, 0, .12), 0 0 6px 0 rgba(0, 0, 0, .04);
+      -webkit-box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.05), 0 0 6px 0 rgba(0, 0, 0, 0.04);
+      box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.05), 0 0 6px 0 rgba(0, 0, 0, 0.04);
     }
 
     .el-tabs--border-card>.el-tabs__header{

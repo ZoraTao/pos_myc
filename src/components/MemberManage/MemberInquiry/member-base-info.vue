@@ -1,6 +1,6 @@
 <template>
   <el-row class="pane-part1">
-    <el-col :span="9">
+    <el-col :span="11" class="vertical-line">
       <p class="part-titl">基本信息</p>
       <ul>
         <li>
@@ -33,7 +33,7 @@
         </li>
       </ul>
     </el-col>
-    <el-col :span="9">
+    <el-col :span="9" :offset="1">
       <p class="part-titl">会员管理信息</p>
       <ul>
         <li>
@@ -83,6 +83,9 @@
       color: #888888;
       text-align: right;
       margin-right: 32px;
+    }
+    .vertical-line{
+     border-right: 1px solid #EFEFEF;
     }
   }
 </style>

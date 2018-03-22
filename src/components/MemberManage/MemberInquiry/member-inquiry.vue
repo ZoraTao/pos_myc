@@ -125,15 +125,87 @@
       </el-col>
     </el-row>
     <!--/无数据时缺省显示-->
-    <!--有数据时缺省显示-->
+    <!--有数据时显示-->
     <el-row class="content-info-box">
-      <!--会员资料-->
-      <el-col :span="24">
-        <member-detail></member-detail>
+      <el-col :span="24" class="table-wrap">
+        <!--多个数据时显示-->
+        <el-table
+          :data="tableData"
+          stripe
+          size="small"
+          align="left"
+          style="width: 100%;margin-bottom: 10px;">
+          <el-table-column
+            prop="a"
+            label="姓名"
+            width="60px">
+          </el-table-column>
+          <el-table-column
+            prop="b"
+            label="手机号"
+            width="130px">
+          </el-table-column>
+          <el-table-column
+            prop="d"
+            label="卡号">
+          </el-table-column>
+          <el-table-column
+            prop="e"
+            label="积分"
+            width="100px">
+          </el-table-column>
+          <el-table-column
+            prop="f"
+            label="性别"
+            width="100px">
+          </el-table-column>
+          <el-table-column
+            prop="g"
+            label="消费次数"
+            width="100px">
+          </el-table-column>
+          <el-table-column
+            prop="h"
+            label="消费金额">
+          </el-table-column>
+          <el-table-column
+            prop="i"
+            label="最近消费时间">
+          </el-table-column>
+          <el-table-column
+            prop="j"
+            label="负责部门">
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            width="100">
+            <template slot-scope="scope">
+              <el-button @click="checkDetail(scope.row)" type="text" size="small">查看</el-button>
+              <el-button type="text" size="small">编辑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--分页-->
+        <div class="block">
+          <el-pagination
+            class="am-ft-right"
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage1"
+            :page-size="100"
+            layout="total, prev, pager, next"
+            :total="1000">
+          </el-pagination>
+        </div>
+        <!--/多个数据时显示-->
+        <!--单个数据时显示：会员资料-->
+        <member-detail v-if="false"></member-detail>
+        <!--/单个数据时显示：会员资料-->
       </el-col>
-      <!--/会员资料-->
+
     </el-row>
-    <!--/有数据时缺省显示-->
+    <!--/有数据时显示-->
   </div>
 </template>
 
@@ -155,7 +227,31 @@
           select2: '',
           date1: '',
           date2: '',
-        }
+        },
+        tableData: [{
+          a: '王大锤',
+          b: '15383465768',
+          c: '银卡',
+          d: '银卡 562536256452',
+          e: '123',
+          f: '男',
+          g: '1',
+          h: '1599',
+          i: '2017-12-14 12:26:26',
+          j: '毛源昌杭州西湖店'
+        },
+        {
+          a: '王大锤',
+          b: '15383465768',
+          c: '银卡',
+          d: '银卡 562536256452',
+          e: '123',
+          f: '男',
+          g: '1',
+          h: '1599',
+          i: '2017-12-14 12:26:26',
+          j: '毛源昌杭州西湖店'
+        }]
       }
     },
     methods: {
@@ -179,11 +275,31 @@
           name: 'member-add',
           params: {}
         })
+      },
+      //查看详情
+      checkDetail(row) {
+        console.log(row);
+        this.$router.push({
+          path: '/member/memberDetail',
+          name: 'member-detail',
+          params: {}
+        })
+      },
+      //分页
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
       }
     }
   }
 </script>
-
+<style lang="scss">
+  .el-table thead {
+    color: #555555;
+  }
+</style>
 <style scoped lang="scss">
   @import "../../../reset";
 
@@ -218,6 +334,10 @@
   .content-info-box {
     margin-top: 6px;
     min-height: 500px;
+    .table-wrap {
+      background-color: #ffffff;
+      padding-bottom: 20px;
+    }
     .default-show {
       width: 100px;
       height: 100%;
