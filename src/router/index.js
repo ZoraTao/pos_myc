@@ -22,8 +22,16 @@ export default new Router({
         path: 'base',
         component: resolve => require(['../components/Layout/LayoutContent.vue'], resolve),
         children: [
-          { path: 'homeIndex', component: resolve => require(['../components/Home/HomeIndex/home-index.vue'], resolve) },
-          { path: 'memberIndex', component: resolve => require(['../components/MemberManage/memberIndex/member-index.vue'], resolve) }
+          {
+            path: 'homeIndex',
+            name: 'Home',
+            component: resolve => require(['../components/Home/HomeIndex/home-index.vue'], resolve)
+          },
+          {
+            path: 'memberIndex',
+            name: 'memberIndex',
+            component: resolve => require(['../components/MemberManage/memberIndex/member-index.vue'], resolve)
+          }
         ]
       }]
     },
@@ -33,18 +41,22 @@ export default new Router({
       component: resolve => require(['../components/Layout/Layout.vue'], resolve),
       children: [{
         path: 'timeoutBill',
+        name: 'timeoutBill',
         component: resolve => require(['../components/Bills/timeoutBill/timeout-bill.vue'], resolve)
       },
       {
         path: 'aboutExpireClBill',
+        name: 'timeoutBill',
         component: resolve => require(['../components/Bills/aboutExpireClBill/about-expireCl-bill.vue'], resolve)
       },
       {
         path: 'optometryAppointmentBill',
+        name: 'optometryAppointmentBill',
         component: resolve => require(['../components/Bills/optometryAppointmentBill/optometry-appointment-bill.vue'], resolve)
       },
       {
         path: 'aptitudeDue',
+        name: 'aptitudeDue',
         component: resolve => require(['../components/Bills/aptitudeDue/aptitudeDue.vue'], resolve)
       }]
     },
@@ -54,26 +66,32 @@ export default new Router({
       component: resolve => require(['../components/Layout/Layout.vue'], resolve),
       children: [{
         path: 'memberAdd',
+        name: 'member-add',
         component: resolve => require(['../components/MemberManage/MemberAdd/member-add.vue'], resolve)
       },
       {
         path: 'memberInquiry',
+        name: 'member-inquiry',
         component: resolve => require(['../components/MemberManage/MemberInquiry/member-inquiry.vue'], resolve)
       },
       {
         path: 'memberDetail',
+        name: 'member-detail',
         component: resolve => require(['../components/MemberManage/MemberInquiry/member-detail.vue'], resolve)
       },
       {
         path: 'memberComplaints',
+        name: 'member-complaints',
         component: resolve => require(['../components/MemberManage/MemberComplaints/member-complaints.vue'], resolve)
       },
       {
         path: 'memberReturnVisit',
+        name: 'member-return-visit',
         component: resolve => require(['../components/MemberManage/MemberReturnVisit/member-return-visit.vue'], resolve)
       },
       {
         path: 'memberRights',
+        name: 'member-rights',
         component: resolve => require(['../components/MemberManage/MemberRights/member-rights.vue'], resolve)
       }
       ]
