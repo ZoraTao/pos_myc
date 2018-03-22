@@ -76,6 +76,16 @@ export default new Router({
     },
     // 三级路由只拥有layout
     {
+      path: '/cashier',
+      component: resolve => require(['../components/Layout/Layout.vue'], resolve),
+      children: [{
+        path: 'cashierList',
+        name: 'cashierList',
+        component: resolve => require(['../components/Retail/Cashier/CashierList/cashier-list.vue'], resolve)
+      }]
+    },
+    // 三级路由只拥有layout
+    {
       path: '/member',
       component: resolve => require(['../components/Layout/Layout.vue'], resolve),
       children: [{

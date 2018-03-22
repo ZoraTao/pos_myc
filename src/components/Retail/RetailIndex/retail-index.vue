@@ -40,7 +40,7 @@ export default {
             },
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_shouyin.png',
-            'link':'/myc/bill/cashierList',
+            'link':'/cashier/cashierList',
             'line':true,
             'text':'收银'
             },
