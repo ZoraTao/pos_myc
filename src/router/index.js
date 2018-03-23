@@ -131,11 +131,38 @@ export default new Router({
     {
       path: '/commodity',
       component: resolve => require(['../components/Layout/Layout.vue'], resolve),
-      children: [{
+      children: [
+        //库存查询
+      {
         path: 'stocksInquiry',
         name: 'stocks-inquiry',
         component: resolve => require(['../components/CommodityStocks/stocks-inquiry/stocks-inquiry'], resolve)
-      }]
+      },
+        //库存盘点
+      {
+        path: 'inventory-check',
+        name: 'inventory-check-index',
+        component: resolve => require(['../components/CommodityStocks/inventory-check/inventory-check-index'], resolve)
+      },
+        //临时盘点
+        {
+          path: 'inventory-temporary',
+          name: 'inventory-check-temporary',
+          component: resolve => require(['../components/CommodityStocks/inventory-temporary/inventory-check-temporary'], resolve)
+        },
+        //调拨单
+        {
+          path: 'transfer-order',
+          name: 'transfer-order-index',
+          component: resolve => require(['../components/CommodityStocks/transfer-order/transfer-order-index'], resolve)
+        },
+        //申调单
+        {
+          path: 'application-order',
+          name: 'application-order-index',
+          component: resolve => require(['../components/CommodityStocks/application-order/application-order-index'], resolve)
+        }
+      ]
     }
   ]
 })

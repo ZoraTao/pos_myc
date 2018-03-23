@@ -14,19 +14,19 @@
           </div>
         </el-col>
         <el-col :span="5">
-          <div class="member-item">
+          <div class="member-item" @click="goCheckInquiry">
             <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hychaxun.png"/>
             <span>盘点</span>
           </div>
         </el-col>
         <el-col :span="5">
-          <div class="member-item">
+          <div class="member-item" @click="goTemporaryInvent">
             <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hytousu.png"/>
             <span>临时盘点</span>
           </div>
         </el-col>
         <el-col :span="5">
-          <div class="member-item">
+          <div class="member-item" @click="goTransferOrder">
             <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hyhuifang.png"/>
             <span>调拨单</span>
           </div>
@@ -57,7 +57,39 @@
           name: 'stocks-inquiry',
           params: {}
         })
-      }
+      },
+      //库存盘点
+      goCheckInquiry: function () {
+        this.$router.push({
+          path: '/commodity/inventory-check',
+          name: 'inventory-check-index',
+          params: {}
+        })
+      },
+      //临时盘点
+      goTemporaryInvent: function () {
+        this.$router.push({
+          path: '/commodity/inventory-temporary',
+          name: 'inventory-check-temporary',
+          params: {}
+        })
+      },
+      //调拨单
+      goTransferOrder: function () {
+        this.$router.push({
+          path: '/commodity/transfer-order',
+          name: 'transfer-order-index',
+          params: {}
+        })
+      },
+      //申调单
+      goApplicationOrder: function () {
+        this.$router.push({
+          path: '/commodity/application-order',
+          name: 'application-order-index',
+          params: {}
+        })
+      },
     }
   }
 </script>
