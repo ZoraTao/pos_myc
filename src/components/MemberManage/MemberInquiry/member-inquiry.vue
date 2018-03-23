@@ -270,11 +270,11 @@
       },
       //新增会员
       goMemberAdd: function () {
-        this.$router.push({
-          path: '/member/memberAdd',
-          name: 'member-add',
-          params: {}
-        })
+        // this.$router.push({
+        //   path: '/member/memberAdd',
+        //   name: 'member-add',
+        //   params: {}
+        // })
       },
       //查看详情
       checkDetail(row) {
@@ -295,62 +295,7 @@
     }
   }
 </script>
-<style lang="scss">
-  .el-table thead {
-    color: #555555;
-  }
-</style>
+
 <style scoped lang="scss">
-  @import "../../../reset";
-
-  .inquiry-row {
-    background: $white;
-    padding: $h15 $h20;
-    .inquiry-item {
-      text-align: center;
-      position: relative;
-      &:after {
-        content: ' ';
-        width: 1px;
-        height: 24px;
-        background: #dddddd;
-        position: absolute;
-        right: 0;
-        top: 50%;
-        margin-top: -12px;
-      }
-      span {
-        font-size: $h14;
-        display: block;
-      }
-      strong {
-        font-size: $h18;
-        display: block;
-        margin-top: $h8;
-      }
-    }
-  }
-
-  .content-info-box {
-    margin-top: 6px;
-    min-height: 500px;
-    .table-wrap {
-      background-color: #ffffff;
-      padding-bottom: 20px;
-    }
-    .default-show {
-      width: 100px;
-      height: 100%;
-      margin: 100px auto 0;
-      img {
-        display: block;
-        margin: 0 auto;
-      }
-      p {
-        font-size: 14px;
-        color: #888888;
-      }
-    }
-
-  }
+  @import "member-public-css";
 </style>

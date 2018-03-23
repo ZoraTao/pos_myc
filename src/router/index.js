@@ -35,7 +35,14 @@ export default new Router({
           {
             path: 'retailIndex',
             name: 'retailIndex',
-            component: resolve => require(['../components/Retail/RetailIndex/retail-index.vue'], resolve) }
+            component: resolve => require(['../components/Retail/RetailIndex/retail-index.vue'], resolve)
+          },
+          //商品库存首页
+          {
+            path: 'stocksIndex',
+            name: 'stocks-index',
+            component: resolve => require(['../components/CommodityStocks/stocks-index.vue'], resolve)
+          }
         ]
       }]
     },
@@ -48,31 +55,31 @@ export default new Router({
         name: 'timeoutBill',
         component: resolve => require(['../components/Bills/timeoutBill/timeout-bill.vue'], resolve)
       },
-      {
-        path: 'aboutExpireClBill',
-        name: 'timeoutBill',
-        component: resolve => require(['../components/Bills/aboutExpireClBill/about-expireCl-bill.vue'], resolve)
-      },
-      {
-        path: 'optometryAppointmentBill',
-        name: 'optometryAppointmentBill',
-        component: resolve => require(['../components/Bills/optometryAppointmentBill/optometry-appointment-bill.vue'], resolve)
-      },
-      {
-        path: 'aptitudeDue',
-        name: 'aptitudeDue',
-        component: resolve => require(['../components/Bills/aptitudeDue/aptitudeDue.vue'], resolve)
-      },
-      {
-        path: 'optometryOrderList',
-        name: 'optometryOrderList',
-        component: resolve => require(['../components/Bills/optometryOrder/optometryOrderList/optometry-order-list.vue'], resolve)
-      },
-      {
-        path: 'optometryOrderCu',
-        name: 'optometryOrderCu',
-        component: resolve => require(['../components/Bills/optometryOrder/optometryOrderCu/optometry-order-cu.vue'], resolve)
-      }]
+        {
+          path: 'aboutExpireClBill',
+          name: 'timeoutBill',
+          component: resolve => require(['../components/Bills/aboutExpireClBill/about-expireCl-bill.vue'], resolve)
+        },
+        {
+          path: 'optometryAppointmentBill',
+          name: 'optometryAppointmentBill',
+          component: resolve => require(['../components/Bills/optometryAppointmentBill/optometry-appointment-bill.vue'], resolve)
+        },
+        {
+          path: 'aptitudeDue',
+          name: 'aptitudeDue',
+          component: resolve => require(['../components/Bills/aptitudeDue/aptitudeDue.vue'], resolve)
+        },
+        {
+          path: 'optometryOrderList',
+          name: 'optometryOrderList',
+          component: resolve => require(['../components/Bills/optometryOrder/optometryOrderList/optometry-order-list.vue'], resolve)
+        },
+        {
+          path: 'optometryOrderCu',
+          name: 'optometryOrderCu',
+          component: resolve => require(['../components/Bills/optometryOrder/optometryOrderCu/optometry-order-cu.vue'], resolve)
+        }]
     },
     // 三级路由只拥有layout
     {
@@ -84,7 +91,7 @@ export default new Router({
         component: resolve => require(['../components/Retail/Cashier/CashierList/cashier-list.vue'], resolve)
       }]
     },
-    // 三级路由只拥有layout
+    // 三级路由:会员管理
     {
       path: '/member',
       component: resolve => require(['../components/Layout/Layout.vue'], resolve),
@@ -93,32 +100,42 @@ export default new Router({
         name: 'member-add',
         component: resolve => require(['../components/MemberManage/MemberAdd/member-add.vue'], resolve)
       },
-      {
-        path: 'memberInquiry',
-        name: 'member-inquiry',
-        component: resolve => require(['../components/MemberManage/MemberInquiry/member-inquiry.vue'], resolve)
-      },
-      {
-        path: 'memberDetail',
-        name: 'member-detail',
-        component: resolve => require(['../components/MemberManage/MemberInquiry/member-detail.vue'], resolve)
-      },
-      {
-        path: 'memberComplaints',
-        name: 'member-complaints',
-        component: resolve => require(['../components/MemberManage/MemberComplaints/member-complaints.vue'], resolve)
-      },
-      {
-        path: 'memberReturnVisit',
-        name: 'member-return-visit',
-        component: resolve => require(['../components/MemberManage/MemberReturnVisit/member-return-visit.vue'], resolve)
-      },
-      {
-        path: 'memberRights',
-        name: 'member-rights',
-        component: resolve => require(['../components/MemberManage/MemberRights/member-rights.vue'], resolve)
-      }
+        {
+          path: 'memberInquiry',
+          name: 'member-inquiry',
+          component: resolve => require(['../components/MemberManage/MemberInquiry/member-inquiry.vue'], resolve)
+        },
+        {
+          path: 'memberDetail',
+          name: 'member-detail',
+          component: resolve => require(['../components/MemberManage/MemberInquiry/member-detail.vue'], resolve)
+        },
+        {
+          path: 'memberComplaints',
+          name: 'member-complaints',
+          component: resolve => require(['../components/MemberManage/MemberComplaints/member-complaints.vue'], resolve)
+        },
+        {
+          path: 'memberReturnVisit',
+          name: 'member-return-visit',
+          component: resolve => require(['../components/MemberManage/MemberReturnVisit/member-return-visit.vue'], resolve)
+        },
+        {
+          path: 'memberRights',
+          name: 'member-rights',
+          component: resolve => require(['../components/MemberManage/MemberRights/member-rights.vue'], resolve)
+        }
       ]
+    },
+    //商品库存
+    {
+      path: '/commodity',
+      component: resolve => require(['../components/Layout/Layout.vue'], resolve),
+      children: [{
+        path: 'stocksInquiry',
+        name: 'stocks-inquiry',
+        component: resolve => require(['../components/CommodityStocks/stocks-inquiry/stocks-inquiry'], resolve)
+      }]
     }
   ]
 })

@@ -27,7 +27,7 @@
     color: rgba(0, 0, 0, 0.65);
     background-color: #f4f4f5;
   }
-  
+
   ul, li, h1, h2, h3, h4, h5, h6, p {
     margin: 0;
     padding: 0;
@@ -124,7 +124,7 @@
     background: #B3E3F6 !important;
 }
 .el-dialog__header {
-    background: url(/static/img/modal-top.2ccc913.png) no-repeat;
+    background: url(http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/modal-top.2ccc913.png) no-repeat;
     padding: 0;
     padding-bottom: 7px !important;
     padding-top: 7px !important;
@@ -153,4 +153,58 @@
 .el-input{
   width: auto;
 }
+  /*公共首页*/
+  .inner-index-box {
+    .member-banner {
+      width: 100%;
+      overflow: hidden;
+      img {
+        display: block;
+        width: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .member-menus {
+      width: 100%;
+      margin: 10px auto;
+      overflow: hidden;
+      background: #fff;
+      padding: 60px;
+      .member-item {
+        img {
+          display: block;
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          margin: 0 auto;
+        }
+        span {
+          width: 100%;
+          font-size: 20px;
+          color: #333333;
+          text-align: center;
+          margin-top: 14px;
+          display: block;
+        }
+      }
+    }
+  }
+  .el-table--scrollable-x .el-table__body-wrapper{
+    &::-webkit-scrollbar{
+      width: 8px;
+      height: 8px;
+    }
+    &::-webkit-scrollbar-track{
+      background: #d4d2d2;
+      border-radius: 2px;
+    }
+    &::-webkit-scrollbar-thumb{
+      background: #999999;
+      border-radius: 2px;
+    }
+    &::-webkit-scrollbar-corner{
+      background: #E6E6E6;
+    }
+  }
 </style>
