@@ -6,7 +6,7 @@
     <div class="retailContent">
         <ul class="small_icon">
             <li v-for="item of icons" :key="item.text" v-on:click="changeRoute(item)">
-                <div class="fn_left w_50 min_w100 linkSrc">
+                <div class="fn_left w_50 linkSrc">
                     <img :src="item.src" />
                     <p class="icon_text">{{item.text}}</p>
                 </div>
@@ -46,19 +46,19 @@ export default {
             },
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_mendianshoufa.png',
-            'link':'/myc/bill/receiveList',
+            'link':'/receive/receiveList',
             'line':true,
             'text':'门店收发'
             },
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_kehuqujian.png',
-            'link':'/myc/bill/pickUpList',
+            'link':'/pickup/pickuplist',
             'line':true,
             'text':'客户取件'
             },
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_shouhou.png',
-            'link':'/myc/bill/serviceAfter',
+            'link':'/serviceafter/serviceafterlist',
             'line':false,
             'text':'售后'
             }
