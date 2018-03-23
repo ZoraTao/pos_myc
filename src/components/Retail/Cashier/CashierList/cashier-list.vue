@@ -8,25 +8,25 @@
         <!-- 代收银 -->
         <div class="content am_bg_white" v-if="srcNum==='1'">
             <ul class="clearfix cashier_top">
-                <li class="fn-left mgt4">
+                <li class="fn-left">
                     <span class="member">零售单号&nbsp;:&nbsp;</span>
                     <input type="text" class="cashier_input" />
                 </li>
-                <li class="fn-left mgt4">
+                <li class="fn-left">
                     <span class="member">会员&nbsp;:&nbsp;</span>
                     <input type="text" class="cashier_input" />
                 </li>
-                <li class="fn-left mgt4">
-                    <span class="member">订单类型&nbsp;:&nbsp;</span>
+                <li class="fn-left">
+                    <span class="member fixd5Iblock">订单类型&nbsp;:&nbsp;</span>
                     <!-- <nz-select style="width: 60px;" [(ngModel)]="single" [nzSize]="size">
                         <nz-option *ngFor="let option of options" [nzLabel]="option.label" [nzValue]="option.value" [nzDisabled]="option.disabled">
                         </nz-option>
                     </nz-select> -->
                 </li>
-                <li class="fn-left mgt4">
-                    <span class="member">零售时间&nbsp;:&nbsp;</span>
+                <li class="fn-left">
+                    <span class="member fixd5Iblock">零售时间&nbsp;:&nbsp;</span>
                     <!-- <nz-datepicker [(ngModel)]="_date_start" [nzSize]="'large'" [nzPlaceHolder]="'2018-02-06'"></nz-datepicker> -->
-                    <span>-</span>
+                    <span class="fixd5Iblock">-</span>
                     <!-- <nz-datepicker [(ngModel)]="_date_end" [nzSize]="'large'" [nzPlaceHolder]="'2018-02-06'"></nz-datepicker> -->
                 </li>
 
@@ -143,18 +143,18 @@
         <!-- 欠还款 -->
         <div class="content am_bg_white" v-if="srcNum==='2'">
             <ul class="clearfix cashier_top">
-                <li class="fn-left mgt4">
+                <li class="fn-left">
                     <span class="member">零售单号&nbsp;:&nbsp;</span>
                     <input type="text" class="cashier_input" />
                 </li>
-                <li class="fn-left mgt4">
+                <li class="fn-left">
                     <span class="member">会员&nbsp;:&nbsp;</span>
                     <input type="text" class="cashier_input" />
                 </li>
-                <li class="fn-left mgt4">
-                    <span class="member">零售时间&nbsp;:&nbsp;</span>
+                <li class="fn-left">
+                    <span class="member fixd5Iblock">零售时间&nbsp;:&nbsp;</span>
                     <!-- <nz-datepicker [(ngModel)]="_date_start" [nzSize]="'large'" [nzPlaceHolder]="'2018-02-06'"></nz-datepicker> -->
-                    <span>-</span>
+                    <span class="fixd5Iblock">-</span>
                     <!-- <nz-datepicker [(ngModel)]="_date_end" [nzSize]="'large'" [nzPlaceHolder]="'2018-02-06'"></nz-datepicker> -->
                 </li>
 
@@ -313,25 +313,25 @@
         <!-- 全部 -->
         <div class="content am_bg_white" v-if="srcNum==='3'">
             <ul class="clearfix cashier_top">
-                <li class="fn-left mgt4">
+                <li class="fn-left ">
                     <span class="member">零售单号&nbsp;:&nbsp;</span>
                     <input type="text" class="cashier_input" />
                 </li>
-                <li class="fn-left mgt4">
+                <li class="fn-left ">
                     <span class="member">会员&nbsp;:&nbsp;</span>
                     <input type="text" class="cashier_input" />
                 </li>
-                <li class="fn-left mgt4">
-                    <span class="member">订单类型&nbsp;:&nbsp;</span>
+                <li class="fn-left ">
+                    <span class="member fixd5Iblock">订单类型&nbsp;:&nbsp;</span>
                     <!-- <nz-select style="width: 60px;" [(ngModel)]="single" [nzSize]="size">
                         <nz-option *ngFor="let option of options" [nzLabel]="option.label" [nzValue]="option.value" [nzDisabled]="option.disabled">
                         </nz-option>
                     </nz-select> -->
                 </li>
-                <li class="fn-left mgt4">
-                    <span class="member">零售时间&nbsp;:&nbsp;</span>
+                <li class="fn-left ">
+                    <span class="member fixd5Iblock">零售时间&nbsp;:&nbsp;</span>
                     <!-- <nz-datepicker [(ngModel)]="_date_start" [nzSize]="'large'" [nzPlaceHolder]="'2018-02-06'"></nz-datepicker> -->
-                    <span>-</span>
+                    <span class="fixd5Iblock">-</span>
                     <!-- <nz-datepicker [(ngModel)]="_date_end" [nzSize]="'large'" [nzPlaceHolder]="'2018-02-06'"></nz-datepicker> -->
                 </li>
 
@@ -340,54 +340,90 @@
                 </li>
             </ul>
             <div class="orders">
-                <!-- <nz-table #nzTable [nzDataSource]="data" [nzPageSize]="20" [nzShowTotal]="200" class="orderList_table">
-                    <thead nz-thead>
-                        <tr>
-                            <th nz-th><span>订单号</span></th>
-                            <th nz-th><span>会员姓名</span></th>
-                            <th nz-th><span>会员手机号</span></th>
-                            <th nz-th><span>金额</span></th>
-                            <th nz-th><span>下单时间</span></th>
-                            <th nz-th><span>销售门店</span></th>
-                            <th nz-th><span>状态</span></th>
-                            <th nz-th><span>操作</span></th>
-                        </tr>
-                    </thead>
-                    <tbody nz-tbody>
-                        <tr nz-tbody-tr *ngFor="let item of nzTable.data">
-                            <td nz-td>
-
-                                <span class=" am_bg_blue icon">定</span>
-                                <span class=" am_bg_orange icon">欠</span>
-                                <span class=" am_bg_red icon">退</span>
-                                <span class="order_id">  <a>{{item.id}}</a></span>
-                                <span class="sign_orange">跨店签批</span>
-                            </td>
-                            <td nz-td>{{item.name}}</td>
-                            <td nz-td>{{item.telephone}}</td>
-                            <td nz-td><strong>￥{{item.price}}</strong></td>
-                            <td nz-td>{{item.time}}</td>
-                            <td nz-td>{{item.salesStore}}</td>
-                            <td nz-td [ngClass]="{'am-ft-aa': item.type==='1','am-ft-orange':item.type==='2','am-ft-red': item.type==='3'}">{{item.status}}</td>
-                            <td nz-td (click)="goDetail(item)">
-                                <a>查看详情</a>
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </nz-table> -->
+                <el-table
+                    :data="data"
+                    size="small"
+                    align="left"
+                    style="width: 100%;margin-bottom:10px;">
+                    <el-table-column
+                    prop="id"
+                    label="订单号"
+                    width="400">
+                        <template slot-scope="scope">
+                            <span class=" am-bg-blue icon">定</span>
+                            <span class=" am-bg-orange icon">欠</span>
+                            <span class=" am-bg-red icon">退</span>
+                            <span class="order_id">  <a>{{scope.row.id}}</a></span>
+                            <span class="sign_orange">跨店签批</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                    prop="name"
+                    label="会员姓名"
+                    width="180">
+                    </el-table-column>
+                    <el-table-column
+                    prop="telephone"
+                    label="会员手机号">
+                    </el-table-column>
+                    <el-table-column
+                    prop="price"
+                    label="金额">
+                        <template slot-scope="scope">
+                            <span class="am-ft-bold">{{scope.row.price}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                    prop="time"
+                    label="下单时间">
+                    </el-table-column>
+                    <el-table-column
+                    prop="salesStore"
+                    label="销售门店">
+                    </el-table-column>
+                    <el-table-column
+                    prop="status"
+                    label="状态">
+                        <template slot-scope="scope">
+                            <span :class="{'am-ft-aa': scope.row.type==='1','am-ft-orange':scope.row.type==='2','am-ft-red': scope.row.type==='3'}">{{scope.row.status}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                    label="操作">
+                        <template slot-scope="scope">
+                            <span class="am-ft-blue" @click="showCashier = true"><a>查看详情</a></span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination
+                class="am-ft-right"
+                background
+                layout="prev, pager, next"
+                :total="1000">
+                </el-pagination>  
             </div>
         </div>
     </div>
+    <el-dialog title="收银" :visible.sync="showCashier">
+        <CashierModal></CashierModal>
+    </el-dialog>
+    <el-dialog custom-class="noheader" title="" :visible.sync="showCashier">
+        <div class="modal-content print-frame">
+            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/print.png" />
+            <span>该订单已完成收银，开始打印取货单...</span>
+        </div>
+    </el-dialog>
 </section>
 </template>
 
 <script>
+import CashierModal from '../CashierModal/cashier-modal.vue'
 
 export default {
   name: 'CashierList',
   data () {
     return { 
+        showCashier:false,
         srcNum:'2',
         tabs:[{
             'value':'收银',
@@ -403,9 +439,36 @@ export default {
             'value':'全部',
             'isActived':false,
             'srcNum':'3'
-            
+        }],
+        data : [
+        {
+            'id'    : '20170909000000001',
+            'name'   : '张三',
+            'telephone'    : 15757179646,
+            'price':'860.60',
+            'time': '2017-12-14 12:26:26',
+            'salesStore':  '毛源昌建国北路店',
+            'status': '代收银',
+            "type":"1"
         }]
     }
+  },
+  methods:{
+    changeTab:function(item){
+        this.srcNum=item.srcNum;
+        this.tabs.forEach(function(element){
+            element.isActived=false;
+            if(element==item){
+                element.isActived=true;
+            }
+        })
+    },
+    showModalMiddle:function(){
+        this.showCashier=true;
+    }
+  },
+  components:{
+      CashierModal
   }
 }
 </script>
@@ -614,163 +677,15 @@ export default {
     padding: 0 10px;
 }
 
-
+.fixd5Iblock{
+    display: inline-block;
+    margin-top: 5px;
+}
 /* 全部 */
 
 .orderList_table tbody tr:nth-child(2n) {
     background: rgba(246, 246, 246, 0.50);
 }
-
-
-/*modal*/
-
-.modal-dialog {
-    margin-top: 60px!important;
-}
-
-.modal-content-top {
-    padding: 5px;
-}
-
-.modal-content-center {
-    background: #FBFBFB;
-    border: 1px solid #E1E1E1;
-    margin: 5px;
-}
-
-.modal-content-left {
-    width: 74%;
-}
-
-.modal-content-right>div {
-    background: #FFFFFF;
-    border: 1px solid #E1E1E1;
-    border-radius: 4px;
-    width: 100px;
-    height: 28px;
-    line-height: 28px;
-    position: relative;
-    text-align: center;
-    margin: 0 auto;
-    margin-bottom: 10px;
-}
-
-.sale-date {
-    background: #F8F8F8;
-    border: 1px solid #E1E1E1;
-    display: inline;
-    padding: 3px 10px;
-}
-
-.modal-content-right {
-    background: #FFFFFF;
-    width: 26%;
-    text-align: center;
-    height: 318px;
-    border-left: 1px solid #E1E1E1;
-    padding: 10px;
-}
-
-.modal-content-left table tr th {
-    text-align: center;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    font-size: 12px;
-    color: #666666;
-    border: none;
-}
-
-.modal-content-left table tr td {
-    border: none;
-    line-height: 30px;
-    padding-bottom: 0;
-    padding-top: 5px;
-}
-
-.modal-content-left table tr td input {
-    background: #F8F8F8;
-    border: 1px solid #E1E1E1;
-    font-size: 20px;
-    color: #333333;
-    width: 100px;
-    height: 28px;
-    padding: 5px;
-    text-align: right;
-}
-
-.modal-content-left table tr td input:focus {
-    border: 1px solid #00AFE4;
-}
-
-.modal-content-left table tr td:nth-child(1) {
-    font-size: 12px;
-    color: #333333;
-    padding-right: 0;
-}
-
-.modal-content-left table tr td:nth-child(2) {
-    font-size: 13px;
-    color: #333333;
-}
-
-.modal-content-left table tr td:nth-child(4) {
-    text-align: left;
-    padding-left: 0;
-}
-
-.modal-content-left table tr td:nth-child(5) {
-    padding-left: 0;
-}
-
-.table-hover>tbody>tr:hover {
-    background: #EDF6F9;
-}
-
-.select-actived {
-    background: #00AFE4!important;
-    font-size: 13px;
-    color: #FFFFFF;
-}
-
-.select-actived img {
-    position: absolute;
-    right: 9px;
-    top: 8px;
-}
-
-.model-bottom {
-    border-top: none;
-    background: #F1F1F1;
-    width: 100%;
-    height: 80px;
-    padding: 20px 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    /*border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;*/
-}
-
-.model-bottom>div {
-    float: left;
-    width: 25%;
-    text-align: center;
-    font-weight: bolder;
-    font-size: 14px;
-}
-
-.model-bottom>div:nth-child(4) {
-    text-align: right;
-}
-
-.model-bottom>div:nth-child(4) button {
-    font-size: 20px;
-    color: #FFFFFF;
-    background: #00AFE4;
-    border-radius: 4px;
-    border: none;
-    padding: 5px 25px;
-}
-
 
 /*打印小票*/
 
@@ -786,6 +701,7 @@ export default {
 .print-frame img {
     margin-left: 20px;
     margin-right: 10px;
+    vertical-align: middle;
 }
 
 .print-frame span {

@@ -17,6 +17,7 @@
   }
 
   html, body {
+    min-width: 1270px;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -152,5 +153,10 @@
 }
 .el-input{
   width: auto;
+}
+.noheader .el-dialog__header{
+    height: 0;
+    overflow: hidden;
+    padding: 0 !important;
 }
 </style>

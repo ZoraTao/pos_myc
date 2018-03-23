@@ -82,6 +82,51 @@ export default new Router({
         path: 'cashierList',
         name: 'cashierList',
         component: resolve => require(['../components/Retail/Cashier/CashierList/cashier-list.vue'], resolve)
+      },
+      {
+        path: 'cashierCu',
+        name: 'cashierCu',
+        component: resolve => require(['../components/Retail/Cashier/CashierCu/cashier-cu.vue'], resolve)
+      },
+      {
+        path: 'cashierModal',
+        name: 'cashierModal',
+        component: resolve => require(['../components/Retail/Cashier/cashierModal/cashier-modal.vue'], resolve)
+      }]
+    },
+    // 三级路由只拥有layout
+    {
+      path: '/receive',
+      component: resolve => require(['../components/Layout/Layout.vue'], resolve),
+      children: [{
+        path: 'receiveList',
+        name: 'receiveList',
+        component: resolve => require(['../components/Retail/Receive/ReceiveList/receive-list.vue'], resolve)
+      },
+      {
+        path: 'receiveModal',
+        name: 'receiveModal',
+        component: resolve => require(['../components/Retail/Receive/ReceiveModal/receive-modal.vue'], resolve)
+      }]
+    },
+    // 三级路由只拥有layout
+    {
+      path: '/pickup',
+      component: resolve => require(['../components/Layout/Layout.vue'], resolve),
+      children: [{
+        path: 'pickuplist',
+        name: 'pickuplist',
+        component: resolve => require(['../components/Retail/PickUp/PickUpList/pick-up-list.vue'], resolve)
+      }]
+    },
+    // 三级路由只拥有layout
+    {
+      path: '/serviceafter',
+      component: resolve => require(['../components/Layout/Layout.vue'], resolve),
+      children: [{
+        path: 'serviceafterlist',
+        name: 'serviceafterlist',
+        component: resolve => require(['../components/Retail/ServiceAfter/ServiceAfterList/service-after-list.vue'], resolve)
       }]
     },
     // 三级路由只拥有layout
