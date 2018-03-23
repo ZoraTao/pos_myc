@@ -20,13 +20,13 @@
           </div>
         </el-col>
         <el-col :span="5">
-          <div class="member-item">
+          <div class="member-item" @click="goComplaintsInquiry">
             <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hytousu.png"/>
             <span>会员投诉</span>
           </div>
         </el-col>
         <el-col :span="5">
-          <div class="member-item">
+          <div class="member-item" @click="goReturnVisit">
             <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hyhuifang.png"/>
             <span>会员回访</span>
           </div>
@@ -62,6 +62,22 @@
         this.$router.push({
           path: '/member/memberInquiry',
           name: 'member-inquiry',
+          params: {}
+        })
+      },
+      //会员投诉
+      goComplaintsInquiry: function () {
+        this.$router.push({
+          path: '/member/memberComplaints',
+          name: 'member-complaints',
+          params: {}
+        })
+      },
+      //会员回访
+      goReturnVisit: function () {
+        this.$router.push({
+          path: '/member/memberReturnVisit',
+          name: 'member-return-visit',
           params: {}
         })
       }

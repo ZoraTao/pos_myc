@@ -207,4 +207,7 @@
       background: #E6E6E6;
     }
   }
+  .el-table thead {
+    color: #555555;
+  }
 </style>

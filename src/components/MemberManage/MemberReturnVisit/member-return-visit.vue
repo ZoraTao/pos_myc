@@ -1,12 +1,17 @@
 <template>
   <div>
-    会员回访
+
   </div>
 </template>
 
 <script>
+
+
   export default {
     name: "member-return-visit",
+    component: {
+
+    },
     data() {
       return {}
     }

@@ -192,7 +192,6 @@
             background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page.sync="currentPage1"
             :page-size="100"
             layout="total, prev, pager, next"
             :total="1000">

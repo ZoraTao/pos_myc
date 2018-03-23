@@ -1,19 +1,15 @@
 <template>
-  <div>
 
-  </div>
 </template>
 
 <script>
-
   export default {
-    name: "member-complaints",
-    component: {
-
-    },
+    name: "check-ed",
+    component: {},
     data() {
       return {}
-    }
+    },
+    methods: {}
   }
 </script>
 

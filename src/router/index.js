@@ -144,6 +144,12 @@ export default new Router({
         name: 'inventory-check-index',
         component: resolve => require(['../components/CommodityStocks/inventory-check/inventory-check-index'], resolve)
       },
+        //开始盘点
+        {
+          path: 'checkInventory',
+          name: 'check-inventory',
+          component: resolve => require(['../components/CommodityStocks/inventory-check/check-inventory'], resolve)
+        },
         //临时盘点
         {
           path: 'inventory-temporary',
