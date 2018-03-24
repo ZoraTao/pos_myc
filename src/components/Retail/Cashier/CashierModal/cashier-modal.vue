@@ -116,8 +116,6 @@ export default {
   data () {
     return { 
     }
-  },
-  methods:{
   }
 }
 </script>

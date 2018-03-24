@@ -50,36 +50,41 @@ export default new Router({
     {
       path: '/bills',
       component: resolve => require(['../components/Layout/Layout.vue'], resolve),
-      children: [{
-        path: 'timeoutBill',
-        name: 'timeoutBill',
-        component: resolve => require(['../components/Bills/timeoutBill/timeout-bill.vue'], resolve)
-      },
-      {
-        path: 'aboutExpireClBill',
-        name: 'timeoutBill',
-        component: resolve => require(['../components/Bills/aboutExpireClBill/about-expireCl-bill.vue'], resolve)
-      },
-      {
-        path: 'optometryAppointmentBill',
-        name: 'optometryAppointmentBill',
-        component: resolve => require(['../components/Bills/optometryAppointmentBill/optometry-appointment-bill.vue'], resolve)
-      },
-      {
-        path: 'aptitudeDue',
-        name: 'aptitudeDue',
-        component: resolve => require(['../components/Bills/aptitudeDue/aptitudeDue.vue'], resolve)
-      },
-      {
-        path: 'optometryOrderList',
-        name: 'optometryOrderList',
-        component: resolve => require(['../components/Bills/optometryOrder/optometryOrderList/optometry-order-list.vue'], resolve)
-      },
-      {
-        path: 'optometryOrderCu',
-        name: 'optometryOrderCu',
-        component: resolve => require(['../components/Bills/optometryOrder/optometryOrderCu/optometry-order-cu.vue'], resolve)
-      }]
+      children: [
+        {
+          path: 'billing',
+          name: 'billing',
+          component: resolve => require(['../components/Bills/billing/billing.vue'], resolve)
+        }, {
+          path: 'timeoutBill',
+          name: 'timeoutBill',
+          component: resolve => require(['../components/Bills/timeoutBill/timeout-bill.vue'], resolve)
+        },
+        {
+          path: 'aboutExpireClBill',
+          name: 'timeoutBill',
+          component: resolve => require(['../components/Bills/aboutExpireClBill/about-expireCl-bill.vue'], resolve)
+        },
+        {
+          path: 'optometryAppointmentBill',
+          name: 'optometryAppointmentBill',
+          component: resolve => require(['../components/Bills/optometryAppointmentBill/optometry-appointment-bill.vue'], resolve)
+        },
+        {
+          path: 'aptitudeDue',
+          name: 'aptitudeDue',
+          component: resolve => require(['../components/Bills/aptitudeDue/aptitudeDue.vue'], resolve)
+        },
+        {
+          path: 'optometryOrderList',
+          name: 'optometryOrderList',
+          component: resolve => require(['../components/Bills/optometryOrder/optometryOrderList/optometry-order-list.vue'], resolve)
+        },
+        {
+          path: 'optometryOrderCu',
+          name: 'optometryOrderCu',
+          component: resolve => require(['../components/Bills/optometryOrder/optometryOrderCu/optometry-order-cu.vue'], resolve)
+        }]
     },
     // 三级路由只拥有layout
     {
@@ -201,7 +206,7 @@ export default new Router({
           name: 'inventory-check-temporary',
           component: resolve => require(['../components/CommodityStocks/inventory-temporary/inventory-check-temporary'], resolve)
         },
-        //添加临时盘点单add-temporary-inventory
+        // 添加临时盘点单add-temporary-inventory
         {
           path: 'add-temporary',
           name: 'add-temporary-inventory',

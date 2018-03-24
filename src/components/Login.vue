@@ -98,6 +98,7 @@ export default {
     .loginFormContent {
       margin: 0 auto;
       overflow: hidden;
+      text-align: center;
       h1 {
         margin-top: 54px;
         font-size: 32px;
