@@ -59,7 +59,7 @@ export default {
         },
         {
           name: "商品库存",
-          url: "/base",
+          url: "/base/stocksIndex",
           imgSrc:
             "http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_shangpinkc.png",
           wimgSrc:

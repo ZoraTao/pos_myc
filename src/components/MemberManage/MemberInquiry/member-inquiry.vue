@@ -126,7 +126,7 @@
     </el-row>
     <!--/无数据时缺省显示-->
     <!--有数据时显示-->
-    <el-row class="content-info-box">
+    <el-row class="inquiry-row content-info-box">
       <el-col :span="24" class="table-wrap">
         <!--多个数据时显示-->
         <el-table
@@ -178,10 +178,10 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="100">
+            width="150">
             <template slot-scope="scope">
-              <el-button @click="checkDetail(scope.row)" type="text" size="small">查看</el-button>
-              <el-button type="text" size="small">编辑</el-button>
+              <a href="javascript:;" @click="checkDetail(scope.row)" type="text" size="small">查看</a>
+              <a href="javascript:;" type="text" size="small" class="mgl10">编辑</a>
             </template>
           </el-table-column>
         </el-table>

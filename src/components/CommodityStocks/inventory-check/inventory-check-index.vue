@@ -14,7 +14,7 @@
             <el-button type="primary" plain @click="onSubmit">查询</el-button>
           </el-form-item>
           <el-form-item>
-            <el-checkbox v-model="formInline._check">只显示不平纪录</el-checkbox>
+            <el-checkbox v-model="formInline._check"><span class="am-ft-12">只显示不平纪录</span></el-checkbox>
           </el-form-item>
         </el-col>
       </el-form>

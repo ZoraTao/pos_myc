@@ -201,6 +201,12 @@ export default new Router({
           name: 'inventory-check-temporary',
           component: resolve => require(['../components/CommodityStocks/inventory-temporary/inventory-check-temporary'], resolve)
         },
+        //添加临时盘点单add-temporary-inventory
+        {
+          path: 'add-temporary',
+          name: 'add-temporary-inventory',
+          component: resolve => require(['../components/CommodityStocks/inventory-temporary/add-temporary-inventory'], resolve)
+        },
         // 调拨单
         {
           path: 'transfer-order',

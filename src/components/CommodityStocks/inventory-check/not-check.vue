@@ -49,6 +49,13 @@
         </template>
       </el-table-column>
     </el-table>
+    <!--分页-->
+    <el-pagination
+      background
+      class="am-ft-right mgt10"
+      layout=" prev, pager, next"
+      :total="10">
+    </el-pagination>
   </div>
 </template>
 
