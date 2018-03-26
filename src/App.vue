@@ -216,4 +216,12 @@
     overflow: hidden;
     padding: 0 !important;
 }
+  .input_num{
+    .el-input__inner{
+      padding-right: 0 !important;
+    }
+  }
+  .el-tabs--border-card>.el-tabs__header{
+    background-color: #f4f4f5;
+  }
 </style>

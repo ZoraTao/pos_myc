@@ -261,9 +261,53 @@ $radius3: $h3 solid #E1E1E1;
 .mgr30{
   margin-right: $h30;
 }
-
+.pt0{
+  padding-top: 0;
+}
 .pt10{
-    padding-top: 10px;
+    padding-top: $h10;
+}
+.pt15{
+  padding-top: $h15;
+}
+.pt20{
+  padding-top: $h20;
+}
+.pb0{
+  padding-bottom: 0;
+}
+.pb10{
+  padding-bottom: $h10;
+}
+.pb15{
+  padding-bottom: $h15;
+}
+.pb20{
+  padding-bottom: $h20;
+}
+.pl0{
+  padding-left: 0;
+}
+.pl10{
+  padding-left: $h10;
+}
+.pl15{
+  padding-left: $h15;
+}
+.pl20{
+  padding-left: $h20;
+}
+.pr0{
+  padding-right: 0;
+}
+.pr10{
+  padding-right: $h10;
+}
+.pr15{
+  padding-right: $h15;
+}
+.pr20{
+  padding-right: $h20;
 }
 
 .before-none {

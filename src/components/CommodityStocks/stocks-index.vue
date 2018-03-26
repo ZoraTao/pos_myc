@@ -9,31 +9,31 @@
       <el-row :gutter="20">
         <el-col :span="5">
           <div class="member-item" @click="goStocksInquiry">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_xzhuiyuan.png"/>
+            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_kcchaxun.png"/>
             <span>库存查询</span>
           </div>
         </el-col>
         <el-col :span="5">
           <div class="member-item" @click="goCheckInquiry">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hychaxun.png"/>
+            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_kcpandian.png"/>
             <span>盘点</span>
           </div>
         </el-col>
         <el-col :span="5">
           <div class="member-item" @click="goTemporaryInvent">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hytousu.png"/>
+            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_linshipd.png"/>
             <span>临时盘点</span>
           </div>
         </el-col>
         <el-col :span="5">
           <div class="member-item" @click="goTransferOrder">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hyhuifang.png"/>
+            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_diaobod.png"/>
             <span>调拨单</span>
           </div>
         </el-col>
         <el-col :span="4">
           <div class="member-item">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hyquanyi.png"/>
+            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_shendiaod.png"/>
             <span>申调单</span>
           </div>
         </el-col>

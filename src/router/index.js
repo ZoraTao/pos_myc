@@ -62,7 +62,7 @@ export default new Router({
         },
         {
           path: 'aboutExpireClBill',
-          name: 'timeoutBill',
+          name: 'about-expireCl-bill',
           component: resolve => require(['../components/Bills/aboutExpireClBill/about-expireCl-bill.vue'], resolve)
         },
         {
@@ -206,7 +206,7 @@ export default new Router({
           name: 'inventory-check-temporary',
           component: resolve => require(['../components/CommodityStocks/inventory-temporary/inventory-check-temporary'], resolve)
         },
-        // 添加临时盘点单add-temporary-inventory
+        // 添加临时盘点单
         {
           path: 'add-temporary',
           name: 'add-temporary-inventory',
@@ -217,6 +217,18 @@ export default new Router({
           path: 'transfer-order',
           name: 'transfer-order-index',
           component: resolve => require(['../components/CommodityStocks/transfer-order/transfer-order-index'], resolve)
+        },
+        // 新增调拨单
+        {
+          path: 'transfer-order-add',
+          name: 'transfer-order-add',
+          component: resolve => require(['../components/CommodityStocks/transfer-order/transfer-order-add'], resolve)
+        },
+        // 调拨单详情
+        {
+          path: 'transfer-order-detail',
+          name: 'transfer-order-detail',
+          component: resolve => require(['../components/CommodityStocks/transfer-order/transfer-order-detail'], resolve)
         },
         // 申调单
         {
