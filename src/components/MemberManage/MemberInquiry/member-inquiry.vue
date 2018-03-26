@@ -250,8 +250,11 @@
           h: '1599',
           i: '2017-12-14 12:26:26',
           j: '毛源昌杭州西湖店'
-        }]
+        }],
       }
+    },
+    created: function() {
+      this.getMemberList()
     },
     methods: {
       onSubmit() {
@@ -269,11 +272,7 @@
       },
       //新增会员
       goMemberAdd: function () {
-        // this.$router.push({
-        //   path: '/member/memberAdd',
-        //   name: 'member-add',
-        //   params: {}
-        // })
+
       },
       //查看详情
       checkDetail(row) {
@@ -290,8 +289,26 @@
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
+      },
+      //查询会员列表
+      getMemberList(){
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/member-api/member/getMemberCount',
+          method: 'post',
+          params: {
+            jsonObject: {}
+          }
+        })
+        .then(function (response) {
+          console.info(response.data)
+        })
+        .catch(function (error) {
+          console.info(error)
+        })
       }
-    }
+    },
+    events: { }
   }
 </script>
 
