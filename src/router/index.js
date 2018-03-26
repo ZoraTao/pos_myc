@@ -99,11 +99,6 @@ export default new Router({
         path: 'cashierCu',
         name: 'cashierCu',
         component: resolve => require(['../components/Retail/Cashier/CashierCu/cashier-cu.vue'], resolve)
-      },
-      {
-        path: 'cashierModal',
-        name: 'cashierModal',
-        component: resolve => require(['../components/Retail/Cashier/cashierModal/cashier-modal.vue'], resolve)
       }]
     },
     // 三级路由只拥有layout

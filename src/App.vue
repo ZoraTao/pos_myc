@@ -125,12 +125,12 @@
     background: #B3E3F6 !important;
 }
 .el-dialog__header {
-    background: url(http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/modal-top.2ccc913.png) no-repeat;
+    background: url(http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/modal-top.png) no-repeat;
     padding: 0;
     padding-bottom: 7px !important;
     padding-top: 7px !important;
     border-bottom: none !important;
-    background-size: 100%;
+    background-size: cover;
     color: #fff;
     text-align: left;
     .el-dialog__title{

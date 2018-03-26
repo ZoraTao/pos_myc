@@ -226,7 +226,7 @@
         <div class="addMember borderfff">
             <div class="memberTop">
                 <label>会员</label>
-                <el-button type="primary">添加会员</el-button>
+                <el-button type="primary" @click="showSelectMember=true">添加会员</el-button>
             </div>
             <div class="memberBottom">
                 <div class="memberName">
@@ -270,7 +270,7 @@
         <div class="eyeglassBills borderfff mgt10">
             <div class="eyeglassTop">
                 <label>验光单</label>
-                <el-button type="primary">新增</el-button>
+                <el-button type="primary" @click="isOptometryDialogVisible=true">新增</el-button>
             </div>            
             <div class="selectEyeglass">
                 <el-select size="mini" v-model="value" placeholder="请选择">
@@ -328,10 +328,44 @@
             </div>
         </div>
     </div>
+    <el-dialog
+        custom-class="noheader am-ft-center"
+        title="提示"
+        :visible.sync="isOptometryDialogVisible"
+        width="30%"
+        center>
+        <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">调入该会员最近一次的验光单？</h4>
+        <span>2017-10-11 15:10:45 验光单号：0001545463476</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="isOptometryDialogVisible = false;showNewOptometry=true">不,我要新增</el-button>
+            <el-button type="primary" @click="isOptometryDialogVisible = false">调入</el-button>
+        </span>
+    </el-dialog>
+    <el-dialog title="选择会员 (23)" :visible.sync="showSelectMember" width="62.5%">
+        <SelectMemberModal></SelectMemberModal>
+    </el-dialog>
+    <el-dialog title="新增验光单" :visible.sync="showNewOptometry" width="900px">
+        <NewOptometryModal></NewOptometryModal>
+        <div class="packageDetailButtonGroup">
+            <el-button @click="centerDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="centerDialogVisible = false">保 存</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog title="选择右镜片" :visible.sync="showSelectRH">
+        <SelectRHModal></SelectRHModal>
+    </el-dialog>
+    <el-dialog title="选择右镜片" :visible.sync="showSelectShop" width="700px">
+        <SelectShopModal></SelectShopModal>
+    </el-dialog>
+    
 </div>
 </template>
 
 <script>
+import SelectMemberModal from '../../PublicModal/SelectMember/select-member-modal.vue'
+import NewOptometryModal from '../../PublicModal/NewOptometry/new-optometry-modal.vue'
+import SelectRHModal from '../../PublicModal/SelectRH/selectRH-modal.vue'
+import SelectShopModal from '../../PublicModal/SelectShop/selectShop-modal.vue'
     export default {
         name: "billing",
         data() {
@@ -352,6 +386,11 @@
                     value: "选项5",
                     label: "北京烤鸭"
                 }],
+                showSelectShop:true,
+                showSelectRH:false,
+                showNewOptometry:false,
+                isOptometryDialogVisible:false,
+                showSelectMember:false,
                 value: "",
                 tableData:[
                 {
@@ -436,6 +475,12 @@
                     }
                 ]
             }
+        },
+        components:{
+            SelectMemberModal,
+            NewOptometryModal,
+            SelectRHModal,
+            SelectShopModal
         }
     };
 </script>
@@ -464,6 +509,11 @@
 }
 .borderNone{
     border: none;
+}
+.am-ft-center{
+    .el-dialog__body{
+        text-align: center;
+    }
 }
 .content_box{
     height: calc(100% - 30px) !important;
@@ -986,64 +1036,6 @@
         }        
     }
 }
-.selectMember{
-    .modal-body{
-        padding: 0 !important;
-    }
-    .ant-tabs-nav-container{
-        height: auto !important;
-        padding: 10px 15px 0 15px;
-        background: #efefef;
-    }
-    .ant-tabs-tabpane{
-        padding: 0 15px;
-        background: #fff;
-    }
-    .modal-dialog{
-        margin: 10% auto 0 auto !important;
-        width: auto;
-        min-width: 600px;
-        max-width: 62.5%;
-    }
-    .modal-body .ant-table-wrapper {
-        max-height: inherit !important;
-    }
-    .ant-tabs-bar{
-        border:none;   
-        .ant-tabs-tab{
-            font-size: 12px;
-            color: #666666;
-            padding: 10px 30px;
-            border-radius: 0 !important;
-            background: none !important;
-            border:none !important;
-            font-weight: bold;
-        }
-        .ant-tabs-tab-active{
-            font-size: 12px;
-            color: #00AFE4 !important;
-            background: #fff !important;
-        }
-    }
-    .ant-table-content{
-        background: #fff;
-    }
-    th{
-        background: #fff;
-        text-align: center;
-        padding: 7px 8px !important;
-        border-bottom: 1px solid #DDDDDD;
-        font-weight: bold;
-        color: #555;
-    }
-    td{
-        text-align: center;
-        padding: 8.5px 8px;
-    }
-    tr:nth-of-type(even){
-      background: rgba(246,246,246,0.50);  
-    }  
-}
 .oldGlassMess{
     .oldGlassMessBox{
         padding: 10px;
@@ -1145,20 +1137,6 @@
     bottom: 24px;
     left: 30px;
 }
-
-#selectRH,#selectShop{
-    .w150{
-        width: 150px;
-        .ant-select{
-            width: 100%;
-            margin: 10px 20px;
-        }
-    }
-    .ant-table-wrapper{
-        padding:0 20px;
-    }
-}
-
 #selectShop{
     .modalFormGroup{
         padding: 10px;
@@ -1231,60 +1209,6 @@
 }
 
 .newOptometry,.reprint{
-    nz-input{
-        padding: 0 10px;
-    }
-    .ant-modal-body{
-        padding: 16px 24px;
-    }
-    .ant-modal-header{
-        padding: 0;
-    }
-    .ant-modal-content{
-        background: #f8f8f8;
-    }
-    .newOptometryPhone{
-        overflow: hidden;
-        padding: 10px 0;
-        border-bottom: 1px dashed #d8d8d8;
-        line-height: 29px;
-        div{
-            margin-right: 10px;
-        }
-        span,label,nz-input{
-            float: left;
-        }
-        label{
-            margin: 0;
-            &:not(:nth-of-type(1)){
-                margin-left: 30px;
-            }
-        }
-        nz-input{
-            width: 100px;
-        }
-        .nopText{
-            float: left;
-            color: #333333;
-            margin-left: 5px;
-        }
-    }
-    .newOptometryOptician{
-        padding: 14px 10px;
-        text-align: left;
-        label{
-            margin: 0;
-        }
-    }
-    .optometryMemo{
-        overflow: hidden;
-        padding-top: 14px;
-        li:first-child{
-            font-size: 12px;
-            color: #666666;
-            margin-top: 2px;
-        }
-    }
     .packageDetailButtonGroup{ 
         padding: 10px;
         background: #EEEEEE;

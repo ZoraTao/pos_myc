@@ -34,7 +34,7 @@ export default {
             },
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_kaidan.png',
-            'link':'/myc/bill/billing',
+            'link':'/bills/billing',
             'line':true,
             'text':'开单'
             },
