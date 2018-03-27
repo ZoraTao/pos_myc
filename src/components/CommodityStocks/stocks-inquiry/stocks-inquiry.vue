@@ -49,9 +49,13 @@
               </el-select>
             </el-form-item>
             <el-form-item label="仓库：">
-              <el-select v-model="formInline.select1" placeholder="请选择" style="width: 100px">
-                <el-option label="1" value="1"></el-option>
-                <el-option label="2" value="2"></el-option>
+              <el-select v-model="formInline.warehId" placeholder="请选择" style="width: 100px">
+                <el-option
+                  v-for="item in warehList"
+                  :key="item.warehId"
+                  :label="item.warehName"
+                  :value="item.warehId">
+                </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="仓库大类：">
@@ -131,16 +135,21 @@
     },
     data() {
       return {
+        warehList: [],//仓库列表
         input1: '',
         normalsearch: true,
         moresearch: false,
         formInline: {
+          warehId: '',
           select1: '',
           select2: '',
           date1: '',
           date2: '',
-        },
+        }
       }
+    },
+    created: function () {
+      this.getWarehouses()
     },
     methods: {
       onSubmit() {
@@ -155,6 +164,26 @@
           this.normalsearch = false;
           this.moresearch = true;
         }
+      },
+      //获取仓库列表
+      getWarehouses(){
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/wareh/list',
+          method: 'post',
+          params: {
+            jsonObject: {},
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+        .then(function (response) {
+          that.warehList = response.data.data.warehList;
+        })
+        .catch(function (error) {
+          console.info(error)
+        })
       }
     }
   }

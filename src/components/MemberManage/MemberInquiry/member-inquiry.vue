@@ -254,7 +254,7 @@
       }
     },
     created: function() {
-      this.getMemberList()
+      this.getMemberInfo()
     },
     methods: {
       onSubmit() {
@@ -291,7 +291,7 @@
         console.log(`当前页: ${val}`);
       },
       //查询会员列表
-      getMemberList(){
+      getMemberInfo(){
         var that = this;
         that.$axios({
           url: 'http://myc.qineasy.cn/member-api/member/getMemberCount',
@@ -307,8 +307,7 @@
           console.info(error)
         })
       }
-    },
-    events: { }
+    }
   }
 </script>
 
