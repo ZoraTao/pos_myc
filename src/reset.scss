@@ -327,11 +327,11 @@ $radius3: $h3 solid #E1E1E1;
 }
 
 .fn-left {
-    float: left;
+    float: left !important;
 }
 
 .fn-right {
-    float: right;
+    float: right !important;
 }
 .el-form-item__content{
   line-height: 36px;

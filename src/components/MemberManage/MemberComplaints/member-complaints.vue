@@ -116,20 +116,26 @@
             :total="1000">
             </el-pagination>
         </div>
-        <!--验光单一条数据详情-->
-        <!-- <optometryOrderCu v-if="searchModel=='neikami'"></optometryOrderCu> -->
     </div>
+    <el-dialog
+      title="提示"
+      :visible.sync="isShow"
+      width="900px">
+      <newComplaintsModal></newComplaintsModal>
+    </el-dialog>
+
 </div>
 </template>
 
 <script>
-// import optometryOrderCu from '../optometryOrderCu/optometry-order-cu.vue'
+import newComplaintsModal from '../../PublicModal/NewComplaints/new-complaints-modal.vue'
     export default {
         name: "member-complaints",
         data() {
             return {
                 showDiv:"2",
                 searchModel:"",
+                isShow:true,
                 options:[{
                   value: '选项1',
                   label: '黄金糕'
@@ -150,7 +156,7 @@
             };
         },
         components:{
-            // optometryOrderCu
+            newComplaintsModal
         },
         created: function() {
             for (var i = 0; i < 10; i++) {

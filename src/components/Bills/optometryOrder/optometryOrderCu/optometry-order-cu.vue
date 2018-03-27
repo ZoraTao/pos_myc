@@ -334,12 +334,12 @@
 }
 
 .glass_combination_table {
-    width: 850px;
+    width: 870px;
     /* height: 400px; */
 }
 
 .glass_table_head {
-    width: 850px;
+    width: 870px;
     height: 30px;
     line-height: 30px;
     font-weight: bold;
