@@ -357,6 +357,29 @@
     <el-dialog title="选择右镜片" :visible.sync="showSelectShop" width="700px">
         <SelectShopModal></SelectShopModal>
     </el-dialog>
+    <el-dialog title="取单（13）" :visible.sync="showGetBill" width="700px">
+        <GetBill></GetBill>
+    </el-dialog>
+    <el-dialog
+        custom-class="noheader am-ft-center"
+        title="提示"
+        :visible.sync="isNotMember"
+        width="30%"
+        center>
+        <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">此号码非会员，是否添加会员？</h4>
+        <span>15703416754</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="isNotMember = false;addMember=true">取消</el-button>
+            <el-button type="primary" @click="isNotMember = false">添加会员</el-button>
+        </span>
+    </el-dialog>
+    <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
+        <AddMember></AddMember>
+        <div class="packageDetailButtonGroup">
+            <el-button @click="addMember = false">取消</el-button>
+            <el-button type="primary" @click="addMember = false">确定</el-button>
+        </div>
+    </el-dialog>
     
 </div>
 </template>
@@ -366,6 +389,8 @@ import SelectMemberModal from '../../PublicModal/SelectMember/select-member-moda
 import NewOptometryModal from '../../PublicModal/NewOptometry/new-optometry-modal.vue'
 import SelectRHModal from '../../PublicModal/SelectRH/selectRH-modal.vue'
 import SelectShopModal from '../../PublicModal/SelectShop/selectShop-modal.vue'
+import GetBill from '../../PublicModal/GetBill/get-bill-modal.vue'
+import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
     export default {
         name: "billing",
         data() {
@@ -386,7 +411,10 @@ import SelectShopModal from '../../PublicModal/SelectShop/selectShop-modal.vue'
                     value: "选项5",
                     label: "北京烤鸭"
                 }],
-                showSelectShop:true,
+                addMember:true,
+                isNotMember:true,
+                showGetBill:false,
+                showSelectShop:false,
                 showSelectRH:false,
                 showNewOptometry:false,
                 isOptometryDialogVisible:false,
@@ -480,13 +508,30 @@ import SelectShopModal from '../../PublicModal/SelectShop/selectShop-modal.vue'
             SelectMemberModal,
             NewOptometryModal,
             SelectRHModal,
-            SelectShopModal
+            SelectShopModal,
+            GetBill,
+            AddMember
         }
     };
 </script>
 
 <style lang="scss">
     @import "../../../reset";
+.addMember{
+    .el-dialog__body{
+        padding:0;
+    }
+}
+.noheader{    
+    .el-dialog__body{
+        padding: 0;
+        padding-top: 40px;
+        padding-bottom: 10px;
+    }
+    .el-dialog__footer{
+      padding-bottom: 40px;
+    }
+}
 .borderfff{
     border:2px solid #fff;
 }
@@ -1759,118 +1804,7 @@ import SelectShopModal from '../../PublicModal/SelectShop/selectShop-modal.vue'
     }
 }
 
-#getBills{
-    .getBillsContent{
-        padding: 2px 20px;
-        .getBillsItem{
-            height: 73px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            .memberBillInfo{
-                width: calc(100% - 80px);
-                float: left;
-                padding: 12px 0 12px 24px;
-                div{
-                    overflow: hidden;
-                    width: 100%;
-                    b{
-                        color: #000;
-                    }
-                    span{
-                        float: left;
-                        color: #666666;
-                    }
-                    h5{
-                        font-size: 12px;
-                        float: right;
-                        color: #666666;
-                    }
-                }
-            }
-            .getBillButton{
-                width: 80px;
-                float: left;
-                text-align: center;
-                font-size: 12px;
-                color: #00A2DE;
-            }
-            &:hover{
-                background: #E8F6FC;
-            }
-        }
-    }
-}
 
-#addMember{
-    .addMemberContent{
-        padding-top: 20px;
-        .addMemberRow{
-            padding: 20px;
-            padding-top: 0;
-            width: 100%;
-            overflow: hidden;
-            .addMemberGroup{
-                width: 100%;
-                overflow: hidden;
-                .addMemberItem{
-                    height: 28px;
-                    line-height: 28px;
-                    overflow: hidden;
-                    float: left;
-                    .addMemberLabel{
-                        width: 80px;
-                        float: left;
-                        text-align: right;
-                        margin-right: 6px;
-                        p{
-                            font-size: 12px;
-                            color: #666666;
-                            i{
-                                vertical-align: middle;
-                                margin-right: 3px;
-                            }
-                        }
-                    }
-                    .addMemberInput{
-                        float: left;
-                        font-size: 12px;
-                        color: #333333;
-                        span{
-                            color: #666666;
-                            font-weight: 400;
-                        }
-                    }
-                    .addMemberInfo{
-                        float: left;
-                        font-size: 12px;
-                        color: #AAAAAA;
-                        margin-left: 10px;
-                    }
-                    .cityInput{
-                        margin-right: 5px;
-                    }
-                }
-            }
-        }
-        .packageDetailButtonGroup{
-            background: #F4F4F4;
-            padding: 10px 15px;
-            height: 64px;
-            line-height: 44px;
-            font-size: 12px;
-            color: #666666;
-            button{
-                width: 90px;
-                height: 30px;
-                line-height: 30px;
-                margin-left: 10px;
-                margin-top:10px;
-            }
-        }
-    }
-}
 
 
 .loginEndorserButton{

@@ -1,5 +1,5 @@
 <template>
-<div class="selectMember pb10">
+<div class="selectMember">
 <!--body-top-->
 <div class="clearfix modal-content-top">
     <el-tabs type="border-card" v-model="activeName">

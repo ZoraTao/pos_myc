@@ -149,7 +149,7 @@
     }
 }
 .el-dialog__body{
-  padding: 15px 0;
+  padding: 0;
 }
 .el-input{
   width: auto;
@@ -225,4 +225,24 @@
   .el-tabs--border-card>.el-tabs__header{
     background-color: #f4f4f5;
   }
+
+.packageDetailButtonGroup{ 
+    padding:20px 10px;
+    background: #EEEEEE;
+    text-align: right;
+    button{
+        border-radius: 4px;
+        width: 90px;
+        height: 30px;
+        padding: 0;
+        &:first-child{
+            
+        }
+        &:last-child{
+            background: #00AFE4;
+            border: none;
+            margin-right: 20px;
+        }
+    }
+}
 </style>

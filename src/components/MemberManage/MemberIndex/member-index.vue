@@ -8,7 +8,7 @@
     <div class="member-menus">
       <el-row :gutter="20">
         <el-col :span="5">
-          <div class="member-item" @click="goMemberAdd">
+          <div class="member-item" @click="addMember=true">
             <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_xzhuiyuan.png"/>
             <span>新增会员</span>
           </div>
@@ -39,14 +39,24 @@
         </el-col>
       </el-row>
     </div>
+    <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
+      <AddMember></AddMember>
+      <div class="packageDetailButtonGroup">
+          <el-button @click="addMember = false">取消</el-button>
+          <el-button type="primary" @click="addMember = false">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
   export default {
     name: "memberIndex",
     data() {
-      return {}
+      return {
+        addMember:false
+      }
     },
     methods: {
       //新增会员
@@ -81,6 +91,9 @@
           params: {}
         })
       }
+    },
+    components:{
+      AddMember
     }
 
   }

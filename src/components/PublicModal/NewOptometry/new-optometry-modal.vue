@@ -548,22 +548,4 @@ label {
         text-align: center;
     }
 }
-
-.packageDetailButtonGroup{ 
-    padding:20px 10px;
-    background: #EEEEEE;
-    text-align: right;
-    button{
-        border-radius: 4px;
-        width: 90px;
-        &:first-child{
-            
-        }
-        &:last-child{
-            background: #00AFE4;
-            border: none;
-            margin-right: 20px;
-        }
-    }
-}
 </style>
