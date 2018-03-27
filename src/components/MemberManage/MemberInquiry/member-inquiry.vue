@@ -98,7 +98,7 @@
         </el-form>
       </el-col>
       <el-col :span="2" class="fn-right mgr20">
-        <el-button type="primary" @click="goMemberAdd">+&nbsp;新增会员</el-button>
+        <el-button type="primary" @click="memberAdd">+&nbsp;新增会员</el-button>
       </el-col>
     </el-row>
 
@@ -196,19 +196,31 @@
 
     </el-row>
     <!--/有数据时显示-->
+
+    <!--新增会员弹窗-->
+    <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
+      <AddMember></AddMember>
+      <div class="packageDetailButtonGroup">
+        <el-button @click="addMember = false">取消</el-button>
+        <el-button type="primary" @click="addMember = false">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import MemberDetail from './member-detail.vue'
+  import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
 
   export default {
     name: "member-inquiry",
     components: {
-      MemberDetail
+      MemberDetail,
+      AddMember
     },
     data() {
       return {
+        addMember: false,
         input1: '',
         normalsearch: true,
         moresearch: false,
@@ -242,8 +254,8 @@
         }
       },
       //新增会员
-      goMemberAdd: function () {
-
+      memberAdd() {
+        this.addMember = true;
       },
       //查看详情
       checkDetail(data) {
