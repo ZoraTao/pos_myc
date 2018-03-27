@@ -2,21 +2,37 @@
 <div class="newOptometry">
     <div class="textCenter newOptometryBody">
         <div class="newOptometryPhone">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-                <el-form-item label="投诉人手机号:" prop="name">
-                    <el-input v-model="ruleForm.name"></el-input>
-                </el-form-item>
-                <el-form-item label="零售单号:" class="fn-right">
-                    <el-select v-model="value" placeholder="请选择">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
+            <div class="complainsMemberInfo">
+                <div class="cmInfoItem">
+                    <label>投诉人：</label>
+                    <p>张三三</p>
+                    <p>男</p>
+                </div>
+                <div class="cmInfoItem">
+                    <label>手机 :</label>
+                    <p>16601010101</p>
+                </div>
+                <div class="cmInfoItem">
+                    <label>联系地址 :</label>
+                    <p>浙江省杭州市西湖区文二西路111111号</p>
+                </div>
+                <div class="cmInfoItem fn-right">
+                    <label>投诉类型：</label>
+                    <p>上门投诉</p>
+                </div>
+                <div class="cmInfoItem fn-right">
+                    <label>投诉日期 :</label>
+                    <p>20171206</p>
+                </div>
+                <div class="cmInfoItem">
+                    <label>投诉说明：</label>
+                    <p>该会员态度强硬，需要尽快处理，有处理结果后马上打电话告知</p>
+                </div>
+                <div class="cmInfoItem fn-right">
+                    <label>接待人员：</label>
+                    <p>王二</p>
+                </div>
+            </div>
         </div>
         <div class="grayTable">
             <el-table
@@ -47,52 +63,7 @@
             </el-table>
         </div>
        <div class="complaintsType">
-           <h5>请选择顾客的投诉类别</h5>
-           <div class="ctBox">
-               <div class="ctLeft">
-                   <div class="ctGroup">
-                       <p>服务投诉</p>
-                   </div>
-                   <div class="ctGroup">
-                       <p>质量问题</p>
-                   </div>
-               </div>
-               <div class="ctRight">
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-               </div>
-           </div>
+           <h5>请填写对应投诉的处理意见</h5>
        </div>
         <div class="whiteTable">
             <el-table
@@ -101,42 +72,34 @@
                 style="width: 100%">
                 <el-table-column
                     prop="memberCard"
-                    label="商品名称"
-                    width="500">
+                    label="投诉类别"
+                    width="120">
                 </el-table-column>
                 <el-table-column
                     prop="memberName"
-                    label="数量">
+                    label="负责人"
+                    width="120">
                 </el-table-column>
                 <el-table-column
                     prop="phone"
-                    label="原单价">
+                    label="原因"
+                    width="120">
                 </el-table-column>
                 <el-table-column
                     prop="age"
-                    label="折扣">
-                </el-table-column>
-                <el-table-column
-                    prop="sex"
-                    label="实售单价">
+                    align="center"
+                    label="处理意见"
+                    width="450">
+                    <template slot-scope="scope">
+                        <el-input class="w100" v-model="scope.row.age" placeholder="请输入内容"></el-input>
+                    </template>
                 </el-table-column>
             </el-table>
         </div>
         <ul class="optometryMemo">
             <li class="fn-left">
-                <div class="labelInput">
-                    <label class="mgr10">验光来源：</label>
-                    <el-select style="width:120px" v-model="value" placeholder="请选择">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>
                 <div class="labelInput mgl30">
-                    <label class="mgr10">验光师：</label>
+                    <label class="mgr10">处理人员 :</label>
                     <el-select style="width:120px" v-model="value" placeholder="请选择">
                         <el-option
                         v-for="item in options"
@@ -147,22 +110,12 @@
                     </el-select>
                 </div>   
                 <div class="labelInput mgl30">
-                    <label class="mgr10">验光日期 :</label>
+                    <label class="mgr10">处理日期 :</label>
                     <el-date-picker
                     type="date"
                     placeholder="选择日期">
                     </el-date-picker>
                 </div>                           
-            </li>
-            <li class="fn-left">
-                <div class="labelInput w100">
-                    <label class="mgr10">验光来源：</label>
-                    <el-input
-                        type="textarea"
-                        :rows="2"
-                        placeholder="请输入内容">
-                    </el-input>
-                </div>
             </li>
         </ul>   
     </div>
@@ -172,7 +125,7 @@
 <script>
 
 export default {
-  name: 'NewComplaintsModal',
+  name: 'ComplainsBillModal',
   data () {
     return { 
         options: [],
@@ -268,6 +221,25 @@ label {
                 }
             }
         }
+        .complainsMemberInfo{
+            overflow: hidden;
+            .cmInfoItem{
+                float: left;
+                font-size: 12px;
+                color: #666666;
+                margin-right: 10px;
+                label{
+                    float: left;
+                    margin-right: 10px;
+                }
+                p{
+                    float: left;
+                    &:nth-of-type(2){
+                        margin-left: 10px;
+                    }
+                }
+            }
+        }
         label{
             margin-right: 10px;
         }
@@ -289,10 +261,10 @@ label {
         }
     }
     .optometryMemo{
-        padding: 0 15px;
-        background: #eee;
+        padding: 15px;
+        background: #fff;
         overflow: hidden;
-        padding-top: 14px;
+        border-top: 1px solid #CCCCCC;
         li{
             width: 100%;
         }
@@ -304,6 +276,8 @@ label {
     }
 }   
 .grayTable{
+    max-height: 120px;
+    overflow-y: scroll;
     .el-table--small td, .el-table--small th{
         padding: 4px 0;
     }
@@ -318,7 +292,7 @@ label {
 }
 .whiteTable{
     margin: 0 30px;
-    border-top: 6px solid #F4F4F4;
+    min-height: 300px;
     .el-table--small td, .el-table--small th{
         padding: 4px 0;
         background: #fff !important;
@@ -347,7 +321,7 @@ label {
     h5{
         font-size: 12px;
         color: #666666;
-        margin: 10px;
+        margin: 0 10px;
         font-weight: 400;
     }
     .ctBox{

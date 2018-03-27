@@ -517,6 +517,7 @@ import SelectShopModal from '../../PublicModal/SelectShop/selectShop-modal.vue'
 }
 .content_box{
     height: calc(100% - 30px) !important;
+    width: 100%;
     padding: 15px;
     display: flex;
     flex-direction: row;

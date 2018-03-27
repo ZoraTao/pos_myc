@@ -119,9 +119,23 @@
     </div>
     <el-dialog
       title="提示"
+      :visible.sync="isShowNewComplaints"
+      width="900px">
+      <newComplaintsModal></newComplaintsModal>      
+      <div class="packageDetailButtonGroup">
+            <el-button @click="isShowNewComplaints = false">取 消</el-button>
+            <el-button type="primary" @click="isShowNewComplaints = false">保 存</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog
+      title="提示"
       :visible.sync="isShow"
       width="900px">
-      <newComplaintsModal></newComplaintsModal>
+      <ComplainsBillModal></ComplainsBillModal>      
+      <div class="packageDetailButtonGroup">
+            <el-button @click="isShow = false">取 消</el-button>
+            <el-button type="primary" @click="isShow = false">保 存</el-button>
+        </div>
     </el-dialog>
 
 </div>
@@ -129,12 +143,14 @@
 
 <script>
 import newComplaintsModal from '../../PublicModal/NewComplaints/new-complaints-modal.vue'
+import ComplainsBillModal from '../../PublicModal/ComplaintsBill/complains-bill-modal.vue'
     export default {
         name: "member-complaints",
         data() {
             return {
                 showDiv:"2",
                 searchModel:"",
+                isShowNewComplaints:false,
                 isShow:true,
                 options:[{
                   value: '选项1',
@@ -156,7 +172,8 @@ import newComplaintsModal from '../../PublicModal/NewComplaints/new-complaints-m
             };
         },
         components:{
-            newComplaintsModal
+            newComplaintsModal,
+            ComplainsBillModal
         },
         created: function() {
             for (var i = 0; i < 10; i++) {

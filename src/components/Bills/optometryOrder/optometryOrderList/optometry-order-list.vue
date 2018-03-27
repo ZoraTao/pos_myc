@@ -132,6 +132,9 @@ import optometryOrderCu from '../optometryOrderCu/optometry-order-cu.vue'
 
 <style scoped lang="scss">
 @import "../../../../reset";
+.content_box{
+    flex-direction: column;
+}
 .optometry_list_top {
     height: 70px;
     width: 100%;

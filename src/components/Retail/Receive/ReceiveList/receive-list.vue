@@ -611,6 +611,7 @@ export default {
 <style scoped lang="scss">
 @import "../../../../reset";
 .cashier_box {
+    width: 100%;
     height: 100%;
 }
 
