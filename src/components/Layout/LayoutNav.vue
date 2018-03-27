@@ -139,6 +139,7 @@ export default {
         text-align: center;
         position: relative;
         margin-right: 60px;
+        cursor: pointer;
         &:first-child {
           background: none;
         }

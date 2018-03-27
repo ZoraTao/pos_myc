@@ -173,6 +173,7 @@
       background: #fff;
       padding: 60px;
       .member-item {
+        cursor: pointer;
         img {
           display: block;
           width: 100px;
