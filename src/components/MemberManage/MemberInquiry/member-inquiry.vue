@@ -5,38 +5,26 @@
       <el-col :span="4">
         <div class="inquiry-item">
           <span>昨日新增会员数</span>
-          <strong class="am-ft-darkred">369</strong>
+          <strong class="am-ft-darkred" v-cloak>{{memberCount.addNewCount}}</strong>
         </div>
       </el-col>
       <el-col :span="4">
         <div class="inquiry-item">
           <span>本月申领会员总数</span>
-          <strong class="am-ft-yellow">5000</strong>
+          <strong class="am-ft-yellow" v-cloak>{{memberCount.monthCount}}</strong>
         </div>
       </el-col>
       <el-col :span="8">
         <el-col :span="6">
           <div class="inquiry-item">
             <span>会员总数</span>
-            <strong>123530</strong>
+            <strong v-cloak>{{memberCount.memberCount}}</strong>
           </div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="6" v-for="card in cardNumList">
           <div class="inquiry-item">
-            <span>金卡</span>
-            <strong>530</strong>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="inquiry-item">
-            <span>银卡</span>
-            <strong>3530</strong>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="inquiry-item after-none">
-            <span>普卡</span>
-            <strong>34530</strong>
+            <span v-cloak>{{card.cardName}}</span>
+            <strong v-cloak>{{card.cardCount}}</strong>
           </div>
         </el-col>
       </el-col>
@@ -116,7 +104,7 @@
 
     <!------part3 content------>
     <!--无数据时缺省显示-->
-    <el-row class="inquiry-row content-info-box" v-if="false">
+    <el-row class="inquiry-row content-info-box" v-if="memberList.length==0">
       <el-col :span="24">
         <div class="default-show">
           <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/image_quesheng.png"/>
@@ -126,54 +114,57 @@
     </el-row>
     <!--/无数据时缺省显示-->
     <!--有数据时显示-->
-    <el-row class="inquiry-row content-info-box">
+    <el-row class="inquiry-row content-info-box" v-if="memberList.length > 0">
       <el-col :span="24" class="table-wrap">
         <!--多个数据时显示-->
         <el-table
-          :data="tableData"
+          :data="memberList"
           stripe
           size="small"
           align="left"
           style="width: 100%;margin-bottom: 10px;">
           <el-table-column
-            prop="a"
+            prop="name"
             label="姓名"
-            width="60px">
+            width="120px">
           </el-table-column>
           <el-table-column
-            prop="b"
+            prop="telphone"
             label="手机号"
             width="130px">
           </el-table-column>
           <el-table-column
-            prop="d"
+            prop="memberCardNo"
             label="卡号">
           </el-table-column>
           <el-table-column
-            prop="e"
+            prop="points"
             label="积分"
             width="100px">
           </el-table-column>
           <el-table-column
-            prop="f"
             label="性别"
             width="100px">
+            <template slot-scope="scope">
+              <span v-if="scope.row.sex=='M'">男</span>
+              <span v-else>女</span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="g"
+            prop=""
             label="消费次数"
             width="100px">
           </el-table-column>
           <el-table-column
-            prop="h"
+            prop=""
             label="消费金额">
           </el-table-column>
           <el-table-column
-            prop="i"
+            prop=""
             label="最近消费时间">
           </el-table-column>
           <el-table-column
-            prop="j"
+            prop="orgName"
             label="负责部门">
           </el-table-column>
           <el-table-column
@@ -194,7 +185,7 @@
             @current-change="handleCurrentChange"
             :page-size="100"
             layout="total, prev, pager, next"
-            :total="1000">
+            :total="100">
           </el-pagination>
         </div>
         <!--/多个数据时显示-->
@@ -227,34 +218,14 @@
           date1: '',
           date2: '',
         },
-        tableData: [{
-          a: '王大锤',
-          b: '15383465768',
-          c: '银卡',
-          d: '银卡 562536256452',
-          e: '123',
-          f: '男',
-          g: '1',
-          h: '1599',
-          i: '2017-12-14 12:26:26',
-          j: '毛源昌杭州西湖店'
-        },
-        {
-          a: '王大锤',
-          b: '15383465768',
-          c: '银卡',
-          d: '银卡 562536256452',
-          e: '123',
-          f: '男',
-          g: '1',
-          h: '1599',
-          i: '2017-12-14 12:26:26',
-          j: '毛源昌杭州西湖店'
-        }],
+        memberList: [],//会员列表
+        memberCount: [],//会员汇总数量
+        cardNumList: [],//会员卡汇总数量
       }
     },
-    created: function() {
-      this.getMemberInfo()
+    created: function () {
+      this.getMemberList();
+      this.getMemberCount();
     },
     methods: {
       onSubmit() {
@@ -290,22 +261,52 @@
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
       },
-      //查询会员列表
-      getMemberInfo(){
+      //查询会员汇总数量
+      getMemberCount() {
         var that = this;
         that.$axios({
-          url: 'http://myc.qineasy.cn/member-api/member/getMemberCount',
+          url: 'http://myc.qineasy.cn/member-api/member/getMemberCount ',
           method: 'post',
           params: {
-            jsonObject: {}
+            jsonObject: {},
+            keyParams: {
+              weChat: true,
+              userId: '8888',
+              orgId: '11387'
+            }
           }
         })
         .then(function (response) {
-          console.info(response.data)
+          console.info(response.data.data)
+          that.memberCount = response.data.data;
+          that.cardNumList = response.data.data.cardNumList;
         })
         .catch(function (error) {
           console.info(error)
         })
+      },
+      //查询会员列表
+      getMemberList() {
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
+          method: 'post',
+          params: {
+            jsonObject: {
+              nub: '0',
+              size: '5'
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            that.memberList = response.data.data.memberList;
+          })
+          .catch(function (error) {
+            console.info(error)
+          })
       }
     }
   }
