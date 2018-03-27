@@ -44,6 +44,35 @@
           c: '2017-09-21  18:21:00'
         }]
       }
+    },
+    created: function () {
+      this.getMemberPoints()
+    },
+    methods: {
+      //查询积分明细
+      getMemberPoints(){
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/points-api/pointsFlow/getMemberPointLow',
+          method: 'post',
+          params: {
+            jsonObject: {},
+            keyParams: {
+              weChat: true,
+              memberCardId: '2213763',
+              memberId: '2246600',
+              nub: '0',
+              size: '0',
+            }
+          }
+        })
+          .then(function (response) {
+            console.info(response.data)
+          })
+          .catch(function (error) {
+            console.info(error)
+          })
+      }
     }
   }
 </script>

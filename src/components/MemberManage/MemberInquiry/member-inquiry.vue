@@ -246,12 +246,12 @@
 
       },
       //查看详情
-      checkDetail(row) {
-        console.log(row);
+      checkDetail(data) {
+        // console.log(data);
         this.$router.push({
           path: '/member/memberDetail',
           name: 'member-detail',
-          params: {}
+          params: {data}
         })
       },
       //分页
@@ -277,7 +277,7 @@
           }
         })
         .then(function (response) {
-          console.info(response.data.data)
+          // console.info(response.data.data)
           that.memberCount = response.data.data;
           that.cardNumList = response.data.data.cardNumList;
         })

@@ -2,27 +2,29 @@
   <div class="content-out-wrapper content-out-wrapper-md">
     <!--top-->
     <div class="member-info-base">
-      <img class="member-logo" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_huiyuangl.png"/>
+      <img v-if="memberInfo.headpicpath==''" class="member-logo" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_huiyuangl.png"/>
+      <img v-else class="member-logo" :src="memberInfo.headpicpath" />
       <div class="info-det">
         <p>
-          <span class="am-ft-16">李依依
-            <img class="sex-icon" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_female.png"/>
+          <span class="am-ft-16" v-cloak>{{memberInfo.name}}
             <!--性别为男时显示图片-->
-            <!--<img class="sex-icon" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_male.png"/>-->
+            <img v-if="memberInfo.sex=='M'" class="sex-icon" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_male.png"/>
+            <!--性别为女时显示图片-->
+            <img v-else class="sex-icon" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_female.png"/>
           </span>
-          <span class="level-card mgr5">金卡</span>
-          <span class="am-ft-yellow"><img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_jifen.png"/>1200积分</span>
+          <span class="level-card mgr5" v-cloak>{{memberInfo.cardName}}</span>
+          <span class="am-ft-yellow" v-cloak><img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_jifen.png"/>{{memberInfo.points}}积分</span>
         </p>
         <p>
-          <span class="mgr30"><em class="am-text-secondary">卡号：</em>34545665655</span>
-          <span class="am-text-placeholder am-ft-12">添加时间：2017-03-21  18:23:30</span>
+          <span class="mgr30" v-cloak><em class="am-text-secondary">卡号：</em>{{memberInfo.memberCardNo}}</span>
+          <span class="am-text-placeholder am-ft-12" v-cloak>添加时间：{{memberInfo.createTime}}</span>
         </p>
       </div>
     </div>
     <!--tab-->
     <el-tabs type="border-card">
       <el-tab-pane label="会员资料">
-        <member-base-info></member-base-info>
+        <member-base-info :memberBaseInfo="memberInfo"></member-base-info>
       </el-tab-pane>
       <el-tab-pane label="验光记录(1)">
         <member-optometry-record></member-optometry-record>
@@ -64,7 +66,12 @@
     },
     name: "member-detail",
     data() {
-      return {}
+      return {
+        memberInfo: {}
+      }
+    },
+    created: function () {
+      this.memberInfo = this.$route.params.data;
     }
   }
 </script>
