@@ -22,7 +22,7 @@
                 :value="item.value">
                 </el-option>
             </el-select>
-        </div>        
+        </div>
         <div class="fn-left mgt4 mgl30">
             <button class="col_blue_bg_white find_btn">
                 查询
@@ -179,21 +179,21 @@
             height: 100%;
         }
     }
-    
+
     .optometry_list_top {
         height: 70px;
         width: 100%;
         padding: 18px 20px;
         background: #fff;
     }
-    
+
     .member {
         display: inline-block;
         width: 43px;
         font-weight: bold;
         font-size: 12px;
     }
-    
+
     .find_btn {
         width: 96px;
         height: 30px;
@@ -201,7 +201,7 @@
         font-size: 12px;
         letter-spacing: 0;
     }
-    
+
     .add_btn {
         width: 100px;
         height: 34px;
@@ -209,37 +209,36 @@
         font-size: 12px;
         letter-spacing: 0;
     }
-    
+
     .col_blue_bg_white {
         color: #00afe4;
         background: white;
         border: 1px solid #00afe4;
         border-radius: 4px;
     }
-    
+
     .bg_white_col_blue {
         color: #ffffff;
         background: #00afe4;
         border: 1px solid #00afe4;
         border-radius: 4px;
     }
-    
+
     .optometry_input {
         background: #f8f8f8;
         border: 1px solid #e1e1e1;
         padding: 2px 10px;
         height: 26px;
     }
-    
+
     .optometry_content {
         position: relative;
         margin-top: 10px;
         width: 100%;
-        height: calc(100% - 110px);
         background: white;
         padding: 11px;
     }
-    
+
     .find_before {
         width: 250px;
         height: auto;
@@ -249,16 +248,16 @@
         margin-left: -125px;
         /*margin-top: -150px;*/
     }
-    
+
     .find_before li {
         text-align: center;
         margin-top: 23px;
     }
-    
+
     li.optometry_qs_img {
         margin-left: 25px;
     }
-    
+
     li.optometry_qs_text {
         text-align: center;
         font-size: 14px;
@@ -266,7 +265,7 @@
         letter-spacing: 0.51px;
     }
     /*列表*/
-    
+
     .list_name {
         font-family: MicrosoftYaHei;
         font-size: 16px;
@@ -277,7 +276,7 @@
         margin-bottom: 5px;
         text-align: left;
     }
-    
+
     .h100 {
         height: 100%;
     }

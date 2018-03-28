@@ -1,6 +1,6 @@
 <template>
   <div>
-    <optometryOrderCu></optometryOrderCu>
+    <optometryOrderCu :memberDet="'detail'" :memberInfo="memberBaseInfo"></optometryOrderCu>
   </div>
 </template>
 
@@ -13,7 +13,16 @@
       optometryOrderCu
     },
     data() {
-      return {}
+      return {
+        memberInfo: ''
+      }
+    },
+    created: function () {
+
+    },
+    props: ['memberBaseInfo'],
+    methods: {
+
     }
   }
 </script>

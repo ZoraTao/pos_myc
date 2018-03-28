@@ -26,8 +26,8 @@
       <el-tab-pane label="会员资料">
         <member-base-info :memberBaseInfo="memberInfo"></member-base-info>
       </el-tab-pane>
-      <el-tab-pane label="验光记录(1)">
-        <member-optometry-record></member-optometry-record>
+      <el-tab-pane label="验光记录">
+        <member-optometry-record :memberBaseInfo="memberInfo"></member-optometry-record>
       </el-tab-pane>
       <el-tab-pane label="订单记录(1)">
         <member-order-record></member-order-record>

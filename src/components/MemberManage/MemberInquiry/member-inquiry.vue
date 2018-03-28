@@ -317,7 +317,7 @@
           }
         })
           .then(function (response) {
-            console.info(response.data.data)
+            // console.info(response.data.data)
             that.memberList = response.data.data.memberList;
           })
           .catch(function (error) {

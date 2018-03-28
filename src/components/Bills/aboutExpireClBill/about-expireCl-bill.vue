@@ -219,7 +219,6 @@
         position: relative;
         margin-top: 10px;
         width: 100%;
-        height: calc(100% - 110px);
         background: white;
         padding: 11px;
     }

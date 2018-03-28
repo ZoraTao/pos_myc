@@ -5,16 +5,17 @@
         <!--验光单一条数据详情-->
         <div class="list_one">
             <ul class="optometry_head">
-                <li class="ft_bold am-ft-20 am-ft-gray3 fn-left">验光单</li>
-                <li class="fn-left pt10 am-ft-gray3">ID:&nbsp;YGD1240001</li>
-                <li class="fn-left pt10 am-ft-gray6">验光日期 :&nbsp;20171130</li>
+                <li class="ft_bold am-ft-20 am-ft-gray3 fn-left" v-if="memberDet !='detail'">验光单</li>
+                <li class="fn-left pt10 am-ft-gray3">ID:&nbsp;{{userInfo.prescriptionId}}</li>
+                <li class="fn-left pt10 am-ft-gray6">验光日期 :&nbsp;{{userInfo.prescriptionTime}}</li>
             </ul>
             <ul class="optometry_head_msg">
-                <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">手机号:</span>15757179646 </li>
-                <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">姓名:</span>&nbsp;张三</li>
-                <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;HY12340001</li>
-                <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">性别 :</span>&nbsp;女</li>
-                <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">出生年月 :</span>&nbsp;20171130</li>
+                <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">手机号:</span>{{userInfo.mobile}} </li>
+                <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">姓名:</span>&nbsp;{{userInfo.createUserName}}</li>
+                <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;{{memberInfo.memberCardNo}}</li>
+                <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">性别 :</span>&nbsp;<em v-if="memberInfo.sex=='M'">男</em>
+                  <em v-else>女</em></li>
+                <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">出生年月 :</span>&nbsp;{{memberInfo.birthday}}</li>
             </ul>
 
             <div class="glass_combination">
@@ -51,7 +52,7 @@
                                         <td class="w90 border_left" rowspan="2">0.05</td>
                                     </tr>
                                     <tr class="dis_bg">
-                                        <td class="w50">R</td>
+                                        <td class="w50">L</td>
                                         <td class="w90">0.05</td>
                                         <td class="w90">0.05</td>
                                         <td class="w90">0.05</td>
@@ -80,7 +81,7 @@
                                         <td class="w90">0.05</td>
                                     </tr>
                                     <tr class="dis_bg">
-                                        <td class="w50">R</td>
+                                        <td class="w50">L</td>
                                         <td class="w90">0.05</td>
                                         <td class="w90">0.05</td>
                                         <td class="w90">0.05</td>
@@ -106,7 +107,7 @@
                                         <td class="w90">0.05</td>
                                     </tr>
                                     <tr class="dis_bg">
-                                        <td class="w50">R</td>
+                                        <td class="w50">L</td>
                                         <td class="w90">0.05</td>
                                         <td class="w90">0.05</td>
                                         <td class="w90">0.05</td>
@@ -126,7 +127,7 @@
                                         <td class="w90">0.05</td>
                                     </tr>
                                     <tr class="dis_bg">
-                                        <td class="w50">R</td>
+                                        <td class="w50">L</td>
                                         <td class="w90">0.05</td>
                                     </tr>
                                 </table>
@@ -234,12 +235,12 @@
             <div class="glass_combination">
                 <div class="glass_combination">
                     <div class="am-ft-gray6 clearfix pb10">
-                        <div class=" fn-left optometry_remarks">眼光备注：</div>
-                        <p class=" fn-left optometry_remarks_text">注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注</p>
+                        <div class=" fn-left optometry_remarks">验光备注：</div>
+                        <p class=" fn-left optometry_remarks_text">{{userInfo.memo}}</p>
                     </div>
-                    <ul class=" clearfix">
-                        <li class=" fn-left optometry_origin">眼光来源：<span>湖滨店</span></li>
-                        <li class="fn-left optometrist">验光师：<span>张三 </span></li>
+                    <ul class="clearfix" v-if="memberDet !='detail'">
+                        <li class=" fn-left optometry_origin">验光来源：<span>{{userInfo.source}}</span></li>
+                        <li class="fn-left optometrist">验光师：<span>{{userInfo.optometrist}} </span></li>
                     </ul>
                 </div>
             </div>
@@ -253,17 +254,13 @@
         name: "optometryOrderCu",
         data() {
             return {
+              eyesData: [],//验光数据
+              userInfo: '',//验光人信息
                 showDiv:"2",
-                data : [{
-                id    : '12341234',
-                name   : '张三',
-                telephone    : 15757179646,
-                time: '2017-12-14 12:26:26',
-                optometrist: '毛源昌湖滨店 张三',
-                origin: '本店验光',
-                }]
+                data : []
             };
         },
+      props: ['memberDet','memberInfo'],
         created: function() {
             for (var i = 0; i < 10; i++) {
                     this.data.push({
@@ -274,8 +271,35 @@
                     optometrist: '毛源昌湖滨店 张三',
                     origin: '本店验光',
                 });
+            };
+          this.getOptometryRecord();
+          console.info(this.memberInfo);
+        },
+      methods: {
+        getOptometryRecord(){
+          var that = this;
+          that.$axios({
+            url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately ',
+            method: 'post',
+            params: {
+              jsonObject: {
+                memberId: '2222767'
+              },
+              keyParams: {
+                weChat: true
+              }
             }
+          })
+            .then(function (response) {
+              console.info(response.data.data)
+              that.eyesData = response.data.data.eyes;
+              that.userInfo = response.data.data.prescriptions;
+            })
+            .catch(function (error) {
+              console.info(error)
+            })
         }
+      }
     };
 </script>
 
