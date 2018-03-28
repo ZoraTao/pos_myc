@@ -97,6 +97,8 @@ export default {
 </script>
 
 <style lang="scss">
+
+.selectMember{
 .el-dialog__body {
     padding: 10px 0;
     padding-bottom: 0;
@@ -119,7 +121,6 @@ export default {
 .el-table th {
     background: #fff !important;
 }
-.selectMember{
     th{
         background: #fff;
         text-align: center;

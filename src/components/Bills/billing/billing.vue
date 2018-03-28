@@ -31,21 +31,21 @@
                 <el-form ref="form">
                     <el-form-item label="右镜片 :" class="ParamInput">
                         <el-input class="" placeholder=""></el-input>
-                        <el-button >···</el-button>
-                        <el-button >定做</el-button>
+                        <el-button @click="showSelectRH=true">···</el-button>
+                        <el-button @click="customizeRH=true">定做</el-button>
                     </el-form-item>
                     <el-form-item label="左镜片 :" class="ParamInput">
                         <el-input class="" placeholder=""></el-input>
-                        <el-button >···</el-button>
-                        <el-button >定做</el-button>
+                        <el-button @click="showSelectRH=true">···</el-button>
+                        <el-button @click="customizeRH=true">定做</el-button>
                     </el-form-item>
                     <el-form-item label="商品 :" class="ParamInput">
                         <el-input class="" placeholder=""></el-input>
-                        <el-button >···</el-button>
-                        <el-button >定做</el-button>
+                        <el-button @click="showSelectShop=true">···</el-button>
+                        <el-button @click="customizeRH=true">定做</el-button>
                     </el-form-item>
                     <el-form-item class="ParamInput ParamButton">
-                        <el-button >套餐商品</el-button>
+                        <el-button @click="packageGoods=true">套餐商品</el-button>
                     </el-form-item>
                     <el-form-item class="ParamInput ParamButton">
                         <el-button >自带商品</el-button>
@@ -210,7 +210,7 @@
                 <el-button type="primary">换货</el-button>
                 <el-button type="primary">补打</el-button>
                 <el-button type="primary">预览</el-button>
-                <el-button type="primary">取单</el-button>
+                <el-button type="primary" @click="showGetBill=true">取单</el-button>
                 <el-badge :value="3" class="item">
                     <el-button type="primary">签批</el-button>
                 </el-badge>
@@ -341,7 +341,7 @@
             <el-button type="primary" @click="isOptometryDialogVisible = false">调入</el-button>
         </span>
     </el-dialog>
-    <el-dialog title="选择会员 (23)" :visible.sync="showSelectMember" width="62.5%">
+    <el-dialog class="selectMember" title="选择会员 (23)" :visible.sync="showSelectMember" width="62.5%">
         <SelectMemberModal></SelectMemberModal>
     </el-dialog>
     <el-dialog title="新增验光单" :visible.sync="showNewOptometry" width="900px">
@@ -354,8 +354,50 @@
     <el-dialog title="选择右镜片" :visible.sync="showSelectRH">
         <SelectRHModal></SelectRHModal>
     </el-dialog>
-    <el-dialog title="选择右镜片" :visible.sync="showSelectShop" width="700px">
+    <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="700px">
         <SelectShopModal></SelectShopModal>
+    </el-dialog>
+    <el-dialog class="customizeRH" title="定做-右镜片" :visible.sync="customizeRH" width="690px">
+        <CustomizeRHModal></CustomizeRHModal>
+        <div class="packageDetailButtonGroup">
+            <el-button type="primary" @click="customizeRH = false">确定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog class="packageGoods" title="选择套餐" :visible.sync="packageGoods" width="800px">
+        <PackageGoodsModal></PackageGoodsModal>
+        <div class="packageDetailButtonGroup">             
+            <el-checkbox class="fn-left">套餐置换</el-checkbox>
+            <el-button @click="packageGoods = false">取 消</el-button>
+            <el-button type="primary" @click="packageGoods = false">确定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog class="otherExpense" title="其它费用" :visible.sync="otherExpense" width="700px">
+        <OtherExpenseModal></OtherExpenseModal>
+        <div class="packageDetailButtonGroup">        
+            <el-button class="fn-right" @click="otherExpense = false">取消</el-button>
+            <el-button class="fn-right" type="primary" @click="otherExpense = false">确定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog
+        custom-class="am-ft-center"
+        :visible.sync="CouponBarCode"
+        width="360px"
+        center>
+        <CouponBarCodeModal></CouponBarCodeModal>
+    </el-dialog>
+
+    <el-dialog
+        custom-class="noheader am-ft-center"
+        title="挂单"
+        :visible.sync="pendingOrders"
+        width="30%"
+        center>
+        <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">确定要挂起本订单吗？</h4>
+        <span>会员姓名：张丽丽</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="pendingOrders=false">取消</el-button>
+            <el-button type="primary" @click="pendingOrders = false">确定</el-button>
+        </span>
     </el-dialog>
     <el-dialog title="取单（13）" :visible.sync="showGetBill" width="700px">
         <GetBill></GetBill>
@@ -381,6 +423,84 @@
         </div>
     </el-dialog>
     
+    <el-dialog
+        custom-class="noheader am-ft-center comfirmModal"
+        title="提示"
+        :visible.sync="permission"
+        width="420px"
+        center>
+        <div class="textCenter mgt30 permissionBox">
+            <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">您没有以下折扣权限，是否申请签批？</h4>
+            <p><span>BM12340002 : 8折</span></p>
+            <p><span>BM12340002 : 8折</span></p>
+            <p class="textareaBox">
+                <i class="am-ft-red">*</i>
+                <el-input
+                type="textarea"
+                :rows="4"
+                placeholder="请输入内容">
+                </el-input>
+            </p>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <div class="mgt10">
+                <el-button @click="permission = false;">取消</el-button>
+                <el-button type="primary" @click="permission = false">直接签批</el-button>
+                <el-popover
+                ref="popover"
+                placement="bottom-start"
+                width="224"
+                trigger="hover">
+                        <ul class="endorser">
+                            <li @click="showModal(7)"><span>SP001</span><p>张婷婷</p></li>
+                            <li><span>SP001</span><p>张婷婷</p></li>
+                            <li><span>SP001</span><p>张婷婷</p></li>
+                            <li><span>SP001</span><p>张婷婷</p></li>
+                            <li><span>SP001</span><p>张婷婷</p></li>
+                        </ul>                
+                </el-popover>
+                <el-button type="primary" v-popover:popover>申请签批</el-button>
+            </div>
+        </div>
+    </el-dialog>
+
+    <el-dialog
+        custom-class="noheader am-ft-center"
+        title="登录人签批"
+        :visible.sync="loginUserPermission"
+        width="30%"
+        center>
+        <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">签批人登录签批</h4>
+        <el-form>
+            <el-form-item class="mgb0">
+                <el-input auto-complete="off" placeholder="用户名"></el-input>
+            </el-form-item>
+            <el-form-item class="mgb0">
+                <el-input auto-complete="off" placeholder="密码"></el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="loginUserPermission = false;">取消</el-button>
+            <el-button type="primary" @click="loginUserPermission = false">签批</el-button>
+        </span>
+    </el-dialog>
+    
+    <el-dialog class="endorsement" title="签批 (5)" :visible.sync="endorsement" width="600px">
+        <EndorsementModal></EndorsementModal>
+    </el-dialog>
+    <el-dialog class="reprint" title="签批 (5)" :visible.sync="reprint" width="900px">
+        <ReprintModal></ReprintModal>
+        <div class="receiptsData">
+            <h4>补打记录</h4>
+            <p>2017-12-15 15:34 hz3046 销售补打</p>
+            <p>2017-12-15 15:34 hz3046 销售补打</p>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="reprint = false;">取消</el-button>
+            <el-button type="primary" @click="reprint = false">打印</el-button>
+        </span>
+    </el-dialog>
+    
 </div>
 </template>
 
@@ -391,28 +511,31 @@ import SelectRHModal from '../../PublicModal/SelectRH/selectRH-modal.vue'
 import SelectShopModal from '../../PublicModal/SelectShop/selectShop-modal.vue'
 import GetBill from '../../PublicModal/GetBill/get-bill-modal.vue'
 import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
+import CustomizeRHModal from '../../PublicModal/customizeRH/customizeRH-modal.vue'
+import PackageGoodsModal from '../../PublicModal/PackageGoods/package-goods-modal.vue'
+import OtherExpenseModal from '../../PublicModal/OtherExpense/other-expense-modal.vue'
+import CouponBarCodeModal from '../../PublicModal/CouponBarCode/couponBar-code-modal.vue'
+import EndorsementModal from '../../PublicModal/Endorsement/endorsement-modal.vue'
+import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
     export default {
         name: "billing",
         data() {
             return {
                 options: [{
                     value: "选项1",
-                    label: "黄金糕"
-                }, {
-                    value: "选项2",
-                    label: "双皮奶"
-                }, {
-                    value: "选项3",
-                    label: "蚵仔煎"
-                }, {
-                    value: "选项4",
-                    label: "龙须面"
-                }, {
-                    value: "选项5",
-                    label: "北京烤鸭"
+                    label: "选项1"
                 }],
-                addMember:true,
-                isNotMember:true,
+                reprint:false,
+                endorsement:false,
+                loginUserPermission:false,
+                permission:false,
+                pendingOrders:false,
+                CouponBarCode:false,
+                otherExpense:false,
+                packageGoods:false,
+                customizeRH:false,
+                addMember:false,
+                isNotMember:false,
                 showGetBill:false,
                 showSelectShop:false,
                 showSelectRH:false,
@@ -510,14 +633,50 @@ import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
             SelectRHModal,
             SelectShopModal,
             GetBill,
-            AddMember
+            AddMember,
+            CustomizeRHModal,
+            PackageGoodsModal,
+            OtherExpenseModal,
+            CouponBarCodeModal,
+            EndorsementModal,
+            ReprintModal
+        },
+        methods:{
+            showModal:function(){
+
+            }
         }
     };
 </script>
 
 <style lang="scss">
     @import "../../../reset";
-.addMember{
+.el-badge{
+vertical-align: unset;
+margin-left: 10px;
+}
+.reprint{
+    .el-dialog__footer{
+        background: #eee;
+    }
+}
+.receiptsData{
+    text-align: left;
+    padding: 12px;
+    padding-left: 28px;
+    line-height: 18px;
+    background: #f8f8f8;
+    h4{
+        font-size: 12px;
+        color: #666666;
+        margin-bottom: 7px;
+    }
+    p{
+        font-size: 12px;
+        color: #888888;
+    }
+}
+.addMember,.customizeRH{
     .el-dialog__body{
         padding:0;
     }
@@ -1127,15 +1286,11 @@ import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
 
 //modal
 .comfirmModal{
-    .ant-modal-footer{
-        border: none;
-        .permissionBox{
-            .btn-00AFE4{
-                background: #00AFE4;
-                border: none;
-                border-radius: 4px;
-            }
-        }
+    .el-dialog__body{
+        padding: 0;
+    }
+    .noheader .el-dialog__footer {
+        padding-bottom: 40px;
     }
     .permissionBox{
         .textareaBox{
@@ -1148,7 +1303,7 @@ import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
                 width: 20px;
                 text-align: center;
             }
-            nz-input{
+            .el-textarea{
                 width: calc(100% - 20px);
                 float: left;
             }
@@ -1208,687 +1363,19 @@ import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
         }
     }
 }
-
-#customizeRH{
-    .modal-content-center{
-        padding: 15px 20px;
-        overflow: hidden;
-    }
-    .customizeRHBody{
-        width: 100%;
-        overflow: hidden;
-        h5{
-            font-weight: bold;
-            font-size: 13px;
-            color: #666666;
-            margin-bottom: 15px;
-        }
-        .customizeInputGroup{
-            // width: 20%;
-            margin-left: 10px;
-        }
-        .textareaGroup{
-            width: 100%;
-            margin: 10px;
-            label{
-                vertical-align: top;
-            }
-        }
-    
-        &:first-of-type{
-            .customizeInputGroup{
-                &:first-of-type{
-                    margin-left: 35px;
-                }
-            }
-        }
-    }
-    .customizeRHFooter{
-        background: #F4F4F4;
-        button{
-            margin: 20px;
-            padding: 0px 30px;
-            background: #00AFE4;
-            border-radius: 4px;
-        }
-    }
-}
-
-.newOptometry,.reprint{
+.packageGoods{
     .packageDetailButtonGroup{ 
-        padding: 10px;
-        background: #EEEEEE;
-        button{
-            border-radius: 4px;
-            width: 90px;
-            &:first-child{
-                
-            }
-            &:last-child{
-                background: #00AFE4;
-                border: none;
-            }
-        }
-    }
-    .ant-modal-footer{
-        background: #eee;
-    }
-    .reprintContent{
-        min-height: 500px;
-        .reprintBasicInfo{
-            overflow: hidden;
-            div{
-                line-height: 30px;
-                width: 40%;
-                overflow: hidden;
-                &:first-child{
-                    width: 30%;
-                    text-align: left;
-                }
-                &:not(:last-child){
-                    float: left;
-                }
-                &:last-child{
-                    float: right;
-                    width: 30%;
-                    text-align: right;
-                }
-            }
-        }
-        .reprintEwm{
-            width: 100%;
-            text-align: right;
-            img{
-                margin-right: 60px;
-            }
-        }
-        .reprintShopNameTime{
-            overflow: hidden;
-            line-height: 30px;
-            h2{
-                float: left;
-                width: 30%;
-                text-align: left;
-            }
-            p{
-                width: 20%;
-                float: left;
-                text-align: center;
-            }
-            h3{
-                float: right;
-                width: 30%;
-                text-align: right;
-            }
-        }
-        .reprintMemberInfo{
-            margin-top: 3px;
-            p{
-                float: left;
-                margin-right: 50px;
-                color: #666666;
-                span{
-                    color: #333333;
-                }
-            }
-        }
-        .prescriptionTable{
-            overflow: hidden;
-            width: 100%;
-            padding-top: 15px;
-            th{
-                padding: 4px 8px;
-                border-top: 1px solid #AAAAAA;
-                border-bottom: 1px solid #AAAAAA;
-                font-weight: bold;
-            }
-            td{
-                padding: 6px 8px;
-            }
-            table{
-                border-bottom: 1px solid #AAAAAA;
-            }
-            .borderLeftAAA{
-                border-left: 1px solid #AAAAAA;
-            }
-        }
-        .receiptsInfo{
-            height: 25px;
-            line-height: 25px;
-            border-bottom: 1px solid #AAAAAA;
-            p{
-                float: left;
-                width: 23%;
-                text-align: left;
-                span{
-                    display: inline-block;
-                }
-                &:nth-of-type(n+3){
-                    width: 18%;
-                }
-            }
-        }
-        .receiptsSalesTable{
-            table{
-                padding-top: 20px;
-                border-bottom: 1px solid #AAAAAA;
-            }
-            th{
-                border-bottom: 1px solid #AAAAAA;
-                padding: 8px 8px;
-                &:not(:first-child){
-                    text-align: center;
-                }
-            }
-            td{
-                padding: 8px 8px;
-                &:not(:first-child){
-                    text-align: center;
-                }
-            }
-        }
-        .receiptsRemark{
-            width: 100%;
-            overflow: hidden;
-            text-align: left;
-            height: 30px;
-            line-height: 30px;
-            border-bottom: 1px solid #AAAAAA;
-            p{
-                font-size: 12px;
-                color: #666666;
-                padding-left: 8px;
-                span{
-                    color: #333333;
-                }
-            }
-        }
-        .receiptsOtherRemark{
-            width: 100%;
-            overflow: hidden;
-            text-align: left;
-            height: 35px;
-            line-height: 35px;
-            border-bottom: 1px solid #AAAAAA;
-            p{
-                font-size: 12px;
-                color: #666666;
-                float: left;
-                margin-right: 35px;
-                padding-left: 8px;
-                span{
-                    font-size: 16px;
-                    color: #111111;
-                    font-weight: 500;
-                }
-            }
-        }
-        .receiptsCompanyInfo{
-            overflow: hidden;
-            line-height: 30px;
-            padding-left: 8px;
-            .receiptsCompanySales{
-                float: left;
-                font-size: 12px;
-                color: #666666;
-                margin-right: 15px;
-                span{
-                    color: #333333;
-                }
-            }
-            .receiptsCompany30days{
-                float: left;
-                margin-left: 100px;
-                margin-right: 15px;
-            }
-        }
-    }
-    .receiptsData{
-        text-align: left;
-        padding: 12px;
-        padding-left: 28px;
-        line-height: 18px;
-        background: #f8f8f8;
-        h4{
+        .el-checkbox__label{
             font-size: 12px;
-            color: #666666;
-            margin-bottom: 7px;
         }
-        p{
-            font-size: 12px;
-            color: #888888;
-        }
-    }
-}   
-
-.reprint .ant-modal-footer{
-    padding: 0;
-    .packageDetailButtonGroup{
-        padding: 16px;
-    }
+    }  
 }
-
-#packageGoods{
-    .packageGoodsBody{
-        .packageGoodsTop{
-            height: 84px;
-            line-height: 84px;
-            text-align: center;
-            position: relative;
-            nz-input{
-                text-align: center;
-            }
-            button{
-                width: 96px;
-                height: 30px;
-                line-height: 30px;
-                margin-left: 20px;
-                border: 1px solid #00AFE4;
-                border-radius: 4px;
-                color: #00AFE4;
-            }
-            .relative{
-                position: relative;
-                display: inline-block;
-            }
-            .GoodsTopPosition{
-                position: absolute;
-                top: 60px;
-                left: 0;
-                background: #FFFFFF;
-                border: 1px solid #E1E1E1;
-                box-shadow: 0 0 4px 0 rgba(204, 204, 204, 0.5);
-                min-width: 270px;
-                z-index: 999;
-                p{
-                    height: 36px;
-                    line-height: 36px;
-                    font-size: 13px;
-                    color: #333333;
-                    &:hover{
-                        background: #E8F6FC;
-                    }
-                }
-            }
-        }
-        .packageGoodsContent{
-            padding: 6px;
-            background: #EFEFEF;
-            min-height: 400px;
-            .pgCbody{
-                .defaultContent{
-                    background: #fff;
-                    padding: 100px;
-                    padding-top: 110px;
-                    padding-bottom: 150px;
-                    text-align: center;
-                    p{
-                        font-size: 14px;
-                        color: #888888;
-                        letter-spacing: 0.51px;
-                        margin-left: -5px;
-                        margin-top: 30px;
-                    }
-                }
-                .packageList{
-                    overflow: hidden;
-                    .packageItem{
-                        background: #FFF;
-                        position: relative;
-                        width: 24%;
-                        padding: 8px;
-                        text-align: center;
-                        line-height: 35px;
-                        height: 111px;
-                        margin: 1% 0.5%;
-                        float: left;
-                        p{
-                            font-size: 36px;
-                            color: #333333;
-                            margin-top: 10px;
-                            i{
-                                font-size: 20px;
-                                color: #888888;
-                                font-style: normal;
-                            }
-                        }
-                        h4{
-                            font-size: 18px;
-                            color: #888888;
-                            margin-bottom: 5px;
-                        }
-                        h5{
-                            font-size: 12px;
-                            color: #888888;
-                        }
-                        img{
-                            max-width: 50px;
-                            max-height: 50px;
-                            width: 25%;
-                            position: absolute;
-                            left: 0;
-                            bottom: 0;
-                        }
-                        &:nth-child(n+5){
-                            margin-top: 2px;
-                        }
-                    }
-                }
-                .packageDetailInfo{
-                    overflow: hidden;
-                    background: #fff;
-                    padding: 10px;
-                    .packageDetailTitle{
-                        overflow: hidden;
-                        margin-bottom: 10px;
-                        height: 25px;
-                        line-height: 25px;
-                        img{
-                            float: left;
-                            height: 13px;
-                            display: inline-block;
-                            margin-top: 6px;
-                        }
-                        p{
-                            float: left;
-                            font-size: 14px;
-                            color: #333333;
-                            font-weight: bold;
-                            margin-left: 10px;
-                        }
-                    }
-                }
-                .packageDetailButtonGroup{
-                    padding: 10px 15px;
-                    height: 64px;
-                    line-height: 44px;
-                    font-size: 12px;
-                    color: #666666;
-                    button{
-                        width: 90px;
-                        height: 30px;
-                        line-height: 30px;
-                        margin-left: 10px;
-                        margin-top:10px;
-                    }
-                }
-            }
-        }
-    }
-}
-#otherExpense{
-    .otherExpenseTotal{
-        height: 35px;
-        line-height: 35px;
-        p{
-            font-size: 12px;
-            color: #666666;
-            float: right;
-            margin-right: 70px;
-            span{
-                margin-left:5px;
-                font-weight: bold;
-                font-size: 13px;
-                color: #000000;
-            }
-        }
-    }
-    .otherExpenseButtonGroup{
-        overflow: hidden;
-        width: 100%;
-        padding: 20px;
-        padding-top: 10px;
-        button{
-            width: 90px;
-            height: 30px;
-            line-height: 30px;
-            margin-left: 10px;
-        }
-    }
-}
-#CouponBarCode{
-    .modal-dialog{
-        width: 360px !important;
-        min-width: auto !important;
-        .modalContent{
-            width: 360px;
-            min-height: 180px;
-            background: #fff;
-            overflow: hidden;
-        }
-    }
-    .CouponBarContent{
-        text-align: center;
-        button[aria-label='Close']{
-            position: absolute;
-            right: 5px;
-            top: 0;
-            overflow: hidden;
-            z-index: 9999;
-        }
-        .CouponBarBox{
-            display: flex;
-            justify-content: center;
-            align-self: center;
-            flex-direction: column;
-            width: 100%;
-            min-height: 100%;
-            margin-top: 50px;
-            .CouponBarCard{
-                .memberInfo{
-                    font-size: 13px;
-                    color: #666666;
-                    width: 230px;
-                    margin: 0 auto;
-                    text-align: left;
-                    margin-top: 24px;
-                    margin-bottom: 10px;
-                    span{
-                        font-weight: bold;
-                    }
-                }
-                .CouponBarItemBox{
-                    margin: 0 auto;
-                    margin-bottom: 8px;
-                    overflow: hidden;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    .CouponBarItem{
-                        position: relative;
-                        border-width: 1px;
-                        border-style: solid;
-                        color: #fff;
-                        width: 220px;
-                        float: left;
-                        .cardConstBox{
-                            height: 54px;
-                            overflow: hidden;
-                            display: flex;
-                            align-items: center;
-                            .cardConst{
-                                width: 83px;
-                                float: left;
-                                p{
-                                    font-size: 30px;
-                                    span{
-                                        font-size: 12px;
-                                    }
-                                }
-                            }
-                            .cardInfo{
-                                width: 164px;
-                                float: left;
-                                line-height: 20px;
-                                border-left: 1px solid #FFFFFF40;
-                                .cardInfoBox{
-                                    text-align: left;
-                                    margin-left: 5px;
-                                    overflow: hidden;
-                                }
-                            }
-                        }
-                    }
-                    .userThisCard{
-                        width: 30px;
-                        float: left;
-                        font-size: 10px;
-                        color: #00AFE4;
-                        margin-left: 10px;
-                    }
-                    .blueStatus{
-                        border-color: #8EC5DA;
-                        background: #8EC5DA;
-                        .CouponBarTime{
-                            background: #7DB6CB;
-                            height: 24px;
-                            line-height: 24px;
-                        }
-                    }
-                    .greenStatus{
-                        border-color: #97CF74;
-                        background: #97CF74;
-                        .CouponBarTime{
-                            background: #88C065;
-                            height: 24px;
-                            line-height: 24px;
-                        }
-                    }
-                    .yellowStatus{
-                        border-color: #fac979;
-                        background: #fac979;
-                        .CouponBarTime{
-                            background: #edbb69;
-                            height: 24px;
-                            line-height: 24px;
-                        }
-                    }
-                    .whiteBox{
-                        position: absolute;
-                        right: 0;
-                        top: 0;
-                        width: 0;
-                        height: 0;
-                        border-top: 20px solid #fff;
-                        border-left: 25px solid transparent;
-                    }
-                    &:last-child{
-                        margin-bottom: 41px;
-                    }
-                }
-            }
-        }
-        h4{
-            font-size: 16px;
-            color: #666666;
-            margin-bottom: 12px;
-            font-weight: bold;
-        }
-        .CouponBarCode{
-            width: 230px;
-            margin: 0 auto;
-            nz-input{
-                width: 187px;
-            }
-            button{
-                margin: 0;
-                padding: 0 7px;
-                background: #00AFE4;
-                border: none;
-                border-radius: 2px;
-                img{
-                    width: 100%;
-                }
-            }
-        }
-    }
-}
-
-
-
-
 .loginEndorserButton{
     button{
         width: 80px;
         &:last-child{
             background: #00AFE4;
             border: none;
-        }
-    }
-}
-
-#endorsement{
-    .modal-content{
-        width: 550px;
-        margin: 0 auto;
-    }
-    .endorsementContent{
-        padding: 5px 30px;
-        overflow: hidden;
-        background: #fff;
-        .endorsementItem{
-            .am-ft-success{
-                color: #2FCC8F;
-            }
-            .am-ft-warn{
-                color: #FF9400;
-            }
-            .am-ft-error{
-                color: #F86161;
-            }
-            overflow: hidden;
-            padding: 14px;
-            line-height: 24px;
-            .endorsementItemLeft{
-                min-width: 280px;
-                float: left;
-                div{
-                    overflow: hidden;
-                    b{
-                        float: left;
-                        font-size: 14px;
-                        color: #333333;
-                    }
-                    a{
-                        float: left;
-                        color: #666;
-                    }
-                    p{
-                        float: right;
-                        font-size: 12px;
-                        color: #666666;
-                        b{
-                            float: initial;
-                            color: #000;
-                            font-size: 13px;
-                            margin-left: 1px;
-                        }
-                        span{
-                            color: #999;
-                            margin-left: 8px;
-                        }
-                    }
-                }
-            }
-            .endorsementItemRight{
-                float: right;
-                min-width: 160px;
-                span{
-
-                }
-                p{
-                    color: #999999;
-                }
-                b{
-                    font-weight: 400;
-                    color: #333333;
-                    display: inline-block;
-                    width: 100%;
-                }
-            }
-            &:not(:last-child){
-                border-bottom: 1px solid #EFEFEF;
-            }
         }
     }
 }

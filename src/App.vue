@@ -227,6 +227,7 @@
   }
 
 .packageDetailButtonGroup{ 
+    overflow: hidden;
     padding:20px 10px;
     background: #EEEEEE;
     text-align: right;
@@ -235,9 +236,6 @@
         width: 90px;
         height: 30px;
         padding: 0;
-        &:first-child{
-            
-        }
         &:last-child{
             background: #00AFE4;
             border: none;

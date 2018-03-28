@@ -126,34 +126,35 @@ export default {
 </script>
 
 <style lang="scss">
-
-.el-dialog__body {
-    padding: 15px;
-}
-.el-table th {
-    background: #fff !important;
-}
-.el-pagination__total{
-    float: left;
-}
-#selectRH{
-    .w150{
-        width: 150px;
+.selectShop{
+    .el-dialog__body {
+        padding: 15px;
     }
-    .el-form-item{
+    .el-table th {
+        background: #fff !important;
+    }
+    .el-pagination__total{
         float: left;
-        margin: 0;
-        height: 40px;
-        line-height: 40px;
-        font-size: 12px;
-        .el-form-item__label{
-            margin:0 10px;
-            width: auto !important;
+    }
+    #selectRH{
+        .w150{
+            width: 150px;
         }
-        .el-form-item__content{
-            margin-left: 0 !important;
+        .el-form-item{
             float: left;
-            margin-right: 20px;
+            margin: 0;
+            height: 40px;
+            line-height: 40px;
+            font-size: 12px;
+            .el-form-item__label{
+                margin:0 10px;
+                width: auto !important;
+            }
+            .el-form-item__content{
+                margin-left: 0 !important;
+                float: left;
+                margin-right: 20px;
+            }
         }
     }
 }
