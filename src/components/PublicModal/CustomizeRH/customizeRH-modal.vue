@@ -96,60 +96,58 @@ export default {
 </script>
 
 <style lang="scss">
-
-.el-dialog__body {
-    padding: 15px;
-}
-.el-table th {
-    background: #fff !important;
-}
-
-.modal-content-center{
-    padding: 15px 20px;
-    overflow: hidden;
-}
-#customizeRH{
-    .customizeRHBody{
-        width: 100%;
-        overflow: hidden;
-        h5{
-            font-weight: bold;
-            font-size: 13px;
-            color: #666666;
-            margin-bottom: 15px;
-        }
-        .customizeInputGroup{
-            font-size: 12px;
-            color: #666666;
-            margin-left: 10px;
-            label{
-                width: 60px;
-                text-align: right;
-                display: inline-block;
-                margin-right: 10px;
-            }
-            .el-select{
-                width: 100px;
-            }
-            .el-textarea{
-                width: calc(100% - 180px);
-            }
-        }
-        .textareaGroup{
-            width: 100%;
-            margin: 10px;
-            label{
-                vertical-align: top;
-            }
-        }
+.customizeRH{
+    .el-table th {
+        background: #fff !important;
     }
-    .customizeRHFooter{
-        background: #F4F4F4;
-        button{
-            margin: 20px;
-            padding: 0px 30px;
-            background: #00AFE4;
-            border-radius: 4px;
+
+    .modal-content-center{
+        padding: 15px 20px;
+        overflow: hidden;
+    }
+    #customizeRH{
+        .customizeRHBody{
+            width: 100%;
+            overflow: hidden;
+            h5{
+                font-weight: bold;
+                font-size: 13px;
+                color: #666666;
+                margin-bottom: 15px;
+            }
+            .customizeInputGroup{
+                font-size: 12px;
+                color: #666666;
+                margin-left: 10px;
+                label{
+                    width: 60px;
+                    text-align: right;
+                    display: inline-block;
+                    margin-right: 10px;
+                }
+                .el-select{
+                    width: 100px;
+                }
+                .el-textarea{
+                    width: calc(100% - 180px);
+                }
+            }
+            .textareaGroup{
+                width: 100%;
+                margin: 10px;
+                label{
+                    vertical-align: top;
+                }
+            }
+        }
+        .customizeRHFooter{
+            background: #F4F4F4;
+            button{
+                margin: 20px;
+                padding: 0px 30px;
+                background: #00AFE4;
+                border-radius: 4px;
+            }
         }
     }
 }

@@ -129,6 +129,7 @@
     </el-dialog>
     <el-dialog
       title="提示"
+      class="ComplainsBill"
       :visible.sync="isShow"
       width="900px">
       <ComplainsBillModal></ComplainsBillModal>      

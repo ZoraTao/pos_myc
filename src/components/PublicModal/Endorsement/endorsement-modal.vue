@@ -87,97 +87,97 @@ export default {
 </script>
 
 <style lang="scss">
-
-.el-dialog__body {
-    padding: 0;
-}
-.el-checkbox__label {
-    font-size: 12px;
-}
-.el-table th {
-    background: #fff !important;
-}
-label {
-    display: inline-block;
-    max-width: 100%;
-    margin-bottom: 5px;
-    font-weight: 700;
-}
-
-#endorsement{
-    .modal-content{
-        width: 550px;
-        margin: 0 auto;
+.endorsement{
+    .el-dialog__body {
+        padding: 0;
     }
-    .endorsementContent{
-        padding: 5px 30px;
-        overflow: hidden;
-        background: #fff;
-        .endorsementItem{
-            .am-ft-success{
-                color: #2FCC8F;
-            }
-            .am-ft-warn{
-                color: #FF9400;
-            }
-            .am-ft-error{
-                color: #F86161;
-            }
+    .el-checkbox__label {
+        font-size: 12px;
+    }
+    .el-table th {
+        background: #fff !important;
+    }
+    label {
+        display: inline-block;
+        max-width: 100%;
+        margin-bottom: 5px;
+        font-weight: 700;
+    }
+
+    #endorsement{
+        .modal-content{
+            width: 550px;
+            margin: 0 auto;
+        }
+        .endorsementContent{
+            padding: 5px 30px;
             overflow: hidden;
-            padding: 14px;
-            line-height: 24px;
-            .endorsementItemLeft{
-                min-width: 280px;
-                float: left;
-                div{
-                    overflow: hidden;
-                    b{
-                        float: left;
-                        font-size: 14px;
-                        color: #333333;
+            background: #fff;
+            .endorsementItem{
+                .am-ft-success{
+                    color: #2FCC8F;
+                }
+                .am-ft-warn{
+                    color: #FF9400;
+                }
+                .am-ft-error{
+                    color: #F86161;
+                }
+                overflow: hidden;
+                padding: 14px;
+                line-height: 24px;
+                .endorsementItemLeft{
+                    min-width: 280px;
+                    float: left;
+                    div{
+                        overflow: hidden;
+                        b{
+                            float: left;
+                            font-size: 14px;
+                            color: #333333;
+                        }
+                        a{
+                            float: left;
+                            color: #666;
+                        }
+                        p{
+                            float: right;
+                            font-size: 12px;
+                            color: #666666;
+                            b{
+                                float: initial;
+                                color: #000;
+                                font-size: 13px;
+                                margin-left: 1px;
+                            }
+                            span{
+                                color: #999;
+                                margin-left: 8px;
+                            }
+                        }
                     }
-                    a{
-                        float: left;
-                        color: #666;
+                }
+                .endorsementItemRight{
+                    float: right;
+                    min-width: 160px;
+                    span{
+
                     }
                     p{
-                        float: right;
-                        font-size: 12px;
-                        color: #666666;
-                        b{
-                            float: initial;
-                            color: #000;
-                            font-size: 13px;
-                            margin-left: 1px;
-                        }
-                        span{
-                            color: #999;
-                            margin-left: 8px;
-                        }
+                        color: #999999;
+                    }
+                    b{
+                        font-weight: 400;
+                        color: #333333;
+                        display: inline-block;
+                        width: 100%;
                     }
                 }
-            }
-            .endorsementItemRight{
-                float: right;
-                min-width: 160px;
-                span{
-
+                &:not(:last-child){
+                    border-bottom: 1px solid #EFEFEF;
                 }
-                p{
-                    color: #999999;
-                }
-                b{
-                    font-weight: 400;
-                    color: #333333;
-                    display: inline-block;
-                    width: 100%;
-                }
-            }
-            &:not(:last-child){
-                border-bottom: 1px solid #EFEFEF;
             }
         }
     }
 }
-
 </style>

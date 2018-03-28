@@ -227,254 +227,249 @@ export default {
 </script>
 
 <style lang="scss">
-.el-dialog__body {
-}
-.el-checkbox__label {
-    font-size: 12px;
-}
-.el-table th {
-    background: #fff !important;
-}
-label {
-    display: inline-block;
-    max-width: 100%;
-    margin-bottom: 5px;
-    font-weight: 700;
-}
-.newOptometryPhone{
-    overflow: hidden;
-    border-bottom: 1px solid #d8d8d8;
-    line-height: 29px;
-    background: #F8F8F8;
-    padding: 10px 24px;
-    div{
-        margin-right: 10px;
-    }
-    span,label,.el-input{
-        float: left;
-    }
-    label{
-        margin: 0;
-        font-size: 12px;
-        color: #666666;
-        font-weight: 400;
-        &:not(:nth-of-type(1)){
-            margin-left: 30px;
-        }
-    }
-    .el-input{
-        width: 100px;
-    }
-    .nopText{
-        float: left;
-        color: #333333;
-        margin-left: 5px;
-        font-weight: 400;
-        font-size: 12px;
-    }
-}
 .reprint{
-    .packageDetailButtonGroup{ 
-        padding: 10px;
-        background: #EEEEEE;
-        button{
-            border-radius: 4px;
-            width: 90px;
-            &:last-child{
-                background: #00AFE4;
-                border: none;
+    .el-dialog__body {
+    }
+    .el-checkbox__label {
+        font-size: 12px;
+    }
+    .el-table th {
+        background: #fff !important;
+    }
+    label {
+        display: inline-block;
+        max-width: 100%;
+        margin-bottom: 5px;
+        font-weight: 700;
+    }
+    .newOptometryPhone{
+        overflow: hidden;
+        border-bottom: 1px solid #d8d8d8;
+        line-height: 29px;
+        background: #F8F8F8;
+        padding: 10px 24px;
+        div{
+            margin-right: 10px;
+        }
+        span,label,.el-input{
+            float: left;
+        }
+        label{
+            margin: 0;
+            font-size: 12px;
+            color: #666666;
+            font-weight: 400;
+            &:not(:nth-of-type(1)){
+                margin-left: 30px;
             }
         }
-    }
-    .ant-modal-footer{
-        background: #eee;
-    }
-    .reprintContent{
-        padding: 0 24px 16px 24px;
-        min-height: 500px;
-        .reprintBasicInfo{
+        .el-input{
+            width: 100px;
+        }
+        .nopText{
+            float: left;
+            color: #333333;
+            margin-left: 5px;
+            font-weight: 400;
             font-size: 12px;
-            overflow: hidden;
-            div{
-                line-height: 30px;
-                width: 40%;
+        }
+    }
+    .reprint{
+        .packageDetailButtonGroup{ 
+            padding: 10px;
+            background: #EEEEEE;
+            button{
+                border-radius: 4px;
+                width: 90px;
+                &:last-child{
+                    background: #00AFE4;
+                    border: none;
+                }
+            }
+        }
+        .ant-modal-footer{
+            background: #eee;
+        }
+        .reprintContent{
+            padding: 0 24px 16px 24px;
+            min-height: 500px;
+            .reprintBasicInfo{
+                font-size: 12px;
                 overflow: hidden;
-                &:first-child{
+                div{
+                    line-height: 30px;
+                    width: 40%;
+                    overflow: hidden;
+                    &:first-child{
+                        width: 30%;
+                        text-align: left;
+                    }
+                    &:not(:last-child){
+                        float: left;
+                    }
+                    &:last-child{
+                        float: right;
+                        width: 30%;
+                        text-align: right;
+                    }
+                }
+            }
+            .reprintEwm{
+                width: 100%;
+                text-align: right;
+                img{
+                    margin-right: 40px;
+                }
+            }
+            .reprintShopNameTime{
+                overflow: hidden;
+                line-height: 30px;
+                font-size: 12px;
+                h2{
+                    float: left;
                     width: 30%;
                     text-align: left;
+                    font-size: 24px;
+                    color: #333;
+                    font-weight: 400;
                 }
-                &:not(:last-child){
+                p{
+                    width: 20%;
                     float: left;
+                    text-align: center;
                 }
-                &:last-child{
+                h3{
                     float: right;
                     width: 30%;
                     text-align: right;
+                    font-size: 20px;
+                    color: #333333;
                 }
             }
-        }
-        .reprintEwm{
-            width: 100%;
-            text-align: right;
-            img{
-                margin-right: 40px;
+            .reprintMemberInfo{
+                font-size: 12px;
+                margin-top: 3px;
+                p{
+                    float: left;
+                    margin-right: 50px;
+                    color: #666666;
+                    span{
+                        color: #333333;
+                    }
+                }
             }
-        }
-        .reprintShopNameTime{
-            overflow: hidden;
-            line-height: 30px;
-            font-size: 12px;
-            h2{
-                float: left;
-                width: 30%;
+            .prescriptionTable{
+                overflow: hidden;
+                width: 100%;
+                padding-top: 15px;
+                th{
+                    padding: 4px 8px;
+                    border-top: 1px solid #AAAAAA;
+                    border-bottom: 1px solid #AAAAAA;
+                    font-weight: bold;
+                }
+                td{
+                    padding: 6px 8px;
+                }
+                .el-table{
+                    border-bottom: 1px solid #AAAAAA;
+                }
+                .borderLeftAAA{
+                    border-left: 1px solid #AAAAAA;
+                }
+            }
+            .receiptsInfo{
+                height: 25px;
+                line-height: 25px;
+                border-bottom: 1px solid #AAAAAA;
+                font-size: 12px;
+                p{
+                    float: left;
+                    width: 23%;
+                    text-align: left;
+                    span{
+                        display: inline-block;
+                    }
+                    &:nth-of-type(n+3){
+                        width: 18%;
+                    }
+                }
+            }
+            .receiptsSalesTable{
+                .el-table{
+                    padding-top: 20px;
+                    border-bottom: 1px solid #AAAAAA;
+                }
+                th{
+                    border-bottom: 1px solid #AAAAAA;
+                    padding: 8px 8px;
+                    &:not(:first-child){
+                        text-align: center;
+                    }
+                }
+                td{
+                    padding: 8px 8px;
+                    &:not(:first-child){
+                        text-align: center;
+                    }
+                }
+            }
+            .receiptsRemark{
+                width: 100%;
+                overflow: hidden;
                 text-align: left;
-                font-size: 24px;
-                color: #333;
-                font-weight: 400;
-            }
-            p{
-                width: 20%;
-                float: left;
-                text-align: center;
-            }
-            h3{
-                float: right;
-                width: 30%;
-                text-align: right;
-                font-size: 20px;
-                color: #333333;
-            }
-        }
-        .reprintMemberInfo{
-            font-size: 12px;
-            margin-top: 3px;
-            p{
-                float: left;
-                margin-right: 50px;
-                color: #666666;
-                span{
-                    color: #333333;
+                height: 30px;
+                line-height: 30px;
+                border-bottom: 1px solid #AAAAAA;
+                p{
+                    font-size: 12px;
+                    color: #666666;
+                    padding-left: 8px;
+                    span{
+                        color: #333333;
+                    }
                 }
             }
-        }
-        .prescriptionTable{
-            overflow: hidden;
-            width: 100%;
-            padding-top: 15px;
-            th{
-                padding: 4px 8px;
-                border-top: 1px solid #AAAAAA;
-                border-bottom: 1px solid #AAAAAA;
-                font-weight: bold;
-            }
-            td{
-                padding: 6px 8px;
-            }
-            .el-table{
-                border-bottom: 1px solid #AAAAAA;
-            }
-            .borderLeftAAA{
-                border-left: 1px solid #AAAAAA;
-            }
-        }
-        .receiptsInfo{
-            height: 25px;
-            line-height: 25px;
-            border-bottom: 1px solid #AAAAAA;
-            font-size: 12px;
-            p{
-                float: left;
-                width: 23%;
+            .receiptsOtherRemark{
+                width: 100%;
+                overflow: hidden;
                 text-align: left;
-                span{
-                    display: inline-block;
-                }
-                &:nth-of-type(n+3){
-                    width: 18%;
-                }
-            }
-        }
-        .receiptsSalesTable{
-            .el-table{
-                padding-top: 20px;
+                height: 35px;
+                line-height: 35px;
                 border-bottom: 1px solid #AAAAAA;
-            }
-            th{
-                border-bottom: 1px solid #AAAAAA;
-                padding: 8px 8px;
-                &:not(:first-child){
-                    text-align: center;
+                p{
+                    font-size: 12px;
+                    color: #666666;
+                    float: left;
+                    margin-right: 35px;
+                    padding-left: 8px;
+                    span{
+                        font-size: 16px;
+                        color: #111111;
+                        font-weight: 500;
+                    }
                 }
             }
-            td{
-                padding: 8px 8px;
-                &:not(:first-child){
-                    text-align: center;
-                }
-            }
-        }
-        .receiptsRemark{
-            width: 100%;
-            overflow: hidden;
-            text-align: left;
-            height: 30px;
-            line-height: 30px;
-            border-bottom: 1px solid #AAAAAA;
-            p{
-                font-size: 12px;
-                color: #666666;
+            .receiptsCompanyInfo{
+                overflow: hidden;
+                line-height: 30px;
                 padding-left: 8px;
-                span{
-                    color: #333333;
+                .receiptsCompanySales{
+                    float: left;
+                    font-size: 12px;
+                    color: #666666;
+                    margin-right: 15px;
+                    span{
+                        color: #333333;
+                    }
+                }
+                .receiptsCompany30days{
+                    float: left;
+                    margin-left: 100px;
+                    margin-right: 15px;
                 }
             }
         }
-        .receiptsOtherRemark{
-            width: 100%;
-            overflow: hidden;
-            text-align: left;
-            height: 35px;
-            line-height: 35px;
-            border-bottom: 1px solid #AAAAAA;
-            p{
-                font-size: 12px;
-                color: #666666;
-                float: left;
-                margin-right: 35px;
-                padding-left: 8px;
-                span{
-                    font-size: 16px;
-                    color: #111111;
-                    font-weight: 500;
-                }
-            }
-        }
-        .receiptsCompanyInfo{
-            overflow: hidden;
-            line-height: 30px;
-            padding-left: 8px;
-            .receiptsCompanySales{
-                float: left;
-                font-size: 12px;
-                color: #666666;
-                margin-right: 15px;
-                span{
-                    color: #333333;
-                }
-            }
-            .receiptsCompany30days{
-                float: left;
-                margin-left: 100px;
-                margin-right: 15px;
-            }
-        }
-    }
-}   
-
-.reprint .ant-modal-footer{
-    padding: 0;
-    .packageDetailButtonGroup{
-        padding: 16px;
-    }
+    }   
 }
 </style>
