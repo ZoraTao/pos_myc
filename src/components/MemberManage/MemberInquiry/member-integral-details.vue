@@ -31,7 +31,8 @@
       layout=" prev, pager, next"
       :page-size="5"
       :total="count"
-      @current-change="getMemberPoints">
+      @current-change="handleCurrentChange"
+      :current-page.sync="nub">
     </el-pagination>
   </div>
 </template>
@@ -42,7 +43,9 @@
     data() {
       return {
         pointsList: [], //积分明细列表
-        count: 0
+        count: 0,
+        nub: 0,
+        size: 5
       }
     },
     created: function () {
@@ -59,8 +62,8 @@
             jsonObject: {
               memberCardId: '2054440',
               memberId: '2222767',
-              nub: '0',
-              size: '5'
+              nub: (this.nub==0?0:(this.nub-1)*this.size),
+              size: this.size
             },
             keyParams: {
               weChat: true,
@@ -78,6 +81,9 @@
             console.info(error)
           })
       },
+      handleCurrentChange:function(){
+        this.getMemberPoints();
+      }
     }
   }
 </script>
