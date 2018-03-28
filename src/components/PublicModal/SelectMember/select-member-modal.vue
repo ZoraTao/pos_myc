@@ -99,28 +99,28 @@ export default {
 <style lang="scss">
 
 .selectMember{
-.el-dialog__body {
-    padding: 10px 0;
-    padding-bottom: 0;
-    background: #efefef;
-}
-.el-tabs--border-card{
-    border:none !important;
-}
-.el-tabs--border-card>.el-tabs__header {
-    background-color: #efefef;
-    padding-left: 10px;
-}
-.el-tabs__item{
-    font-size: 12px;
-}
-.el-tabs__item.is-active{
-    color: #00AFE4 !important;
-    background: #fff !important;
-}
-.el-table th {
-    background: #fff !important;
-}
+    .el-dialog__body {
+        padding: 10px 0;
+        padding-bottom: 0;
+        background: #efefef;
+    }
+    .el-tabs--border-card{
+        border:none !important;
+    }
+    .el-tabs--border-card>.el-tabs__header {
+        background-color: #efefef;
+        padding-left: 10px;
+    }
+    .el-tabs__item{
+        font-size: 12px;
+    }
+    .el-tabs__item.is-active{
+        color: #00AFE4 !important;
+        background: #fff !important;
+    }
+    .el-table th {
+        background: #fff !important;
+    }
     th{
         background: #fff;
         text-align: center;

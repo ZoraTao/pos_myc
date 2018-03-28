@@ -379,7 +379,7 @@
         </div>
     </el-dialog>
     <el-dialog
-        custom-class="am-ft-center"
+        custom-class="am-ft-center CouponBarCode"
         :visible.sync="CouponBarCode"
         width="360px"
         center>
@@ -488,7 +488,7 @@
     <el-dialog class="endorsement" title="签批 (5)" :visible.sync="endorsement" width="600px">
         <EndorsementModal></EndorsementModal>
     </el-dialog>
-    <el-dialog class="reprint" title="签批 (5)" :visible.sync="reprint" width="900px">
+    <el-dialog class="reprint" title="补打" :visible.sync="reprint" width="900px">
         <ReprintModal></ReprintModal>
         <div class="receiptsData">
             <h4>补打记录</h4>

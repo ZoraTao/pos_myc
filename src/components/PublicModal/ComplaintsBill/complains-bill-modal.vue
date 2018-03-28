@@ -176,215 +176,216 @@ export default {
 
 <style lang="scss">
 @import "../../../reset";
-
-.w100{
-    width: 100%;
-}
-.content_box{
-    flex-direction: column;
-}
-.el-dialog__body {
-    padding: 0;
-}
-.el-checkbox__label {
-    font-size: 12px;
-}
-label {
-    display: inline-block;
-    max-width: 100%;
-    margin-bottom: 5px;
-    font-weight: 700;
-}
-.newOptometry{
-    padding: 0;
-    font-size: 12px;
-    .newOptometryPhone{
-        padding: 10px 15px;
-        overflow: hidden;
-        line-height: 29px;
-        .el-form-item{
-            float: left;
-            margin: 0;
-            height: 40px;
-            line-height: 40px;
-            font-size: 12px;
-            .el-form-item__label{
-                margin-right: 10px;
-                width: auto !important;
-            }
-            .el-form-item__content{
-                margin-left: 0 !important;
+.ComplainsBill{
+    .w100{
+        width: 100%;
+    }
+    .content_box{
+        flex-direction: column;
+    }
+    .el-dialog__body {
+        padding: 0;
+    }
+    .el-checkbox__label {
+        font-size: 12px;
+    }
+    label {
+        display: inline-block;
+        max-width: 100%;
+        margin-bottom: 5px;
+        font-weight: 700;
+    }
+    .newOptometry{
+        padding: 0;
+        font-size: 12px;
+        .newOptometryPhone{
+            padding: 10px 15px;
+            overflow: hidden;
+            line-height: 29px;
+            .el-form-item{
                 float: left;
-                margin-right: 20px;
-                .el-input{
-                    width: 100px;
+                margin: 0;
+                height: 40px;
+                line-height: 40px;
+                font-size: 12px;
+                .el-form-item__label{
+                    margin-right: 10px;
+                    width: auto !important;
                 }
+                .el-form-item__content{
+                    margin-left: 0 !important;
+                    float: left;
+                    margin-right: 20px;
+                    .el-input{
+                        width: 100px;
+                    }
+                }
+            }
+            .complainsMemberInfo{
+                overflow: hidden;
+                .cmInfoItem{
+                    float: left;
+                    font-size: 12px;
+                    color: #666666;
+                    margin-right: 10px;
+                    label{
+                        float: left;
+                        margin-right: 10px;
+                    }
+                    p{
+                        float: left;
+                        &:nth-of-type(2){
+                            margin-left: 10px;
+                        }
+                    }
+                }
+            }
+            label{
+                margin-right: 10px;
+            }
+            span,label{
+                float: left;
+            }
+            label{
+                margin: 0;
+                &:not(:nth-of-type(1)){
+                    margin-left: 30px;
+                }
+            }
+            .nopText{
+                float: left;
+                color: #333333;
+                margin-left: 5px;
+                font-size: 12px;
+                line-height: 40px;
             }
         }
-        .complainsMemberInfo{
+        .optometryMemo{
+            padding: 15px;
+            background: #fff;
             overflow: hidden;
-            .cmInfoItem{
-                float: left;
+            border-top: 1px solid #CCCCCC;
+            li{
+                width: 100%;
+            }
+            li:first-child{
                 font-size: 12px;
                 color: #666666;
-                margin-right: 10px;
-                label{
+                margin-top: 2px;
+            }
+        }
+    }   
+    .grayTable{
+        max-height: 120px;
+        overflow-y: scroll;
+        .el-table--small td, .el-table--small th{
+            padding: 4px 0;
+        }
+        .el-table--small th{
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            background: #EFEFEF !important;
+        }
+        .el-table--small td{
+            background: #F8F8F8 !important;
+        }
+    }
+    .whiteTable{
+        margin: 0 30px;
+        min-height: 300px;
+        .el-table--small td, .el-table--small th{
+            padding: 4px 0;
+            background: #fff !important;
+        }
+        .el-table--small th{
+            border-bottom: 1px solid #ccc;
+        }
+    }
+    .labelInput{
+        float: left;    
+        line-height: 32px;
+        label{
+            min-width: 50px;
+            float: left;
+        }
+        .el-textarea{
+            width: calc(100% - 100px);
+            float: left;
+        }
+        .el-input{
+            width: 110px;;
+            padding:0; 
+        }
+    }
+    .complaintsType{
+        h5{
+            font-size: 12px;
+            color: #666666;
+            margin: 0 10px;
+            font-weight: 400;
+        }
+        .ctBox{
+            overflow: hidden;
+            .ctLeft{
+                width: 120px;
+                float: left;
+                .ctGroup{
+                    text-align: center;
+                    width: 120px;
+                    height: 30px;
+                    line-height: 30px;
+                    margin-bottom: 10px;
+                    p{
+                        font-size: 14px;
+                        color: #999999;
+                        font-weight: bold;
+                    }
+                }
+            }
+            .ctRight{
+                width: calc(100% - 120px);
+                float: left;
+                .ctGroup{
+                    text-align: center;
                     float: left;
                     margin-right: 10px;
-                }
-                p{
-                    float: left;
-                    &:nth-of-type(2){
-                        margin-left: 10px;
+                    margin-bottom: 10px;
+                    .ctButton{
+                        width: 120px;
+                        height: 30px;
+                        line-height: 30px;
+                        background: #FFFFFF;
+                        border: 1px solid #E1E1E1;
+                        border-radius: 4px;
                     }
                 }
             }
         }
-        label{
-            margin-right: 10px;
-        }
-        span,label{
-            float: left;
-        }
-        label{
-            margin: 0;
-            &:not(:nth-of-type(1)){
-                margin-left: 30px;
-            }
-        }
-        .nopText{
-            float: left;
-            color: #333333;
-            margin-left: 5px;
-            font-size: 12px;
-            line-height: 40px;
-        }
     }
-    .optometryMemo{
-        padding: 15px;
-        background: #fff;
-        overflow: hidden;
-        border-top: 1px solid #CCCCCC;
-        li{
-            width: 100%;
-        }
-        li:first-child{
-            font-size: 12px;
-            color: #666666;
-            margin-top: 2px;
-        }
-    }
-}   
-.grayTable{
-    max-height: 120px;
-    overflow-y: scroll;
-    .el-table--small td, .el-table--small th{
-        padding: 4px 0;
-    }
-    .el-table--small th{
-        border-top: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
-        background: #EFEFEF !important;
-    }
-    .el-table--small td{
-        background: #F8F8F8 !important;
-    }
-}
-.whiteTable{
-    margin: 0 30px;
-    min-height: 300px;
-    .el-table--small td, .el-table--small th{
-        padding: 4px 0;
-        background: #fff !important;
-    }
-    .el-table--small th{
-        border-bottom: 1px solid #ccc;
-    }
-}
-.labelInput{
-    float: left;    
-    line-height: 32px;
-    label{
-        min-width: 50px;
-        float: left;
-    }
-    .el-textarea{
-        width: calc(100% - 100px);
-        float: left;
-    }
-    .el-input{
-        width: 110px;;
-        padding:0; 
-    }
-}
-.complaintsType{
-    h5{
-        font-size: 12px;
-        color: #666666;
-        margin: 0 10px;
-        font-weight: 400;
-    }
-    .ctBox{
-        overflow: hidden;
-        .ctLeft{
-            width: 120px;
-            float: left;
-            .ctGroup{
-                text-align: center;
-                width: 120px;
-                height: 30px;
-                line-height: 30px;
-                margin-bottom: 10px;
-                p{
-                    font-size: 14px;
-                    color: #999999;
-                    font-weight: bold;
-                }
-            }
-        }
-        .ctRight{
-            width: calc(100% - 120px);
-            float: left;
-            .ctGroup{
-                text-align: center;
-                float: left;
-                margin-right: 10px;
-                margin-bottom: 10px;
-                .ctButton{
-                    width: 120px;
-                    height: 30px;
-                    line-height: 30px;
-                    background: #FFFFFF;
-                    border: 1px solid #E1E1E1;
-                    border-radius: 4px;
-                }
-            }
-        }
-    }
-}
 
-.wid80 {
-    width: 80px !important;
-}
+    .wid80 {
+        width: 80px !important;
+    }
 
-.over_scroll {
-    overflow: auto;
-}
+    .over_scroll {
+        overflow: auto;
+    }
 
-.packageDetailButtonGroup{ 
-    padding:20px 10px;
-    background: #EEEEEE;
-    text-align: right;
-    button{
-        border-radius: 4px;
-        width: 90px;
-        &:first-child{
-            
-        }
-        &:last-child{
-            background: #00AFE4;
-            border: none;
-            margin-right: 20px;
+    .packageDetailButtonGroup{ 
+        padding:20px 10px;
+        background: #EEEEEE;
+        text-align: right;
+        button{
+            border-radius: 4px;
+            width: 90px;
+            &:first-child{
+                
+            }
+            &:last-child{
+                background: #00AFE4;
+                border: none;
+                margin-right: 20px;
+            }
         }
     }
 }
