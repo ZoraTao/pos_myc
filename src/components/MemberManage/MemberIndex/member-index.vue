@@ -39,24 +39,14 @@
         </el-col>
       </el-row>
     </div>
-    <!--<el-dialog class="addMember" title="新增会员" :visible.sync="addMember" width="800px">-->
-      <!--<AddMember></AddMember>-->
-      <!--<div class="packageDetailButtonGroup">-->
-          <!--<el-button @click="addMember = false">取消</el-button>-->
-          <!--<el-button type="primary" @click="addMember = false">确定</el-button>-->
-      <!--</div>-->
-    <!--</el-dialog>-->
   </div>
 </template>
 
 <script>
-import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
   export default {
     name: "memberIndex",
     data() {
-      return {
-        addMember:false
-      }
+      return {}
     },
     methods: {
       //新增会员
@@ -92,9 +82,7 @@ import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
         })
       }
     },
-    components:{
-      AddMember
-    }
+    components:{}
 
   }
 </script>
