@@ -217,6 +217,7 @@ export default {
 </script>
 
 <style lang="scss">
+.addMember{
     .addMemberContent{
         padding-top: 20px;
         .addMemberRow{
@@ -271,5 +272,5 @@ export default {
         margin-bottom: 10px;
       }
     }
-
+}
 </style>

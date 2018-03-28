@@ -51,7 +51,7 @@
                         <el-button >自带商品</el-button>
                     </el-form-item>
                     <el-form-item class="ParamInput ParamButton">
-                        <el-button >其他费用</el-button>
+                        <el-button @click="otherExpense=true">其他费用</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -118,10 +118,10 @@
             <div class="fn-left">
                 <el-form ref="form">
                     <el-form-item class="ParamButton">
-                        <el-button>折扣券</el-button>
+                        <el-button @click="CouponBarCode=true">折扣券</el-button>
                     </el-form-item>
                     <el-form-item class="ParamButton">
-                        <el-button >优惠券</el-button>
+                        <el-button>优惠券</el-button>
                     </el-form-item>
                     <el-form-item class="ParamButton">
                         <el-button >促销活动</el-button>
@@ -130,7 +130,7 @@
             </div>
             <div class="fn-left singleDiscount">
                 <p><span>整单折扣 :</span>
-                <el-input class="" placeholder=""></el-input> 折
+                <el-input class="" placeholder="" @change="permission=true"></el-input> 折
                 </p>
             </div>
             <div class="fn-right singleDiscount">
@@ -208,11 +208,11 @@
                 <el-button type="primary">赠送[S]</el-button>
                 <el-button type="primary">退货[T]</el-button>
                 <el-button type="primary">换货</el-button>
-                <el-button type="primary">补打</el-button>
+                <el-button type="primary" @click="reprint=true">补打</el-button>
                 <el-button type="primary">预览</el-button>
                 <el-button type="primary" @click="showGetBill=true">取单</el-button>
                 <el-badge :value="3" class="item">
-                    <el-button type="primary">签批</el-button>
+                    <el-button type="primary" @click="endorsement=true">签批</el-button>
                 </el-badge>
             </div>
             <div class="fn-right">
@@ -344,14 +344,14 @@
     <el-dialog class="selectMember" title="选择会员 (23)" :visible.sync="showSelectMember" width="62.5%">
         <SelectMemberModal></SelectMemberModal>
     </el-dialog>
-    <el-dialog title="新增验光单" :visible.sync="showNewOptometry" width="900px">
+    <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="900px">
         <NewOptometryModal></NewOptometryModal>
         <div class="packageDetailButtonGroup">
-            <el-button @click="centerDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="centerDialogVisible = false">保 存</el-button>
+            <el-button @click="showNewOptometry = false">取 消</el-button>
+            <el-button type="primary" @click="showNewOptometry = false">保 存</el-button>
         </div>
     </el-dialog>
-    <el-dialog title="选择右镜片" :visible.sync="showSelectRH">
+    <el-dialog class="selectRH" title="选择右镜片" :visible.sync="showSelectRH">
         <SelectRHModal></SelectRHModal>
     </el-dialog>
     <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="700px">
@@ -452,7 +452,7 @@
                 width="224"
                 trigger="hover">
                         <ul class="endorser">
-                            <li @click="showModal(7)"><span>SP001</span><p>张婷婷</p></li>
+                            <li @click="loginUserPermission=true;permission=false;"><span>SP001</span><p>张婷婷</p></li>
                             <li><span>SP001</span><p>张婷婷</p></li>
                             <li><span>SP001</span><p>张婷婷</p></li>
                             <li><span>SP001</span><p>张婷婷</p></li>
@@ -720,7 +720,7 @@ margin-left: 10px;
     }
 }
 .content_box{
-    height: calc(100% - 30px) !important;
+    // height: calc(100% - 30px) !important;
     width: 100%;
     padding: 15px;
     display: flex;

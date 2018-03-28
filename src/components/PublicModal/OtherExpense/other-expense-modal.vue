@@ -109,51 +109,52 @@ export default {
 </script>
 
 <style lang="scss">
+.otherExpense{
+    .el-dialog__body {
+        padding: 0;
+    }
+    .el-checkbox__label {
+        font-size: 12px;
+    }
+    .el-table th {
+        background: #fff !important;
+    }
+    label {
+        display: inline-block;
+        max-width: 100%;
+        margin-bottom: 5px;
+        font-weight: 700;
+    }
 
-.el-dialog__body {
-    padding: 0;
-}
-.el-checkbox__label {
-    font-size: 12px;
-}
-.el-table th {
-    background: #fff !important;
-}
-label {
-    display: inline-block;
-    max-width: 100%;
-    margin-bottom: 5px;
-    font-weight: 700;
-}
-
-#otherExpense{
-    padding: 20px;
-    .otherExpenseTotal{
-        height: 35px;
-        line-height: 35px;
-        p{
-            font-size: 12px;
-            color: #666666;
-            float: right;
-            margin-right: 70px;
-            span{
-                margin-left:5px;
-                font-weight: bold;
-                font-size: 13px;
-                color: #000000;
+    #otherExpense{
+        padding: 20px;
+        .otherExpenseTotal{
+            height: 35px;
+            line-height: 35px;
+            p{
+                font-size: 12px;
+                color: #666666;
+                float: right;
+                margin-right: 70px;
+                span{
+                    margin-left:5px;
+                    font-weight: bold;
+                    font-size: 13px;
+                    color: #000000;
+                }
             }
         }
-    }
-    .otherExpenseButtonGroup{
-        overflow: hidden;
-        width: 100%;
-        padding: 20px;
-        padding-top: 10px;
-        button{
-            width: 90px;
-            height: 30px;
-            line-height: 30px;
-            margin-left: 10px;
+        .otherExpenseButtonGroup{
+            overflow: hidden;
+            width: 100%;
+            padding: 20px;
+            padding-top: 10px;
+            button{
+                width: 90px;
+                height: 30px;
+                line-height: 30px;
+                margin-left: 10px;
+            }
         }
     }
 }

@@ -89,19 +89,20 @@ export default {
 </script>
 
 <style lang="scss">
-
-.el-dialog__body {
-    padding: 15px;
-}
-.el-table th {
-    background: #fff !important;
-}
-.el-pagination__total{
-    float: left;
-}
-#selectRH{
-    .w150{
-        width: 150px;
+.selectRH{
+    .el-dialog__body {
+        padding: 15px;
+    }
+    .el-table th {
+        background: #fff !important;
+    }
+    .el-pagination__total{
+        float: left;
+    }
+    #selectRH{
+        .w150{
+            width: 150px;
+        }
     }
 }
 </style>
