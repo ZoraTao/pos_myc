@@ -1,30 +1,37 @@
 <template>
   <div class="integral-det-box">
     <el-table
-      :data="tableData"
+      :data="pointsList"
       stripe
       size="small"
       align="left"
       style="width: 100%;margin-bottom: 10px;">
       <el-table-column
-        prop="a"
         label="奖励积分"
         width="100px">
         <template slot-scope="scope">
-          <p v-if="scope.row.a > 0" class="am-ft-orange">{{scope.row.a}}</p>
-          <p v-if="scope.row.a < 0 " class="am-ft-blue">{{scope.row.a}}</p>
+          <p v-if="scope.row.pointAmount < 0 " class="am-ft-blue">{{scope.row.pointAmount}}</p>
+          <p v-else class="am-ft-orange">+{{scope.row.pointAmount}}</p>
         </template>
       </el-table-column>
       <el-table-column
-        prop="b"
+        prop="type"
         label="奖励类型"
         width="100px">
       </el-table-column>
       <el-table-column
-        prop="c"
+        prop="createTime"
         label="奖励时间">
       </el-table-column>
     </el-table>
+    <!--分页-->
+    <el-pagination
+      background
+      class="am-ft-right mgt10"
+      layout=" prev, pager, next"
+      :page-size="5"
+      :total="count">
+    </el-pagination>
   </div>
 </template>
 
@@ -33,16 +40,8 @@
     name: "member-integral-details",
     data() {
       return {
-        tableData: [{
-          a: `+100`,
-          b: '购物奖励',
-          c: '2017-09-21  18:21:00'
-        },
-        {
-          a: `-500`,
-          b: '注册奖励',
-          c: '2017-09-21  18:21:00'
-        }]
+        pointsList: [], //积分明细列表
+        count: 0
       }
     },
     created: function () {
@@ -56,18 +55,23 @@
           url: 'http://myc.qineasy.cn/points-api/pointsFlow/getMemberPointLow',
           method: 'post',
           params: {
-            jsonObject: {},
+            jsonObject: {
+              memberCardId: '2054440',
+              memberId: '2222767',
+              nub: '0',
+              size: '5'
+            },
             keyParams: {
               weChat: true,
-              memberCardId: '2213763',
-              memberId: '2246600',
-              nub: '0',
-              size: '0',
+              userId: '8888',
+              orgId: '11387'
             }
           }
         })
           .then(function (response) {
-            console.info(response.data)
+            console.info(response.data.data)
+            that.pointsList = response.data.data.pointList;
+            that.count = parseInt(response.data.data.count);
           })
           .catch(function (error) {
             console.info(error)

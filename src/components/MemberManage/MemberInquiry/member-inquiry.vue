@@ -117,6 +117,9 @@
     <el-row class="inquiry-row content-info-box" v-if="memberList.length > 0">
       <el-col :span="24" class="table-wrap">
         <!--多个数据时显示-->
+        <el-col :span="24">
+          <h2 class="am-ft-16 mgb15">查询结果 ({{memberList.length}})</h2>
+        </el-col>
         <el-table
           :data="memberList"
           stripe
@@ -314,6 +317,7 @@
           }
         })
           .then(function (response) {
+            console.info(response.data.data)
             that.memberList = response.data.data.memberList;
           })
           .catch(function (error) {
