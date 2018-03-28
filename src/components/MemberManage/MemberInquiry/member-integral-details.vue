@@ -30,7 +30,9 @@
       class="am-ft-right mgt10"
       layout=" prev, pager, next"
       :page-size="5"
-      :total="count">
+      :total="count"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage">
     </el-pagination>
   </div>
 </template>
@@ -41,7 +43,11 @@
     data() {
       return {
         pointsList: [], //积分明细列表
-        count: 0
+        count: 0,
+        currentPage: 1,
+        pageSize: 5,
+        nub: 0,
+        size: 5
       }
     },
     created: function () {
@@ -49,7 +55,7 @@
     },
     methods: {
       //查询积分明细
-      getMemberPoints(){
+      getMemberPoints(currentNum,pageNum){
         var that = this;
         that.$axios({
           url: 'http://myc.qineasy.cn/points-api/pointsFlow/getMemberPointLow',
@@ -58,8 +64,8 @@
             jsonObject: {
               memberCardId: '2054440',
               memberId: '2222767',
-              nub: '0',
-              size: '5'
+              nub: currentNum,
+              size: pageNum
             },
             keyParams: {
               weChat: true,
@@ -76,7 +82,14 @@
           .catch(function (error) {
             console.info(error)
           })
-      }
+      },
+      //页码变更
+      handleCurrentChange: function(val) {
+        var that = this;
+        that.currentPage = val;//当前页
+        that.getMemberPoints(that.currentPage, that.pagesize);
+        console.info('当前页'+ val);
+      },
     }
   }
 </script>
