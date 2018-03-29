@@ -4,10 +4,21 @@
 
         <div class="fn-left mgt4">
             <span class="member">会员:</span>
-            <el-input class="" v-model="searchModel" placeholder="卡号/姓名/手机号"></el-input>
+            <el-input class="" v-model="memberInfo" placeholder="卡号/姓名/手机号"></el-input>
+        </div>
+        <div class="fn-left mgt4 mgl20">
+            <span class="member">验光师:</span>
+            <el-select style="width:90px" v-model="value" placeholder="请选择">
+                <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>         
         </div>
 
-        <div class="fn-left mgt4 mgl30">
+        <div class="fn-left mgt4 mgl30" @click="getOrderList">
             <button class="col_blue_bg_white find_btn">
                 查询
             </button>
@@ -22,7 +33,7 @@
     </div>
     <div class="optometry_content optometry_content">
         <!--查询之前-->
-        <div v-show="searchModel==''">
+        <div v-show="listData.length==0">
             <ul class="find_before">
                 <li class="optometry_qs_img">
                     <img src="http://myc-oms.oss-cn-hangzhou.aliyuncs.com/img%2Foptometry_qs.png" />
@@ -30,40 +41,40 @@
                 <li class="optometry_qs_text">
                     输入会员信息查询验光单
                 </li>
-                <li class="optometry_qs_text">
+                <!-- <li class="optometry_qs_text">
                     未查询到验光单
-                </li>
+                </li> -->
                 <li>
-                    <button class="add_btn bg_white_col_blue">
+                <button class="add_btn bg_white_col_blue">
                 + 新增验光单
               </button>
                 </li>
             </ul>
         </div>
         <!--验光列表-->
-        <div v-show="showDiv==='2'&&searchModel!=''&&searchModel!='neikami'">
+        <div v-show="listData.length>1&&detailData.length==0">
             <div class="list_name">验光列表(23)</div>
             <el-table
-                :data="data"
+                :data="listData"
                 size="small"
                 align="left"
                 style="width: 100%;margin-bottom:10px;">
                 <el-table-column
-                prop="id"
+                prop="memberId"
                 label="会员ID"
                 width="180">
                 </el-table-column>
                 <el-table-column
-                prop="name"
+                prop="memberName"
                 label="姓名"
                 width="180">
                 </el-table-column>
                 <el-table-column
-                prop="telephone"
+                prop="mobile"
                 label="手机号">
                 </el-table-column>
                 <el-table-column
-                prop="time"
+                prop="prescriptionTime"
                 label="验光时间">
                 </el-table-column>
                 <el-table-column
@@ -71,7 +82,7 @@
                 label="验光师">
                 </el-table-column>
                 <el-table-column
-                prop="origin"
+                prop="source"
                 label="来源">
                 </el-table-column>
                 <el-table-column
@@ -85,11 +96,14 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="1000">
+            :page-size="5"
+            :total="count"
+            @current-change="getOrderList"
+            :current-page.sync="nub">
             </el-pagination>            
         </div>
         <!--验光单一条数据详情-->
-        <optometryOrderCu v-if="searchModel=='neikami'"></optometryOrderCu>
+        <optometryOrderCu :memberDet="''" :memberInfo="detailData" :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
     </div>
 </div>
 </template>
@@ -101,30 +115,73 @@ import optometryOrderCu from '../optometryOrderCu/optometry-order-cu.vue'
         data() {
             return {
                 showDiv:"2",
-                searchModel:"",
-                data : [{
-                id    : '12341234',
-                name   : '张三',
-                telephone    : 15757179646,
-                time: '2017-12-14 12:26:26',
-                optometrist: '毛源昌湖滨店 张三',
-                origin: '本店验光',
-                }]
+                memberInfo:"",
+                listData : [],
+                listUrl:"http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsList",
+                deatilUrl:"http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptions",
+                detailData:[],
+                eyesData:[],
+                options: [],
+                value: '',
+                count: 0,
+                nub: 0,
+                size: 5
             };
         },
         components:{
             optometryOrderCu
         },
         created: function() {
-            for (var i = 0; i < 10; i++) {
-                    this.data.push({
-                    id    : '12341234',
-                    name   : '张三',
-                    telephone    : 15757179646,
-                    time: '2017-12-14 12:26:26',
-                    optometrist: '毛源昌湖滨店 张三',
-                    origin: '本店验光',
-                });
+            this.getOrderList();
+        },
+        methods:{
+            getOrderList() {
+                var that = this;
+                that.$axios({
+                    url: this.listUrl,
+                    method: 'post',
+                    params: {
+                        jsonObject: {
+                            memberId: this.memberInfo,
+                            nub: (this.nub==0?0:(this.nub-1)*this.size),
+                            size: this.size
+                        },
+                        keyParams: {
+                            weChat: true,
+                            userId: '8888',
+                            orgId: '11387'
+                        }
+                    }
+                })
+                .then(function (response) {
+                    if(response.data.data.list.length>1){
+                        that.listData=response.data.data.list;
+                        that.count=response.data.data.count;
+                    }else if(response.data.data.list.length==1){
+                        that.getMemberDetail(response.data.data.list[0].prescriptionId);
+                    }
+                })
+            },
+            getMemberDetail(id) {
+                var that = this;
+                that.$axios({
+                    url: this.deatilUrl,
+                    method: 'post',
+                    params: {
+                        jsonObject: {
+                            prescriptionId: id,
+                        },
+                        keyParams: {
+                            weChat: true,
+                            userId: '8888',
+                            orgId: '11387'
+                        }
+                    }
+                })
+                .then(function (response) {
+                    that.detailData=response.data.data.prescriptions;
+                    that.eyesData=response.data.data.eyes;
+                })
             }
         }
     };
@@ -197,7 +254,7 @@ import optometryOrderCu from '../optometryOrderCu/optometry-order-cu.vue'
     position: relative;
     margin-top: 10px;
     width: 100%;
-    height: calc(100% - 123px);
+    height: 100%;
     background: white;
     padding: 11px;
     overflow-y: auto;

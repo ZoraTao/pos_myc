@@ -266,9 +266,16 @@
         showDiv: "2",
       };
     },
-    props: ['memberDet', 'memberInfo'],
+    props: ['memberDet', 'memberInfo','eyes'],
     created: function () {
-      this.getOptometryRecord();
+      console.log(this.eyes&&this.eyes!='')
+      if(this.eyes&&this.eyes!=''){
+        this.eyesData=this.eyes;
+        this.userInfo=this.memberInfo;
+        this.setData();
+      }else{
+        this.getOptometryRecord();
+      }
     },
     methods: {
       getOptometryRecord() {
@@ -290,21 +297,25 @@
             that.eyesData = response.data.data.eyes; //左右眼数据
             that.userInfo = response.data.data.prescriptions; //检查数据
             //检影数据
-            that.data1 = that.eyesData[0].value;
-            //主观数据
-            that.data2 = that.eyesData[1].value;
-            //远用数据
-            that.data3 = that.eyesData[2].value;
-            //近用数据
-            that.data4 = that.eyesData[3].value;
-            //隐形数据
-            that.data5 = that.eyesData[5].value;
-            //渐进数据
-            that.data6 = that.eyesData[4].value;
+            that.setData()
           })
           .catch(function (error) {
             console.info(error)
           })
+      },
+      setData:function(){
+          var that=this;
+          that.data1 = that.eyesData[0].value;
+          //主观数据
+          that.data2 = that.eyesData[1].value;
+          //远用数据
+          that.data3 = that.eyesData[2].value;
+          //近用数据
+          that.data4 = that.eyesData[3].value;
+          //隐形数据
+          that.data5 = that.eyesData[5].value;
+          //渐进数据
+          that.data6 = that.eyesData[4].value;
       }
     }
   };
