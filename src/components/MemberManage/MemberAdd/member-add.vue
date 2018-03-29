@@ -1,7 +1,7 @@
 <template>
   <div class="add-member-box">
-    <AddMember></AddMember>
-    <el-button type="primary" size="small" class="mgt20 mgl20">保存并提交</el-button>
+    <AddMember v-on:listenToChild="showData"></AddMember>
+    <el-button type="primary" size="small" class="mgt20 mgl20" :submit="true">保存并提交</el-button>
   </div>
 </template>
 
@@ -15,6 +15,12 @@
     },
     data() {
       return {}
+    },
+    methods: {
+      //从子组件取到的数据
+      showData(data){
+        console.info(data)
+      }
     }
   }
 </script>
