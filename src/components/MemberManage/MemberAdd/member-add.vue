@@ -1,7 +1,7 @@
 <template>
   <div class="add-member-box">
-    <AddMember v-on:listenToChild="showData"></AddMember>
-    <el-button type="primary" size="small" class="mgt20 mgl20" :submit="true">保存并提交</el-button>
+    <AddMember :submit="isSubmit" v-on:listenToChild="showData"></AddMember>
+    <el-button type="primary" size="small" class="mgt20 mgl20" @click="isSubmit=!isSubmit">保存并提交</el-button>
   </div>
 </template>
 
@@ -14,7 +14,9 @@
       AddMember
     },
     data() {
-      return {}
+      return {
+        isSubmit:false,
+      }
     },
     methods: {
       //从子组件取到的数据

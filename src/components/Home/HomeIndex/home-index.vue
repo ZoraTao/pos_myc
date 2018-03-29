@@ -17,31 +17,31 @@
         <div class="hcNumItem">
           <h3>120</h3>
           <p>今日待取件(单)</p>
-        </div>    
+        </div>
         <div class="hcNumItem" v-on:click="goBills(1)">
           <h3 class="am-ft-red">6</h3>
           <p>超期单据(单)</p>
-        </div>    
+        </div>
         <div class="hcNumItem" v-on:click="goBills(2)">
           <h3>12</h3>
           <p>即将到期隐形镜(盒)</p>
-        </div>    
+        </div>
         <div class="hcNumItem">
           <h3>9</h3>
           <p>将到期不可售隐形镜(盒)</p>
-        </div>    
+        </div>
         <div class="hcNumItem">
           <h3>21</h3>
           <p>待回访客户(个)</p>
-        </div>        
+        </div>
         <div class="hcNumItem" v-on:click="goBills(3)">
           <h3>9</h3>
           <p>验光预约(人)</p>
-        </div>        
+        </div>
         <div class="hcNumItem" @click="dialogAptitudeDue = true">
           <h3>120</h3>
           <p>资质即将到期</p>
-        </div>      
+        </div>
       </div>
     </div>
     <div class="homeMid">
@@ -51,7 +51,7 @@
       </div>
       <div class="hcBottom">
           <div class="hcGgItem">
-            <img src="" class="fn-left"/>
+            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/logo1.png" class="fn-left"/>
             <div class="fn-left">
               <p>毛源昌眼镜门店销售管理系统全面升级</p>
               <span>2017-12-08 09:09:12</span>
@@ -134,7 +134,7 @@ import AptitudeDue from '../../Bills/aptitudeDue/aptitudeDue.vue'
 export default {
   name: 'Home',
   data () {
-    return { 
+    return {
       dialogAptitudeDue: false,
     }
   },

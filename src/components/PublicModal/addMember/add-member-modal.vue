@@ -193,7 +193,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <!--<el-button type="primary" size="small" @click="sendToParent">传值</el-button>-->
+    <!-- <el-button type="primary" size="small" @click="sendToParent">传值</el-button> -->
   </div>
 </template>
 
@@ -239,17 +239,20 @@
     },
     props: ['submit'],
     created: function () {
-      this.isSubmit = this.submit;
+    },
+    beforeUpdate:function(){
+      this.isSubmit=this.submit;
     },
     methods: {
       //向父组件传送的数据
       sendToParent(){
+        console.log('1')
         this.$emit('listenToChild',this.addMemberForm)
       }
     },
     watch: {
       isSubmit: function (val) {
-        if(this.val==true){
+        if(val==true){
           this.sendToParent()
         }
       }
