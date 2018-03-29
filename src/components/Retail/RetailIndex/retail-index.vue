@@ -24,7 +24,7 @@
 export default {
   name: 'Home',
   data () {
-    return { 
+    return {
         icons:[
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_yanguangdan.png',
@@ -62,13 +62,15 @@ export default {
             'line':false,
             'text':'售后'
             }
-        ]        
+        ]
     }
   },
   methods:{
     changeRoute:function(item){
-        this.$router.push(item.link)
-    }
+        this.$router.push(item.link);
+
+    },
+
   }
 }
 </script>

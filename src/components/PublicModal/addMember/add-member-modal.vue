@@ -193,7 +193,8 @@
         </el-col>
       </el-row>
     </el-form>
-    <!-- <el-button type="primary" size="small" @click="sendToParent">传值</el-button> -->
+
+    <input type="hidden" v-model="submit"/>
   </div>
 </template>
 
@@ -246,7 +247,6 @@
     methods: {
       //向父组件传送的数据
       sendToParent(){
-        console.log('1')
         this.$emit('listenToChild',this.addMemberForm)
       }
     },

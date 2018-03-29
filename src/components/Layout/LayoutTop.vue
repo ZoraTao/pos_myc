@@ -4,12 +4,9 @@
 
     <div class="tab-box">
       <ul>
-        <li class="tab-item active">
-          首页
-        </li>
-        <li class="tab-item">
-          开单
-          <i class="el-icon-close"></i>
+        <li class="tab-item" v-for="(i,index) in item" v-bind:class="{ active:i.isActive }" @click="changeTab(i)">
+          {{i.name}}
+          <i v-if="i.name != '首页'" class="el-icon-close" @click="closeTab(i, index)"></i>
         </li>
       </ul>
       <div class="header-top-right">
@@ -49,7 +46,46 @@
 export default {
   name: 'LayoutTop',
   data () {
-    return { }
+    return {
+      item: [{
+        name: '首页',
+        url: '',
+        isActive: true
+      },{
+        name: '开单',
+        url: '',
+        isActive: false
+      },
+      {
+        name: '收银',
+        url: '',
+        isActive: false
+      }]
+    }
+  },
+  methods: {
+    //切换tab
+    changeTab(item) {
+      this.item.forEach(function(element) {
+        element.isActive = false;
+        if (element == item) {
+          element.isActive = true;
+        }
+      });
+    },
+    //关闭tab
+    closeTab(i,index) {
+      this.item.splice(index,1);
+
+      if(this.item[index] != undefined){
+        this.item[index].isActive= true;
+      }else {
+        this.item[index-1].isActive= true;
+      }
+    }
+  },
+  created: {
+
   }
 }
 </script>
