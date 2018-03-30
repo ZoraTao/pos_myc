@@ -5,7 +5,7 @@
     </div>
     <div class="retailContent">
         <ul class="small_icon">
-            <li v-for="item of icons" :key="item.text" v-on:click="changeRoute(item)">
+            <li v-for="(item, index) of icons" :key="item.text"  @click="createTab(index,item)">
                 <div class="fn_left w_50 linkSrc">
                     <img :src="item.src" />
                     <p class="icon_text">{{item.text}}</p>
@@ -20,7 +20,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'Home',
   data () {
@@ -66,11 +65,10 @@ export default {
     }
   },
   methods:{
-    changeRoute:function(item){
-        this.$router.push(item.link);
-
-    },
-
+    createTab(key,label) {
+      this.$router.push(label.link);
+      this.$bus.$emit('createTab', label);
+    }
   }
 }
 </script>

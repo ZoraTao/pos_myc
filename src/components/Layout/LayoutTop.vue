@@ -42,7 +42,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'LayoutTop',
   data () {
@@ -51,17 +50,19 @@ export default {
         name: '首页',
         url: '',
         isActive: true
-      },{
-        name: '开单',
-        url: '',
-        isActive: false
-      },
-      {
-        name: '收银',
-        url: '',
-        isActive: false
       }]
     }
+  },
+  created() {
+    this.$bus.$on('createTab', function(data) {
+      // this.item.push({
+      //   name: data.text,
+      //   url: data.link,
+      //   isActive: data.line
+      // });
+      console.log('I get it');
+      console.log(data);
+    });
   },
   methods: {
     //切换tab
@@ -83,9 +84,6 @@ export default {
         this.item[index-1].isActive= true;
       }
     }
-  },
-  created: {
-
   }
 }
 </script>
