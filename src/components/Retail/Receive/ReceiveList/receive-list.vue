@@ -6,7 +6,7 @@
 
         </ul>
 
-        <!-- 代发货 -->
+        <!-- 待发出 -->
         <div class="content am-bg-white" v-if="srcNum==='1'">
             <ul class="clearfix cashier_top">
                 <li class="fn-left">
@@ -184,7 +184,7 @@
             </div>
         </div>
 
-        <!-- 代收件 -->
+        <!-- 待收件 -->
         <div class="content am-bg-white" v-if="srcNum==='2'">
 
             <ul class="clearfix cashier_top">
@@ -552,7 +552,7 @@ import ReceiveModal from '../ReceiveModal/receive-modal.vue'
 export default {
   name: 'ReceiveList',
   data () {
-    return { 
+    return {
         options: [{
           value: '选项1',
           label: '黄金糕'
@@ -561,12 +561,12 @@ export default {
         showReceive:false,
         srcNum:'2',
         tabs:[{
-            'value':'收银',
+            'value':'待发出',
             'isActived':true,
             'srcNum':'1'
         },
         {
-            'value':'欠还款',
+            'value':'待收件',
             'isActived':false,
             'srcNum':'2'
         },
@@ -815,7 +815,7 @@ export default {
 
 /* 全部 */
 
-:host ::ng-deep .ant-table-thead>tr>th {
+:host .ant-table-thead>tr>th {
     background: #f4f4f4;
 }
 
@@ -838,7 +838,7 @@ export default {
 	border-bottom-right-radius: 5px;*/
 }
 
-:host ::ng-deep .ant-modal-header {
+:host .ant-modal-header {
     background: url("http://myc-oms.oss-cn-hangzhou.aliyuncs.com/img/modal-top.png") no-repeat;
     padding-bottom: 7px!important;
     padding-top: 7px!important;
@@ -848,21 +848,21 @@ export default {
     /*background: #DDDDDD;*/
 }
 
-:host ::ng-deep .ant-modal-close-x {
+:host .ant-modal-close-x {
     color: #ffffff;
 }
 
-:host ::ng-deep .ant-modal-footer {
+:host .ant-modal-footer {
     padding: 0;
 }
 
-:host ::ng-deep .ant-modal-title {
+:host .ant-modal-title {
     line-height: 26px;
     font-size: 16px;
     color: #FFFFFF;
 }
 
-:host ::ng-deep .vertical-center-modal {
+:host .vertical-center-modal {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -888,7 +888,7 @@ export default {
     border-radius: 4px;
 }
 
-:host ::ng-deep .ant-modal-body {
+:host .ant-modal-body {
     padding: 20px 30px;
 }
 

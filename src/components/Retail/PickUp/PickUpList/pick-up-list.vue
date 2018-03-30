@@ -3,9 +3,7 @@
     <div class="am-bg-white cashier_box">
         <ul class="cashier_tab">
             <li v-for="item in tabs" :key="item.value" :class="{'on':item.isActived}" @click="changeTab(item)">{{item.value}}</li>
-
         </ul>
-
         <!-- 代发货 -->
         <div class="content am-bg-white" v-if="srcNum==='1'">
             <ul class="clearfix cashier_top">
@@ -155,7 +153,149 @@
 
         <!-- 全部 -->
         <div class="content am-bg-white" v-if="srcNum==='2'">
-            全部
+          <ul class="clearfix cashier_top">
+            <li class="fn-left">
+              <span class="member">零售单号&nbsp;:&nbsp;</span>
+              <input type="text" class="cashier_input" />
+            </li>
+            <li class="fn-left">
+              <span class="member">会员&nbsp;:&nbsp;</span>
+              <input type="text" class="cashier_input" />
+            </li>
+
+            <li class="fn-left">
+              <button class="find_btn">查询</button>
+            </li>
+          </ul>
+          <div class="orders">
+            <table class="orders_table">
+              <thead>
+              <tr>
+                <th width="">商品编码</th>
+                <th width="">商品名称</th>
+                <th width="">有效期</th>
+                <th width="">批号</th>
+                <th width="">批次码</th>
+                <th width="">出货仓库</th>
+                <th width="">库存</th>
+                <th width="">购买数量</th>
+                <th width="">已出库数量</th>
+                <th width="">本次取件数量</th>
+                <th width=""></th>
+              </tr>
+              </thead>
+
+              <tbody class="orders_tbody">
+              <tr class="order_header">
+                <td colspan="11">
+                  <div class=" fn-left">
+                    <span class="am-bg-blue icon">定</span>
+                    <span class="order_id">20170909000000001</span>
+                    <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
+                  </div>
+                  <div class=" fn-right">
+                    <span class="msg">销售&nbsp;&nbsp;</span>
+                    <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
+                  </div>
+
+                </td>
+              </tr>
+              <tr>
+                <td>BH00003</td>
+                <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>天一恒泰店</td>
+                <td>2</td>
+                <td>1片</td>
+                <td>0</td>
+                <td>
+                  <input class="pickInput" type="number" min="0" value="1" />&nbsp;&nbsp;&nbsp;
+                  <el-checkbox></el-checkbox>
+                </td>
+
+                <td rowspan="6" class="rowspan_td">
+                  <el-button type="primary" @click="showModal=true">取件</el-button>
+                </td>
+              </tr>
+              <tr>
+                <td>BH00003</td>
+                <td>
+                  <p>左镜片：毛源昌1.55非球面防辐射远+1.50</p>
+                  <p> <span class=" am-ft-blue"><a>定做 DZ12340001</a></span> - 柱镜0.5 球镜0.5 下加光0.3 </p>
+                  <p> 定做需求：需求内容需求内容 </p>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>天一恒泰店</td>
+                <td>2</td>
+                <td>1片</td>
+                <td>0</td>
+                <td> <input class="pickInput" type="number" value="1" />&nbsp;&nbsp;&nbsp;
+                  <el-checkbox></el-checkbox>
+                </td>
+              </tr>
+              <tr>
+                <td>BH00003</td>
+                <td>镜架：LEVIS光学镜架</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>天一恒泰店</td>
+                <td>2</td>
+                <td>1片</td>
+                <td>0</td>
+                <td> <input class="pickInput" type="number" value="1" />&nbsp;&nbsp;&nbsp;
+                  <el-checkbox></el-checkbox>
+                </td>
+              </tr>
+              <tr>
+                <td>BH00003</td>
+                <td>眼镜辅助产品：毛源昌镜布(普通)</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>天一恒泰店</td>
+                <td>2</td>
+                <td>1片</td>
+                <td>0</td>
+                <td>本次取件数量</td>
+              </tr>
+              <tr class="opacity50">
+                <td>BH00003</td>
+                <td>隐形眼镜</td>
+                <td>2018-04-20</td>
+                <td>20160421</td>
+                <td>*00150189*2018-04-20*2016</td>
+                <td>天一恒泰店</td>
+                <td>2</td>
+                <td>1片</td>
+                <td>0</td>
+                <td> <input class="pickInput" type="number" value="1" />&nbsp;&nbsp;&nbsp;
+                  <el-checkbox></el-checkbox>
+                </td>
+              </tr>
+              <tr>
+                <td>BH00003</td>
+                <td>医学费用：验光费</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>天一恒泰店</td>
+                <td>2</td>
+                <td>1片</td>
+                <td>0</td>
+                <td>2017-08-07 09:08:12 已取</td>
+              </tr>
+              <div class="gekai"> </div>
+              </tbody>
+
+
+            </table>
+
+          </div>
         </div>
     </div>
     <el-dialog custom-class="noheader" title="" :visible.sync="showModal">
@@ -172,7 +312,7 @@
 export default {
   name: 'PickUpList',
   data () {
-    return { 
+    return {
         options: [{
           value: '选项1',
           label: '黄金糕'
@@ -181,19 +321,14 @@ export default {
         showModal:false,
         srcNum:'2',
         tabs:[{
-            'value':'收银',
+            'value':'取件',
             'isActived':true,
             'srcNum':'1'
         },
         {
-            'value':'欠还款',
-            'isActived':false,
-            'srcNum':'2'
-        },
-        {
             'value':'全部',
             'isActived':false,
-            'srcNum':'3'
+            'srcNum':'2'
         }],
         data : [
         {

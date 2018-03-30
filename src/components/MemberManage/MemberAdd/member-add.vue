@@ -22,6 +22,23 @@
       //从子组件取到的数据
       showData(data){
         console.info(data)
+        // var that = this;
+        // that.$axios({
+        //   url: 'http://myc.qineasy.cn/member-api/member/addMember',
+        //   method: 'post',
+        //   params: {
+        //     jsonObject: {},
+        //     keyParams: {
+        //       weChat: true
+        //     }
+        //   }
+        // })
+        //   .then(function (response) {
+        //     console.info(response.data.data)
+        //   })
+        //   .catch(function (error) {
+        //     console.info(error)
+        //   })
       }
     }
   }
