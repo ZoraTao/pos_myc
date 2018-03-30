@@ -68,7 +68,6 @@ export default {
   methods:{
     changeRoute:function(item){
         this.$router.push(item.link);
-
     },
 
   }
