@@ -1,4 +1,4 @@
-<template>
+c<template>
   <div class="content-out-wrapper">
     <!------part1 top------>
     <el-row class="inquiry-row">
@@ -21,7 +21,7 @@
             <strong v-cloak>{{memberCount.memberCount}}</strong>
           </div>
         </el-col>
-        <el-col :span="6" v-for="card in cardNumList">
+        <el-col :span="6" v-for="card in cardNumList" :key="card.cardName">
           <div class="inquiry-item">
             <span v-cloak>{{card.cardName}}</span>
             <strong v-cloak>{{card.cardCount}}</strong>
@@ -37,8 +37,8 @@
         <el-col :span="5">
           <el-input
             placeholder="输入会员姓名/手机号／卡号"
-            v-model="input1">
-            <i slot="suffix" class="el-input__icon el-icon-search search-bt"></i>
+            v-model="searchStr">
+            <i slot="suffix" class="el-input__icon el-icon-search search-bt" @click="searchMember"></i>
           </el-input>
         </el-col>
         <el-col :span="2" :offset="1">
@@ -47,42 +47,49 @@
       </el-col>
       <!--高级搜索-->
       <el-col :span="21" v-if="moresearch">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline am-ft-left">
+        <el-form :inline="true" :model="sreen" class="demo-form-inline am-ft-left">
           <el-col :span="24">
             <el-form-item label="卡类型：">
-              <el-select v-model="formInline.select1" placeholder="请选择" style="width: 100px">
+              <el-select v-model="sreen.cardType" placeholder="请选择"  style="width: 100px">
                 <el-option label="普卡" value="1"></el-option>
                 <el-option label="金卡" value="2"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="会员分类：">
-              <el-select v-model="formInline.select2" placeholder="请选择" style="width: 180px">
-                <el-option label="本店添加会员" value="1"></el-option>
-                <el-option label="在本店消费会员" value="2"></el-option>
+            <el-form-item label="会员分类：" >
+              <el-select v-model="sreen.memberType" placeholder="请选择" style="width: 180px">
+                <el-option label="本店添加会员" value="1" />
+                <el-option label="在本店消费会员" value="2" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="添加时间：">
               <div class="fn-line-block">
-                <el-date-picker type="date" placeholder="选择日期" v-model="formInline.date1"
-                                style="width: 120px;"></el-date-picker>
+                <el-date-picker 
+                type="date" 
+                placeholder="选择日期"  
+                value-format="yyyy-MM-dd" 
+                v-model="sreen.startTime"
+                style="width: 120px;" />
               </div>
               <div class="fn-line-block am-ft-center am-text-secondary">-</div>
               <div class="fn-line-block">
-                <el-date-picker type="date" placeholder="选择日期" v-model="formInline.date2"
-                                style="width: 120px;"></el-date-picker>
+                <el-date-picker type="date" 
+                placeholder="选择日期"  
+                value-format="yyyy-MM-dd"
+                v-model="sreen.endTime"
+                style="width: 120px;" />
               </div>
             </el-form-item>
             <el-form-item label="超过：">
-              <el-select v-model="formInline.select1" placeholder="0" style="width: 60px">
+              <el-select v-model="sreen.mangDayNotShine"  placeholder="0" style="width: 60px">
                 <el-option label="0" value="1"></el-option>
                 <el-option label="1" value="2"></el-option>
               </el-select>
               &nbsp;<strong class="am-ft-12 am-text-normal">天无验光记录</strong>
             </el-form-item>
             <el-form-item label="超过：">
-              <el-select v-model="formInline.select1" placeholder="0" style="width: 60px">
+              <el-select v-model="sreen.manyDayNotBuy" placeholder="0" style="width: 60px">
                 <el-option label="0" value="1"></el-option>
                 <el-option label="1" value="2"></el-option>
               </el-select>
@@ -212,122 +219,198 @@
 </template>
 
 <script>
-  import MemberDetail from './member-detail.vue'
-  import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
-
-  export default {
-    name: "member-inquiry",
-    components: {
-      MemberDetail,
-      AddMember
+import MemberDetail from "./member-detail.vue";
+import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
+import reg from "../../../utils/Reg";
+import {removeAllSpace} from '../../../utils/other'
+import store from '../../../vuex/store'
+import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
+export default {
+  name: "member-inquiry",
+  components: {
+    MemberDetail,
+    AddMember
+  },
+  data() {
+    return {
+      addMember: false,
+      searchStr: "",
+      normalsearch: true,
+      moresearch: false,
+      sreen: {
+        cardId: "", //卡类型
+        memberType: "", //会员类型
+        cardId: 1, //没有购买记录
+        lastPrescriptionDays: 1, //没有验光记录
+        startTime: "", //开始时间
+        endTime: "" //结束时间
+      },
+      memberList: [], //会员列表
+      memberCount: [], //会员汇总数量
+      cardNumList: [] //会员卡汇总数量
+    };
+  },
+  store,
+  beforeMount: function() {
+    this.getMemberList();
+    this.getMemberCount();
+  },
+  mounted(){
+    console.log(this)
+  },
+  computed:{
+  },
+  methods: {
+    onSubmit() {
+      //根据条件筛选会员信息
+      console.log(this.sreen);
+      let _this = this;
+      this.$axios({
+        url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
+        method: "post",
+        params: {
+          jsonObject: _this.sreen,
+          keyParams: {
+            weChat: true,
+            userId: "8888",
+            orgId: "11387"
+          }
+        }
+      })
+        .then(function(res) {
+          console.log(res);
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
     },
-    data() {
-      return {
-        addMember: false,
-        input1: '',
-        normalsearch: true,
-        moresearch: false,
-        formInline: {
-          select1: '',
-          select2: '',
-          date1: '',
-          date2: '',
-        },
-        memberList: [],//会员列表
-        memberCount: [],//会员汇总数量
-        cardNumList: [],//会员卡汇总数量
+    //切换搜索模式
+    changeSearch(v) {
+      if (v == "1") {
+        this.normalsearch = true;
+        this.moresearch = false;
+      } else if (v == "2") {
+        this.normalsearch = false;
+        this.moresearch = true;
       }
     },
-    created: function () {
-      this.getMemberList();
-      this.getMemberCount();
+    //新增会员
+    memberAdd() {
+      this.addMember = true;
     },
-    methods: {
-      onSubmit() {
-        console.log('submit!');
-      },
-      //切换搜索模式
-      changeSearch(v) {
-        if (v == '1') {
-          this.normalsearch = true;
-          this.moresearch = false;
-        } else if (v == '2') {
-          this.normalsearch = false;
-          this.moresearch = true;
-        }
-      },
-      //新增会员
-      memberAdd() {
-        this.addMember = true;
-      },
-      //查看详情
-      checkDetail(data) {
-        // console.log(data);
-        this.$router.push({
-          path: '/member/memberDetail',
-          name: 'member-detail',
-          params: {data}
-        })
-      },
-      //分页
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
-      //查询会员汇总数量
-      getMemberCount() {
-        var that = this;
-        that.$axios({
-          url: 'http://myc.qineasy.cn/member-api/member/getMemberCount ',
-          method: 'post',
+    //查看详情
+    checkDetail(data) {
+      // console.log(data);
+      this.$router.push({
+        path: "/member/memberDetail",
+        name: "member-detail",
+        params: { data }
+      });
+    },
+    //分页
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
+    //查询会员汇总数量
+    getMemberCount() {
+      var that = this;
+      that
+        .$axios({
+          url: "http://myc.qineasy.cn/member-api/member/getMemberCount ",
+          method: "post",
           params: {
             jsonObject: {},
             keyParams: {
               weChat: true,
-              userId: '8888',
-              orgId: '11387'
+              userId: "8888",
+              orgId: "11387"
             }
           }
         })
-        .then(function (response) {
+        .then(function(response) {
           // console.info(response.data.data)
           that.memberCount = response.data.data;
           that.cardNumList = response.data.data.cardNumList;
         })
-        .catch(function (error) {
-          console.info(error)
-        })
-      },
-      //查询会员列表
-      getMemberList() {
-        var that = this;
-        that.$axios({
-          url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
-          method: 'post',
+        .catch(function(error) {
+          console.info(error);
+        });
+    },
+    searchMember() {
+      //普通搜索
+      var _this = this;
+      let seaStr = _this.searchStr;
+      this.searchStr = removeAllSpace( this.searchStr, 'g');//去空格
+      console.log(this.searchStr)
+      let phones, names, memberCardNos;
+      if (reg.RegTest.phone(seaStr)) {//电话号
+        phones = seaStr;
+        console.log('手机号')
+      } else if (reg.RegTest.chcn(seaStr)) {//纯中文姓名
+        names = seaStr
+        console.log('姓名')
+      } else {//卡类型未定
+        memberCardNos = seaStr
+        console.log('卡号')
+      }
+      this.$axios({
+          url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang ",
+          method: "post",
           params: {
             jsonObject: {
-              nub: '0',
-              size: '5'
+              // _this.searchStr
+              phone: phones || "",
+              name: names || "",
+              memberCardNo: memberCardNos ||""
+            },
+            keyParams: {
+              weChat: true,
+              userId: "8888",
+              orgId: "11387"
+            }
+          }
+        })
+        .then(function(response) {
+          // console.info(response.data.data)
+          that.memberCount = response.data.data;
+          that.cardNumList = response.data.data.cardNumList;
+        })
+        .catch(function(error) {
+          console.info(error);
+        });
+    },
+    //查询会员列表
+    getMemberList() {
+      var that = this;
+      that
+        .$axios({
+          url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
+          method: "post",
+          params: {
+            jsonObject: {
+              nub: "0",
+              size: "5"
             },
             keyParams: {
               weChat: true
             }
           }
         })
-          .then(function (response) {
-            // console.info(response.data.data)
-            that.memberList = response.data.data.memberList;
-          })
-          .catch(function (error) {
-            console.info(error)
-          })
-      }
+        .then(function(response) {
+          // console.info(response.data.data)
+          that.memberList = response.data.data.memberList;
+        })
+        .catch(function(error) {
+          console.info(error);
+        });
     }
   }
+};
 </script>
 
 <style scoped lang="scss">
-  @import "member-public-css";
+@import "member-public-css";
 </style>

@@ -11,11 +11,11 @@
         <ul class="clearfix cashier_top">
           <li class="fn-left">
             <span class="member">零售单号&nbsp;:&nbsp;</span>
-            <input type="text" class="cashier_input"/>
+            <input type="text" class="cashier_input" v-model="order.orderNo" />
           </li>
           <li class="fn-left">
             <span class="member">会员&nbsp;:&nbsp;</span>
-            <input type="text" class="cashier_input"/>
+            <input type="text" class="cashier_input" v-model="order.name"/>
           </li>
           <li class="fn-left">
             <span class="member fixd5Iblock">订单类型&nbsp;:&nbsp;</span>
@@ -23,15 +23,36 @@
                 <nz-option *ngFor="let option of options" [nzLabel]="option.label" [nzValue]="option.value" [nzDisabled]="option.disabled">
                 </nz-option>
             </nz-select> -->
+            <el-select v-model="order.selectType" placeholder="选择类型">
+              <el-option
+                v-for="item in selects"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
           </li>
           <li class="fn-left">
             <span class="member fixd5Iblock">零售时间&nbsp;:&nbsp;</span>
+            <el-date-picker 
+              type="date" 
+              placeholder="选择日期" 
+              v-model="order.saleTimeStart" 
+              clear-icon="el-icon-circle-close"
+              value-format="yyyy-MM-dd"
+              style="width: 130px;"></el-date-picker>
             <!-- <nz-datepicker [(ngModel)]="_date_start" [nzSize]="'large'" [nzPlaceHolder]="'2018-02-06'"></nz-datepicker> -->
             <span class="fixd5Iblock">-</span>
+            <el-date-picker 
+              type="date" 
+              placeholder="选择日期" 
+              v-model="order.saleTimeEnd"
+              value-format="yyyy-MM-dd"
+              style="width: 130px;"></el-date-picker>
             <!-- <nz-datepicker [(ngModel)]="_date_end" [nzSize]="'large'" [nzPlaceHolder]="'2018-02-06'"></nz-datepicker> -->
           </li>
           <li class="fn-left">
-            <button class="find_btn">查询</button>
+            <button class="find_btn" @click="searchOrder">查询</button>
           </li>
         </ul>
       </div>
@@ -158,7 +179,7 @@
               <th>操作</th>
             </tr>
             </thead>
-            <tbody class="orders_tbody" v-for="(order, index) in orderTempList">
+            <tbody class="orders_tbody" v-for="(order, index) in orderTempList" :key="order.id">
             <tr class="order_header">
               <td colspan="9">
                 <div class=" fn-left">
@@ -175,7 +196,7 @@
                 </div>
               </td>
             </tr>
-            <tr v-for="(list,index) in order.orderItems">
+            <tr v-for="(list,index) in order.orderItems" :key="list.id">
               <td>BH00003</td>
               <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
               <td>1</td>
@@ -354,64 +375,107 @@
 </template>
 
 <script>
-  import CashierModal from '../CashierModal/cashier-modal.vue'
+import CashierModal from "../CashierModal/cashier-modal.vue";
 
-  export default {
-    name: 'CashierList',
-    data() {
-      return {
-        showCashier: false,
-        srcNum: '2',
-        orderTempList: {},
-        tabs: [{
-          'value': '收银',
-          'isActived': true,
-          'srcNum': '1'
+export default {
+  name: "CashierList",
+  data() {
+    return {
+      showCashier: false,
+      srcNum: "2",
+      order:{
+        orderNo:'',
+        saleTimeStart: "",
+        saleTimeEnd: "",
+        name:'',
+        selectType:''
+      },
+      selects:[
+        {
+          name:'一类型',
+          id:'1',
+          label:'1'
+        },{
+          name:'二类型',
+          id:'2',
+          label:'2'
         },
-          {
-            'value': '欠还款',
-            'isActived': false,
-            'srcNum': '2'
+      ],
+      orderTempList: {},
+      tabs: [
+        {
+          value: "收银",
+          isActived: true,
+          srcNum: "1"
+        },
+        {
+          value: "欠还款",
+          isActived: false,
+          srcNum: "2"
+        },
+        {
+          value: "全部",
+          isActived: false,
+          srcNum: "3"
+        }
+      ],
+      data: [
+        {
+          id: "20170909000000001",
+          name: "张三",
+          telephone: 15757179646,
+          price: "860.60",
+          time: "2017-12-14 12:26:26",
+          salesStore: "毛源昌建国北路店",
+          status: "代收银",
+          type: "1"
+        }
+      ]
+    };
+  },
+  created() {
+    this.getOrderList();
+  },
+  methods: {
+    //查询接口
+    searchOrder(){
+      let _this = this;
+      this.$axios({
+        url:'http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList',
+        methods:'post',
+        params:{
+          jsonObject:{
+            orderNo:order.orderNo,
+            name: order.name,
+            saleTimeEnd: order.saleTimeEnd,
+            saleTimeStart: order.saleTimeStart,
+            orderType: order.orderType
           },
-          {
-            'value': '全部',
-            'isActived': false,
-            'srcNum': '3'
-          }],
-        data: [{
-            'id': '20170909000000001',
-            'name': '张三',
-            'telephone': 15757179646,
-            'price': '860.60',
-            'time': '2017-12-14 12:26:26',
-            'salesStore': '毛源昌建国北路店',
-            'status': '代收银',
-            "type": "1"
-          }]
-      }
-    },
-    created(){
-      this.getOrderList();
-    },
-    methods: {
-      changeTab: function (item) {
-        this.srcNum = item.srcNum;
-        this.tabs.forEach(function (element) {
-          element.isActived = false;
-          if (element == item) {
-            element.isActived = true;
+          keyParams:{
+            weChat:true
           }
-        })
-      },
-      showModalMiddle: function () {
-        this.showCashier = true;
-      },
-      //获取列表
-      getOrderList: function () {
-        var that = this;
-        that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList',
-          method: 'post',
+        }
+      })
+    },
+    changeTab: function(item) {
+      this.srcNum = item.srcNum;
+      this.tabs.forEach(function(element) {
+        element.isActived = false;
+        if (element == item) {
+          element.isActived = true;
+        }
+      });
+    },
+    showModalMiddle: function() {
+      this.showCashier = true;
+    },
+    //获取列表
+    getOrderList: function() {
+      var that = this;
+      that
+        .$axios({
+          url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
+          method: "post",
           params: {
             jsonObject: {},
             keyParams: {
@@ -419,276 +483,276 @@
             }
           }
         })
-        .then(function (response) {
-          console.info(response.data.data.orderTempList)
+        .then(function(response) {
+          console.info(response.data.data.orderTempList);
           that.orderTempList = response.data.data.orderTempList;
         })
-        .catch(function (error) {
-          console.info(error)
-        })
-      }
-    },
-    components: {
-      CashierModal
+        .catch(function(error) {
+          console.info(error);
+        });
     }
+  },
+  components: {
+    CashierModal
   }
+};
 </script>
 
 <style scoped lang="scss">
-  @import "../../../../reset";
+@import "../../../../reset";
 
-  .search-top {
-    background-color: #ffffff;
-    overflow: hidden;
+.search-top {
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+.cashier_box {
+  width: 100%;
+  height: 100%;
+}
+
+.cashier_tab {
+  height: 40px;
+  width: 100%;
+  background: #f4f4f4;
+}
+
+.cashier_tab li {
+  width: 95px;
+  height: 40px;
+  font-size: 15px;
+  line-height: 40px;
+  font-weight: bold;
+  float: left;
+  text-align: center;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  cursor: pointer;
+  /* box-shadow: 0 -2px 10px 0 rgba(0, 0, 0, 0.05); */
+}
+
+.cashier_tab li.on {
+  background: #fff;
+  color: #00afe4;
+}
+
+.content {
+  width: 100%;
+  height: calc(100% - 70px);
+  min-width: 360px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background: #fff;
+}
+
+.cashier_input {
+  background: #f8f8f8;
+  border: 1px solid #e1e1e1;
+  padding: 2px 10px;
+  height: 30px;
+}
+
+.cashier_top {
+  height: 70px;
+  padding-top: 20px;
+}
+
+.cashier_top li {
+  margin-left: 30px;
+}
+
+.find_btn {
+  display: inline-block;
+  width: 70px;
+  height: 30px;
+  line-height: 28px;
+  border: 1px solid #00afe4;
+  border-radius: 4px;
+  color: #00afe4;
+  text-align: center;
+  background: #fff;
+}
+
+.orders {
+  padding: 9px;
+}
+
+.orders_table {
+  width: 100%;
+}
+
+.orders_table thead tr {
+  height: 40px;
+}
+
+.orders_table thead tr th {
+  background: #f4f4f4;
+  font-weight: bold;
+  color: #555555;
+  text-align: center;
+  font-size: 12px;
+  padding: 0 2px;
+  line-height: 40px;
+  border-bottom: 10px solid #fff;
+}
+
+.orders_table tr td {
+  padding: 11px;
+  text-align: center;
+  font-size: 13px;
+  color: #333333;
+  letter-spacing: 0;
+}
+
+.orders_table tr td:nth-child(2) {
+  text-align: left;
+}
+
+.orders_table tr td:nth-child(2) .td_msg {
+  max-width: 350px;
+}
+
+.orders_tbody .order_header {
+  background: #fff4e5 !important;
+  text-align: left;
+  border-top: none;
+  border-bottom: none;
+}
+
+.orders_table .order_header .order_id {
+  font-size: 16px;
+  color: #555555;
+  letter-spacing: 0;
+  font-weight: bold;
+}
+
+.icon {
+  padding: 2px 5px;
+  color: #fff;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.order_header .msg {
+  font-size: 12px;
+  color: #555555;
+}
+
+.orders_tbody tr {
+  /* display: inline-block; */
+  height: 40px;
+  line-height: 18px;
+  border: 1px solid #e1e1e1;
+}
+
+.orders_tbody tr:nth-child(2n-1) {
+  background: rgba(246, 246, 246, 0.5);
+}
+
+.orders_tbody .rowspan_td {
+  border: 1px solid #e1e1e1;
+  font-size: 12px;
+  line-height: 24px;
+  &:not(:last-child) {
+    border-right: none;
   }
+}
 
-  .cashier_box {
-    width: 100%;
-    height: 100%;
-  }
+.orders_tbody .rowspan_td button {
+  font-size: 14px;
+  font-weight: bold;
+}
 
-  .cashier_tab {
-    height: 40px;
-    width: 100%;
-    background: #f4f4f4;
-  }
+.orders_tbody .rowspan_td div {
+  color: #666666;
+}
 
-  .cashier_tab li {
-    width: 95px;
-    height: 40px;
-    font-size: 15px;
-    line-height: 40px;
-    font-weight: bold;
-    float: left;
-    text-align: center;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    cursor: pointer;
-    /* box-shadow: 0 -2px 10px 0 rgba(0, 0, 0, 0.05); */
-  }
+.orders_tbody .rowspan_td strong {
+  color: #000;
+}
 
-  .cashier_tab li.on {
-    background: #fff;
-    color: #00AFE4;
-  }
+.orders_tbody .rowspan_td .priceAll {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333333;
+  letter-spacing: 0;
+}
 
-  .content {
-    width: 100%;
-    height: calc(100% - 70px);
-    min-width: 360px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    background: #fff;
-  }
+.gekai {
+  height: 15px;
+  width: 100%;
+}
 
-  .cashier_input {
-    background: #F8F8F8;
-    border: 1px solid #E1E1E1;
-    padding: 2px 10px;
-    height: 30px;
-  }
+.look_d {
+  cursor: pointer;
+}
 
-  .cashier_top {
-    height: 70px;
-    padding-top: 20px;
-  }
+.sign_orange {
+  border: 1px solid #ff6600;
+  border-radius: 0 10px 10px 0;
+  padding: 0 15px 0 5px;
+}
 
-  .cashier_top li {
-    margin-left: 30px;
-  }
+.sign_blue {
+  border: 1px solid #00afe4;
+  border-radius: 0 10px 10px 0;
+  padding: 0 15px 0 5px;
+}
 
-  .find_btn {
-    display: inline-block;
-    width: 70px;
-    height: 30px;
-    line-height: 28px;
-    border: 1px solid #00AFE4;
-    border-radius: 4px;
-    color: #00AFE4;
-    text-align: center;
-    background: #fff;
-  }
+.order_price {
+  max-width: 130px;
+}
 
-  .orders {
-    padding: 9px;
-  }
+.order_price_box {
+  margin: 0 auto;
+  text-align: left;
+  padding: 0 10px;
+}
 
-  .orders_table {
-    width: 100%;
-  }
+.fixd5Iblock {
+  display: inline-block;
+  margin-top: 5px;
+}
 
-  .orders_table thead tr {
-    height: 40px;
-  }
+/* 全部 */
 
-  .orders_table thead tr th {
-    background: #F4F4F4;
-    font-weight: bold;
-    color: #555555;
-    text-align: center;
-    font-size: 12px;
-    padding: 0 2px;
-    line-height: 40px;
-    border-bottom: 10px solid #fff;
-  }
+.orderList_table tbody tr:nth-child(2n) {
+  background: rgba(246, 246, 246, 0.5);
+}
 
-  .orders_table tr td {
-    padding: 11px;
-    text-align: center;
-    font-size: 13px;
-    color: #333333;
-    letter-spacing: 0;
-  }
+/*打印小票*/
 
-  .orders_table tr td:nth-child(2) {
-    text-align: left;
-  }
+.print-frame {
+  padding: 40px 0;
+  font-size: 14px;
+  color: #666666;
+  width: 400px;
+  text-align: center;
+  margin: 0 auto;
+}
 
-  .orders_table tr td:nth-child(2) .td_msg {
-    max-width: 350px;
-  }
+.print-frame img {
+  margin-left: 20px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
 
-  .orders_tbody .order_header {
-    background: #FFF4E5 !important;
-    text-align: left;
-    border-top: none;
-    border-bottom: none;
-  }
+.print-frame span {
+  font-size: 14px;
+  color: #666666;
+}
 
-  .orders_table .order_header .order_id {
-    font-size: 16px;
-    color: #555555;
-    letter-spacing: 0;
-    font-weight: bold;
-  }
+.modal-content {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
 
-  .icon {
-    padding: 2px 5px;
-    color: #fff;
-    font-size: 12px;
-    border-radius: 5px;
-  }
+.modal-body {
+  padding: 0;
+}
 
-  .order_header .msg {
-    font-size: 12px;
-    color: #555555;
-  }
-
-  .orders_tbody tr {
-    /* display: inline-block; */
-    height: 40px;
-    line-height: 18px;
-    border: 1px solid #E1E1E1;
-  }
-
-  .orders_tbody tr:nth-child(2n-1) {
-    background: rgba(246, 246, 246, 0.50);
-  }
-
-  .orders_tbody .rowspan_td {
-    border: 1px solid #E1E1E1;
-    font-size: 12px;
-    line-height: 24px;
-    &:not(:last-child) {
-      border-right: none;
-    }
-  }
-
-  .orders_tbody .rowspan_td button {
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  .orders_tbody .rowspan_td div {
-    color: #666666;
-  }
-
-  .orders_tbody .rowspan_td strong {
-    color: #000;
-  }
-
-  .orders_tbody .rowspan_td .priceAll {
-    font-weight: bold;
-    font-size: 16px;
-    color: #333333;
-    letter-spacing: 0;
-  }
-
-  .gekai {
-    height: 15px;
-    width: 100%;
-  }
-
-  .look_d {
-    cursor: pointer;
-  }
-
-  .sign_orange {
-    border: 1px solid #FF6600;
-    border-radius: 0 10px 10px 0;
-    padding: 0 15px 0 5px;
-  }
-
-  .sign_blue {
-    border: 1px solid #00AFE4;
-    border-radius: 0 10px 10px 0;
-    padding: 0 15px 0 5px;
-  }
-
-  .order_price {
-    max-width: 130px;
-  }
-
-  .order_price_box {
-    margin: 0 auto;
-    text-align: left;
-    padding: 0 10px;
-  }
-
-  .fixd5Iblock {
-    display: inline-block;
-    margin-top: 5px;
-  }
-
-  /* 全部 */
-
-  .orderList_table tbody tr:nth-child(2n) {
-    background: rgba(246, 246, 246, 0.50);
-  }
-
-  /*打印小票*/
-
-  .print-frame {
-    padding: 40px 0;
-    font-size: 14px;
-    color: #666666;
-    width: 400px;
-    text-align: center;
-    margin: 0 auto;
-  }
-
-  .print-frame img {
-    margin-left: 20px;
-    margin-right: 10px;
-    vertical-align: middle;
-  }
-
-  .print-frame span {
-    font-size: 14px;
-    color: #666666;
-  }
-
-  .modal-content {
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .modal-body {
-    padding: 0;
-  }
-
-  .height30 {
-    line-height: 30px;
-  }
+.height30 {
+  line-height: 30px;
+}
 </style>

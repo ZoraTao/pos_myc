@@ -8,6 +8,7 @@ import router from './router'
 import VueResource from 'vue-resource'
 import axios from 'axios'
 import VueBus from 'vue-bus';
+import store from './vuex/store'
 
 Vue.prototype.$axios = axios
 
@@ -21,6 +22,7 @@ Vue.use(VueBus);
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>',
   render: h => h(App)
