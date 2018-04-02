@@ -69,6 +69,8 @@
                   size="small"
                   class="table-hover"
                   align="left"
+                  border="false"
+                  show-summary=true
                   max-height="400"
                   style="width: 100%">
                   <el-table-column
