@@ -42,6 +42,18 @@ export default new Router({
             path: 'stocksIndex',
             name: 'stocks-index',
             component: resolve => require(['../components/CommodityStocks/stocks-index.vue'], resolve)
+          },
+          //统计报表首页
+          {
+            path: 'statistical',
+            name: 'statistical',
+            component: resolve => require(['../components/Statistical/statistical-index.vue'], resolve)
+          },
+          //文件管理
+          {
+            path: 'fileAdmin',
+            name: 'file-admin',
+            component: resolve => require(['../components/FileAdmin/fileAdmin.vue'],resolve)
           }
         ]
       }]
@@ -172,6 +184,24 @@ export default new Router({
       }
       ]
     },
+    //统计报表
+    {
+      path:'/statistical',
+      component: resolve => require(['../components/Layout/Layout.vue'], resolve),
+      children:[
+        //营业日报表
+        {
+          path: '/doBusiness',
+          name: 'do-business',
+          component: resolve => require(['../components/Statistical/Business/do-Business.vue'], resolve)
+        },
+        {
+          path: '/staffSale',
+          name: 'staffSale',
+          component: resolve => require(['../components/Statistical/staffSale/staffSale.vue'],resolve)
+        }
+      ]      
+    },
     // 商品库存
     {
       path: '/commodity',
@@ -185,7 +215,7 @@ export default new Router({
         },
         // 库存盘点
         {
-          path: 'inventory-check',
+          path: '/inventory-check',
           name: 'inventory-check-index',
           component: resolve => require(['../components/CommodityStocks/inventory-check/inventory-check-index'], resolve)
         },

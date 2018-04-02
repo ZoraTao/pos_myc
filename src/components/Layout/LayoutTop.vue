@@ -4,7 +4,7 @@
 
     <div class="tab-box">
       <ul>
-        <li class="tab-item" v-for="(i,index) in item" v-bind:class="{ active:i.isActive }" @click="changeTab(i)">
+        <li class="tab-item" :key="i.name" v-for="(i,index) in item" v-bind:class="{ active:i.isActive }" @click="changeTab(i)">
           {{i.name}}
           <i v-if="i.name != '首页'" class="el-icon-close" @click="closeTab(i, index)"></i>
         </li>
