@@ -6,35 +6,11 @@
     </div>
     <!--content-->
     <div class="member-menus">
-      <el-row :gutter="20">
-        <el-col :span="5">
-          <div class="member-item" @click="goMemberAdd">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_xzhuiyuan.png"/>
-            <span>新增会员</span>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="member-item" @click="goMemberInquiry">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hychaxun.png"/>
-            <span>会员查询</span>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="member-item" @click="goComplaintsInquiry">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hytousu.png"/>
-            <span>会员投诉</span>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="member-item" @click="goReturnVisit">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hyhuifang.png"/>
-            <span>会员回访</span>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <div class="member-item">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hyquanyi.png"/>
-            <span>会员权益</span>
+      <el-row>
+        <el-col class="member-menus-items" v-for="(item, index) in secMenu">
+          <div class="member-item" @click="createTab(index,item)">
+            <img :src="item.src"/>
+            <span>{{item.text}}</span>
           </div>
         </el-col>
       </el-row>
@@ -46,40 +22,49 @@
   export default {
     name: "memberIndex",
     data() {
-      return {}
+      return {
+        secMenu:[{
+            'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_xzhuiyuan.png',
+            'link':'/member/memberAdd',
+            'line':true,
+            'text':'新增会员',
+            'name': 'member-add'
+          },
+          {
+            'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hychaxun.png',
+            'link':'/member/memberInquiry',
+            'line':true,
+            'text':'会员查询',
+            'name': 'member-inquiry'
+          },
+          {
+            'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hytousu.png',
+            'link':'/member/memberComplaints',
+            'line':true,
+            'text':'会员投诉',
+            'name': 'member-complaints'
+          },
+          {
+            'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hyhuifang.png',
+            'link':'/member/memberReturnVisit',
+            'line':true,
+            'text':'会员回访',
+            'name': 'member-return-visit'
+          },
+          {
+            'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hyquanyi.png',
+            'link':'/',
+            'line':true,
+            'text':'会员权益',
+            'name': ''
+          }]
+      }
     },
     methods: {
-      //新增会员
-      goMemberAdd: function () {
-        this.$router.push({
-          path: '/member/memberAdd',
-          name: 'member-add',
-          params: {}
-        })
-      },
-      //会员查询
-      goMemberInquiry: function () {
-        this.$router.push({
-          path: '/member/memberInquiry',
-          name: 'member-inquiry',
-          params: {}
-        })
-      },
-      //会员投诉
-      goComplaintsInquiry: function () {
-        this.$router.push({
-          path: '/member/memberComplaints',
-          name: 'member-complaints',
-          params: {}
-        })
-      },
-      //会员回访
-      goReturnVisit: function () {
-        this.$router.push({
-          path: '/member/memberReturnVisit',
-          name: 'member-return-visit',
-          params: {}
-        })
+      //为追加tab传值
+      createTab(key,label) {
+        this.$router.push(label.link);
+        this.$bus.$emit('createTab', label);
       }
     },
     components:{}
@@ -88,5 +73,10 @@
 </script>
 
 <style scoped lang="scss">
+  .member-menus{
+    .member-menus-items{
+      width: 20%;
+    }
+  }
 
 </style>

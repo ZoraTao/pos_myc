@@ -5,8 +5,8 @@
     <div class="tab-box">
       <ul>
         <li class="tab-item" v-for="(i,index) in item" v-bind:class="{ active:i.isActive }" @click="changeTab(i)">
-          {{i.name}}
-          <i v-if="i.name != '首页'" class="el-icon-close" @click="closeTab(i, index)"></i>
+          {{i.text}}
+          <i v-if="i.text != '首页'" class="el-icon-close" @click="closeTab(i, index)"></i>
         </li>
       </ul>
       <div class="header-top-right">
@@ -47,22 +47,15 @@ export default {
   data () {
     return {
       item: [{
-        name: '首页',
-        url: '',
+        text: '首页',
+        name: 'Home',
+        url: '/base/homeIndex',
         isActive: true
       }]
     }
   },
   created() {
-    this.$bus.$on('createTab', function(data) {
-      // this.item.push({
-      //   name: data.text,
-      //   url: data.link,
-      //   isActive: data.line
-      // });
-      console.log('I get it');
-      console.log(data);
-    });
+
   },
   methods: {
     //切换tab
@@ -73,17 +66,37 @@ export default {
           element.isActive = true;
         }
       });
+      this.$router.push({
+        path: item.link,
+        name: item.name,
+        params: {}
+      })
     },
     //关闭tab
     closeTab(i,index) {
       this.item.splice(index,1);
-
       if(this.item[index] != undefined){
         this.item[index].isActive= true;
       }else {
         this.item[index-1].isActive= true;
       }
     }
+  },
+  mounted(){
+    //追加tab
+    var _this = this;
+    _this.$bus.$on('createTab', function(data) {
+      _this.item.forEach(function(element) {
+        element.isActive = false;
+      });
+      _this.item.push({
+        text: data.text,
+        name: data.name,
+        url: data.link,
+        isActive: data.line
+      });
+      console.info(data)
+    });
   }
 }
 </script>

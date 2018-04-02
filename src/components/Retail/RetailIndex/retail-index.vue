@@ -5,7 +5,7 @@
     </div>
     <div class="retailContent">
         <ul class="small_icon">
-            <li v-for="(item, index) of icons" :key="item.text"  @click="createTab(index,item)">
+            <li v-for="(item, index) of icons" :key="item.text" @click="createTab(index,item)">
                 <div class="fn_left w_50 linkSrc">
                     <img :src="item.src" />
                     <p class="icon_text">{{item.text}}</p>
@@ -29,42 +29,49 @@ export default {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_yanguangdan.png',
             'link':'/bills/optometryOrderList',
             'line':true,
-            'text':'验光单'
+            'text':'验光单',
+            'name': 'optometryOrderList'
             },
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_kaidan.png',
             'link':'/bills/billing',
             'line':true,
-            'text':'开单'
+            'text':'开单',
+            'name': 'billing'
             },
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_shouyin.png',
             'link':'/cashier/cashierList',
             'line':true,
-            'text':'收银'
+            'text':'收银',
+            'name': 'cashierList'
             },
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_mendianshoufa.png',
             'link':'/receive/receiveList',
             'line':true,
-            'text':'门店收发'
+            'text':'门店收发',
+            'name': 'receiveList'
             },
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_kehuqujian.png',
             'link':'/pickup/pickuplist',
             'line':true,
-            'text':'客户取件'
+            'text':'客户取件',
+            'name': 'pickuplist'
             },
             {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_shouhou.png',
             'link':'/serviceafter/serviceafterlist',
             'line':false,
-            'text':'售后'
+            'text':'售后',
+            'name': 'serviceafterlist'
             }
         ]
     }
   },
   methods:{
+    //为追加tab传值
     createTab(key,label) {
       this.$router.push(label.link);
       this.$bus.$emit('createTab', label);

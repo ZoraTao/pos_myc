@@ -6,35 +6,11 @@
     </div>
     <!--content-->
     <div class="member-menus">
-      <el-row :gutter="20">
-        <el-col :span="5">
-          <div class="member-item" @click="goStocksInquiry">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_kcchaxun.png"/>
-            <span>库存查询</span>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="member-item" @click="goCheckInquiry">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_kcpandian.png"/>
-            <span>盘点</span>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="member-item" @click="goTemporaryInvent">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_linshipd.png"/>
-            <span>临时盘点</span>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="member-item" @click="goTransferOrder">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_diaobod.png"/>
-            <span>调拨单</span>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <div class="member-item">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_shendiaod.png"/>
-            <span>申调单</span>
+      <el-row>
+        <el-col class="member-menus-items" v-for="(item, index) in secMenu">
+          <div class="member-item" @click="createTab(index,item)">
+            <img :src="item.src"/>
+            <span>{{item.text}}</span>
           </div>
         </el-col>
       </el-row>
@@ -47,53 +23,58 @@
     name: "stocks-index",
     components: {},
     data() {
-      return {}
+      return {
+        secMenu:[{
+          'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_kcchaxun.png',
+          'link':'/commodity/stocksInquiry',
+          'line':true,
+          'text':'库存查询',
+          'name': 'stocks-inquiry'
+        },
+          {
+            'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_kcpandian.png',
+            'link':'/commodity/inventory-check',
+            'line':true,
+            'text':'盘点',
+            'name': 'inventory-check-index'
+          },
+          {
+            'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_linshipd.png',
+            'link':'/commodity/inventory-temporary',
+            'line':true,
+            'text':'临时盘点',
+            'name': 'inventory-check-temporary'
+          },
+          {
+            'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_diaobod.png',
+            'link':'/commodity/transfer-order',
+            'line':true,
+            'text':'调拨单',
+            'name': 'transfer-order-index'
+          },
+          {
+            'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_shendiaod.png',
+            'link':'/commodity/application-order',
+            'line':true,
+            'text':'申调单',
+            'name': 'application-order-index'
+          }]
+      }
     },
     methods: {
-      //库存查询
-      goStocksInquiry: function () {
-        this.$router.push({
-          path: '/commodity/stocksInquiry',
-          name: 'stocks-inquiry',
-          params: {}
-        })
-      },
-      //库存盘点
-      goCheckInquiry: function () {
-        this.$router.push({
-          path: '/commodity/inventory-check',
-          name: 'inventory-check-index',
-          params: {}
-        })
-      },
-      //临时盘点
-      goTemporaryInvent: function () {
-        this.$router.push({
-          path: '/commodity/inventory-temporary',
-          name: 'inventory-check-temporary',
-          params: {}
-        })
-      },
-      //调拨单
-      goTransferOrder: function () {
-        this.$router.push({
-          path: '/commodity/transfer-order',
-          name: 'transfer-order-index',
-          params: {}
-        })
-      },
-      //申调单
-      goApplicationOrder: function () {
-        this.$router.push({
-          path: '/commodity/application-order',
-          name: 'application-order-index',
-          params: {}
-        })
-      },
+      //为追加tab传值
+      createTab(key,label) {
+        this.$router.push(label.link);
+        this.$bus.$emit('createTab', label);
+      }
     }
   }
 </script>
 
 <style scoped lang="scss">
-
+  .member-menus{
+    .member-menus-items{
+      width: 20%;
+    }
+  }
 </style>
