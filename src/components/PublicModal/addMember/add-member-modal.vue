@@ -6,7 +6,7 @@
           <el-form-item style="margin-left:10px;" label="类型：" prop="type">
             <el-select v-model="addMemberForm.type" placeholder="请选择" style="width: 100px">
               <el-option
-                v-for="item in options"
+                v-for="item in memberType"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -57,7 +57,9 @@
               style="margin-left:10px;width: 120px"
               type="date"
               placeholder="选择日期"
-              v-model="addMemberForm.birthday">
+              v-model="addMemberForm.birthday"
+              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -81,12 +83,12 @@
         <el-col :span="20">
           <el-form-item label="联系地址：">
             <template>
-              <area-select :level='2' type='text' v-model='addMemberForm.adr'></area-select>
+              <area-select style="margin-top: 5px;margin-bottom: -10px;" :level='2' type='text' v-model='addMemberForm.adr'></area-select>
             </template>
           </el-form-item>
           <el-col :span="18">
             <el-form-item prop="adr.address">
-              <el-input v-model="addMemberForm.adr.address" placeholder="请填写具体地址" style="width:100%;"></el-input>
+              <el-input v-model="addMemberForm.address" placeholder="请填写具体地址" style="width:100%;"></el-input>
             </el-form-item>
           </el-col>
         </el-col>
@@ -103,7 +105,7 @@
           <el-form-item label="会员来源：" prop="memberFrom">
             <el-select style="margin-left:10px;" v-model="addMemberForm.memberFrom" placeholder="请选择">
               <el-option
-                v-for="item in options"
+                v-for="item in memberFrom"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -115,7 +117,7 @@
           <el-form-item style="margin-left:10px;" label="会员状态：" prop="status">
             <el-select style="margin-left:10px;" v-model="addMemberForm.status" placeholder="请选择">
               <el-option
-                v-for="item in options"
+                v-for="item in memberStatus"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -127,7 +129,7 @@
           <el-form-item style="margin-left:10px;" label="会员属性：" prop="attributes">
             <el-select style="margin-left:10px;" v-model="addMemberForm.attributes" placeholder="请选择">
               <el-option
-                v-for="item in options"
+                v-for="item in memberAttributes"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -141,10 +143,8 @@
           <el-form-item label="负责部门：" prop="resDepartment">
             <el-select style="margin-left:10px;" v-model="addMemberForm.resDepartment" placeholder="请选择">
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                label="毛源昌杭州西湖店"
+                value="0">
               </el-option>
             </el-select>
           </el-form-item>
@@ -153,10 +153,8 @@
           <el-form-item style="margin-left:10px;" label="负责员工：" prop="resEmployees">
             <el-select style="margin-left:10px;" v-model="addMemberForm.resEmployees" placeholder="请选择">
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                label="白小亭"
+                value="0">
               </el-option>
             </el-select>
           </el-form-item>
@@ -175,6 +173,30 @@
     data() {
       return {
         isSubmit: '',
+        memberType: [
+          {
+            value: '0',
+            label: '普通客户'
+          }
+        ],
+        memberFrom: [
+          {
+            value: '0',
+            label: '门店正常扫码'
+          }
+        ],
+        memberStatus: [
+          {
+            value: '0',
+            label: '正式客户'
+          }
+        ],
+        memberAttributes: [
+          {
+            value: '0',
+            label: '个人'
+          }
+        ],
         options: [{
           value: '0',
           label: '选项1'
