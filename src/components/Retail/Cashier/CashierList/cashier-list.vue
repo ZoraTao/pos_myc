@@ -8,32 +8,45 @@
       </ul>
       <!--search-->
       <div class="search-top">
+        <el-form :model="searchForm" ref="searchForm" status-icon label-width="75px">
         <ul class="clearfix cashier_top">
           <li class="fn-left">
-            <span class="member">零售单号&nbsp;:&nbsp;</span>
-            <input type="text" class="cashier_input"/>
+            <el-form-item label="零售单号：" prop="orderNum">
+              <el-input v-model="searchForm.orderNum" placeholder="请输入零售单号" style="min-width: 100px"></el-input>
+            </el-form-item>
           </li>
           <li class="fn-left">
-            <span class="member">会员&nbsp;:&nbsp;</span>
-            <input type="text" class="cashier_input"/>
+            <el-form-item label="会员：" prop="member">
+              <el-input v-model="searchForm.member" placeholder="请输入" style="min-width: 80px"></el-input>
+            </el-form-item>
           </li>
           <li class="fn-left">
-            <span class="member fixd5Iblock">订单类型&nbsp;:&nbsp;</span>
-            <!-- <nz-select style="width: 60px;" [(ngModel)]="single" [nzSize]="size">
-                <nz-option *ngFor="let option of options" [nzLabel]="option.label" [nzValue]="option.value" [nzDisabled]="option.disabled">
-                </nz-option>
-            </nz-select> -->
+            <el-form-item label="订单类型：" prop="orderType">
+              <el-select prop="adr.district" v-model="searchForm.orderType" placeholder="请选择"
+                         style="width:120px;">
+                <el-option label="1" value="选项1"></el-option>
+                <el-option label="2" value="选项2"></el-option>
+              </el-select>
+            </el-form-item>
           </li>
           <li class="fn-left">
-            <span class="member fixd5Iblock">零售时间&nbsp;:&nbsp;</span>
-            <!-- <nz-datepicker [(ngModel)]="_date_start" [nzSize]="'large'" [nzPlaceHolder]="'2018-02-06'"></nz-datepicker> -->
-            <span class="fixd5Iblock">-</span>
-            <!-- <nz-datepicker [(ngModel)]="_date_end" [nzSize]="'large'" [nzPlaceHolder]="'2018-02-06'"></nz-datepicker> -->
+            <el-form-item
+              label="零售时间："
+              prop="birthday">
+              <div class="fn-line-block">
+                <el-date-picker type="date" placeholder="选择日期" v-model="searchForm.saleStartTime" style="width: 120px;"></el-date-picker>
+              </div>
+              <div class="fn-line-block am-ft-center">-</div>
+              <div class="fn-line-block">
+                <el-time-picker type="fixed-time" placeholder="选择时间" v-model="searchForm.saleEndTime" style="width: 120px;"></el-time-picker>
+              </div>
+            </el-form-item>
           </li>
           <li class="fn-left">
-            <button class="find_btn">查询</button>
+            <el-button type="primary" plain class="find_btn">查询</el-button>
           </li>
         </ul>
+        </el-form>
       </div>
 
       <!-- 代收银 -->
@@ -54,29 +67,31 @@
             </tr>
             </thead>
 
-            <tbody class="orders_tbody">
+            <tbody class="orders_tbody" v-for="(order, index) in orderTempList" :key="order.orderId">
             <tr class="order_header">
               <td colspan="9">
-                <div class=" fn-left">
-                  <span class="am-bg-blue icon">定</span>
-                  <span class="order_id">20170909000000001</span>
-                  <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
+                <div class="fn-left">
+                  <span v-if="order.status=='3'" class="am-bg-blue icon">定</span>
+                  <span v-if="order.status=='4'" class="am-bg-orange icon">欠</span>
+                  <span class="order_id">{{order.orderNo}}</span>
+                  <span v-if="order.source=='0'" class="sign_blue">本店签批</span>
+                  <span v-else class="sign_orange">跨店签批</span>
+                  <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
                 </div>
                 <div class=" fn-right">
                   <span class="msg">销售&nbsp;&nbsp;</span>
-                  <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
+                  <span class="msg">{{order.salesName}}&nbsp;&nbsp;&nbsp;{{order.orderTime}}</span>
                 </div>
-
               </td>
             </tr>
-            <tr>
-              <td>BH00003</td>
+            <tr v-for="(list,index) in order.orderItems">
+              <td>BH0000{{index}}</td>
               <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
               <td>1</td>
               <td>230.00</td>
               <td><strong>134.00</strong></td>
               <td>天一恒泰店</td>
-              <td rowspan="5" class="rowspan_td order_price">
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
                   <div class="priceAll am-ft-22">1299.00</div>
                   <div>商品合计：<strong>1389.00</strong></div>
@@ -84,60 +99,29 @@
                   <div>折扣：<strong>-50</strong></div>
                   <div>活动：<strong>-20</strong></div>
                 </div>
-
               </td>
-              <td rowspan="5" class="rowspan_td">
-                <div class="am-ft-orange">代收银</div>
-                <div class="look_d" v-on:click="goDetail('1')">查看详情</div>
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                <div class="am-ft-orange">{{order.statusName}}</div>
+                <div class="look_d" @click="showCashier = true">查看详情</div>
               </td>
-              <td rowspan="5" class="rowspan_td">
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                 <div class="am-ft-orange priceAll am-ft-22 mgb10">1299.00</div>
                 <div class="button">
                   <el-button type="primary" v-on:click="showModalMiddle()">收银</el-button>
                 </div>
-                <div class="am-ft-blue">重新开单</div>
-                <div class="am-ft-gray9">关闭订单</div>
-
+               <a href="javascript:;" class="fn-block mgt5">重新开单</a>
+               <a href="javascript:;" class="am-ft-gray9 fn-block">关闭订单</a>
               </td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>
-                <p class="td_msg">左镜片：<span class=" am-ft-blue">定做 DZ12340001</span> - 柱镜0.5 球镜0.5 下加光0.3 </p>
-                <p class="td_msg">定做需求：需求内容</p>
-              </td>
-              <td>1</td>
-              <td>230.00</td>
-              <td><strong>134.00</strong></td>
-              <td>天一恒泰店</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1</td>
-              <td>230.00</td>
-              <td><strong>134.00</strong></td>
-              <td>天一恒泰店</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1</td>
-              <td>230.00</td>
-              <td><strong>134.00</strong></td>
-              <td>天一恒泰店</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1</td>
-              <td>230.00</td>
-              <td><strong>134.00</strong></td>
-              <td>天一恒泰店</td>
             </tr>
             <div class="gekai"></div>
             </tbody>
           </table>
+          <el-pagination
+            class="am-ft-right"
+            background
+            layout="prev, pager, next"
+            :total="10">
+          </el-pagination>
         </div>
       </div>
 
@@ -158,10 +142,10 @@
               <th>操作</th>
             </tr>
             </thead>
-            <tbody class="orders_tbody" v-for="(order, index) in orderTempList">
+            <tbody class="orders_tbody" v-for="(order, index) in orderTempList" :key="order.orderId">
             <tr class="order_header">
               <td colspan="9">
-                <div class=" fn-left">
+                <div class="fn-left">
                   <span v-if="order.status=='3'" class="am-bg-blue icon">定</span>
                   <span v-if="order.status=='4'" class="am-bg-orange icon">欠</span>
                   <span class="order_id">{{order.orderNo}}</span>
@@ -171,12 +155,12 @@
                 </div>
                 <div class=" fn-right">
                   <span class="msg">销售：&nbsp;</span>
-                  <span class="msg">--&nbsp;&nbsp;&nbsp;{{order.orderTime}}</span>
+                  <span class="msg">{{order.salesName}}&nbsp;&nbsp;&nbsp;{{order.orderTime}}</span>
                 </div>
               </td>
             </tr>
             <tr v-for="(list,index) in order.orderItems">
-              <td>BH00003</td>
+              <td>BH0000{{index}}</td>
               <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
               <td>1</td>
               <td>230.00</td>
@@ -193,8 +177,8 @@
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange">欠还款</div>
-                <div class="look_d" v-on:click="goDetail('1')">查看详情</div>
+                <div class="am-ft-orange">{{order.statusName}}</div>
+                <div class="look_d" @click="showCashier = true">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                 <div class="am-ft-orange priceAll">1299.00</div>
@@ -205,71 +189,13 @@
             </tr>
             <div class="gekai"></div>
             </tbody>
-
-            <!--<tbody class="orders_tbody">-->
-            <!--<tr class="order_header">-->
-              <!--<td colspan="9">-->
-                <!--<div class=" fn-left">-->
-                  <!--<span class="order_id">20170909000000001</span>-->
-                  <!--<span class="sign_blue">本店签批</span>-->
-                  <!--<span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>-->
-                <!--</div>-->
-                <!--<div class=" fn-right">-->
-                  <!--<span class="msg">销售&nbsp;&nbsp;</span>-->
-                  <!--<span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>-->
-                <!--</div>-->
-
-              <!--</td>-->
-            <!--</tr>-->
-            <!--<tr>-->
-              <!--<td>BH00003</td>-->
-              <!--<td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>-->
-              <!--<td>1</td>-->
-              <!--<td>230.00</td>-->
-              <!--<td><strong>134.00</strong></td>-->
-              <!--<td>天一恒泰店</td>-->
-              <!--<td rowspan="3" class="rowspan_td order_price">-->
-                <!--<div class="order_price_box">-->
-                  <!--<div class="priceAll">1299.00</div>-->
-                  <!--<div>商品合计 :<strong>1389.00</strong></div>-->
-                  <!--<div>卡券：<strong>-20</strong></div>-->
-                  <!--<div>折扣：<strong>-50</strong></div>-->
-                  <!--<div>活动：<strong>-20</strong></div>-->
-                  <!--<div class=" am-ft-16">已收：<strong>566.00</strong></div>-->
-                <!--</div>-->
-
-              <!--</td>-->
-              <!--<td rowspan="3" class="rowspan_td">-->
-                <!--<div class="am-ft-orange">欠还款</div>-->
-                <!--<div class="look_d" v-on:click="goDetail('1')">查看详情</div>-->
-              <!--</td>-->
-              <!--<td rowspan="3" class="rowspan_td">-->
-                <!--<div class="am-ft-orange priceAll">1299.00</div>-->
-                <!--<div class="button">-->
-                  <!--<el-button type="primary" v-on:click="showModalMiddle()">收银</el-button>-->
-                <!--</div>-->
-              <!--</td>-->
-            <!--</tr>-->
-            <!--<tr>-->
-              <!--<td>BH00003</td>-->
-              <!--<td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>-->
-              <!--<td>1</td>-->
-              <!--<td>230.00</td>-->
-              <!--<td><strong>134.00</strong></td>-->
-              <!--<td>天一恒泰店</td>-->
-
-            <!--</tr>-->
-            <!--<tr>-->
-              <!--<td>BH00003</td>-->
-              <!--<td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>-->
-              <!--<td>1</td>-->
-              <!--<td>230.00</td>-->
-              <!--<td><strong>134.00</strong></td>-->
-              <!--<td>天一恒泰店</td>-->
-            <!--</tr>-->
-            <!--<div class="gekai"></div>-->
-            <!--</tbody>-->
           </table>
+          <el-pagination
+            class="am-ft-right"
+            background
+            layout="prev, pager, next"
+            :total="10">
+          </el-pagination>
         </div>
       </div>
 
@@ -277,20 +203,20 @@
       <div class="content am_bg_white" v-if="srcNum==='3'">
         <div class="orders">
           <el-table
-            :data="data"
+            :data="orderTempList"
             size="small"
             align="left"
             style="width: 100%;margin-bottom:10px;">
             <el-table-column
-              prop="id"
               label="订单号"
               width="400">
               <template slot-scope="scope">
-                <span class=" am-bg-blue icon">定</span>
-                <span class=" am-bg-orange icon">欠</span>
-                <span class=" am-bg-red icon">退</span>
-                <span class="order_id">  <a>{{scope.row.id}}</a></span>
-                <span class="sign_orange">跨店签批</span>
+                <span v-if="scope.row.status=='3'" class="am-bg-blue icon">定</span>
+                <span v-if="scope.row.status=='4'" class="am-bg-orange icon">欠</span>
+                <span v-if="scope.row.status=='10'" class="am-bg-red icon">退</span>
+                <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
+                <span v-if="scope.row.source=='0'" class="sign_blue">本店签批</span>
+                <span v-else class="sign_orange">跨店签批</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -299,22 +225,22 @@
               width="180">
             </el-table-column>
             <el-table-column
-              prop="telephone"
+              prop="telphone"
               label="会员手机号">
             </el-table-column>
             <el-table-column
-              prop="price"
+              prop="moneyPaid"
               label="金额">
               <template slot-scope="scope">
                 <span class="am-ft-bold">{{scope.row.price}}</span>
               </template>
             </el-table-column>
             <el-table-column
-              prop="time"
+              prop="orderTime"
               label="下单时间">
             </el-table-column>
             <el-table-column
-              prop="salesStore"
+              prop="shopName"
               label="销售门店">
             </el-table-column>
             <el-table-column
@@ -322,13 +248,13 @@
               label="状态">
               <template slot-scope="scope">
                 <span
-                  :class="{'am-ft-aa': scope.row.type==='1','am-ft-orange':scope.row.type==='2','am-ft-red': scope.row.type==='3'}">{{scope.row.status}}</span>
+                  :class="{'am-ft-aa': scope.row.statusCode==='3'||scope.row.statusCode==='6','am-ft-orange':scope.row.statusCode==='4'||scope.row.statusCode==='5','am-ft-red': scope.row.statusCode==='10'}">{{scope.row.statusName}}</span>
               </template>
             </el-table-column>
             <el-table-column
               label="操作">
               <template slot-scope="scope">
-                <span class="am-ft-blue" @click="showCashier = true"><a>查看详情</a></span>
+                <span class="am-ft-blue" @click="showCashier = true">查看详情</span>
               </template>
             </el-table-column>
           </el-table>
@@ -336,15 +262,18 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="1000">
+            :total="10">
           </el-pagination>
         </div>
       </div>
     </div>
+
+    <!--收银弹窗-->
     <el-dialog title="收银" :visible.sync="showCashier">
       <CashierModal></CashierModal>
     </el-dialog>
-    <el-dialog custom-class="noheader" title="" :visible.sync="showCashier">
+    <!--打印取货单弹窗-->
+    <el-dialog custom-class="noheader" title="" :visible.sync="consoleCashier">
       <div class="modal-content print-frame">
         <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/print.png"/>
         <span>该订单已完成收银，开始打印取货单...</span>
@@ -360,8 +289,16 @@
     name: 'CashierList',
     data() {
       return {
+        searchForm: {
+          orderNum: '',
+          member: '',
+          orderType: '',
+          saleStartTime: '',
+          saleEndTime: ''
+        },
         showCashier: false,
-        srcNum: '2',
+        consoleCashier: false,
+        srcNum: '1',
         orderTempList: {},
         tabs: [{
           'value': '收银',
@@ -378,16 +315,6 @@
             'isActived': false,
             'srcNum': '3'
           }],
-        data: [{
-            'id': '20170909000000001',
-            'name': '张三',
-            'telephone': 15757179646,
-            'price': '860.60',
-            'time': '2017-12-14 12:26:26',
-            'salesStore': '毛源昌建国北路店',
-            'status': '代收银',
-            "type": "1"
-          }]
       }
     },
     created(){
@@ -493,20 +420,8 @@
     padding-top: 20px;
   }
 
-  .cashier_top li {
-    margin-left: 30px;
-  }
-
   .find_btn {
-    display: inline-block;
-    width: 70px;
-    height: 30px;
-    line-height: 28px;
-    border: 1px solid #00AFE4;
-    border-radius: 4px;
-    color: #00AFE4;
-    text-align: center;
-    background: #fff;
+    margin: 7px 0 0 15px;
   }
 
   .orders {
