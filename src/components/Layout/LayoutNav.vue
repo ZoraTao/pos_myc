@@ -68,7 +68,7 @@ export default {
         },
         {
           name: "统计报表",
-          url: "/base",
+          url: "/base/statistical",
           imgSrc:
             "http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_tongjibb.png",
           wimgSrc:
@@ -77,7 +77,7 @@ export default {
         },
         {
           name: "文件管理",
-          url: "/base",
+          url: "/base/fileAdmin",
           imgSrc:
             "http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_wenjiangl.png",
           wimgSrc:
