@@ -80,39 +80,9 @@
       <el-row :gutter="20">
         <el-col :span="20">
           <el-form-item label="联系地址：">
-            <el-col :span="6">
-
-              <el-select prop="adr.province" v-model="addMemberForm.adr.province" placeholder="请选择"
-                         style="width:120px;">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-col>
-            <el-col :span="6">
-              <el-select prop="adr.city" v-model="addMemberForm.adr.city" placeholder="请选择" style="width:120px;">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-col>
-            <el-col :span="6">
-              <el-select prop="adr.district" v-model="addMemberForm.adr.district" placeholder="请选择"
-                         style="width:120px;">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-col>
+            <template>
+              <area-select :level='2' type='text' v-model='addMemberForm.adr'></area-select>
+            </template>
           </el-form-item>
           <el-col :span="18">
             <el-form-item prop="adr.address">
@@ -223,12 +193,8 @@
           job: '',//职业
           userId: '',
           orgId: '',
-          adr: {//省市区
-            province: '',
-            city: '',
-            district: '',
-            address: '',//详细地址
-          },
+          adr: [],//省市区
+          address: '',//详细地址
           note: '',//备注
           memberFrom: '',//会员来源
           status: '',//会员状态
@@ -261,6 +227,8 @@
 </script>
 
 <style lang="scss">
+  @import "../../../area-style";
+
   .addMember {
     .addMemberContent {
       padding-top: 20px;
@@ -312,9 +280,9 @@
           }
         }
       }
-
     }
   }
+
 </style>
 <style scoped>
   .el-form-item.el-form-item--feedback {
