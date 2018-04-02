@@ -9,10 +9,10 @@
         <h5>V 1.0.0</h5>
         <div class="formGroup">
           <div class="formItem">
-            <input type="text" value="" placeholder="用户名"/>
+            <input type="text" value="" v-model="LoginData.user" placeholder="用户名13777822654 "/>
           </div>
           <div class="formItem">
-            <input type="password" value="" placeholder="密码"/>
+            <input type="password" value="" v-model="LoginData.pass" placeholder="密码123456"/>
           </div>
           <div class="formItem">
             <select class="form-control">
@@ -33,12 +33,25 @@
             </select>
           </div>
           <div class="formItem">
-            <input type="button" class="loginBtn" value="登  录" v-on:click="goHome()"/>
+            <input type="button" class="loginBtn" value="登  录" v-on:click="toLogin()"/>
           </div>
           <div class="formItem">
             <span class="forgotPwd">忘记密码?</span>
           </div>
         </div>
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogVisible"
+          width="30%">
+          <span style="line-height:40px;">{{errorTitle}}</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button 
+            type="primary" 
+            plain 
+            size="small" 
+            @click="dialogVisible = false">确 定</el-button>
+          </span>
+        </el-dialog>
       </div>
     </div>
   </div>
@@ -48,9 +61,47 @@
 export default {
   name: 'login',
   data () {
-    return {}
+    return {
+      LoginData:{
+        user:'',
+        pass:''
+      },
+      dialogVisible:false,
+      errorTitle:'密码错误，登录失败！'
+    }
   },
   methods:{
+    toLogin(){
+      var _this = this;
+      this.$axios({
+        url:'http://myc.qineasy.cn/cas-api/user/userlogin',
+        method:'post',
+        params:{
+          jsonObject:{
+            userName:_this.LoginData.user,
+            passWord:_this.LoginData.pass
+          },
+          keyParams:{
+              weChat: true
+          }
+        }
+      }).then((res)=>{
+        if(res.status == '200'){
+          if(res.data.code ==  1 && res.data.msg == "登录成功"){
+              
+              _this.goHome();
+              console.log(res)
+          }else{
+              _this.dialogVisible = true
+              console.log(res)
+          }
+        }
+      }).catch((err)=>{
+        console.log(err)
+        _this.errorTitle = '通信错误，请重试';
+        _this.dialogVisible = true
+      })
+    },
     goHome(){
       this.$router.push('/base')
     }

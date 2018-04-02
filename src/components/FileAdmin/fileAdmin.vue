@@ -33,7 +33,7 @@
   export default {
       data() {
         return {
-          url: 'https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_wenjian.png',
+          url: 'https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_folder.png',
           cloundDatas:[
             {
               name:'七夕言情',

@@ -6,12 +6,14 @@
       <article class="mg10">
           <router-view></router-view>
       </article>
+      {{num}}
     </main>
 </template>
 
 <script>
 import LayoutNav from './LayoutNav.vue'
-
+import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
+import store from 'vuex'
 export default {
   name: 'LayoutContent',
   data () {
@@ -19,6 +21,17 @@ export default {
   },
   components:{
     LayoutNav
+  },
+  computed:{
+    ...mapGetters([
+      "msgTip"
+      ]),
+      ...mapState([
+        "num"
+      ])
+  },
+  methods:{
+    
   }
 }
 </script>

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-
+import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
   export default {
     name: 'App'
   }

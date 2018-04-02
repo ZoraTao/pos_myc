@@ -7,7 +7,7 @@
     <!--content-->
     <div class="member-menus">
       <el-row>
-        <el-col class="member-menus-items" v-for="(item, index) in secMenu">
+        <el-col class="member-menus-items" v-for="(item, index) in secMenu" :key="item.text">
           <div class="member-item" @click="createTab(index,item)">
             <img :src="item.src"/>
             <span>{{item.text}}</span>
