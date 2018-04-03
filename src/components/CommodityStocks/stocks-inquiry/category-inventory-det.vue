@@ -122,6 +122,7 @@
   export default {
     name: "category-inventory-det",
     components: {},
+    props: [''],
     data() {
       return {
         tableData1: [{

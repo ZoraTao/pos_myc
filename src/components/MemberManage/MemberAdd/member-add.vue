@@ -7,6 +7,7 @@
 
 <script>
   import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
+  import { Message } from 'element-ui';
 
   export default {
     name: "member-add",
@@ -23,24 +24,43 @@
       showData(data){
         console.info(data)
         var that = this;
-        that.$axios({
-          url: 'http://myc.qineasy.cn/member-api/member/addMember',
-          method: 'post',
-          params: {
-            jsonObject: data,
-            keyParams: {
-              weChat: true,
-              userId: "8888",
-              orgId: "11387"
+
+        if(data.name!='' && data.telphone!='' && data.birthday!='' && data.sex!=''){
+          that.$axios({
+            url: 'http://myc.qineasy.cn/member-api/member/addMember',
+            method: 'post',
+            params: {
+              jsonObject: data,
+              keyParams: {
+                weChat: true,
+                userId: "8888",
+                orgId: "11387"
+              }
             }
-          }
-        })
-          .then(function (response) {
-            console.info(response.data.data)
           })
-          .catch(function (error) {
-            console.info(error)
+            .then(function (response) {
+              console.info(response.data.data)
+              that.$message({
+                showClose: true,
+                message: '新增会员成功',
+                type: 'success'
+              });
+            })
+            .catch(function (error) {
+              console.info(error)
+              that.$message({
+                showClose: true,
+                message: error,
+                type: 'error'
+              })
+            })
+        }else {
+          that.$message({
+            showClose: true,
+            message: '请输入完整信息',
+            type: 'error'
           })
+        }
       }
     }
   }
