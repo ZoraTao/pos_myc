@@ -1,7 +1,7 @@
 <template>
 <div class="flexH100">
   <div class="homeImg">
-    <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/banner.png"/>
+    <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/shouye_banner.png"/>
   </div>
   <div class="homeContent">
     <div class="homeLeft">

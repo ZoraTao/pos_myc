@@ -2,7 +2,7 @@
   <div class="inner-index-box">
     <!--banner-->
     <div class="member-banner">
-      <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/banner.png"/>
+      <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/lingshou_banner.png"/>
     </div>
     <!--content-->
     <div class="member-menus">
