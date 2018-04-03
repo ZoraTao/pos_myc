@@ -268,6 +268,7 @@ export default {
             h3 {
                 font-size: 32px;
                 color: #00A2DE;
+                font-weight: 500;
             }
             p {
                 font-size: 13px;

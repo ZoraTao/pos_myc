@@ -651,7 +651,6 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
 
 <style lang="scss">
     @import "../../../reset";
-    .billing{
         .el-badge{
         vertical-align: unset;
         margin-left: 10px;
@@ -720,7 +719,7 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
                 text-align: center;
             }
         }
-        .content_box{
+        .billing.content_box{
             // height: calc(100% - 30px) !important;
             width: 100%;
             padding: 15px;
@@ -909,6 +908,9 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
                 }
             }
         }
+        .billing{
+}
+        
         .salesclerkInfo .el-date-editor{
             box-shadow: none !important;
             max-width: 120px;
@@ -1610,5 +1612,4 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
             line-height: 20px;
             padding: 0 3px;
         }
-}
 </style>
