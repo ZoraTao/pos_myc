@@ -101,7 +101,8 @@
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange">{{order.statusName}}</div>
+                <!--<div class="am-ft-orange">{{order.statusName}}</div>-->
+                <div class="am-ft-orange">待收银</div>
                 <div class="look_d" @click="showCashier = true">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
@@ -177,7 +178,8 @@
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange">{{order.statusName}}</div>
+                <!--<div class="am-ft-red">{{order.statusName}}</div>-->
+                <div class="am-ft-red">欠还款</div>
                 <div class="look_d" @click="showCashier = true">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">

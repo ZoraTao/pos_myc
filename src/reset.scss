@@ -30,11 +30,11 @@ $radius2: $h2 solid #E1E1E1;
 $radius3: $h3 solid #E1E1E1;
 //text-corlor
 .am-ft-red {
-    color: $red;
+    color: $red !important;
 }
 
 .am-ft-darkred {
-    color: $dark-red;
+    color: $dark-red !important;
 }
 
 .am-ft-blue {
