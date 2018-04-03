@@ -89,7 +89,7 @@ export default {
 
 .homeImg img {
     width: 100%;
-    max-height: 279px;
+    object-fit: cover;
 }
 
 .retailContent {
