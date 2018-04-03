@@ -1,59 +1,59 @@
 <template>
   <div>
     <el-table
-      :data="tableData6"
+      :data="codeStockData"
       size="small"
       stripe
       :summary-method="getSummaries"
       show-summary
       style="width: 100%;">
       <el-table-column
-        prop="a"
+        prop="className"
         label="类别"
         width="100">
       </el-table-column>
       <el-table-column
-        prop="b"
+        prop="brandName"
         label="品牌"
         width="80">
       </el-table-column>
       <el-table-column
-        prop="c"
+        prop="sku"
         label="商品编码"
         width="120">
       </el-table-column>
       <el-table-column
-        prop="d"
+        prop="skuName"
         label="商品名称"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="e"
+        prop="quantity"
         label="库存数量"
         width="80">
       </el-table-column>
       <el-table-column
-        prop="f"
+        prop="quantity"
         label="可分配数"
         width="80">
       </el-table-column>
       <el-table-column
-        prop="g"
+        prop="avgPrice"
         label="不含税零售均价"
         width="120">
       </el-table-column>
       <el-table-column
-        prop="h"
+        prop="avgTaxPrice"
         label="含税零售均价"
         width="120">
       </el-table-column>
       <el-table-column
-        prop="i"
+        prop="totalPrice"
         label="不含税零售价合计"
         width="150">
       </el-table-column>
       <el-table-column
-        prop="j"
+        prop="totalTaxPrice"
         label="含税零售价合计">
       </el-table-column>
     </el-table>
@@ -66,7 +66,7 @@
         @current-change="handleCurrentChange"
         :page-size="15"
         layout="total, prev, pager, next"
-        :total="10">
+        :total="codeStockData.count">
       </el-pagination>
     </div>
   </div>
@@ -76,20 +76,10 @@
   export default {
     name: "code-inventory-det",
     components: {},
+    props: ['codeStockData'],
     data() {
       return {
-        tableData6: [{
-          a: '镜架',
-          b: '阿迪达斯',
-          c: 'addsgxj629-6060',
-          d: '阿迪达斯光学架（配镜盒）691-6062',
-          e: `10`,
-          f: `10`,
-          g: `2456`,
-          h: `2456`,
-          i: `2456`,
-          j: `2456`,
-        }]
+
       }
     },
     methods: {

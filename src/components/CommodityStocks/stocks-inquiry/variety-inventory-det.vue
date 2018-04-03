@@ -1,49 +1,49 @@
 <template>
   <div>
     <el-table
-      :data="tableData6"
+      :data="varietyDetData"
       size="small"
       stripe
       :summary-method="getSummaries"
       show-summary
       style="width: 100%;">
       <el-table-column
-        prop="a"
+        prop="className"
         label="类别"
         width="130">
       </el-table-column>
       <el-table-column
-        prop="b"
+        prop="brandName"
         label="品牌"
         width="100">
       </el-table-column>
       <el-table-column
-        prop="c"
+        prop="varietyName"
         label="品种"
         width="150">
       </el-table-column>
       <el-table-column
-        prop="d"
+        prop="quantity"
         label="库存数量"
         width="100">
       </el-table-column>
       <el-table-column
-        prop="e"
+        prop="avgPrice"
         label="不含税零售均价"
         width="120">
       </el-table-column>
       <el-table-column
-        prop="f"
+        prop="avgTaxPrice"
         label="含税零售均价"
         width="120">
       </el-table-column>
       <el-table-column
-        prop="g"
+        prop="totalPrice"
         label="不含税零售价合计"
         width="150">
       </el-table-column>
       <el-table-column
-        prop="h"
+        prop="totalTaxPrice "
         label="含税零售价合计">
       </el-table-column>
     </el-table>
@@ -56,7 +56,7 @@
         @current-change="handleCurrentChange"
         :page-size="15"
         layout="total, prev, pager, next"
-        :total="10">
+        :total="varietyDetData.count">
       </el-pagination>
     </div>
   </div>
@@ -66,28 +66,10 @@
   export default {
     name: "variety-inventory-det",
     components: {},
+    props: ['varietyDetData'],
     data() {
       return {
-        tableData6: [{
-          a: '镜架',
-          b: '卡尔丹尼',
-          c: '光学架(配镜盒)',
-          d: `24`,
-          e: `1567`,
-          f: `2456`,
-          g: `2456`,
-          h: `2456`,
-        },
-          {
-            a: '镜片',
-            b: 'CK',
-            c: '光学架(配镜盒)',
-            d: `521.4`,
-            e: `6491.0`,
-            f: `6491.0`,
-            g: `2456`,
-            h: `2456`,
-          }]
+
       }
     },
     methods: {

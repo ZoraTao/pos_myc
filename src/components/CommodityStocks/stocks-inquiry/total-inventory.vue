@@ -1,39 +1,39 @@
 <template>
   <div>
     <el-table
-      :data="tableData6"
+      :data="totalStocksData"
       size="small"
       stripe
       :summary-method="getSummaries"
       show-summary
       style="width: 100%;">
       <el-table-column
-        prop="a"
+        prop="className"
         label="类别"
         width="130">
       </el-table-column>
       <el-table-column
-        prop="b"
+        prop="quantity"
         label="库存数量"
         width="100">
       </el-table-column>
       <el-table-column
-        prop="c"
+        prop="avgPrice"
         label="不含税零售均价"
         width="120">
       </el-table-column>
       <el-table-column
-        prop="d"
+        prop="avgTaxPrice"
         label="含税零售均价"
         width="120">
       </el-table-column>
       <el-table-column
-        prop="e"
+        prop="totalPrice"
         label="不含税零售价合计"
         width="150">
       </el-table-column>
       <el-table-column
-        prop="f"
+        prop="totalTaxPrice"
         label="含税零售价合计">
       </el-table-column>
     </el-table>
@@ -46,7 +46,7 @@
         @current-change="handleCurrentChange"
         :page-size="15"
         layout="total, prev, pager, next"
-        :total="10">
+        :total="totalStocksData.count">
       </el-pagination>
     </div>
   </div>
@@ -56,24 +56,13 @@
   export default {
     name: "total-inventory",
     components: {},
+    props: ['totalStocksData'],
+    created: function() {
+
+    },
     data() {
       return {
-        tableData6: [{
-          a: '隐形眼镜辅助产品',
-          b: `1093`,
-          c: `5378.4`,
-          d: `5378.4`,
-          e: `75671.0`,
-          f: `45676.0`
-        },
-          {
-            a: '镜片',
-            b: `505`,
-            c: `521.4`,
-            d: `521.4`,
-            e: `6491.0`,
-            f: `6491.0`
-          }]
+
       }
     },
     methods: {
