@@ -163,6 +163,7 @@ import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
         display: block;
         width: 100%;
         object-fit: cover;
+        max-height: 279px;
       }
     }
 

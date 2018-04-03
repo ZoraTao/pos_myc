@@ -1,22 +1,21 @@
 <template>
-<div class="flexH100">
-    <div class="homeImg">
-        <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/banner.png" />
+  <div class="inner-index-box">
+    <!--banner-->
+    <div class="member-banner">
+      <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/banner.png"/>
     </div>
-    <div class="retailContent">
-        <ul class="small_icon">
-            <li v-for="(item, index) of icons" :key="item.text" @click="createTab(index,item)">
-                <div class="fn_left w_50 linkSrc">
-                    <img :src="item.src" />
-                    <p class="icon_text">{{item.text}}</p>
-                </div>
-                <div class=" fn_left w_50  line_p" v-show="item.line">
-                    <div class="line"></div>
-                </div>
-            </li>
-        </ul>
+    <!--content-->
+    <div class="member-menus">
+      <el-row>
+        <el-col class="member-menus-items"  v-for="(item, index) in icons" :key="item.text">
+          <div class="member-item" @click="createTab(index,item)" >
+            <img :src="item.src"/>
+            <span>{{item.text}}</span>
+          </div>
+        </el-col>
+      </el-row>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
@@ -81,78 +80,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.homeImg {
-    flex: 68;
-    max-height: 279px;
-    overflow: hidden;
-}
-
-.homeImg img {
-    width: 100%;
-    max-height: 279px;
-}
-
-.retailContent {
-    flex: 100;
-    width: 100%;
-    margin: 10px 0;
-    font-size: 14px;
-    overflow: hidden;
-    background: #fff;
-}
-
-.small_icon {
-    width: 100%;
-    height: 100%;
-    padding: 80px 100px;
-    margin-left: 33px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.small_icon li {
-    flex: 1;
-    position: relative;
-}
-
-.small_icon li img {
-    width: 100%
-}
-
-.w_50 {
-    width: 50%;
-}
-
-.min_w100{
-    min-width: 100px;
-}
-
-.line_p {
-    width: 50%;
-    padding: 0 10px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -20px;
-}
-
-.icon_text {
-    font-family: MicrosoftYaHei;
-    font-size: 16px;
-    color: #333333;
-    line-height: 30px;
-    text-align: center;
-    margin-top: 10px;
-}
-
-.line {
-    width: 100%;
-    height: 30px;
-    border-top: 2px solid #EFEFEF;
-}
-
-.linkSrc {
-    cursor: pointer;
-}
+  .member-menus{
+    .member-menus-items{
+      width: calc(100% / 6);
+    }
+  }
 </style>
