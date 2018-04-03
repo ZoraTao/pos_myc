@@ -65,17 +65,17 @@ c<template>
           <el-col :span="24">
             <el-form-item label="添加时间：">
               <div class="fn-line-block">
-                <el-date-picker 
-                type="date" 
-                placeholder="选择日期"  
-                value-format="yyyy-MM-dd" 
+                <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd"
                 v-model="sreen.startTime"
                 style="width: 120px;" />
               </div>
               <div class="fn-line-block am-ft-center am-text-secondary">-</div>
               <div class="fn-line-block">
-                <el-date-picker type="date" 
-                placeholder="选择日期"  
+                <el-date-picker type="date"
+                placeholder="选择日期"
                 value-format="yyyy-MM-dd"
                 v-model="sreen.endTime"
                 style="width: 120px;" />
@@ -193,9 +193,9 @@ c<template>
             background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :page-size="100"
+            :page-size="10"
             layout="total, prev, pager, next"
-            :total="100">
+            :total="counts">
           </el-pagination>
         </div>
         <!--/多个数据时显示-->
@@ -402,6 +402,7 @@ export default {
         .then(function(response) {
           // console.info(response.data.data)
           that.memberList = response.data.data.memberList;
+          that.counts = response.data.data.memberList.length;
         })
         .catch(function(error) {
           console.info(error);
