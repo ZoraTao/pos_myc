@@ -40,8 +40,8 @@
         label="操作"
         width="200">
         <template slot-scope="scope">
-          <el-button @click="checkDet(scope.row)" type="text" size="small">查看</el-button>
-          <el-button class="mgl20" v-if="scope.row.f == '待回访'" type="text" size="small">回访登记</el-button>
+          <a href="javascript:;" @click="checkDet(scope.row)">查看</a>
+          <a href="javascript:;" class="mgl20" v-if="scope.row.f == '待回访'">回访登记</a>
         </template>
       </el-table-column>
     </el-table>
