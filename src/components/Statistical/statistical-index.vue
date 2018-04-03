@@ -2,6 +2,7 @@
   <div> 
     <el-container>
       <el-header style="height:160px;">
+        <div class="headerContent">
           <el-row>
             <el-col :span="4" v-for="(item , index) in defaultsData" :key="item.name">
               <div class="grid-content bg-purple">
@@ -10,6 +11,8 @@
               </div>
             </el-col>
           </el-row>
+        </div>
+          
           <div class="toggleImg" @click="toggelHeader">
             <img src="https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_ss.png" alt="">
           </div>
@@ -19,13 +22,13 @@
           <p class="title">统计报表</p>
           <div class="minDiv">
             <el-row>
-              <el-col  :span="4" v-for="items in saleData" :key="items.name">
-                <div class="grid-content bg-purple" @click="toTargetrouter(items)">
+              <el-col  :span="4" v-for="(items,index) in saleData" :key="items.name" >
+                <div class="grid-content bg-purple" @click=" toTargetrouter(items);createTab(index,items)" >
                   <img :src="items.img" alt="">
-                  <h5>{{items.name}}</h5>
+                  <h5>{{items.text}}</h5>
                 </div>
                 <ul class="list" >
-                  <li v-for="ite in items.contentList" :key="ite.name" >{{ite}}</li>
+                  <li v-for="ite in items.contentList" :key="ite">{{ite}}</li>
                 </ul>
               </el-col>
           </el-row>
@@ -68,55 +71,68 @@ export default {
       ],
       saleData: [
         {
-          name: "商品报表",
-          img: "https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_bb_sp.png",
+          text: "商品报表",
+          img:
+            "https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_bb_sp.png",
           contentList: ["每周日报", "商品报表"],
-          url:"/doBusiness"
+          link: "/doBusiness",
+          name: "do-business"
         },
         {
-          name: "员工报表",
-          img: "https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_bb_yg.png",
+          text: "员工报表",
+          img:
+            "https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_bb_yg.png",
           contentList: ["每周日报", "商品报表"],
-          url:"/staffSale"
+          link: "/staffSale",
+          name: "staffSale"
         },
         {
-          name: "库存报表",
-          img: "https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_bb_kc.png",
+          text: "库存报表",
+          img:
+            "https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_bb_kc.png",
           contentList: ["每周日报", "商品报表"],
-          url:""
+          link: "/baseTable",
+          name: "baseTable"
         },
         {
-          name: "销售报表",
-          img: "https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_bb_xs.png",
+          text: "销售报表",
+          img:
+            "https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_bb_xs.png",
           contentList: ["每周日报", "商品报表"],
-          url:""
+          link: "/saleTable",
+          name: "saleTable"
         },
         {
-          name: "GSP管理",
-          img: "https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_bb_gps.png",
+          text: "GSP管理",
+          img:
+            "https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_bb_gps.png",
           contentList: ["每周日报", "商品报表"],
-          url:""
+          link: "/gspDev",
+          name: "gspDev"
         }
       ]
     };
-  },methods: {
-    toggelHeader() {
-      alert(1)
-    },
-    toTargetrouter(target){
-      console.log(target)
-      this.$router.push(target.url);
-    }
   },
+  methods: {
+    toggelHeader() {
+      console.log("动画");
+    },
+    toTargetrouter(target) {
+      this.$router.push(target.link);
+    },
+    createTab(key, label) {
+      this.$router.push(label.link);
+      this.$bus.$emit("createTab", label);
+    }
+  }
 };
 </script>
 
 <style scoped lang="scss">
-
 @import "../../reset";
+.el-container {
+}
 .el-header {
-  box-sizing: border-box;
-  padding: 0 138px 0 139px;
   background: #fff;
   text-align: center;
   font-family: MicrosoftYaHei;
@@ -127,11 +143,11 @@ export default {
     line-height: 31px;
     color: #333;
   }
-  .toggleImg{
+  .toggleImg {
     width: 80px;
     position: absolute;
     bottom: 0;
-    left:50%;
+    left: 50%;
     transform: translateX(-50%);
     height: 26px;
   }
@@ -148,6 +164,11 @@ export default {
   .el-col:nth-child(5) em {
     color: #00c1eb;
   }
+  .headerContent {
+    max-width: 1270px;
+    box-sizing: content-box;
+    margin: 0 auto;
+  }
   .el-row {
     margin-top: 55px;
     &:last-child {
@@ -160,6 +181,11 @@ export default {
   margin-top: 10px;
   position: relative;
   padding: 0;
+  .minDiv {
+    max-width: 1270px;
+    box-sizing: content-box;
+    margin: 0 auto;
+  }
   .title {
     font-size: 16px;
     color: #555;
@@ -175,7 +201,7 @@ export default {
   }
   .el-col {
     box-sizing: content-box;
-    border:1px solid #cccccc;
+    border: 1px solid #cccccc;
     width: 198px;
     cursor: pointer;
     height: 270px;
@@ -185,15 +211,15 @@ export default {
       text-align: center;
       overflow: hidden;
     }
-    h5{
+    h5 {
       font-size: 18px;
-      color:#fff;
-      line-height:24px;
+      color: #fff;
+      line-height: 24px;
     }
-    .list{
+    .list {
       margin-top: 18px;
-      li{
-        list-style-type:disc;
+      li {
+        list-style-type: disc;
         margin-left: 32px;
         line-height: 17px;
         font-size: 13px;
@@ -205,50 +231,50 @@ export default {
   }
   .el-col:nth-child(1) .grid-content {
     background: #fac979;
-    img{
+    img {
       width: 51px;
       margin-top: 20px;
     }
   }
   .el-col:nth-child(2) .grid-content {
     background: #97cf74;
-    img{
+    img {
       width: 52px;
       margin-top: 15px;
     }
   }
   .el-col:nth-child(3) .grid-content {
     background: #8ec5da;
-    img{
+    img {
       width: 51px;
       margin-top: 19px;
     }
   }
   .el-col:nth-child(4) .grid-content {
     background: #00a2de;
-    img{
+    img {
       width: 50px;
       margin-top: 19px;
     }
   }
   .el-col:nth-child(5) .grid-content {
     background: #4e8ea6;
-    img{
+    img {
       width: 42px;
       margin-top: 22px;
     }
   }
 }
 .transition-box {
-    margin-bottom: 10px;
-    width: 200px;
-    height: 100px;
-    border-radius: 4px;
-    background-color: #409EFF;
-    text-align: center;
-    color: #fff;
-    padding: 40px 20px;
-    box-sizing: border-box;
-    margin-right: 20px;
-  }
+  margin-bottom: 10px;
+  width: 200px;
+  height: 100px;
+  border-radius: 4px;
+  background-color: #409eff;
+  text-align: center;
+  color: #fff;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  margin-right: 20px;
+}
 </style>

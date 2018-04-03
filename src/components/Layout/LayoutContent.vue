@@ -6,7 +6,6 @@
       <article class="mg10">
           <router-view></router-view>
       </article>
-      {{num}}
     </main>
 </template>
 
@@ -24,14 +23,16 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "msgTip"
       ]),
       ...mapState([
-        "num"
       ])
+      
   },
   methods:{
-
+    ...mapMutations([
+    ]),
+    ...mapActions([
+    ])
   }
 }
 </script>

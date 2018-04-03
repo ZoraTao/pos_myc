@@ -2,6 +2,7 @@
   <div>
     <el-container>
       <el-header>
+        <div class="routerHeader">
           <router-link 
           to="/foo"   
           v-for='(item, index) in lists' 
@@ -10,8 +11,11 @@
           <i v-if="index>=1">></i>
           <em :class="[ index ==0&& lists.length>1? 'backFirst' : '']">{{item.name}}</em>
           </router-link>
+        </div>
+          
       </el-header>
       <el-main>
+        <div class="routerContent">
           <el-row :gutter="90">
             <el-col :span="3" v-for="(items,index) in cloundDatas" :key="items.name">
                 <div class="grid-content bg-purple">
@@ -24,6 +28,8 @@
                 </div>
             </el-col>
           </el-row>
+        </div>
+          
       </el-main>
     </el-container>
   </div>
@@ -86,6 +92,10 @@
   .cloundLinks{
     cursor: pointer;
   }
+  .routerHeader{
+    max-width: 1270px;
+    box-sizing: content-box;
+  }
 }
 .el-main{
   background-color: $white;
@@ -97,6 +107,10 @@
   font-size: 14px;
   color: #333333;
   text-align: center;
+  .routerContent{
+    max-width: 1270px;
+    box-sizing: content-box;
+  }
   img{
     display: block;
     margin: 0 auto;
