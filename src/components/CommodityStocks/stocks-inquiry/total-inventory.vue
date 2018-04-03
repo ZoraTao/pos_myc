@@ -13,7 +13,7 @@
         width="130">
       </el-table-column>
       <el-table-column
-        prop="quantity"
+        prop="totalCount"
         label="库存数量"
         width="100">
       </el-table-column>

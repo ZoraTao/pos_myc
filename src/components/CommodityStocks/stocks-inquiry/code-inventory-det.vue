@@ -28,12 +28,12 @@
         width="180">
       </el-table-column>
       <el-table-column
-        prop="quantity"
+        prop="totalCount"
         label="库存数量"
         width="80">
       </el-table-column>
       <el-table-column
-        prop="quantity"
+        prop="totalAllotQuantity "
         label="可分配数"
         width="80">
       </el-table-column>
