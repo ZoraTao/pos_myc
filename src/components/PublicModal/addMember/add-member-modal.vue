@@ -140,8 +140,8 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-form-item label="负责部门：" prop="resDepartment">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.resDepartment" placeholder="请选择">
+          <el-form-item label="负责部门：" prop="orgName">
+            <el-select style="margin-left:10px;" v-model="addMemberForm.orgName" placeholder="请选择">
               <el-option
                 label="毛源昌杭州西湖店"
                 value="0">
@@ -221,7 +221,7 @@
           memberFrom: '',//会员来源
           status: '',//会员状态
           attributes: '',//会员属性
-          resDepartment: '',//负责部门
+          orgName: '',//负责部门
           resEmployees: ''//负责员工
         }
       }

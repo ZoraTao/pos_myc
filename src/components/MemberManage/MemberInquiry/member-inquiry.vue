@@ -243,7 +243,9 @@ export default {
         cardId: 1, //没有购买记录
         lastPrescriptionDays: 1, //没有验光记录
         startTime: "", //开始时间
-        endTime: "" //结束时间
+        endTime: "", //结束时间
+        nub: "0",
+        size: "5"
       },
       memberList: [], //会员列表
       memberCount: [], //会员汇总数量

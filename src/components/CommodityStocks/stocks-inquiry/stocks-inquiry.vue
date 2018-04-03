@@ -209,9 +209,9 @@
       //获取总库存列表
       getStocksList(searchData){
         var that = this;
-        if(searchData==undefined){
-          searchData = that.formInline
-        }
+
+        searchData = that.formInline
+
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getTotalStockList',
           method: 'post',
