@@ -11,7 +11,7 @@
         </ul>
         <ul class="optometry_head_msg">
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">手机号:</span>{{userInfo.mobile}}</li>
-          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">姓名:</span>&nbsp;{{userInfo.createUserName}}</li>
+          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">姓名:</span>&nbsp;{{userInfo.memberName}}</li>
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;{{memberInfo.memberCardNo}}</li>
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">性别 :</span>&nbsp;<em
             v-if="memberInfo.sex=='M'">男</em>

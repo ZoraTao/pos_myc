@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 // import mutations from './mutation/mutations'
 // import * as actions from './action/action'
 // import * as getters from './getter/getters'
+import * as types from './mutation-types'
 import {cookie} from '../utils/cookie'
 
 Vue.use(Vuex)
@@ -15,20 +16,25 @@ const state = {
   bool:false
 }
 
-const SOME_MUTATION = 'some_mutation'
 
 const mutations = {
-  [SOME_MUTATION](state){
+  [types.CHANGE_STATE](state){
     state.count++
   },
-  increment(state,){  
-    state.count += 2;  
+  add(state){
+    state.num +=1;
+  },
+  increment(state){  
+    state.num += 2;  
 }, 
 }
 const actions = {
-  actionA({ dispatch, commit }) {  
-    return commit('add');  
-  }, 
+  increment (context) {
+    context.commit('increment')
+  },
+  incrementA ({ commit , state } , products ) {
+    commit([types.CHANGE_STATE])
+ }
 }
 
 const getters ={

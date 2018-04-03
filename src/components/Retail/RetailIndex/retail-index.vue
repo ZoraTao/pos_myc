@@ -6,13 +6,13 @@
     <div class="retailContent">
         <ul class="small_icon">
             <li v-for="(item, index) of icons" :key="item.text" @click="createTab(index,item)">
-                <div class="fn_left w_50 linkSrc">
+                <div class="fn_left linkSrc">
                     <img :src="item.src" />
                     <p class="icon_text">{{item.text}}</p>
                 </div>
-                <div class=" fn_left w_50  line_p" v-show="item.line">
-                    <div class="line"></div>
-                </div>
+                <!--<div class=" fn_left w_50  line_p" v-show="item.line">-->
+                    <!--<div class="line"></div>-->
+                <!--</div>-->
             </li>
         </ul>
     </div>
@@ -89,7 +89,7 @@ export default {
 
 .homeImg img {
     width: 100%;
-    max-height: 279px;
+    object-fit: cover;
 }
 
 .retailContent {
@@ -153,6 +153,7 @@ export default {
 }
 
 .linkSrc {
+    width: 100px;
     cursor: pointer;
 }
 </style>

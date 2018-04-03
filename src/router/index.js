@@ -8,7 +8,7 @@ export default new Router({
     // 一级路由跟路由重定向到login
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/login',
     },
     {
       path: '/login',

@@ -183,7 +183,7 @@ import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
         }
         span {
           width: 100%;
-          font-size: 20px;
+          font-size: 16px;
           color: #333333;
           text-align: center;
           margin-top: 14px;
@@ -226,7 +226,7 @@ import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
     background-color: #f4f4f5;
   }
 
-.packageDetailButtonGroup{ 
+.packageDetailButtonGroup{
     overflow: hidden;
     padding:20px 10px;
     background: #EEEEEE;
