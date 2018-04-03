@@ -84,7 +84,7 @@
                 </div>
               </td>
             </tr>
-            <tr v-for="(list,index) in order.orderItems">
+            <tr v-for="(list,index) in order.orderItems" :key="list.name">
               <td>BH0000{{index}}</td>
               <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
               <td>1</td>
@@ -159,7 +159,7 @@
                 </div>
               </td>
             </tr>
-            <tr v-for="(list,index) in order.orderItems">
+            <tr v-for="(list,index) in order.orderItems" :key="list.name">
               <td>BH0000{{index}}</td>
               <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
               <td>1</td>

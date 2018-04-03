@@ -103,7 +103,7 @@ export default {
       })
     },
     goHome(){
-      this.$router.push('/base')
+      this.$router.push('/base/homeIndex')
     }
   }
 }
