@@ -1,12 +1,12 @@
 <template>
-<div class="content_box flexH100">
+<div class="optometry_list content_box flexH100">
     <div class="optometry_list_top am-bg-white">
 
         <div class="fn-left mgt4">
             <span class="member">会员:</span>
             <el-input class="" v-model="memberInfo" placeholder="卡号/姓名/手机号"></el-input>
         </div>
-        <div class="fn-left mgt4 mgl20">
+        <div class="fn-left mgt4 mgl20" v-show="Object.keys(detailData).length>0">
             <span class="member">验光师:</span>
             <el-select style="width:90px" v-model="value" placeholder="请选择">
                 <el-option
@@ -25,7 +25,7 @@
         </div>
 
         <div class="fn-right ">
-            <button class="add_btn bg_white_col_blue">
+            <button class="add_btn bg_white_col_blue" @click="showNewOptometry=true">
                 + 新增验光单
             </button>
         </div>
@@ -39,7 +39,7 @@
                     <img src="http://myc-oms.oss-cn-hangzhou.aliyuncs.com/img%2Foptometry_qs.png" />
                 </li>
                 <li class="optometry_qs_text">
-                    输入会员信息查询验光单
+                    {{noSearchText}}
                 </li>
                 <!-- <li class="optometry_qs_text">
                     未查询到验光单
@@ -88,7 +88,7 @@
                 <el-table-column
                 label="操作">
                     <template slot-scope="scope">
-                        <span class="am-ft-blue"><a>查看详情</a></span>
+                        <span class="am-ft-blue" @click="getMemberDetail(scope.row.prescriptionId)"><a>查看详情</a></span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -105,18 +105,29 @@
         <!--验光单一条数据详情-->
         <optometryOrderCu :memberDet="''" :memberInfo="detailData" :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
     </div>
+    <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="900px">
+        <NewOptometryModal :submit="submitNewOptometry"></NewOptometryModal>
+        <div class="packageDetailButtonGroup">
+            <el-button @click="showNewOptometry = false">取 消</el-button>
+            <el-button type="primary" @click="submitNewOptometry=true">保 存</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
 <script>
 import optometryOrderCu from '../optometryOrderCu/optometry-order-cu.vue'
+import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-modal.vue'
     export default {
         name: "optometryOrderList",
         data() {
             return {
+                submitNewOptometry:false,
                 showDiv:"2",
                 memberInfo:"",
                 listData : [],
+                showNewOptometry:false,
+                noSearchText:"输入会员信息查询验光单",
                 listUrl:"http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsList",
                 deatilUrl:"http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptions",
                 detailData:[],
@@ -129,38 +140,51 @@ import optometryOrderCu from '../optometryOrderCu/optometry-order-cu.vue'
             };
         },
         components:{
-            optometryOrderCu
+            optometryOrderCu,
+            NewOptometryModal
         },
         created: function() {
-            this.getOrderList();
+            const isFirst = true;
+            this.getOrderList(isFirst);
         },
         methods:{
-            getOrderList() {
-                var that = this;
-                that.$axios({
-                    url: this.listUrl,
-                    method: 'post',
-                    params: {
-                        jsonObject: {
-                            memberId: this.memberInfo,
-                            nub: (this.nub==0?0:(this.nub-1)*this.size),
-                            size: this.size
-                        },
-                        keyParams: {
-                            weChat: true,
-                            userId: '8888',
-                            orgId: '11387'
+            getOrderList(isFirst) {
+                if(isFirst){
+                    this.noSearchText="输入会员信息查询验光单"
+                }else{
+                    if(this.memberInfo!=""){
+                        this.noSearchText="未查询到验光单"
+                    }
+                }
+                    var that = this;
+                    that.$axios({
+                        url: this.listUrl,
+                        method: 'post',
+                        params: {
+                            jsonObject: {
+                                memberId: this.memberInfo,
+                                nub: (this.nub==0?0:(this.nub-1)*this.size),
+                                size: this.size
+                            },
+                            keyParams: {
+                                weChat: true,
+                                userId: '8888',
+                                orgId: '11387'
+                            }
                         }
-                    }
-                })
-                .then(function (response) {
-                    if(response.data.data.list.length>1){
-                        that.listData=response.data.data.list;
-                        that.count=response.data.data.count;
-                    }else if(response.data.data.list.length==1){
-                        that.getMemberDetail(response.data.data.list[0].prescriptionId);
-                    }
-                })
+                    })
+                    .then(function (response) {
+                        if(response.data.data.list.length>1){
+                            that.listData=response.data.data.list;
+                            that.count=response.data.data.count;
+                        }else if(response.data.data.list.length==1){
+                            that.getMemberDetail(response.data.data.list[0].prescriptionId);
+                        }else if(response.data.data.list.length==0){
+                            that.listData=response.data.data.list;
+                            that.count=response.data.data.count;                            
+                            that.noSearchText="未查询到验光单"
+                        }
+                    })
             },
             getMemberDetail(id) {
                 var that = this;
@@ -187,116 +211,118 @@ import optometryOrderCu from '../optometryOrderCu/optometry-order-cu.vue'
     };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import "../../../../reset";
-.content_box{
-    flex-direction: column;
-}
-.optometry_list_top {
-    height: 70px;
-    width: 100%;
-    padding: 18px 20px;
-}
+.optometry_list{
+    .content_box{
+        flex-direction: column !important;
+    }
+    .optometry_list_top {
+        height: 70px;
+        width: 100%;
+        padding: 18px 20px;
+    }
 
-.member {
-    display: inline-block;
-    width: 43px;
-    font-weight: bold;
-    font-size: 12px;
-}
+    .member {
+        display: inline-block;
+        width: 43px;
+        font-weight: bold;
+        font-size: 12px;
+    }
 
-.mgt4 {
-    margin-top: 4px;
-}
+    .mgt4 {
+        margin-top: 4px;
+    }
 
-.mgt2 {
-    margin-top: 2px;
-}
+    .mgt2 {
+        margin-top: 2px;
+    }
 
-.find_btn {
-    width: 96px;
-    height: 30px;
-    font-family: MicrosoftYaHei;
-    font-size: 12px;
-    letter-spacing: 0;
-}
+    .find_btn {
+        width: 96px;
+        height: 30px;
+        font-family: MicrosoftYaHei;
+        font-size: 12px;
+        letter-spacing: 0;
+    }
 
-.add_btn {
-    width: 100px;
-    height: 34px;
-    font-family: MicrosoftYaHei;
-    font-size: 12px;
-    letter-spacing: 0;
-}
+    .add_btn {
+        width: 100px;
+        height: 34px;
+        font-family: MicrosoftYaHei;
+        font-size: 12px;
+        letter-spacing: 0;
+    }
 
-.col_blue_bg_white {
-    color: #00AFE4;
-    background: white;
-    border: 1px solid #00AFE4;
-    border-radius: 4px;
-}
+    .col_blue_bg_white {
+        color: #00AFE4;
+        background: white;
+        border: 1px solid #00AFE4;
+        border-radius: 4px;
+    }
 
-.bg_white_col_blue {
-    color: #ffffff;
-    background: #00AFE4;
-    border: 1px solid #00AFE4;
-    border-radius: 4px;
-}
+    .bg_white_col_blue {
+        color: #ffffff;
+        background: #00AFE4;
+        border: 1px solid #00AFE4;
+        border-radius: 4px;
+    }
 
-.optometry_input {
-    background: #F8F8F8;
-    border: 1px solid #E1E1E1;
-    padding: 2px 10px;
-    height: 26px;
-}
+    .optometry_input {
+        background: #F8F8F8;
+        border: 1px solid #E1E1E1;
+        padding: 2px 10px;
+        height: 26px;
+    }
 
-.optometry_content {
-    position: relative;
-    margin-top: 10px;
-    width: 100%;
-    height: 100%;
-    background: white;
-    padding: 11px;
-    overflow-y: auto;
-}
+    .optometry_content {
+        position: relative;
+        margin-top: 10px;
+        width: 100%;
+        height: 100%;
+        background: white;
+        padding: 11px;
+        overflow-y: auto;
+    }
 
-.find_before {
-    width: 250px;
-    height: auto;
-    position: absolute;
-    left: 50%;
-    top: 24%;
-    margin-left: -125px;
-    /*margin-top: -150px;*/
-}
+    .find_before {
+        width: 250px;
+        height: auto;
+        position: absolute;
+        left: 50%;
+        top: 24%;
+        margin-left: -125px;
+        /*margin-top: -150px;*/
+    }
 
-.find_before li {
-    text-align: center;
-    margin-top: 23px;
-}
+    .find_before li {
+        text-align: center;
+        margin-top: 23px;
+    }
 
-li.optometry_qs_img {
-    margin-left: 25px;
-}
+    li.optometry_qs_img {
+        margin-left: 25px;
+    }
 
-li.optometry_qs_text {
-    text-align: center;
-    font-size: 14px;
-    color: #888888;
-    letter-spacing: 0.51px;
-}
+    li.optometry_qs_text {
+        text-align: center;
+        font-size: 14px;
+        color: #888888;
+        letter-spacing: 0.51px;
+    }
 
 
-/*列表*/
+    /*列表*/
 
-.list_name {
-    font-family: MicrosoftYaHei;
-    font-size: 16px;
-    line-height: 26px;
-    color: #333333;
-    letter-spacing: 0;
-    padding-left: 20px;
-    margin-bottom: 5px;
-    text-align: left;
+    .list_name {
+        font-family: MicrosoftYaHei;
+        font-size: 16px;
+        line-height: 26px;
+        color: #333333;
+        letter-spacing: 0;
+        padding-left: 20px;
+        margin-bottom: 5px;
+        text-align: left;
+    }
 }
 </style>
