@@ -220,7 +220,7 @@
             <div class="fn-right">
                 <el-button type="primary">重置</el-button>
                 <el-button type="primary">挂单[F7]</el-button>
-                <el-button type="primary">开单[F5]</el-button>
+                <el-button type="primary" @click="addOrderTemp">开单[F5]</el-button>
             </div>
         </div>
     </div>
@@ -228,43 +228,48 @@
         <div class="addMember borderfff">
             <div class="memberTop">
                 <label>会员</label>
-                <el-button type="primary">添加会员</el-button>
+                <el-button type="primary" @click="addMember=true">添加会员</el-button>
             </div>
             <div class="memberBottom">
                 <div class="memberName">
                     <div class="memberTx">
                         <p>
-                            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_touxiang.png"/>张丽丽
+                            <img :src="selectMember.memberInfo?selectMember.memberInfo.headpicpath:'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_touxiang.png'"/>{{selectMember.memberInfo?selectMember.memberInfo.name:'--'}}
                         </p>
                         <span>···</span>
                     </div>
-                    <div class="cardLevel">
-                        <span>金卡</span>
+                    <div class="cardLevel" v-show="selectMember.memberInfo">
+                        <span>{{selectMember.memberInfo?selectMember.memberInfo.cardName:''}}</span>
                     </div>
                 </div>
                 <div class="consume">
                     <div class="consumeItem">
-                        <span>3</span>
+                        <span>
+                            {{selectMember.memberInfo?selectMember.memberInfo.shoppingCount==''?'--':selectMember.memberInfo.shoppingCount:'--'}}
+                        </span>
                         <p>消费次数</p>
                     </div>
                     <div class="consumeItem">
-                        <span>￥10088</span>
+                        <span>
+                            {{selectMember.memberInfo?selectMember.memberInfo.totalConsumption==''?'--':selectMember.memberInfo.totalConsumption:'--'}}
+                        </span>
                         <p>消费金额</p>
                     </div>
                     <div class="consumeItem">
-                        <span>2068</span>
+                        <span>{{selectMember.memberInfo?selectMember.memberInfo.totalPoints==''?'--':selectMember.memberInfo.totalPoints:'--'}}</span>
                         <p>积分</p>
                     </div>
                 </div>
                 <div class="basicInformation">
                     <div class="basicInformationItem">
-                        <label>会员卡号 :</label><span>V121222121</span>
+                        <label>会员卡号 :</label><span>{{selectMember.memberInfo?selectMember.memberInfo.memberCardNo:'--'}}</span>
                     </div>
                     <div class="basicInformationItem">
-                        <label>会员折扣 :</label><span>{{memberShipDisCount}}</span>
+                        <!-- <label>会员折扣 :</label><span>{{memberShipDisCount}}</span> -->
+                        <label>会员折扣 :</label><span>{{selectMember.memberInfo?selectMember.memberInfo.discount:'--'}}</span>
                     </div>
                     <div class="basicInformationItem">
-                        <label>手机号码 :</label><span>18898989898</span>
+                        <label>手机号码 :</label><span>{{selectMember.memberInfo?selectMember.memberInfo.telphone:'--'}}</span>
                     </div>
                 </div>
             </div>
@@ -272,7 +277,7 @@
         <div class="eyeglassBills borderfff mgt10">
             <div class="eyeglassTop">
                 <label>验光单</label>
-                <el-button type="primary" @click="isOptometryDialogVisible=true">新增</el-button>
+                <el-button type="primary" @click="showNewOptometry=true">新增</el-button>
             </div>            
             <div class="selectEyeglass">
                 <el-select size="mini" v-model="value" placeholder="请选择">
@@ -286,41 +291,25 @@
             </div>
             <div class="eyeglassTable">
                 <el-table
-                    :data="glassData"
+                    v-for="value in includeOptometryData"
+                    :key="value.name"
+                    :data="value.item"
                     size="small"
                     align="left"
                     style="width: 100%;">
                     <el-table-column
-                    prop="yy"
-                    label="远用">
+                    prop="keys"
+                    :label="value.name">
                     </el-table-column>
                     <el-table-column
-                    prop="l"
+                    prop="lData"
                     label="L">
                     </el-table-column>
                     <el-table-column
-                    prop="r"
+                    prop="rData"
                     label="R">
                     </el-table-column>
                 </el-table>       
-                <el-table
-                    :data="glassData"
-                    size="small"
-                    align="left"
-                    style="width: 100%;">
-                    <el-table-column
-                    prop="yy"
-                    label="远用">
-                    </el-table-column>
-                    <el-table-column
-                    prop="l"
-                    label="L">
-                    </el-table-column>
-                    <el-table-column
-                    prop="r"
-                    label="R">
-                    </el-table-column>
-                </el-table> 
                 <div class="oldGlassMess">
                     <div class="oldGlassMessBox">
                         <p>旧镜信息</p>
@@ -340,17 +329,17 @@
         <span>2017-10-11 15:10:45 验光单号：0001545463476</span>
         <span slot="footer" class="dialog-footer">
             <el-button @click="isOptometryDialogVisible = false;showNewOptometry=true">不,我要新增</el-button>
-            <el-button type="primary" @click="isOptometryDialogVisible = false">调入</el-button>
+            <el-button type="primary" @click="isOptometryDialogVisible = false;includeOptometry()">调入</el-button>
         </span>
     </el-dialog>
     <el-dialog class="selectMember" title="选择会员 (23)" :visible.sync="showSelectMember" width="62.5%">
         <SelectMemberModal :selectM="selectMember.selectM" v-on:memberInfo="getMemberInfo"></SelectMemberModal>
     </el-dialog>
     <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="900px">
-        <NewOptometryModal></NewOptometryModal>
+        <NewOptometryModal :submit="submitNewOptometry" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
         <div class="packageDetailButtonGroup">
             <el-button @click="showNewOptometry = false">取 消</el-button>
-            <el-button type="primary" @click="showNewOptometry = false">保 存</el-button>
+            <el-button type="primary" @click="submitNewOptometry=true">保 存</el-button>
         </div>
     </el-dialog>
     <el-dialog class="selectRH" title="选择右镜片" :visible.sync="showSelectRH">
@@ -417,14 +406,6 @@
             <el-button type="primary" @click="isNotMember = false">添加会员</el-button>
         </span>
     </el-dialog>
-    <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
-        <AddMember></AddMember>
-        <div class="packageDetailButtonGroup">
-            <el-button @click="addMember = false">取消</el-button>
-            <el-button type="primary" @click="addMember = false">确定</el-button>
-        </div>
-    </el-dialog>
-    
     <el-dialog
         custom-class="noheader am-ft-center comfirmModal"
         title="提示"
@@ -502,7 +483,13 @@
             <el-button type="primary" @click="reprint = false">打印</el-button>
         </span>
     </el-dialog>
-    
+    <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
+      <AddMember :submit="isSubmit" v-on:listenToChild="memberAddSubmit"></AddMember>
+      <div class="packageDetailButtonGroup">
+        <el-button @click="addMember = false">取消</el-button>
+        <el-button type="primary" @click="isSubmit=true">确定</el-button>
+      </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -512,13 +499,14 @@ import NewOptometryModal from '../../PublicModal/NewOptometry/new-optometry-moda
 import SelectRHModal from '../../PublicModal/SelectRH/selectRH-modal.vue'
 import SelectShopModal from '../../PublicModal/SelectShop/selectShop-modal.vue'
 import GetBill from '../../PublicModal/GetBill/get-bill-modal.vue'
-import AddMember from '../../PublicModal/addMember/add-member-modal.vue'
 import CustomizeRHModal from '../../PublicModal/customizeRH/customizeRH-modal.vue'
 import PackageGoodsModal from '../../PublicModal/PackageGoods/package-goods-modal.vue'
 import OtherExpenseModal from '../../PublicModal/OtherExpense/other-expense-modal.vue'
 import CouponBarCodeModal from '../../PublicModal/CouponBarCode/couponBar-code-modal.vue'
 import EndorsementModal from '../../PublicModal/Endorsement/endorsement-modal.vue'
 import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
+import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
+
     export default {
         name: "billing",
         data() {
@@ -527,15 +515,20 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
                     value: "选项1",
                     label: "选项1"
                 }],
-                selectMember:{
-                    selectM:''
+                value: "",
+                submitNewOptometry:false,//控制 提交验光单子组件传值
+                includeOptometryData:null,//保存即将录入验光单信息 作为验光单数据副本
+                optometryData:null,//验光单数据
+                selectMember:{//选择会员数据集合
+                    selectM:'',
+                    memberInfo:null
                 },
                 saleCount:'0',//合计
                 receivable:'',//应收金额
                 actionSale:20,//活动金额
                 numCount:0,//件数
                 allDisCount:'',//整单折扣
-                memberShipDisCount:'8.8',//会员折扣
+                memberShipDisCount:'10',//会员折扣
                 memberShipDisCountSale:0,//会员折扣抵扣金额
                 discountSale:0,//优惠券折扣金额
                 selectProductSku:{
@@ -547,6 +540,9 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
                     nub: 0,
                     size: 5
                 },
+                tableData:[],//用户保存商品信息
+                //以下为控制modal弹框变量
+                isSubmit: false,
                 reprint:false,
                 endorsement:false,
                 loginUserPermission:false,
@@ -564,48 +560,6 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
                 showNewOptometry:false,
                 isOptometryDialogVisible:false,
                 showSelectMember:false,
-                value: "",
-                tableData:[
-                ],
-                glassData:[
-                    {
-                    yy : 'SPH',
-                    l   : '+1.50',
-                    r   : '+1.50'
-                    },{
-                    yy : 'SPH',
-                    l   : '+1.50',
-                    r   : '+1.50'
-                    },{
-                    yy : 'SPH',
-                    l   : '+1.50',
-                    r   : '+1.50'
-                    },{
-                    yy : 'SPH',
-                    l   : '+1.50',
-                    r   : '+1.50'
-                    },{
-                    yy : 'SPH',
-                    l   : '+1.50',
-                    r   : '+1.50'
-                    },{
-                    yy : 'SPH',
-                    l   : '+1.50',
-                    r   : '+1.50'
-                    },{
-                    yy : 'SPH',
-                    l   : '+1.50',
-                    r   : '+1.50'
-                    },{
-                    yy : 'SPH',
-                    l   : '+1.50',
-                    r   : '+1.50'
-                    },{
-                    yy : 'SPH',
-                    l   : '+1.50',
-                    r   : '+1.50'
-                    }
-                ]
             }
         },
         components:{
@@ -614,13 +568,13 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
             SelectRHModal,
             SelectShopModal,
             GetBill,
-            AddMember,
             CustomizeRHModal,
             PackageGoodsModal,
             OtherExpenseModal,
             CouponBarCodeModal,
             EndorsementModal,
-            ReprintModal
+            ReprintModal,
+            AddMember
         },
         methods:{
             selectGlass(type){
@@ -710,10 +664,11 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
                     value.realSale=value.price/value.discount*10
                 }
             },
+            //获取用户最后一次验光单信息
             getOptometryRecord() {
                 var that = this;
                 that.$axios({
-                url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsList',
+                url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately',
                 method: 'post',
                 params: {
                     jsonObject: {
@@ -725,22 +680,26 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
                 }
                 })
                 .then(function (response) {
-                    // console.info(response.data.data)
-                    that.eyesData = response.data.data.eyes; //左右眼数据
-                    that.userInfo = response.data.data.prescriptions; //检查数据
-                    //检影数据
-                    // that.setData()
+                    if(response.data.code==1&&response.data.data.eyes.length>0){
+                        that.showSelectMember=false;
+                        that.isOptometryDialogVisible=true;
+                        that.optometryData=response.data.data.eyes;
+                    }
                 })
                 .catch(function (error) {
                     console.info(error)
                 })
             },
+            //选择会员子组件返回函数 获取用户信息
             getMemberInfo(value){
-                console.log(value)
+                this.selectMember.memberInfo=value
+                this.memberShipDisCount=this.selectMember.memberInfo.discount;
+                if(value){
+                    this.getOptometryRecord();
+                }
             },
             //整单折扣
             afterDiscount(){
-                console.log(11)
                 if(this.allDisCount!='' && this.allDisCount != 0 ){//有整单折扣
                     //整单折扣金额差价 = 折扣前 - 折扣后↓
                     console.log(`计算`)
@@ -749,6 +708,171 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
                     this.saleCount = this.allDisCount/10 * this.saleCount; 
                 }
                 this.permission=true;
+            },
+            //获取新增验光单信息
+            getNewoptometry(value){
+                this.showNewOptometry=false;
+                this.optometryData=value;
+                this.includeOptometry();
+            },
+            //录入验光单信息
+            includeOptometry(){
+                var that=this;
+                if(that.optometryData!=null){
+                    var tableArr=[];
+                    that.optometryData.forEach(element => {
+                        // console.log(object.keys(element.value[0]))
+                        var tArr=[];
+                        var keys=[];
+                        var lData=[];
+                        var rData=[];
+                        for(var item in element.value[1]){
+                            delete element.value[0].leftRight;
+                            delete element.value[0].perscriptionType;
+                            delete element.value[0].prescriptionId;
+                            delete element.value[0].prescriptionEye;
+                            delete element.value[1].prescriptionEye;
+                            delete element.value[1].leftRight;
+                            delete element.value[1].perscriptionType;
+                            delete element.value[1].prescriptionId;
+                            
+                            tArr.push(
+                                {
+                                    keys:item,
+                                    lData:element.value[0][item],
+                                    rData:element.value[1][item]
+                                }
+                            )
+                        }
+                        var name;
+                        switch (element.key) {
+                            case '0':
+                                name='检影';
+                                break;
+                            case '1':
+                                name='主观';
+                                break;
+                            case '2':
+                                name='远用';
+                                break;    
+                            case '3':
+                                name='近用';
+                                break;    
+                            case '4':
+                                name='渐进';
+                                break;     
+                            case '5':
+                                name='隐形';
+                                break;                                                       
+                            default:
+                                break;
+                        }
+                        tableArr.push({item:tArr,name:name})
+                    });
+                    that.includeOptometryData=tableArr;
+                }
+            },
+            //添加会员 子组件返回事件 提交表单信息
+            memberAddSubmit: function (formdata) {
+            //data为从子组件取到的数据
+                var that = this;
+                that.isSubmit = !that.isSubmit;
+                if (formdata.name != '' && formdata.telphone != '' && formdata.birthday != '' && formdata.sex != '') {
+                    that.$axios({
+                        url: 'http://myc.qineasy.cn/member-api/member/addMember',
+                        method: 'post',
+                        params: {
+                            jsonObject: formdata,
+                            keyParams: {
+                                weChat: true,
+                                userId: "8888",
+                                orgId: "11387"
+                            }
+                        }
+                    })
+                    .then(function (response) {
+                        if (response.data.code != '1') {
+                            that.$message({
+                                showClose: true,
+                                message: '请求数据出问题喽，请重试！',
+                                type: 'error'
+                            })
+                            return false;
+                        } else {
+                            that.addMember = false;
+                            that.MemberInfoForAdd(response.data.data.memberId)
+                            that.$message({
+                                showClose: true,
+                                message: '新增会员成功',
+                                type: 'success'
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.info(error)
+                        that.$message({
+                            showClose: true,
+                            message: error,
+                            type: 'error'
+                        })
+                    })
+                } else {
+                    that.$message({
+                        showClose: true,
+                        message: '请输入完整信息',
+                        type: 'error'
+                    })
+                }
+            },
+            //新增验光单后获取用户信息录入到页面
+            MemberInfoForAdd(memberId){
+                var that=this;
+                that.$axios({
+                    url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
+                    method: 'post',
+                    params: {
+                        jsonObject: {
+                            seachCode:memberId
+                        },
+                        keyParams: {
+                            weChat: true,
+                            userId: '8888',
+                            orgId: '11387'
+                        }
+                    }
+                })
+                .then(function (response) {
+                    if(response.data.code==1){
+                        that.getMemberInfo(response.data.data.memberList[0])
+                    }else{
+                        that.$message({
+                            showClose: true,
+                            message: '会员信息获取失败',
+                                type: 'error'
+                        })
+                    }
+                })    
+            },
+            //开单
+            addOrderTemp(){
+                var that=this;
+                that.$axios({
+                    url: 'http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp',
+                    method: 'post',
+                    params: {
+                        jsonObject: {
+
+                        },
+                        keyParams: {
+                            weChat: true,
+                            userId: '8888',
+                            orgId: '11387'
+                        }
+                    }
+                })
+                .then(function (response) {
+
+                })                   
             }
         },
         computed:{
