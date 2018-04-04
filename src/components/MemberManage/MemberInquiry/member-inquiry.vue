@@ -418,9 +418,9 @@ export default {
           params: {
             jsonObject: {
               // _this.searchStr
-              phone: phones || "",
-              name: names || "",
-              memberCardNo: memberCardNos ||""
+              telphone: phones,
+              name: names ,
+              memberCardNo: memberCardNos
             },
             keyParams: {
               weChat: true,
@@ -431,8 +431,10 @@ export default {
         })
         .then(function(response) {
           // console.info(response.data.data)
-          that.memberCount = response.data.data;
-          that.cardNumList = response.data.data.cardNumList;
+          _this.memberCount = response.data.data;
+          _this.cardNumList = response.data.data.cardNumList;
+          console.log( response.data.memberList)
+          _this.memberList = response.data.data.memberList;
         })
         .catch(function(error) {
           console.info(error);

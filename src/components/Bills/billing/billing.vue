@@ -631,27 +631,19 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 _this.showSelectShop = false;
                 let countSale = 0; 
                 for(let i=0;i<_this.tableData.length;i++){
-                    console.log('打折'+_this.tableData[i].discount)//打折
-                    console.log('原价'+_this.tableData[i].price)//原价
-                    console.log('实售'+_this.tableData[i].realSale)//实售
                     let thisSale = _this.tableData[i].discount/10 * parseFloat(_this.tableData[i].realSale);
                     countSale = countSale+thisSale
                 }
-                console.log('1'+countSale)
                 //优惠价 = 无折扣前 - 优惠价↓
                 countSale = countSale - this.actionSale;
-                console.log('2'+countSale)
                 //会员价 = 会员价格 * 总价↓
                 var difference = (parseFloat(this.memberShipDisCount)*countSale/10).toFixed(2); 
-                console.log('3'+countSale)
                 //会员折扣差价 = 总金额 - 会员价↓
                 let memberDisCount = (countSale - difference).toFixed(2);
                 this.memberShipDisCountSale = memberDisCount
-                console.log('4'+countSale)
                 countSale = countSale - parseFloat(memberDisCount); 
-                console.log('5 '+countSale,this.memberShipDiscountSale)
                 //无整单折扣情况下↓
-                this.saleCount = countSale 
+                this.saleCount = countSale.toFixed(2);
 
                 
                 
@@ -705,7 +697,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     console.log(`计算`)
                     this.discountSale = this.saleCount - (this.allDisCount*this.saleCount)/10;   
                     //最后价格 = 整单折扣前 * 折扣 ↓
-                    this.saleCount = this.allDisCount/10 * this.saleCount; 
+                    this.saleCount = (this.allDisCount/10 * this.saleCount).toFixed(2); 
                 }
                 this.permission=true;
             },
