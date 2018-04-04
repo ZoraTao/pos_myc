@@ -14,28 +14,28 @@
         <!--body-top-->
         <div class="clearfix modal-content-top">
             <el-table
-                :data="data"
+                :data="selectProductSku.productSkuData.skulist"
                 size="small"
                 align="left"
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
-                prop="shopid"
+                prop="sku"
                 label="商品编码">
                 </el-table-column>
                 <el-table-column
-                prop="shopname"
+                prop="skuName"
                 label="商品名称">
                 </el-table-column>
                 <el-table-column
-                prop="storehouse"
+                prop="warehouseName"
                 label="出货仓库">
                 </el-table-column>
                 <el-table-column
-                prop="inventory"
+                prop="quantity"
                 label="库存数">
                 </el-table-column>
                 <el-table-column
-                prop="allocation"
+                prop="allotQuantity"
                 label="可分配数">
                 </el-table-column>
                 <el-table-column
@@ -45,7 +45,7 @@
                 <el-table-column
                 label="操作">
                     <template slot-scope="scope">
-                        <span class="am-ft-blue">
+                        <span class="am-ft-blue" @click="selectThis(scope.row)">
                             选择
                         </span>
                     </template>
@@ -55,7 +55,10 @@
             class="am-ft-right"
             background
             layout="prev, pager, next,total"
-            :total="1000">
+            :page-size="5"
+            :total="selectProductSku.productSkuData.count"
+            @current-change="getProductSku"
+            :current-page.sync="selectProductSku.nub">
             </el-pagination>
         </div>
     </div>
@@ -66,24 +69,26 @@
 
 export default {
   name: 'selectRHModal',
+  props:['selectProductSku'],
   data () {
     return { 
         options: [],
         value:"",
-        data:[
-            {
-                shopid:'0012345',
-                shopname:'毛源昌1.551非球面防辐射远+1.50',
-                storehouse:'总仓库',
-                inventory:'24',
-                allocation:'20',
-                price:'230.00'
-            }
-        ]
+        cpSelectProductSku:null,
     }
   },
-  methods:{
-
+  methods:{  
+      getProductSku(){
+        this.cpSelectProductSku=this.selectProductSku;
+        this.$emit('getProductSku', this.cpSelectProductSku);
+      },
+      selectThis(value){
+        value.discount=10;
+        value.realSale=value.price;
+        this.$emit('selectSku',value);
+      }
+  },
+  created:function(){
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-<div class="textCenter newOptometryBody">
+<div class="textCenter newOptometryBody reprint">
     <div class="newOptometryPhone">
         <div class="fn-left">
             <span class="am-ft-red mgr5">*</span>

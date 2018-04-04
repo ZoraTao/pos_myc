@@ -5,20 +5,20 @@
     <el-tabs type="border-card" v-model="activeName">
         <el-tab-pane v-for="item in tabs" :key="item.name" :label="item.label" :name="item.name">
             <el-table
-                :data="data"
+                :data="data.memberList"
                 size="small"
                 align="left"
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
-                prop="memberCard"
+                prop="memberCardNo"
                 label="会员卡号">
                 </el-table-column>
                 <el-table-column
-                prop="memberName"
+                prop="name"
                 label="会员姓名">
                 </el-table-column>
                 <el-table-column
-                prop="phone"
+                prop="telphone"
                 label="手机号">
                 </el-table-column>
                 <el-table-column
@@ -30,13 +30,13 @@
                 label="年龄">
                 </el-table-column>
                 <el-table-column
-                prop="time"
+                prop="lastPrescriptionTime"
                 label="最近验光时间">
                 </el-table-column>
                 <el-table-column
                 label="操作">
                     <template slot-scope="scope">
-                        <span class="am-ft-blue">
+                        <span class="am-ft-blue" @click="selectThis(scope.row)">
                             选择
                         </span>
                     </template>
@@ -46,7 +46,10 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="1000">
+            :page-size="5"
+            :total="Number(data.count)"
+            @current-change="getList"
+            :current-page.sync="nub">
             </el-pagination>
         </el-tab-pane>
     </el-tabs>
@@ -58,6 +61,7 @@
 
 export default {
   name: 'SelectMemberModal',
+  props:['selectM'],
   data () {
     return { 
         tabs : [
@@ -71,28 +75,49 @@ export default {
             }
         ],
         activeName: '1',
-        data:[
-            {
-                memberCard:'0012345',
-                memberName:'张三',
-                phone:'15383465790',
-                sex:'男',
-                age:'12',
-                time:'2017-10-12 12:34:55'
-            },
-            {
-                memberCard:'0012345',
-                memberName:'张三',
-                phone:'15383465790',
-                sex:'男',
-                age:'12',
-                time:'2017-10-12 12:34:55'
-            }
-        ]
+        nub:0,
+        size:5,
+        data:''
     }
   },
   methods:{
-  }
+      getList(){
+        var that=this;
+        that.$axios({
+            url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
+            method: 'post',
+            params: {
+                jsonObject: {
+                    seachCode:this.selectM,
+                    nub: (this.nub==0?0:(this.nub-1)*this.size),
+                    size: this.size
+                },
+                keyParams: {
+                    weChat: true,
+                    userId: '8888',
+                    orgId: '11387'
+                }
+            }
+        })
+        .then(function (response) {
+            if(response.data.code==1){
+                that.data=response.data.data;
+            }else{
+                that.$message({
+                    showClose: true,
+                    message: '会员信息获取失败',
+                        type: 'error'
+                })
+            }
+        })              
+      },
+      selectThis(value){
+        this.$emit('memberInfo',value);
+      }
+  },
+    created:function(){
+        this.getList();
+    }
 }
 </script>
 

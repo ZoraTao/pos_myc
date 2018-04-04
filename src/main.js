@@ -16,8 +16,9 @@ Vue.config.productionTip = false
 
 Vue.use(VueResource)
 Vue.use(ElementUI)
-Vue.use(VueBus);
-Vue.use(VueAreaLinkage);//地区联动
+Vue.use(VueBus)
+// 地区联动
+Vue.use(VueAreaLinkage)
 
 /* eslint-disable no-new */
 new Vue({
