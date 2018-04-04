@@ -120,7 +120,10 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="10">
+            :page-size="5"
+            :total="Number(count)"
+            @current-change="getOrderList"
+            :current-page.sync="nub">
           </el-pagination>
         </div>
       </div>
@@ -194,7 +197,10 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="10">
+            :page-size="5"
+            :total="Number(count)"
+            @current-change="getOrderList"
+            :current-page.sync="nub">
           </el-pagination>
         </div>
       </div>
@@ -262,7 +268,10 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="10">
+            :page-size="5"
+            :total="Number(count)"
+            @current-change="getOrderList"
+            :current-page.sync="nub">
           </el-pagination>
         </div>
       </div>
@@ -296,15 +305,18 @@
           saleStartTime: '',
           saleEndTime: ''
         },
+        nub:0,
+        size:5,
+        count:'',
         showCashier: false,
         consoleCashier: false,
         srcNum: '1',
         orderTempList: {},
         tabs: [{
-          'value': '收银',
-          'isActived': true,
-          'srcNum': '1'
-        },
+            'value': '收银',
+            'isActived': true,
+            'srcNum': '1'
+          },
           {
             'value': '欠还款',
             'isActived': false,
@@ -340,7 +352,10 @@
           url: 'http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList',
           method: 'post',
           params: {
-            jsonObject: {},
+            jsonObject: {
+              nub:this.nub==1?0:this.nub*this.size,
+              size:this.size
+            },
             keyParams: {
               weChat: true
             }
@@ -348,6 +363,7 @@
         })
         .then(function (response) {
           // console.info(response.data.data)
+          that.count = response.data.data.count;
           that.orderTempList = response.data.data.orderTempList;
         })
         .catch(function (error) {
