@@ -41,8 +41,8 @@
             prop="sex"
             :rules="{required: true}">
             <el-radio-group v-model="addMemberForm.sex">
-              <el-radio label="1">男</el-radio>
-              <el-radio label="2">女</el-radio>
+              <el-radio label="M">男</el-radio>
+              <el-radio label="F">女</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>

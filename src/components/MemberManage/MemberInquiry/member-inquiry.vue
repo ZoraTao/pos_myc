@@ -156,7 +156,7 @@ c<template>
             label="性别"
             width="100px">
             <template slot-scope="scope">
-              <span v-if="scope.row.sex=='1'">男</span>
+              <span v-if="scope.row.sex=='M'">男</span>
               <span v-else>女</span>
             </template>
           </el-table-column>
@@ -233,9 +233,9 @@ export default {
   },
   data() {
     return {
-      nub: 1,
-      size: 10,
-      counts: 0,
+      nub: 0,//起始条数
+      size: 10,//每页显示数据条数
+      counts: 0,//总条数
       isSubmit: false,
       addMember: false,
       searchStr: "",
@@ -366,7 +366,8 @@ export default {
       });
     },
     //分页
-    handleCurrentChange() {
+    handleCurrentChange(val) {
+      this.nub = (`${val}`-1) * this.size;
       this.getMemberList();
     },
     //查询会员汇总数量
@@ -445,7 +446,7 @@ export default {
           method: "post",
           params: {
             jsonObject: {
-              nub: (that.nub==0?0:(that.nub-1)*that.size),
+              nub: that.nub,
               size: that.size
             },
             keyParams: {
@@ -454,9 +455,18 @@ export default {
           }
         })
         .then(function(response) {
-          console.info(response.data.data)
-          that.memberList = response.data.data.memberList;
-          that.counts = parseInt(response.data.data.count);
+          if(response.data.code != '1'){
+            that.$message({
+              showClose: true,
+              message: '请求数据出问题喽，请重试！',
+              type: 'error'
+            })
+            return false;
+          }else {
+            // console.info(response.data.data)
+            that.memberList = response.data.data.memberList;
+            that.counts = parseInt(response.data.data.count);
+          }
         })
         .catch(function(error) {
           console.info(error);
