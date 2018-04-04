@@ -92,8 +92,8 @@
       }
     },
     created() {
-      // this.getSum();
-      // this.getCategoryInventory();
+      this.getSum();
+      this.getCategoryInventory();
     },
     methods: {
       //查询库存明细--类别列表
@@ -156,7 +156,7 @@
               })
               return false;
             } else {
-              // console.info(response.data)
+              console.info('合计'+ response.data)
               that.totalCount = response.data.data.totalCount;
               that.totalPrice = response.data.data.totalPrice;
               that.totalTaxPrice = response.data.data.totalTaxPrice;
