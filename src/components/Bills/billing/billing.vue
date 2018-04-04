@@ -16,8 +16,7 @@
                     </el-form-item>
                     <el-form-item label="补单日期 :">
                         <el-date-picker
-                        align="left"
-                        type="date"
+                        align="left" 
                         placeholder="选择日期">
                         </el-date-picker>
                     </el-form-item>  
@@ -103,13 +102,16 @@
                 </el-table>
                 <div class="settleAccounts">
                     <p>
-                        <span>共计 :<b>6件</b></span>
-                        <span>合计 :<b>498.00元</b></span>
+                        <span>共计 :<b>{{numCount}}件</b></span>
+                        <span>合计 :<b v-show="saleCount!=''&saleCount!=0">{{saleCount}}</b><b v-show="saleCount==0">0.00</b></span>
                     </p>
                     <p>
-                        <span>促销活动 : 圣诞配镜大促<b>－20元</b></span>
-                        <span>折扣 :<b>5折(-20元)</b></span>
-                        <span>会员折扣 : 8.8折  <b>－20元</b></span>
+                        <span v-show="actionSale =='' || actionSale == 0 ">促销活动 : 无</span>
+                        <span v-show="actionSale !='' & actionSale != 0 ">促销活动 : 圣诞配镜大促<b>{{actionSale}}元</b></span>
+                        <span v-show="discountSale == '' & allDisCount == '' || discountSale == 0 & allDisCount == ''" >折扣 : 无</span>
+                        <span v-show="discountSale != '' & discountSale != 0 || allDisCount != ''">折扣 :<b>{{allDisCount}}折 (-{{discountSale}}元)</b></span>
+                        <span v-show="memberShipDisCount==10">无会员折扣</span>
+                        <span v-show="memberShipDisCount<10">会员折扣 : {{memberShipDisCount}}折  <b v-show="memberShipDisCountSale!= '' &memberShipDisCountSale!= '0'">(－{{memberShipDisCountSale}}元)</b></span>
                     </p>
                 </div>
             </div>
@@ -130,14 +132,14 @@
             </div>
             <div class="fn-left singleDiscount">
                 <p><span>整单折扣 :</span>
-                <el-input class="" placeholder="" @change="permission=true"></el-input> 折
+                <el-input class="" placeholder="" v-model="allDisCount" @change="afterDiscount"/> 折
                 </p>
             </div>
             <div class="fn-right singleDiscount">
                 <!-- <p><span>整单折扣 :</span><el-input class="" placeholder=""></el-input></p> -->
                 <p>
                     <span>应收 :</span>
-                    <el-input class="" placeholder=""></el-input>
+                    <el-input class="setNum" placeholder='' type="number"  v-model.number="receivable" />
                     <!-- <span class="ant_text">1999.00</span> -->
                 </p>
             </div>
@@ -259,7 +261,7 @@
                         <label>会员卡号 :</label><span>V121222121</span>
                     </div>
                     <div class="basicInformationItem">
-                        <label>会员折扣 :</label><span>8.8</span>
+                        <label>会员折扣 :</label><span>{{memberShipDisCount}}</span>
                     </div>
                     <div class="basicInformationItem">
                         <label>手机号码 :</label><span>18898989898</span>
@@ -352,7 +354,7 @@
         </div>
     </el-dialog>
     <el-dialog class="selectRH" title="选择右镜片" :visible.sync="showSelectRH">
-        <SelectRHModal  v-on:getProductSku="getProductSku" v-on:selectSku="selectSku" :selectProductSku="selectProductSku"></SelectRHModal>
+        <SelectRHModal  v-on:getProductSku="getProductSku" v-on:selectSku="selectSku"   :selectProductSku="selectProductSku"></SelectRHModal>
     </el-dialog>
     <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="700px">
         <SelectShopModal></SelectShopModal>
@@ -431,8 +433,8 @@
         center>
         <div class="textCenter mgt30 permissionBox">
             <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">您没有以下折扣权限，是否申请签批？</h4>
-            <p><span>BM12340002 : 8折</span></p>
-            <p><span>BM12340002 : 8折</span></p>
+            <p><span>BM12340002 : {{allDisCount}}折</span></p>
+            <!-- <p><span>BM12340002 : 8折</span></p> -->
             <p class="textareaBox">
                 <i class="am-ft-red">*</i>
                 <el-input
@@ -528,6 +530,14 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
                 selectMember:{
                     selectM:''
                 },
+                saleCount:'0',//合计
+                receivable:'',//应收金额
+                actionSale:20,//活动金额
+                numCount:0,//件数
+                allDisCount:'',//整单折扣
+                memberShipDisCount:'8.8',//会员折扣
+                memberShipDisCountSale:0,//会员折扣抵扣金额
+                discountSale:0,//优惠券折扣金额
                 selectProductSku:{
                     selectR:'',
                     selectL:'',
@@ -660,7 +670,38 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
                 });  
             },
             selectSku(value){
-                this.tableData.push(value)
+                var _this= this;
+                _this.tableData.push(value);
+                _this.showSelectRH = false;
+                _this.customizeRH = false;
+                _this.showSelectShop = false;
+                let countSale = 0; 
+                for(let i=0;i<_this.tableData.length;i++){
+                    console.log('打折'+_this.tableData[i].discount)//打折
+                    console.log('原价'+_this.tableData[i].price)//原价
+                    console.log('实售'+_this.tableData[i].realSale)//实售
+                    let thisSale = _this.tableData[i].discount/10 * parseFloat(_this.tableData[i].realSale);
+                    countSale = countSale+thisSale
+                }
+                console.log('1'+countSale)
+                //优惠价 = 无折扣前 - 优惠价↓
+                countSale = countSale - this.actionSale;
+                console.log('2'+countSale)
+                //会员价 = 会员价格 * 总价↓
+                var difference = (parseFloat(this.memberShipDisCount)*countSale/10).toFixed(2); 
+                console.log('3'+countSale)
+                //会员折扣差价 = 总金额 - 会员价↓
+                let memberDisCount = (countSale - difference).toFixed(2);
+                this.memberShipDisCountSale = memberDisCount
+                console.log('4'+countSale)
+                countSale = countSale - parseFloat(memberDisCount); 
+                console.log('5 '+countSale,this.memberShipDiscountSale)
+                //无整单折扣情况下↓
+                this.saleCount = countSale 
+
+                
+                
+                console.log(_this.tableData)
             },
             changePrice(value,type){
                 if(type==1){
@@ -696,7 +737,36 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
             },
             getMemberInfo(value){
                 console.log(value)
+            },
+            //整单折扣
+            afterDiscount(){
+                console.log(11)
+                if(this.allDisCount!='' && this.allDisCount != 0 ){//有整单折扣
+                    //整单折扣金额差价 = 折扣前 - 折扣后↓
+                    console.log(`计算`)
+                    this.discountSale = this.saleCount - (this.allDisCount*this.saleCount)/10;   
+                    //最后价格 = 整单折扣前 * 折扣 ↓
+                    this.saleCount = this.allDisCount/10 * this.saleCount; 
+                }
+                this.permission=true;
             }
+        },
+        computed:{
+            // mustNumberForReceivable:{
+            //     get:function(){
+            //     return this.receivable;
+            //     },
+            //     set:function(newValue){
+            //         console.log(1)
+            //         this.receivable = newValue.replace(/[^\d]/g,'');
+            //     }
+            // }
+        },
+        watch:{
+            // receivable:function(){
+            //     console.log(1)
+            //     this.receivable = this.receivable.replace(/[^\d]/g,'');
+            // }
         }
     };
 </script>
@@ -704,4 +774,13 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
 <style lang="scss">
     @import "../../../reset";
     @import "billing";
+
+    .setNum{
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button{
+            -webkit-appearance: none !important;
+            margin: 0; 
+        }
+        input[type="number"]{-moz-appearance:textfield;}
+    }
 </style>
