@@ -82,7 +82,7 @@
                 <el-table-column
                 label="操作">
                     <template slot-scope="scope">
-                        <span class="am-ft-blue">
+                        <span class="am-ft-blue" @click="selectBuy(scope.row)">
                             选择
                         </span>
                     </template>
@@ -115,12 +115,24 @@ export default {
                 inventory:'24',
                 allocation:'20',
                 price:'230.00'
+            },
+            {
+                shopid:'001312345',
+                shopname:'毛源昌射远+1.50',
+                storehouse:'总仓库',
+                inventory:'214',
+                allocation:'220',
+                price:'210.00'
             }
         ]
     }
   },
   methods:{
-
+      selectBuy(value){
+          value.discount = 10;
+          value.realSale = value.price;
+          this.$emit('setBuyShop',value)
+      }
   }
 }
 </script>

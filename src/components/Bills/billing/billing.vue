@@ -348,7 +348,7 @@
         <SelectRHModal  v-on:getProductSku="getProductSku" v-on:selectSku="selectSku"   :selectProductSku="selectProductSku"></SelectRHModal>
     </el-dialog>
     <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="700px">
-        <SelectShopModal></SelectShopModal>
+        <SelectShopModal  v-on:setBuyShop="selectSku"></SelectShopModal>
     </el-dialog>
     <el-dialog class="customizeRH" title="定做-右镜片" :visible.sync="customizeRH" width="690px">
         <CustomizeRHModal></CustomizeRHModal>
@@ -664,8 +664,6 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 //无整单折扣情况下↓
                 this.saleCount = countSale.toFixed(2);
 
-                
-                
                 console.log(_this.tableData)
             },
             changePrice(value,type){
