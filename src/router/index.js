@@ -3,7 +3,8 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-export default new Router({
+
+const router = new Router({
   routes: [
     // 一级路由跟路由重定向到login
     {
@@ -265,3 +266,11 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to,from,next)=>{
+  console.log('从'+from.name)
+  console.log('去'+to.name)
+  next();
+})
+
+export default router

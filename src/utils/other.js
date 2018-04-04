@@ -11,6 +11,41 @@ const removeAllSpace = function (str, is_global = '') {
   console.log(result)
   return result;
 }
+// 将Object的属性输出成Array
+const objToPropertyToArr = function (object) {
+  var arr = [];
+  var i = 0;
+  for (var item in object) {
+      arr[i] = item;
+      i++;
+  }
+  return arr;
+}
+
+// 将Object的属性值输出成Array
+const objToValueToArr = function (object) {
+  var arr = [];
+  var i = 0;
+  for (var item in object) {
+      arr[i] = object[item];
+      i++;
+  }
+  return arr;
+}
+
+//将Object 转化成 Array
+const objToArr = function (object) {
+  var arr = []; 
+  for(var key in object){ 
+      if(!object.hasOwnProperty(key)){
+          continue;
+      }
+      var item = {}; 
+      item[key] = object[key]; 
+      arr.push(item); 
+  } 
+  return arr
+}
 
 const randomNum = function (maxNum, minNum) {
   /* 产生范围内随机整数 
@@ -163,5 +198,8 @@ export {
   getQueryString,
   agetQueryString,
   calcu,
-  judgeCode
+  judgeCode,
+  objToPropertyToArr,
+  objToValueToArr,
+  objToArr
 }

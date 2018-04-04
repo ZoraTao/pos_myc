@@ -349,7 +349,6 @@
           }
         })
         .then(function (response) {
-          console.info(response.data.data.orderTempList)
           that.orderTempList = response.data.data.orderTempList;
         })
         .catch(function (error) {
