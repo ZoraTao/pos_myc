@@ -159,7 +159,7 @@
           category3: '',
         },
         formInline: {
-          categoryCode: this.categoryLevel,//类别+品牌+品种
+          categoryCode: [],//类别+品牌+品种
           sku: '',//商品sku
           areaId: '',//区域id
           warehouseClass: '',//区域大类
@@ -324,6 +324,7 @@
       //获取总库存列表
       getStocksList(){
         var that = this;
+        that.formInline.categoryCode = [that.categoryLevel.category1,that.categoryLevel.category2,that.categoryLevel.category3];
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getTotalStockList',
           method: 'post',
@@ -345,7 +346,7 @@
             }else {
              that.stocksData = response.data.data.list;
              that.stocksCount = parseInt(response.data.data.count);
-             // console.info(that.stocksData)
+             console.info(response.data.data)
             }
           })
           .catch(function (error) {
@@ -360,6 +361,7 @@
       //查询库存明细--品种列表
       getVarietyDetList(){
         var that = this;
+        that.formInline.categoryCode = [that.categoryLevel.category1,that.categoryLevel.category2,that.categoryLevel.category3];
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getVarietyStockList',
           method: 'post',
@@ -396,6 +398,7 @@
       //查询库存明细--编码列表
       getCodeStockList(){
         var that = this;
+        that.formInline.categoryCode = [that.categoryLevel.category1,that.categoryLevel.category2,that.categoryLevel.category3];
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getCodeStockList',
           method: 'post',

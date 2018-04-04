@@ -71,8 +71,8 @@
             <tr class="order_header">
               <td colspan="9">
                 <div class="fn-left">
-                  <span v-if="order.status=='3'" class="am-bg-blue icon">定</span>
-                  <span v-if="order.status=='4'" class="am-bg-orange icon">欠</span>
+                  <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
+                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span>
                   <span class="order_id">{{order.orderNo}}</span>
                   <span v-if="order.source=='0'" class="sign_blue">本店签批</span>
                   <span v-else class="sign_orange">跨店签批</span>
@@ -85,28 +85,27 @@
               </td>
             </tr>
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
-              <td>BH0000{{index}}</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1</td>
-              <td>230.00</td>
-              <td><strong>134.00</strong></td>
-              <td>天一恒泰店</td>
+              <td>{{list.orderItemId}}</td>
+              <td>{{list.itemName}}</td>
+              <td>{{list.quantity}}</td>
+              <td>{{list.listPrice}}</td>
+              <td><strong>{{list.price}}</strong></td>
+              <td>--</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
-                  <div class="priceAll am-ft-22">1299.00</div>
-                  <div>商品合计：<strong>1389.00</strong></div>
-                  <div>卡券：<strong>-20</strong></div>
-                  <div>折扣：<strong>-50</strong></div>
-                  <div>活动：<strong>-20</strong></div>
+                  <div class="priceAll am-ft-22">{{order.moneyAmount}}</div>
+                  <div>商品合计：<strong>{{order.moneyProduct}}</strong></div>
+                  <div>卡券：<strong>{{order.coupon_money}}</strong></div>
+                  <div>折扣：<strong>{{order.discount_money}}</strong></div>
+                  <div>活动：<strong>{{order.activity_money}}</strong></div>
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <!--<div class="am-ft-orange">{{order.statusName}}</div>-->
-                <div class="am-ft-orange">待收银</div>
+                <div class="am-ft-orange">{{order.statusName}}</div>
                 <div class="look_d" @click="showCashier = true">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange priceAll am-ft-22 mgb10">1299.00</div>
+                <div class="am-ft-orange priceAll am-ft-22 mgb10">{{order.moneyAmount}}</div>
                 <div class="button">
                   <el-button type="primary" v-on:click="showModalMiddle()">收银</el-button>
                 </div>
@@ -147,8 +146,8 @@
             <tr class="order_header">
               <td colspan="9">
                 <div class="fn-left">
-                  <span v-if="order.status=='3'" class="am-bg-blue icon">定</span>
-                  <span v-if="order.status=='4'" class="am-bg-orange icon">欠</span>
+                  <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
+                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span>
                   <span class="order_id">{{order.orderNo}}</span>
                   <span v-if="order.source=='0'" class="sign_blue">本店签批</span>
                   <span v-else class="sign_orange">跨店签批</span>
@@ -161,29 +160,28 @@
               </td>
             </tr>
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
-              <td>BH0000{{index}}</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1</td>
-              <td>230.00</td>
-              <td><strong>134.00</strong></td>
-              <td>天一恒泰店</td>
+              <td>{{list.orderItemId}}</td>
+              <td>{{list.itemName}}</td>
+              <td>{{list.quantity}}</td>
+              <td>{{list.listPrice}}</td>
+              <td><strong>{{list.price}}</strong></td>
+              <td>--</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
-                  <div class="priceAll">1299.00</div>
-                  <div>商品合计 :<strong>1389.00</strong></div>
-                  <div>卡券：<strong>-20</strong></div>
-                  <div>折扣：<strong>-50</strong></div>
-                  <div>活动：<strong>-20</strong></div>
-                  <div class=" am-ft-16">已收:<strong>566.00</strong></div>
+                  <div class="priceAll">{{order.moneyAmount}}</div>
+                  <div>商品合计：<strong>{{order.moneyProduct}}</strong></div>
+                  <div>卡券：<strong>{{order.coupon_money}}</strong></div>
+                  <div>折扣：<strong>{{order.discount_money}}</strong></div>
+                  <div>活动：<strong>{{order.activity_money}}</strong></div>
+                  <div class=" am-ft-16">已收:<strong>{{order.moneyPaid}}</strong></div>
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <!--<div class="am-ft-red">{{order.statusName}}</div>-->
-                <div class="am-ft-red">欠还款</div>
+                <div class="am-ft-red">{{order.statusName}}</div>
                 <div class="look_d" @click="showCashier = true">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange priceAll">1299.00</div>
+                <div class="am-ft-orange priceAll">{{order.moneyAmount}}</div>
                 <div class="button">
                   <el-button type="primary" v-on:click="showModalMiddle()">收银</el-button>
                 </div>
@@ -213,9 +211,9 @@
               label="订单号"
               width="400">
               <template slot-scope="scope">
-                <span v-if="scope.row.status=='3'" class="am-bg-blue icon">定</span>
-                <span v-if="scope.row.status=='4'" class="am-bg-orange icon">欠</span>
-                <span v-if="scope.row.status=='10'" class="am-bg-red icon">退</span>
+                <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
+                <span v-if="scope.row.statusCode=='4'" class="am-bg-orange icon">欠</span>
+                <span v-if="scope.row.statusCode=='10'" class="am-bg-red icon">退</span>
                 <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
                 <span v-if="scope.row.source=='0'" class="sign_blue">本店签批</span>
                 <span v-else class="sign_orange">跨店签批</span>
@@ -246,7 +244,7 @@
               label="销售门店">
             </el-table-column>
             <el-table-column
-              prop="status"
+              prop="statusName"
               label="状态">
               <template slot-scope="scope">
                 <span
@@ -349,6 +347,7 @@
           }
         })
         .then(function (response) {
+          // console.info(response.data.data)
           that.orderTempList = response.data.data.orderTempList;
         })
         .catch(function (error) {
