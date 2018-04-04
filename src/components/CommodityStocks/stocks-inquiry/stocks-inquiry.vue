@@ -25,19 +25,19 @@
               <el-input placeholder="输入商品编码" v-model="formInline.sku" style="width: 130px"></el-input>
             </el-form-item>
             <el-form-item label="类别：">
-              <el-select v-model="categoryCode1" placeholder="请选择" style="width: 100px">
+              <el-select v-model="categoryCode1" placeholder="请选择" style="width: 130px">
                 <el-option label="1" value="1"></el-option>
                 <el-option label="2" value="2"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="品牌：">
-              <el-select v-model="categoryCode2" placeholder="请选择" style="width: 140px">
+              <el-select v-model="categoryCode2" placeholder="请选择" style="width: 120px">
                 <el-option label="1" value="1"></el-option>
                 <el-option label="2" value="2"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="品种：">
-              <el-select v-model="categoryCode3" placeholder="请选择" style="width: 140px">
+              <el-select v-model="categoryCode3" placeholder="请选择" style="width: 130px">
                 <el-option label="1" value="1"></el-option>
                 <el-option label="2" value="2"></el-option>
               </el-select>
@@ -51,7 +51,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="仓库：">
-              <el-select v-model="formInline.warehouseId" placeholder="请选择" style="width: 100px">
+              <el-select v-model="formInline.warehouseId" filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in warehList"
                   :key="item.warehId"
@@ -61,13 +61,13 @@
               </el-select>
             </el-form-item>
             <el-form-item label="仓库大类：">
-              <el-select v-model="formInline.warehouseClass" placeholder="请选择" style="width: 140px">
+              <el-select v-model="formInline.warehouseClass" placeholder="请选择" style="width: 120px">
                 <el-option label="1" value="1"></el-option>
                 <el-option label="2" value="2"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="仓库类型：">
-              <el-select v-model="formInline.warehouseType" placeholder="请选择" style="width: 140px">
+              <el-select v-model="formInline.warehouseType" placeholder="请选择" style="width: 130px">
                 <el-option label="1" value="1"></el-option>
                 <el-option label="2" value="2"></el-option>
               </el-select>
