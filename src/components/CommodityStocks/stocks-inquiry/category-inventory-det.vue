@@ -156,7 +156,7 @@
               })
               return false;
             } else {
-              console.info('合计'+ response.data)
+              // console.info(response.data.data);
               that.totalCount = response.data.data.totalCount;
               that.totalPrice = response.data.data.totalPrice;
               that.totalTaxPrice = response.data.data.totalTaxPrice;
