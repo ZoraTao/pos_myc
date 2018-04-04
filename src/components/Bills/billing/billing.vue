@@ -5,13 +5,7 @@
             <div class="salesclerkInfo">
                 <el-form ref="form">
                     <el-form-item label="销售员 :">
-                        <el-select size="mini" v-model="value" placeholder="请选择">
-                            <el-option
-                            v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                            </el-option>
+                        <el-select size="mini" placeholder="请选择">
                         </el-select>
                     </el-form-item>
                     <el-form-item label="补单日期 :">

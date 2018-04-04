@@ -110,7 +110,7 @@ export default {
         data:[
             {
                 shopid:'0012345',
-                shopname:'毛源昌1.551非球面防辐射远+1.50',
+                skuName:'毛源昌1.551非球面防辐射远+1.50',
                 storehouse:'总仓库',
                 inventory:'24',
                 allocation:'20',
@@ -118,7 +118,7 @@ export default {
             },
             {
                 shopid:'001312345',
-                shopname:'毛源昌射远+1.50',
+                skuName:'毛源昌射远+1.50',
                 storehouse:'总仓库',
                 inventory:'214',
                 allocation:'220',

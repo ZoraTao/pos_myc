@@ -681,6 +681,7 @@ export default {
     .optometryMemo {
       overflow: hidden;
       padding-top: 14px;
+      background: #fff;
       li:first-child {
         font-size: 12px;
         color: #666666;
