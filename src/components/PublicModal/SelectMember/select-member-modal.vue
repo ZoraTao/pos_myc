@@ -75,7 +75,7 @@ export default {
             }
         ],
         activeName: '1',
-        nub:0,
+        nub:1,
         size:5,
         data:''
     }
@@ -83,36 +83,40 @@ export default {
   methods:{
       getList(){
         var that=this;
-        that.$axios({
-            url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
-            method: 'post',
-            params: {
-                jsonObject: {
-                    seachCode:this.selectM,
-                    nub: (this.nub==0?0:(this.nub-1)*this.size),
-                    size: this.size
-                },
-                keyParams: {
-                    weChat: true,
-                    userId: '8888',
-                    orgId: '11387'
+        setTimeout(() => {
+            that.$axios({
+                url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
+                method: 'post',
+                params: {
+                    jsonObject: {
+                        seachCode:this.selectM,
+                        nub: this.nub==1?0:this.nub*this.size,
+                        size: this.size
+                    },
+                    keyParams: {
+                        weChat: true,
+                        userId: '8888',
+                        orgId: '11387'
+                    }
                 }
-            }
-        })
-        .then(function (response) {
-            if(response.data.code==1){
-                that.data=response.data.data;
-            }else{
-                that.$message({
-                    showClose: true,
-                    message: '会员信息获取失败',
-                        type: 'error'
-                })
-            }
-        })              
+            })
+            .then(function (response) {
+                if(response.data.code==1){
+                    that.data=response.data.data;
+                }else{
+                    that.$message({
+                        showClose: true,
+                        message: '会员信息获取失败',
+                            type: 'error'
+                    })
+                }
+            })    
+        },0)          
       },
       selectThis(value){
-        this.$emit('memberInfo',value);
+        if(value){
+            this.$emit('memberInfo',value);
+        }
       }
   },
     created:function(){
