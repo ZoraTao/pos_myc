@@ -92,8 +92,8 @@
       }
     },
     created() {
-      this.getSum();
-      this.getCategoryInventory();
+      // this.getSum();
+      // this.getCategoryInventory();
     },
     methods: {
       //查询库存明细--类别列表
@@ -120,7 +120,7 @@
               })
               return false;
             } else {
-              console.info(response.data.data)
+              // console.info(response.data.data)
               that.categoryData = response.data.data.classStockList;
               that.categoryCount = parseInt(response.data.data.count);
             }
@@ -156,7 +156,7 @@
               })
               return false;
             } else {
-              console.info(response.data)
+              // console.info(response.data)
               that.totalCount = response.data.data.totalCount;
               that.totalPrice = response.data.data.totalPrice;
               that.totalTaxPrice = response.data.data.totalTaxPrice;

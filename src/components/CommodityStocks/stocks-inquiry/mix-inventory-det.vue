@@ -64,7 +64,7 @@
         label="结算方式">
       </el-table-column>
       <el-table-column
-        prop="batchCode"
+        prop="redemptionPeriod"
         label="赎期天数">
       </el-table-column>
       <el-table-column
@@ -72,7 +72,7 @@
         label="条码">
       </el-table-column>
       <el-table-column
-        prop="batchCode"
+        prop="orgName"
         label="单位">
       </el-table-column>
       <el-table-column
