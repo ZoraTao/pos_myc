@@ -589,7 +589,7 @@ export default {
           })
           .then(function(response) {
             if (response.data.code == 1) {
-              that.$emit("getNewoptometry", eyes);
+              that.$emit("getNewoptometry", jsonObject);
             }
           });
       }, 100);

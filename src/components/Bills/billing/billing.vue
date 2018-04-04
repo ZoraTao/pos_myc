@@ -147,17 +147,19 @@
         <div class="orderType flex1">      
             <el-form ref="form">
                 <el-form-item>
-                    <el-checkbox>备选项</el-checkbox>
+                    <el-checkbox v-model="orderTemp.urgent">是否加急单</el-checkbox>
                 </el-form-item>
                 <el-form-item label="取镜时间 :">
                     <el-date-picker
+                    v-model="orderTemp.glassesTime"
+                    value-format="yyyy-MM-dd"
                     align="left"
                     type="date"
                     placeholder="选择日期">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="取镜方式 :">
-                    <el-select size="mini" v-model="value" placeholder="请选择">
+                    <el-select size="mini" v-model="orderTemp.glassesType" placeholder="请选择">
                         <el-option
                         v-for="item in options"
                         :key="item.value"
@@ -167,7 +169,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="取镜公司 :">
-                    <el-select size="mini" v-model="value" placeholder="请选择">
+                    <el-select size="mini" v-model="orderTemp.glassesCompany" placeholder="请选择">
                         <el-option
                         v-for="item in options"
                         :key="item.value"
@@ -183,7 +185,7 @@
                     <el-input class="" placeholder=""></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-select size="mini" v-model="value" placeholder="加工备注">
+                    <el-select size="mini" v-model="orderTemp.processMemo" placeholder="加工备注">
                         <el-option
                         v-for="item in options"
                         :key="item.value"
@@ -193,7 +195,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-select size="mini" v-model="value" placeholder="特殊备注">
+                    <el-select size="mini" v-model="orderTemp.specialMemo" placeholder="特殊备注">
                         <el-option
                         v-for="item in options"
                         :key="item.value"
@@ -516,6 +518,23 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     label: "选项1"
                 }],
                 value: "",
+                orderTemp:{
+                    memberId:'',
+                    prescriptionsId :'',
+                    urgent:'',
+                    glassesTime:'',
+                    glassesType:'',
+                    glassesCompany:'',
+                    glassesAddress:'',
+                    saleMemo:'',
+                    processMemo:'',
+                    specialMemo:'',
+                    roundOffFlag:'',
+                    couponDetailId:'',
+                    process:'',
+                    service:'',
+                },
+                optometryId:'',
                 submitNewOptometry:false,//控制 提交验光单子组件传值
                 includeOptometryData:null,//保存即将录入验光单信息 作为验光单数据副本
                 optometryData:null,//验光单数据
@@ -672,10 +691,10 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 method: 'post',
                 params: {
                     jsonObject: {
-                    memberId: '2222767'
+                        memberId: '2222767'
                     },
                     keyParams: {
-                    weChat: true
+                        weChat: true
                     }
                 }
                 })
@@ -684,6 +703,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         that.showSelectMember=false;
                         that.isOptometryDialogVisible=true;
                         that.optometryData=response.data.data.eyes;
+                        that.optometryId=response.data.data.prescriptions.prescriptionId;
                     }
                 })
                 .catch(function (error) {
@@ -712,7 +732,8 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             //获取新增验光单信息
             getNewoptometry(value){
                 this.showNewOptometry=false;
-                this.optometryData=value;
+                this.optometryData=value.eyes;
+                this.optometryId=value.prescriptions.prescriptionId;
                 this.includeOptometry();
             },
             //录入验光单信息
@@ -856,13 +877,51 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             //开单
             addOrderTemp(){
                 var that=this;
+                if(this.selectMember.memberInfo==null){
+                    that.$message({
+                        showClose: true,
+                        message: '会员信息获取失败',
+                            type: 'error'
+                    })                    
+                    return false;
+                }
+                if(!this.optometryId){
+                    return false;
+                }
+                var orderItemsList=[];
+                for(var item in this.tableData){
+                    orderItemsList.push({
+                        itemId:this.tableData[item].sku,
+                        itemName:this.tableData[item].skuName,
+                        quantity:1,
+                        discountRate:this.tableData[item].discount,
+                        orderPromotionId:'',
+                        money:this.tableData[item].realSale
+                    })
+                }
+                var jsonObject=
+                {
+                    memberId : this.selectMember.memberInfo.memberId,
+                    prescriptionsId  : this.optometryId,
+                    urgent : this.orderTemp.urgent,
+                    glassesTime : this.orderTemp.glassesTime,
+                    glassesType : this.orderTemp.glassesType,
+                    glassesCompany : this.orderTemp.glassesCompany,
+                    glassesAddress : this.orderTemp.glassesAddress,
+                    saleMemo : this.orderTemp.saleMemo,
+                    processMemo : this.orderTemp.processMemo,
+                    specialMemo : this.orderTemp.specialMemo,
+                    roundOffFlag : this.orderTemp.roundOffFlag,
+                    couponDetailId : this.orderTemp.couponDetailId,
+                    process : this.orderTemp.process,
+                    service : this.orderTemp.service,
+                    orderItemsList:orderItemsList
+                }
                 that.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp',
                     method: 'post',
                     params: {
-                        jsonObject: {
-
-                        },
+                        jsonObject: jsonObject,
                         keyParams: {
                             weChat: true,
                             userId: '8888',
@@ -871,7 +930,20 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     }
                 })
                 .then(function (response) {
-
+                    if (response.data.code != '1') {
+                        that.$message({
+                            showClose: true,
+                            message: '请求数据出问题喽，请重试！',
+                            type: 'error'
+                        })
+                        return false;
+                    } else {
+                        that.$message({
+                            showClose: true,
+                            message: '开单成功',
+                            type: 'success'
+                        });
+                    }
                 })                   
             }
         },
