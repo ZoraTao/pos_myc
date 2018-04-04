@@ -14,7 +14,7 @@
         </li>
         <li>
           <el-col :span="4" class="li-label">性别</el-col>
-          <span v-if="memberBaseInfo.sex=='M'">男</span>
+          <span v-if="memberBaseInfo.sex=='1'">男</span>
           <span v-else>女</span>
         </li>
         <li>
@@ -67,7 +67,7 @@
     },
     props: ['memberBaseInfo'],
     created: function () {
-
+console.info(this.memberBaseInfo)
     }
   }
 </script>

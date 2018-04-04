@@ -83,7 +83,8 @@
         <el-col :span="20">
           <el-form-item label="联系地址：">
             <template>
-              <area-select style="margin-top: 5px;margin-bottom: -10px;" :level='2' type='text' v-model='addMemberForm.adr'></area-select>
+              <area-select style="margin-top: 5px;margin-bottom: -10px;" :level='2' type='text'
+                           v-model='addMemberForm.adr'></area-select>
             </template>
           </el-form-item>
           <el-col :span="18">
@@ -177,6 +178,10 @@
           {
             value: '0',
             label: '普通客户'
+          },
+          {
+            value: '1',
+            label: '门店会员'
           }
         ],
         memberFrom: [
@@ -199,12 +204,21 @@
         ],
         options: [{
           value: '0',
-          label: '选项1'
+          label: 'IT'
         },
-        {
-          value: '1',
-          label: '选项2'
-        }],
+          {
+            value: '1',
+            label: '教师'
+          },
+          {
+            value: '2',
+            label: '自由职业'
+          },
+          {
+            value: '3',
+            label: '其他'
+          }
+        ],
         addMemberForm: {
           name: '',//姓名
           type: '',//类型
@@ -229,18 +243,18 @@
     props: ['submit'],
     created: function () {
     },
-    beforeUpdate:function(){
-      this.isSubmit=this.submit;
+    beforeUpdate: function () {
+      this.isSubmit = this.submit;
     },
     methods: {
       //向父组件传送的数据
-      sendToParent(){
-        this.$emit('listenToChild',this.addMemberForm)
+      sendToParent() {
+        this.$emit('listenToChild', this.addMemberForm)
       }
     },
     watch: {
       isSubmit: function (val) {
-        if(val==true){
+        if (val == true) {
           this.sendToParent()
         }
       }

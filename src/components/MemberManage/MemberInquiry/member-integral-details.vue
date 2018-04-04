@@ -44,8 +44,8 @@
       return {
         pointsList: [], //积分明细列表
         count: 0,
-        nub: 0,
-        size: 5
+        nub: 1,
+        size: 10
       }
     },
     created: function () {

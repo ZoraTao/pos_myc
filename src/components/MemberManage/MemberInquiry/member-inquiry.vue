@@ -111,7 +111,7 @@ c<template>
 
     <!------part3 content------>
     <!--无数据时缺省显示-->
-    <el-row class="inquiry-row content-info-box" v-if="memberList.length==0">
+    <el-row class="inquiry-row content-info-box" v-if="counts == 0">
       <el-col :span="24">
         <div class="default-show">
           <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/image_quesheng.png"/>
@@ -121,11 +121,11 @@ c<template>
     </el-row>
     <!--/无数据时缺省显示-->
     <!--有数据时显示-->
-    <el-row class="inquiry-row content-info-box" v-if="memberList.length > 0">
+    <el-row class="inquiry-row content-info-box" v-if="counts > 0">
       <el-col :span="24" class="table-wrap">
         <!--多个数据时显示-->
         <el-col :span="24">
-          <h2 class="am-ft-16 mgb15">查询结果 ({{memberList.length}})</h2>
+          <h2 class="am-ft-16 mgb15">查询结果 ({{counts}})</h2>
         </el-col>
         <el-table
           :data="memberList"
@@ -156,7 +156,7 @@ c<template>
             label="性别"
             width="100px">
             <template slot-scope="scope">
-              <span v-if="scope.row.sex=='M'">男</span>
+              <span v-if="scope.row.sex=='1'">男</span>
               <span v-else>女</span>
             </template>
           </el-table-column>
@@ -191,11 +191,11 @@ c<template>
           <el-pagination
             class="am-ft-right"
             background
-            @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :page-size="10"
             layout="total, prev, pager, next"
-            :total="counts">
+            :total="counts"
+            :current-page.sync="nub">
           </el-pagination>
         </div>
         <!--/多个数据时显示-->
@@ -209,10 +209,10 @@ c<template>
 
     <!--新增会员弹窗-->
     <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
-      <AddMember></AddMember>
+      <AddMember :submit="isSubmit" v-on:listenToChild="memberAddSubmit"></AddMember>
       <div class="packageDetailButtonGroup">
         <el-button @click="addMember = false">取消</el-button>
-        <el-button type="primary" @click="addMember = false">确定</el-button>
+        <el-button type="primary" @click="memberAddSubmit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -233,6 +233,10 @@ export default {
   },
   data() {
     return {
+      nub: 1,
+      size: 10,
+      counts: 0,
+      isSubmit: false,
       addMember: false,
       searchStr: "",
       normalsearch: true,
@@ -245,7 +249,7 @@ export default {
         startTime: "", //开始时间
         endTime: "", //结束时间
         nub: "0",
-        size: "5"
+        size: "10"
       },
       memberList: [], //会员列表
       memberCount: [], //会员汇总数量
@@ -300,6 +304,58 @@ export default {
     memberAdd() {
       this.addMember = true;
     },
+    //保存新增
+    memberAddSubmit: function (formdata) {
+      //data为从子组件取到的数据
+        var that = this;
+        that.isSubmit = !that.isSubmit;
+        if (formdata.name != '' && formdata.telphone != '' && formdata.birthday != '' && formdata.sex != '') {
+          that.$axios({
+            url: 'http://myc.qineasy.cn/member-api/member/addMember',
+            method: 'post',
+            params: {
+              jsonObject: formdata,
+              keyParams: {
+                weChat: true,
+                userId: "8888",
+                orgId: "11387"
+              }
+            }
+          })
+            .then(function (response) {
+              if (response.data.code != '1') {
+                that.$message({
+                  showClose: true,
+                  message: '请求数据出问题喽，请重试！',
+                  type: 'error'
+                })
+                return false;
+              } else {
+                that.addMember = false;
+                // console.info(response.data.data)
+                that.$message({
+                  showClose: true,
+                  message: '新增会员成功',
+                  type: 'success'
+                });
+              }
+            })
+            .catch(function (error) {
+              console.info(error)
+              that.$message({
+                showClose: true,
+                message: error,
+                type: 'error'
+              })
+            })
+        } else {
+          that.$message({
+            showClose: true,
+            message: '请输入完整信息',
+            type: 'error'
+          })
+        }
+    },
     //查看详情
     checkDetail(data) {
       // console.log(data);
@@ -310,11 +366,8 @@ export default {
       });
     },
     //分页
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    handleCurrentChange() {
+      this.getMemberList();
     },
     //查询会员汇总数量
     getMemberCount() {
@@ -387,14 +440,13 @@ export default {
     //查询会员列表
     getMemberList() {
       var that = this;
-      that
-        .$axios({
+      that.$axios({
           url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
           method: "post",
           params: {
             jsonObject: {
-              nub: "0",
-              size: "5"
+              nub: (that.nub==0?0:(that.nub-1)*that.size),
+              size: that.size
             },
             keyParams: {
               weChat: true
@@ -402,9 +454,9 @@ export default {
           }
         })
         .then(function(response) {
-          // console.info(response.data.data)
+          console.info(response.data.data)
           that.memberList = response.data.data.memberList;
-          that.counts = response.data.data.memberList.length;
+          that.counts = parseInt(response.data.data.count);
         })
         .catch(function(error) {
           console.info(error);

@@ -207,16 +207,13 @@
         })
       },
       //获取总库存列表
-      getStocksList(searchData){
+      getStocksList(){
         var that = this;
-
-        searchData = that.formInline
-
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getTotalStockList',
           method: 'post',
           params: {
-            jsonObject: searchData,
+            jsonObject: that.formInline,
             keyParams: {
               weChat: true
             }
@@ -246,16 +243,13 @@
           })
       },
       //查询库存明细品种列表
-      getVarietyDetList(searchData){
+      getVarietyDetList(){
         var that = this;
-        if(searchData==undefined){
-          searchData = that.formInline
-        }
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getVarietyStockList',
           method: 'post',
           params: {
-            jsonObject: searchData,
+            jsonObject: that.formInline,
             keyParams: {
               weChat: true
             }
@@ -285,16 +279,13 @@
           })
       },
       //查询库存明细编码列表
-      getCodeStockList(searchData){
+      getCodeStockList(){
         var that = this;
-        if(searchData==undefined){
-          searchData = that.formInline
-        }
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getCodeStockList',
           method: 'post',
           params: {
-            jsonObject: searchData,
+            jsonObject: that.formInline,
             keyParams: {
               weChat: true
             }
