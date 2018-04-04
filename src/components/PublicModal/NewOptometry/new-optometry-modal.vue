@@ -15,7 +15,7 @@
                 </el-form-item>
                 <el-form-item label="性别:" v-show="ruleForm.telphone.length==11">
                     <el-select  v-if="!ruleForm.hasMember" v-model="ruleForm.sex" placeholder="请选择">
-                        <el-option label="男" value="N"></el-option>
+                        <el-option label="男" value="F"></el-option>
                         <el-option label="女" value="M"></el-option>
                     </el-select>
                     <span class="nopText" v-else>{{ruleForm.sex=='M'?'女':'男'}}</span>
@@ -310,6 +310,7 @@
                     <label class="mgr10">验光日期 :</label>
                     <el-date-picker
                     v-model="prescriptions.prescriptionTime"
+                    value-format="yyyy-MM-dd"
                     type="date"
                     placeholder="选择日期">
                     </el-date-picker>
@@ -321,540 +322,545 @@
 </template>
 
 <script>
-
 export default {
-  name: 'NewOptometryModal',
-  props: ['submit'],
-  data () {
-    return { 
-        options: [],
-        value: '',
-        needReg:false,
-        ruleForm: {
-          name: '',
-          hasMember:false,
-          telphone:'',
-          memberCardNo:'',
-          sex:'',
-          birthday:''
+  name: "NewOptometryModal",
+  props: ["submit"],
+  data() {
+    return {
+      options: [],
+      value: "",
+      needReg: false,
+      ruleForm: {
+        name: "",
+        hasMember: false,
+        telphone: "",
+        memberCardNo: "",
+        sex: "",
+        birthday: ""
+      },
+      rules: {
+        name: [{ required: true, message: "请输入", trigger: "blur" }]
+      },
+      prescription: {
+        isDistance: true,
+        isNigh: false,
+        isContact: false,
+        isGradually: false
+      },
+      distanceData: [
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          dpd: "",
+          npd: "",
+          hpd: "",
+          add: ""
         },
-        rules: {
-          name: [
-            { required: true, message: '请输入', trigger: 'blur' }
-          ]
-        },
-        prescription:{
-            isDistance:true,
-            isNigh:false,
-            isContact:false,
-            isGradually:false
-        },
-        distanceData:[
-            {
-                sph:'',
-                cyl:'',
-                ax:'',
-                va:'',
-                dpd:'',
-                npd:'',
-                hpd:'',
-                add:''
-            },       
-            {
-                sph:'',
-                cyl:'',
-                ax:'',
-                va:'',
-                dpd:'',
-                npd:'',
-                hpd:'',
-            }            
-        ],
-        nighData:[
-            {
-                sph:'',
-                cyl:'',
-                ax:'',
-                va:'',
-                dpd:'',
-                npd:'',
-                hpd:''
-            },       
-            {
-                sph:'',
-                cyl:'',
-                ax:'',
-                va:'',
-                dpd:'',
-                npd:'',
-                hpd:''
-            }                 
-        ],
-        contactData:[
-            {
-                sph:'',
-                cyl:'',
-                ax:'',
-                va:''
-            },       
-            {
-                sph:'',
-                cyl:'',
-                ax:'',
-                va:''
-            }               
-        ],
-        graduallyData:[  
-            {
-                npd:''
-            },       
-            {
-                npd:''
-            }    
-        ],
-        skiascopyData:[
-            {
-                sph:'',
-                cyl:'',
-                ax:'',
-                va:'',
-                pd:'',
-                add:''
-            },       
-            {
-                sph:'',
-                cyl:'',
-                ax:'',
-                va:'',
-                pd:''
-            }               
-        ],
-        subjectivityData:[
-            {
-                sph:'',
-                cyl:'',
-                ax:'',
-                va:'',
-                pd:'',
-                add:''
-            },       
-            {
-                sph:'',
-                cyl:'',
-                ax:'',
-                va:'',
-                pd:''
-            }              
-        ],
-        health:{
-            k1:"",
-            k2:"",
-            k3:"",
-            k4:"",
-            k5:"",
-        },
-        prescriptions:{ 　　　　
-            "createEndTime":"", 　　　　
-            "createStartTime":"", 　　　　
-            "createTime":"", 　　　　
-            "createUser":"", 　　　　
-            "createUserName":"", 　　　　
-            "customerName":"", 　　　　
-            "memberId":"", 　　　　
-            "memberName":"", 　　　　
-            "memo":"", 　　　　
-            "mobile":"", 　　　　
-            "narpra":"", 　　　　
-            "nub":'', 　　　　
-            "optometrist":"", 　　　　
-            "originalL":"", 　　　　
-            "originalPd":"", 　　　　
-            "originalR":"", 　　　　
-            "prescribe":"", 　　　　
-            "prescriptionEndTime":"", 　　　　
-            "prescriptionId":"", 　　　　
-            "prescriptionStartTime":"", 　　　　
-            "prescriptionTime":"", 　　　　
-            "retinoscopy":"", 　　　　
-            "sex":"", 　　　　
-            "shopId":"", 　　　　
-            "shopName":"", 　　　　
-            "size":'', 　　　　
-            "source":"", 　　　　
-            "status":"", 　　　　
-            "stereopsis":"", 　　　　
-            "subjective":"", 　　　　
-            "worth4":"" 　　
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          dpd: "",
+          npd: "",
+          hpd: ""
         }
+      ],
+      nighData: [
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          dpd: "",
+          npd: "",
+          hpd: ""
+        },
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          dpd: "",
+          npd: "",
+          hpd: ""
+        }
+      ],
+      contactData: [
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: ""
+        },
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: ""
+        }
+      ],
+      graduallyData: [
+        {
+          npd: ""
+        },
+        {
+          npd: ""
+        }
+      ],
+      skiascopyData: [
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          pd: "",
+          add: ""
+        },
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          pd: ""
+        }
+      ],
+      subjectivityData: [
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          pd: "",
+          add: ""
+        },
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          pd: ""
+        }
+      ],
+      health: {
+        k1: "",
+        k2: "",
+        k3: "",
+        k4: "",
+        k5: ""
+      },
+      prescriptions: {
+        createEndTime: "",
+        createStartTime: "",
+        createTime: "",
+        createUser: "",
+        createUserName: "",
+        customerName: "",
+        memberId: "",
+        memberName: "",
+        memo: "",
+        mobile: "",
+        narpra: "",
+        nub: "",
+        optometrist: "",
+        originalL: "",
+        originalPd: "",
+        originalR: "",
+        prescribe: "",
+        prescriptionEndTime: "",
+        prescriptionId: "",
+        prescriptionStartTime: "",
+        prescriptionTime: "",
+        retinoscopy: "",
+        sex: "",
+        shopId: "",
+        shopName: "",
+        size: "",
+        source: "",
+        status: "",
+        stereopsis: "",
+        subjective: "",
+        worth4: ""
+      }
+    };
+  },
+  methods: {
+    searchUser() {
+      var that = this;
+      if (this.ruleForm.telphone.length == 11) {
+        that
+          .$axios({
+            url:
+              "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
+            method: "post",
+            params: {
+              jsonObject: {
+                telphone: this.ruleForm.telphone
+              },
+              keyParams: {
+                weChat: true,
+                userId: "8888",
+                orgId: "11387"
+              }
+            }
+          })
+          .then(function(response) {
+            if (response.data.code == "1") {
+              Object.keys(that.ruleForm).forEach(function(trait) {
+                if (trait != "telphone") {
+                  that.ruleForm[trait] =
+                    response.data.data.memberList[0][trait];
+                }
+              });
+              that.ruleForm.hasMember = true;
+              that.needReg = false;
+            } else {
+              Object.keys(that.ruleForm).forEach(function(trait) {
+                if (trait != "telphone") {
+                  that.ruleForm[trait] = "";
+                }
+              });
+              that.needReg = true;
+            }
+          });
+      }
+    },
+    submitThisModal() {
+      var that = this;
+      var memberId;
+      if (that.needReg) {
+        that
+          .$axios({
+            url: "http://myc.qineasy.cn/member-api/member/addMember",
+            method: "post",
+            params: {
+              jsonObject: {
+                name: that.ruleForm.name,
+                telphone: that.ruleForm.telphone,
+                birthday: that.ruleForm.birthday,
+                sex: that.ruleForm.sex,
+                district: "",
+                address: "",
+                email: ""
+              },
+              keyParams: {
+                weChat: true,
+                userId: "8888",
+                orgId: "11387"
+              }
+            }
+          })
+          .then(function(response) {
+            if (response.data.code == "1") {
+              that.prescriptions.memberId = response.data.data.memberId;
+            }
+          });
+      }
+      var eyes = [];
+      eyes.push({ key: 0, value: that.skiascopyData });
+      eyes.push({ key: 1, value: that.subjectivityData });
+      eyes.push({ key: 2, value: that.distanceData });
+      eyes.push({ key: 3, value: that.nighData });
+      eyes.push({ key: 4, value: that.contactData });
+      eyes.push({ key: 5, value: that.graduallyData });
+      that.prescriptions.memberName = that.ruleForm.name;
+      that.prescriptions.customerName = that.ruleForm.name;
+      that.prescriptions.sex = that.ruleForm.sex;
+      //   that.prescriptions.nub=that.ruleForm.memberCardNo;
+      var jsonObject = {
+        eyes: eyes,
+        prescriptions: that.prescriptions
+      };
+      setTimeout(() => {
+        that
+          .$axios({
+            url: "http://myc.qineasy.cn/pos-api/prescriptions/addPrescriptions",
+            method: "post",
+            params: {
+              jsonObject: jsonObject,
+              keyParams: {
+                weChat: true,
+                userId: "8888",
+                orgId: "11387"
+              }
+            }
+          })
+          .then(function(response) {
+            if (response.data.code == 1) {
+              that.$emit("getNewoptometry", eyes);
+            }
+          });
+      }, 100);
     }
   },
-  methods:{
-      searchUser(){
-          var that = this;
-          if(this.ruleForm.telphone.length==11){
-            that.$axios({
-                url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
-                method: 'post',
-                params: {
-                    jsonObject: {
-                        telphone: this.ruleForm.telphone,
-                    },
-                    keyParams: {
-                        weChat: true,
-                        userId: '8888',
-                        orgId: '11387'
-                    }
-                }
-            })
-            .then(function (response) {
-                if(response.data.code=='1'){
-                    Object.keys(that.ruleForm).forEach(function(trait) {
-                        if(trait!='telphone'){
-                            that.ruleForm[trait]=response.data.data.memberList[0][trait];
-                        }
-                    });
-                    that.ruleForm.hasMember=true;
-                    that.needReg=false;
-                }else{
-                    Object.keys(that.ruleForm).forEach(function(trait) {
-                        if(trait!='telphone'){
-                            that.ruleForm[trait]='';
-                        }
-                    });
-                    that.needReg=true;
-                }
-            })              
-          }
-      },
-      submitThisModal(){
-          var that=this;
-          var memberId;
-          if(that.needReg){
-            that.$axios({
-                url: 'http://myc.qineasy.cn/member-api/member/addMember',
-                method: 'post',
-                params: {
-                    jsonObject: {
-                        name:that.ruleForm.name,
-                        telphone:that.ruleForm.telphone,
-                        birthday:that.ruleForm.birthday,
-                        sex:that.ruleForm.sex,
-                        district:'',
-                        address:'',
-                        email:''
-                    },
-                    keyParams: {
-                        weChat: true,
-                        userId: '8888',
-                        orgId: '11387'
-                    }
-                }
-            })
-            .then(function (response) {
-                if(response.data.code=='1'){
-                    that.prescriptions.memberId=response.data.memberId;
-                }
-            })                  
-          }
-          var eyes=[];
-          eyes.push({'key':0,value:that.skiascopyData});
-          eyes.push({'key':1,value:that.subjectivityData});
-          eyes.push({'key':2,value:that.distanceData});
-          eyes.push({'key':3,value:that.nighData});
-          eyes.push({'key':4,value:that.contactData});
-          eyes.push({'key':5,value:that.graduallyData});
-          that.prescriptions.memberName=that.ruleForm.name;
-          that.prescriptions.sex=that.ruleForm.sex;
-          that.prescriptions.nub=that.ruleForm.memberCardNo;
-          var jsonObject = {
-              eyes:eyes,
-              prescriptions:that.prescriptions
-          }
-          console.log(jsonObject)
-          setTimeout(() => {
-            that.$axios({
-                url: 'http://myc.qineasy.cn/pos-api/prescriptions/addPrescriptions',
-                method: 'post',
-                params: {
-                    jsonObject: jsonObject,
-                    keyParams: {
-                        weChat: true,
-                        userId: '8888',
-                        orgId: '11387'
-                    }
-                }
-            })
-            .then(function (response) {
-                console.log(response)
-            })    
-          },0)        
+  watch: {
+    submit: function(value) {
+      if (value == true) {
+        this.submitThisModal();
       }
-  },
-  watch:{
-      'submit':function(value){
-          if(value==true){
-              this.submitThisModal()
-          }
-      }
+    }
   }
-}
+};
 </script>
 
 <style lang="scss">
-.newOptometry{
-    .el-dialog__body {
-        padding: 0;
-    }
-    .el-checkbox__label {
+.newOptometry {
+  .el-dialog__body {
+    padding: 0;
+  }
+  .el-checkbox__label {
+    font-size: 12px;
+  }
+  label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .newOptometry {
+    padding: 15px;
+    font-size: 12px;
+    .newOptometryPhone {
+      .el-form-item {
+        float: left;
+        margin: 0;
+        height: 40px;
+        line-height: 40px;
         font-size: 12px;
+        .el-form-item__label {
+          margin-right: 10px;
+          width: auto !important;
+        }
+        .el-form-item__content {
+          margin-left: 0 !important;
+          float: left;
+          margin-right: 20px;
+          .el-input {
+            width: 80px;
+          }
+        }
+      }
+      overflow: hidden;
+      padding: 10px 0;
+      border-bottom: 1px dashed #d8d8d8;
+      line-height: 29px;
+      label {
+        margin-right: 10px;
+      }
+      span,
+      label {
+        float: left;
+      }
+      label {
+        margin: 0;
+        &:not(:nth-of-type(1)) {
+          margin-left: 30px;
+        }
+      }
+      .nopText {
+        float: left;
+        color: #333333;
+        margin-left: 5px;
+        font-size: 12px;
+        line-height: 40px;
+      }
     }
+    .newOptometryOptician {
+      padding: 14px 10px;
+      text-align: left;
+      label {
+        margin: 0;
+      }
+      .el-checkbox {
+        margin-right: 10px;
+      }
+    }
+    .optometryMemo {
+      overflow: hidden;
+      padding-top: 14px;
+      li:first-child {
+        font-size: 12px;
+        color: #666666;
+        margin-top: 2px;
+      }
+    }
+  }
+  .w10 {
+    width: 10px !important;
+  }
+  .glass_combination_table {
+    min-height: 100px;
+    border: 1px solid #e1e1e1;
+    overflow: hidden;
+    li {
+      float: left;
+    }
+  }
+
+  .glass_table_head {
+    // width: 850px;
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 12px;
+    color: #555555;
+    letter-spacing: 0;
+  }
+
+  .glass_table_770 {
+    // width: 770px;
+    .el-input {
+      width: 70px;
+    }
+  }
+
+  .glass_table_head li {
+    float: left;
+  }
+
+  .glass_table_770 td {
+    text-align: center;
+  }
+
+  .glass_table_770 table tr {
+    height: 40px;
+    line-height: 40px;
+  }
+
+  .glass_table_770 tr.dis_bg td {
+    background: rgba(246, 246, 246, 0.5);
+  }
+
+  .border_bottom {
+    border-bottom: 1px solid #efefef;
+  }
+
+  .border_left {
+    border-left: 1px solid #efefef;
+    border-bottom: 1px solid #d2d2d2;
+  }
+
+  .msg_left {
+    width: 80px !important;
+    height: 82px;
+    line-height: 82px;
+    text-align: right;
+    padding-right: 22px;
+  }
+
+  .combination_table_list {
+    background: #fff;
+    // margin-top: 13px;
+    &:last-child {
+      padding-bottom: 20px;
+    }
+  }
+
+  .labelInput {
+    float: left;
+    line-height: 82px;
+    height: 82px;
     label {
-        display: inline-block;
-        max-width: 100%;
-        margin-bottom: 5px;
-        font-weight: 700;
-        text-align: center;
+      min-width: 50px;
     }
-    .newOptometry{
-        padding: 15px;
-        font-size: 12px;
-        .newOptometryPhone{
-            .el-form-item{
-                float: left;
-                margin: 0;
-                height: 40px;
-                line-height: 40px;
-                font-size: 12px;
-                .el-form-item__label{
-                    margin-right: 10px;
-                    width: auto !important;
-                }
-                .el-form-item__content{
-                    margin-left: 0 !important;
-                    float: left;
-                    margin-right: 20px;
-                    .el-input{
-                        width: 80px;
-                    }
-                }
-            }
-            overflow: hidden;
-            padding: 10px 0;
-            border-bottom: 1px dashed #d8d8d8;
-            line-height: 29px;
-            label{
-                margin-right: 10px;
-            }
-            span,label{
-                float: left;
-            }
-            label{
-                margin: 0;
-                &:not(:nth-of-type(1)){
-                    margin-left: 30px;
-                }
-            }
-            .nopText{
-                float: left;
-                color: #333333;
-                margin-left: 5px;
-                font-size: 12px;
-                line-height: 40px;
-            }
-        }
-        .newOptometryOptician{
-            padding: 14px 10px;
-            text-align: left;
-            label{
-                margin: 0;
-            }
-            .el-checkbox{
-                margin-right: 10px;
-            }
-        }
-        .optometryMemo{
-            overflow: hidden;
-            padding-top: 14px;
-            li:first-child{
-                font-size: 12px;
-                color: #666666;
-                margin-top: 2px;
-            }
-        }
-    }   
-    .w10{
-        width: 10px !important;
+    .el-input {
+      width: 110px;
+      padding: 0;
     }
-    .glass_combination_table {
-        min-height: 100px;
-        border: 1px solid #E1E1E1;
-        overflow: hidden;
-        li{
-            float: left;
-        }
-    }
+  }
+  .lineHeightAuto {
+    line-height: 1 !important;
+    height: auto !important;
+  }
 
-    .glass_table_head {
-        // width: 850px;
-        height: 30px;
-        line-height: 30px;
-        font-weight: bold;
-        text-align: center;
-        font-size: 12px;
-        color: #555555;
-        letter-spacing: 0;
-    }
+  .breakMsg {
+    line-height: 20px;
+    text-align: right;
+    padding-right: 22px;
+    margin-top: 20px;
+    height: auto;
+  }
 
-    .glass_table_770 {
-        // width: 770px;
-        .el-input {
-            width: 70px;
-        }
-    }
+  .wid80 {
+    width: 80px !important;
+  }
 
-    .glass_table_head li {
-        float: left;
-    }
+  .glass_old {
+    height: 40px;
+    margin-top: 24px;
+  }
 
-    .glass_table_770 td {
-        text-align: center;
-    }
+  .glass_old .data_li,
+  .eye_healthy .data_li {
+    float: left;
+    padding: 0 20px;
+    color: #333333;
+  }
 
-    .glass_table_770 table tr {
-        height: 40px;
-        line-height: 40px;
-    }
+  .eye_healthy {
+    height: 40px;
+  }
 
-    .glass_table_770 tr.dis_bg td {
-        background: rgba(246, 246, 246, 0.50);
-    }
+  .glass_old .data_li span,
+  .eye_healthy .data_li span {
+    color: #666666;
+    padding: 0 5px;
+  }
 
-    .border_bottom {
-        border-bottom: 1px solid #EFEFEF;
-    }
+  .over_scroll {
+    overflow: auto;
+  }
 
-    .border_left {
-        border-left: 1px solid #EFEFEF;
-        border-bottom: 1px solid #D2D2D2;
-    }
+  .combination_footer {
+    margin: 10px 0 10px 80px;
+    height: 40px;
+    line-height: 40px;
+  }
 
-    .msg_left {
-        width: 80px !important;
-        height: 82px;
-        line-height: 82px;
-        text-align: right;
-        padding-right: 22px;
-    }
+  .combination_footer li {
+    padding: 0 20px;
+    font-size: 12px;
+    color: #333333;
+  }
 
-    .combination_table_list {
-        background: #fff;
-        // margin-top: 13px;
-        &:last-child{
-            padding-bottom: 20px;
-        }
-    }
+  .combination_footer li span {
+    color: #666666;
+    padding: 0 5px;
+  }
 
-    .labelInput{
-        float: left;    
-        line-height: 82px;
-        height: 82px;
-        label{
-            min-width: 50px;
-        }
-        .el-input{
-            width: 110px;;
-            padding:0; 
-        }
-    }
-    .lineHeightAuto{
-        line-height: 1 !important;
-        height: auto !important;
-    }
+  .optometry_remarks {
+    line-height: 20px;
+  }
 
-    .breakMsg{
-        line-height: 20px;
-        text-align: right;
-        padding-right: 22px;
-        margin-top: 20px;
-        height: auto;
-    }
+  .optometry_remarks_text {
+    width: 670px;
+    line-height: 20px;
+    color: #333333;
+    padding: 0 3px;
+  }
 
-    .wid80 {
-        width: 80px !important;
-    }
+  .optometry_origin,
+  .optometrist {
+    color: #666666;
+    line-height: 20px;
+    margin-right: 30px;
+  }
 
-    .glass_old {
-        height: 40px;
-        margin-top: 24px;
+  .optometry_origin span,
+  .optometrist span {
+    color: #333333;
+    line-height: 20px;
+    padding: 0 3px;
+  }
+  .glass_table_2x {
+    input {
+      padding: 35px 0;
+      text-align: center;
     }
-
-    .glass_old .data_li,
-    .eye_healthy .data_li {
-        float: left;
-        padding: 0 20px;
-        color: #333333;
-    }
-
-    .eye_healthy {
-        height: 40px;
-    }
-
-    .glass_old .data_li span,
-    .eye_healthy .data_li span {
-        color: #666666;
-        padding: 0 5px;
-    }
-
-    .over_scroll {
-        overflow: auto;
-    }
-
-    .combination_footer {
-        margin: 10px 0 10px 80px;
-        height: 40px;
-        line-height: 40px;
-    }
-
-    .combination_footer li {
-        padding: 0 20px;
-        font-size: 12px;
-        color: #333333;
-    }
-
-    .combination_footer li span {
-        color: #666666;
-        padding: 0 5px;
-    }
-
-    .optometry_remarks {
-        line-height: 20px;
-    }
-
-    .optometry_remarks_text {
-        width: 670px;
-        line-height: 20px;
-        color: #333333;
-        padding: 0 3px;
-    }
-
-    .optometry_origin,
-    .optometrist {
-        color: #666666;
-        line-height: 20px;
-        margin-right: 30px;
-    }
-
-    .optometry_origin span,
-    .optometrist span {
-        color: #333333;
-        line-height: 20px;
-        padding: 0 3px;
-    }
-    .glass_table_2x{
-        input{
-            padding: 35px 0;
-            text-align: center;
-        }
-    }
+  }
 }
 </style>
