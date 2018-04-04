@@ -400,7 +400,11 @@ export default {
           }
         })
         .then(function(response) {
-          // console.info(response.data.data)
+          if(response.data.code != 1 ){
+            //数据错误查看
+            alert('查询失败，请重试');
+            return false
+          }
           that.memberList = response.data.data.memberList;
           that.counts = response.data.data.memberList.length;
         })

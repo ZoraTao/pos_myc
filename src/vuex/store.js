@@ -1,40 +1,47 @@
 import Vue from 'vue'
 import Vuex from 'vuex';
-// import mutations from './mutation/mutations'
-// import * as actions from './action/action'
-// import * as getters from './getter/getters'
 import * as types from './mutation-types'
+// import mutations from './mutation/mutations'
+import * as actions from './action/action'
+// import * as getters from './getter/getters'
 import {cookie} from '../utils/cookie'
 
 Vue.use(Vuex)
 
 //存储数据
 const state = {
-  count : 1,
+  //顶部NAVtop导航
+  // item: [
+  //   {
+  //     text: "首页",
+  //     name: "Home",
+  //     url: "/base/homeIndex",
+  //     isActive: true
+  //   }
+  // ],
   num:10086,
   accessKey: cookie.getCookie('accessKey')||'',
   bool:false
 }
 
-
 const mutations = {
   [types.CHANGE_STATE](state){
     state.count++
   },
+  // [types.PUSH_ITEM](state, dataObj){
+  //   state.item.push({
+  //       text: data.text,
+  //       name: data.name,
+  //       url: data.link,
+  //       isActive: data.line
+  //   })
+  // },
   add(state){
     state.num +=1;
   },
   increment(state){  
     state.num += 2;  
 }, 
-}
-const actions = {
-  increment (context) {
-    context.commit('increment')
-  },
-  incrementA ({ commit , state } , products ) {
-    commit([types.CHANGE_STATE])
- }
 }
 
 const getters ={
