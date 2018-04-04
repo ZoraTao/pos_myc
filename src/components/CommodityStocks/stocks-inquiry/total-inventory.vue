@@ -4,7 +4,7 @@
       :data="totalStocksData"
       size="small"
       stripe
-      :summary-method="getSummaries"
+      max-height="400"
       show-summary
       style="width: 100%;">
       <el-table-column
@@ -38,17 +38,17 @@
       </el-table-column>
     </el-table>
     <!--分页-->
-    <div class="block mgt10">
-      <el-pagination
-        class="am-ft-right"
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :page-size="15"
-        layout="total, prev, pager, next"
-        :total="totalStocksData.count">
-      </el-pagination>
-    </div>
+    <!--<div class="block mgt10">-->
+      <!--<el-pagination-->
+        <!--class="am-ft-right"-->
+        <!--background-->
+        <!--@current-change="handleCurrentChange"-->
+        <!--:page-size="10"-->
+        <!--layout="total, prev, pager, next"-->
+        <!--:total="totalStocksData.count"-->
+        <!--:current-page.sync="nub">-->
+      <!--</el-pagination>-->
+    <!--</div>-->
   </div>
 </template>
 
@@ -62,46 +62,16 @@
     },
     data() {
       return {
-
+        nub: 0,//起始条数
+        size: 10,//每页显示数据条数
+        counts: 0,//总条数
       }
     },
     methods: {
       //分页
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.nub = (`${val}`-1) * this.size;
       },
-      //合计
-      getSummaries(param) {
-        const { columns, data } = param;
-        const sums = [];
-        columns.forEach((column, index) => {
-          if (index === 0) {
-            sums[index] = '合计';
-            return;
-          }
-          if (index === 2 || index === 3) {
-            sums[index] = ' ';
-            return;
-          }
-          const values = data.map(item => Number(item[column.property]));
-          if (!values.every(value => isNaN(value))) {
-            sums[index] = values.reduce((prev, curr) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                return prev + curr;
-              } else {
-                return prev;
-              }
-            }, 0);
-          } else {
-            sums[index] = 'N/A';
-          }
-        });
-        return sums;
-      }
     }
   }
 </script>

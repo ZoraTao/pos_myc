@@ -4,6 +4,7 @@
       :data="codeStockData"
       size="small"
       stripe
+      max-height="400"
       :summary-method="getSummaries"
       show-summary
       style="width: 100%;">
@@ -58,17 +59,17 @@
       </el-table-column>
     </el-table>
     <!--分页-->
-    <div class="block mgt10">
-      <el-pagination
-        class="am-ft-right"
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :page-size="15"
-        layout="total, prev, pager, next"
-        :total="codeStockData.count">
-      </el-pagination>
-    </div>
+    <!--<div class="block mgt10">-->
+      <!--<el-pagination-->
+        <!--class="am-ft-right"-->
+        <!--background-->
+        <!--@size-change="handleSizeChange"-->
+        <!--@current-change="handleCurrentChange"-->
+        <!--:page-size="15"-->
+        <!--layout="total, prev, pager, next"-->
+        <!--:total="codeStockData.count">-->
+      <!--</el-pagination>-->
+    <!--</div>-->
   </div>
 </template>
 

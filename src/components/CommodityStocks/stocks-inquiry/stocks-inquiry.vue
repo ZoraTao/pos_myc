@@ -104,7 +104,7 @@
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">库存明细 (类别)</span>
-       <category-inventory-det></category-inventory-det>
+       <category-inventory-det :formInline="formInline"></category-inventory-det>
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label" @click="getVarietyDetList">库存明细 (品种)</span>
@@ -115,8 +115,8 @@
         <code-inventory-det :codeStockData="codeStockData"></code-inventory-det>
       </el-tab-pane>
       <el-tab-pane>
-        <span slot="label">库存明细  (仓库+编码+有效期批号)</span>
-        <mix-inventory-det></mix-inventory-det>
+        <span slot="label" @click="getCodeStockList">库存明细  (仓库+编码+有效期批号)</span>
+        <mix-inventory-det :codeStockData="codeStockData"></mix-inventory-det>
       </el-tab-pane>
     </el-tabs>
     <!--/有数据时显示-->
@@ -145,13 +145,14 @@
       return {
         warehList: [],//仓库列表
         stocksData: [],//总库存列表
-        stocksCount: '',//总库存数量
+        stocksCount: 0,//总库存数量
         varietyDetData: [],//库存明细品种列表
-        varietyDetCount: '',//库存明细品种数量
-        codeStockData: [],//库存明细编码列表
-        codeStockCount: '',//库存明细编码数量
+        varietyDetCount: 0,//库存明细品种数量
+        codeStockData: [],//库存明细编码列表/（仓库+编码+有效期批号）
+        codeStockCount: 0,//库存明细编码数量/（仓库+编码+有效期批号）
         normalsearch: true,
         moresearch: false,
+        goCategoryInventory: false,
         categoryCode1: '',
         categoryCode2: '',
         categoryCode3: '',
@@ -163,7 +164,7 @@
           warehouseType: '',//仓库类型
           warehouseId: '',//仓库id
           nub: "0",
-          size: "5"
+          size: "10"
         }
       }
     },
@@ -229,7 +230,7 @@
               return false;
             }else {
              that.stocksData = response.data.data.list;
-             that.stocksCount = response.data.data.count;
+             that.stocksCount = parseInt(response.data.data.count);
              // console.info(that.stocksData)
             }
           })
@@ -237,12 +238,12 @@
             console.info(error);
             that.$message({
               showClose: true,
-              message: error,
+              message: '请求数据失败，请联系管理员',
               type: 'error'
             })
           })
       },
-      //查询库存明细品种列表
+      //查询库存明细--品种列表
       getVarietyDetList(){
         var that = this;
         that.$axios({
@@ -264,21 +265,21 @@
               })
               return false;
             }else {
-              console.info(response.data)
+              // console.info(response.data)
               that.varietyDetData = response.data.data.list;
-              that.varietyDetCount = response.data.data.count;
+              that.varietyDetCount = parseInt(response.data.data.count);
             }
           })
           .catch(function (error) {
             console.info(error);
             that.$message({
               showClose: true,
-              message: error,
+              message: '请求数据失败，请联系管理员',
               type: 'error'
             })
           })
       },
-      //查询库存明细编码列表
+      //查询库存明细--编码列表
       getCodeStockList(){
         var that = this;
         that.$axios({
@@ -300,16 +301,16 @@
               })
               return false;
             }else {
-              console.info(response.data)
+              // console.info(response.data.data)
               that.codeStockData = response.data.data.list;
-              that.codeStockCount = response.data.data.count;
+              that.codeStockCount = parseInt(response.data.data.count);
             }
           })
           .catch(function (error) {
             console.info(error);
             that.$message({
               showClose: true,
-              message: error,
+              message: '请求数据失败，请联系管理员',
               type: 'error'
             })
           })
@@ -328,6 +329,23 @@
     }
     .search-bt{
       margin-top: 6px !important;
+    }
+    .el-table__body-wrapper{
+      &::-webkit-scrollbar{
+        width: 17px;
+        height: 12px;
+      }
+      &::-webkit-scrollbar-track{
+        background: #d4d2d2;
+        border-radius: 4px;
+      }
+      &::-webkit-scrollbar-thumb{
+        background: #b4b3b3;
+        border-radius: 4px;
+      }
+      &::-webkit-scrollbar-corner{
+        background: #E6E6E6;
+      }
     }
   }
 
