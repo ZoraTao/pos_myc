@@ -878,6 +878,11 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     return false;
                 }
                 if(!this.optometryId){
+                    that.$message({
+                        showClose: true,
+                        message: '验光单信息获取失败',
+                            type: 'error'
+                    })                    
                     return false;
                 }
                 var orderItemsList=[];
@@ -890,6 +895,14 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         orderPromotionId:'',
                         money:this.tableData[item].realSale
                     })
+                }
+                if(orderItemsList==''){
+                    that.$message({
+                        showClose: true,
+                        message: '商品信息获取失败',
+                            type: 'error'
+                    })                        
+                    return false;
                 }
                 var jsonObject=
                 {
