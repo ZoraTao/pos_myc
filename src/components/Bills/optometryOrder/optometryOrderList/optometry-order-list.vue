@@ -135,7 +135,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 options: [],
                 value: '',
                 count: 0,
-                nub: 0,
+                nub: 1,
                 size: 5
             };
         },
@@ -157,14 +157,16 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                     }
                 }
                     var that = this;
+                    setTimeout(function() {
+                        
                     that.$axios({
-                        url: this.listUrl,
+                        url: that.listUrl,
                         method: 'post',
                         params: {
                             jsonObject: {
-                                memberId: this.memberInfo,
-                                nub: (this.nub==0?0:(this.nub-1)*this.size),
-                                size: this.size
+                                memberId: that.memberInfo,
+                                nub: (that.nub==1?0:(that.nub-1)*that.size),
+                                size: that.size
                             },
                             keyParams: {
                                 weChat: true,
@@ -185,6 +187,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                             that.noSearchText="未查询到验光单"
                         }
                     })
+                    }, 0);
             },
             getMemberDetail(id) {
                 var that = this;

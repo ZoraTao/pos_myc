@@ -161,16 +161,16 @@ c<template>
             </template>
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="shoppingCount"
             label="消费次数"
             width="100px">
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="totalConsumption"
             label="消费金额">
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="lastShopTime"
             label="最近消费时间">
           </el-table-column>
           <el-table-column

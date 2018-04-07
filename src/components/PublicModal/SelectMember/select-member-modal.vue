@@ -89,9 +89,9 @@ export default {
                 method: 'post',
                 params: {
                     jsonObject: {
-                        seachCode:this.selectM,
-                        nub: this.nub==1?0:this.nub*this.size,
-                        size: this.size
+                        seachCode:that.selectM,
+                        nub: that.nub==1?0:(that.nub-1)*that.size,
+                        size: that.size
                     },
                     keyParams: {
                         weChat: true,

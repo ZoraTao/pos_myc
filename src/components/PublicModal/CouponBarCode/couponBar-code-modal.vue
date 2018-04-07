@@ -168,6 +168,7 @@ export default {
                 min-height: 100%;
                 .CouponBarCard{
                     .memberInfo{
+                        height: auto;
                         font-size: 13px;
                         color: #666666;
                         width: 230px;

@@ -305,7 +305,7 @@
           saleStartTime: '',
           saleEndTime: ''
         },
-        nub:0,
+        nub:1,
         size:5,
         count:'',
         showCashier: false,
@@ -348,27 +348,29 @@
       //获取列表
       getOrderList: function () {
         var that = this;
-        that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList',
-          method: 'post',
-          params: {
-            jsonObject: {
-              nub:this.nub==1?0:this.nub*this.size,
-              size:this.size
-            },
-            keyParams: {
-              weChat: true
+        setTimeout(() => {
+          that.$axios({
+            url: 'http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList',
+            method: 'post',
+            params: {
+              jsonObject: {
+                nub:that.nub==1?0:(that.nub-1)*that.size,
+                size:that.size
+              },
+              keyParams: {
+                weChat: true
+              }
             }
-          }
-        })
-        .then(function (response) {
-          // console.info(response.data.data)
-          that.count = response.data.data.count;
-          that.orderTempList = response.data.data.orderTempList;
-        })
-        .catch(function (error) {
-          console.info(error)
-        })
+          })
+          .then(function (response) {
+            // console.info(response.data.data)
+            that.count = response.data.data.count;
+            that.orderTempList = response.data.data.orderTempList;
+          })
+          .catch(function (error) {
+            console.info(error)
+          })
+        }, 100);
       }
     },
     components: {

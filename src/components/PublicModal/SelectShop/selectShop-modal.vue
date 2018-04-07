@@ -51,28 +51,28 @@
         <!--body-top-->
         <div class="clearfix modal-content-top">
             <el-table
-                :data="data"
+                :data="selectProductSku.productSkuData.skulist"
                 size="small"
                 align="left"
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
-                prop="shopid"
+                prop="sku"
                 label="商品编码">
                 </el-table-column>
                 <el-table-column
-                prop="shopname"
+                prop="skuName"
                 label="商品名称">
                 </el-table-column>
                 <el-table-column
-                prop="storehouse"
+                prop="warehouseName"
                 label="出货仓库">
                 </el-table-column>
                 <el-table-column
-                prop="inventory"
+                prop="quantity"
                 label="库存数">
                 </el-table-column>
                 <el-table-column
-                prop="allocation"
+                prop="allotQuantity"
                 label="可分配数">
                 </el-table-column>
                 <el-table-column
@@ -92,7 +92,10 @@
             class="am-ft-right"
             background
             layout="prev, pager, next,total"
-            :total="1000">
+            :page-size="5"
+            :total="selectProductSku.productSkuData.count"
+            @current-change="getProductSku"
+            :current-page.sync="selectProductSku.nub">
             </el-pagination>
         </div>
     </div>
@@ -103,28 +106,13 @@
 
 export default {
   name: 'selectShopModal',
+  props:['selectProductSku'],
   data () {
     return { 
         options: [],
+        cpSelectProductSku:null,
         value:"",
-        data:[
-            {
-                shopid:'0012345',
-                skuName:'毛源昌1.551非球面防辐射远+1.50',
-                storehouse:'总仓库',
-                inventory:'24',
-                allocation:'20',
-                price:'230.00'
-            },
-            {
-                shopid:'001312345',
-                skuName:'毛源昌射远+1.50',
-                storehouse:'总仓库',
-                inventory:'214',
-                allocation:'220',
-                price:'210.00'
-            }
-        ]
+        data:[]
     }
   },
   methods:{
@@ -132,7 +120,11 @@ export default {
           value.discount = 10;
           value.realSale = value.price;
           this.$emit('setBuyShop',value)
-      }
+      },
+      getProductSku(){
+        this.cpSelectProductSku=this.selectProductSku;
+        this.$emit('getProductSku', this.cpSelectProductSku);
+      },
   }
 }
 </script>

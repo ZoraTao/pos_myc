@@ -2,6 +2,7 @@
   <div>
     <el-table
       v-for="(tableData,index) in categoryData"
+      :key="tableData.className"
       v-if="tableData.length!=0"
       :data="tableData"
       size="small"

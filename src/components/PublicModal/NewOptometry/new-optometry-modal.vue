@@ -4,7 +4,7 @@
         <div class="newOptometryPhone">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
                 <el-form-item label="手机号:" prop="telphone">
-                    <el-input v-model="ruleForm.telphone" @input="searchUser"></el-input>
+                    <el-input v-model="ruleForm.telphone" @input="searchUser" style="width:100px"></el-input>
                 </el-form-item>
                 <el-form-item label="姓名:" v-show="ruleForm.telphone.length==11">
                     <el-input  v-if="!ruleForm.hasMember" v-model="ruleForm.name"></el-input>
@@ -14,7 +14,7 @@
                     <span class="nopText">{{ruleForm.memberCardNo}}</span>
                 </el-form-item>
                 <el-form-item label="性别:" v-show="ruleForm.telphone.length==11">
-                    <el-select  v-if="!ruleForm.hasMember" v-model="ruleForm.sex" placeholder="请选择">
+                    <el-select v-if="!ruleForm.hasMember" v-model="ruleForm.sex" placeholder="请选择">
                         <el-option label="男" value="F"></el-option>
                         <el-option label="女" value="M"></el-option>
                     </el-select>
@@ -22,6 +22,7 @@
                 </el-form-item>
                 <el-form-item label="出生年月:" v-show="ruleForm.telphone.length==11">
                     <el-date-picker
+                    style="width:110px"
                     type="date"
                     value-format="yyyy-MM-dd"
                     v-if="!ruleForm.hasMember" v-model="ruleForm.birthday"
@@ -639,7 +640,7 @@ export default {
           float: left;
           margin-right: 20px;
           .el-input {
-            width: 80px;
+            width: 85px;
           }
         }
       }

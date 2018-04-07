@@ -308,8 +308,6 @@ export default {
     padding-bottom: 5px;
   }
 }
-</style>
-<style>
 .el-input--suffix .el-input__inner {
   background-color: #f8f8f8;
   padding-right: 0;

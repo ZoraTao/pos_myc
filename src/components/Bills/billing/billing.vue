@@ -10,6 +10,7 @@
                     </el-form-item>
                     <el-form-item label="补单日期 :">
                         <el-date-picker
+                        v-model="orderTemp.singleSupTime"
                         align="left" 
                         placeholder="选择日期">
                         </el-date-picker>
@@ -33,11 +34,11 @@
                         <el-button @click="customizeRH=true">定做</el-button>
                     </el-form-item>
                     <el-form-item label="商品 :" class="ParamInput">
-                        <el-input class="" placeholder=""></el-input>
-                        <el-button @click="showSelectShop=true">···</el-button>
+                        <el-input class="" placeholder="" v-model="selectProductSku.selectSP" @keyup.13="selectGlass(3)"></el-input>
+                        <el-button @click="showSelectShop=true;selectGlass(3)">···</el-button>
                         <el-button @click="customizeRH=true">定做</el-button>
                     </el-form-item>
-                    <el-form-item class="ParamInput ParamButton">
+                    <!--<el-form-item class="ParamInput ParamButton">
                         <el-button @click="packageGoods=true">套餐商品</el-button>
                     </el-form-item>
                     <el-form-item class="ParamInput ParamButton">
@@ -45,7 +46,7 @@
                     </el-form-item>
                     <el-form-item class="ParamInput ParamButton">
                         <el-button @click="otherExpense=true">其他费用</el-button>
-                    </el-form-item>
+                    </el-form-item>-->
                 </el-form>
             </div>
         </div>
@@ -55,6 +56,7 @@
                     :data="tableData"
                     size="small"
                     align="left"
+                    @row-dblclick="delThisRow"
                     style="width: 100%;margin-bottom:10px;min-height:300px">
                     <el-table-column
                     prop="skuName"
@@ -101,7 +103,7 @@
                     </p>
                     <p>
                         <span v-show="actionSale =='' || actionSale == 0 ">促销活动 : 无</span>
-                        <span v-show="actionSale !='' & actionSale != 0 ">促销活动 : 圣诞配镜大促<b>{{actionSale}}元</b></span>
+                        <!--<span v-show="actionSale !='' & actionSale != 0 ">促销活动 : 圣诞配镜大促<b>{{actionSale}}元</b></span>-->
                         <span v-show="discountSale == '' & allDisCount == '' || discountSale == 0 & allDisCount == ''" >折扣 : 无</span>
                         <span v-show="discountSale != '' & discountSale != 0 || allDisCount != ''">折扣 :<b>{{allDisCount}}折 (-{{discountSale}}元)</b></span>
                         <span v-show="memberShipDisCount==10">无会员折扣</span>
@@ -113,7 +115,7 @@
         <div class="salesDiscount flex1">
             <div class="fn-left">
                 <el-form ref="form">
-                    <el-form-item class="ParamButton">
+                    <!--<el-form-item class="ParamButton">
                         <el-button @click="CouponBarCode=true">折扣券</el-button>
                     </el-form-item>
                     <el-form-item class="ParamButton">
@@ -121,7 +123,7 @@
                     </el-form-item>
                     <el-form-item class="ParamButton">
                         <el-button >促销活动</el-button>
-                    </el-form-item>
+                    </el-form-item>-->
                 </el-form>
             </div>
             <div class="fn-left singleDiscount">
@@ -153,48 +155,48 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="取镜方式 :">
-                    <el-select size="mini" v-model="orderTemp.glassesType" placeholder="请选择">
+                    <el-select size="mini" v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
                         <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                        v-for="item in selectOptions"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="取镜公司 :">
-                    <el-select size="mini" v-model="orderTemp.glassesCompany" placeholder="请选择">
+                    <el-select size="mini" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()" @change="sameComType">
                         <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                        v-for="item in publicSelcet.comTypeOptions"
+                        :key="item.shopId"
+                        :label="item.shopName"
+                        :value="item.shopId">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="取镜地点 :">
-                    <p>西湖区建国北路211号</p>
+                    <p style="width:100px;">{{orderTemp.glassesAddress||'--'}}</p>
                 </el-form-item>
                 <el-form-item>
-                    <el-input class="" placeholder=""></el-input>
+                    <el-input class="" v-model="orderTemp.saleMemo" placeholder="销售备注"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-select size="mini" v-model="orderTemp.processMemo" placeholder="加工备注">
+                    <el-select size="mini" v-model="publicSelcet.processMemo" placeholder="加工备注" @visible-change="getPublicSelect(3,publicSelcet.processMemoOptions)">
                         <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                        v-for="item in selectOptions"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-select size="mini" v-model="orderTemp.specialMemo" placeholder="特殊备注">
+                    <el-select size="mini" v-model="publicSelcet.specialMemo" placeholder="特殊备注" @visible-change="getPublicSelect(4,publicSelcet.specialMemoOptions)">
                         <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                        v-for="item in selectOptions"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -234,8 +236,8 @@
                         </p>
                         <span>···</span>
                     </div>
-                    <div class="cardLevel" v-show="selectMember.memberInfo">
-                        <span>{{selectMember.memberInfo?selectMember.memberInfo.cardName:''}}</span>
+                    <div class="cardLevel">
+                        <span v-show="selectMember.memberInfo">{{selectMember.memberInfo?selectMember.memberInfo.cardName:''}}</span>
                     </div>
                 </div>
                 <div class="consume">
@@ -276,7 +278,7 @@
                 <el-button type="primary" @click="showNewOptometry=true">新增</el-button>
             </div>            
             <div class="selectEyeglass">
-                <el-select size="mini" v-model="value" placeholder="请选择">
+                <el-select size="mini" v-model="value" placeholder="">
                     <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -322,7 +324,7 @@
         width="30%"
         center>
         <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">调入该会员最近一次的验光单？</h4>
-        <span>2017-10-11 15:10:45 验光单号：0001545463476</span>
+        <span>{{optometryTime||'暂无数据'}} 验光单号：{{optometryId||'暂无数据'}}</span>
         <span slot="footer" class="dialog-footer">
             <el-button @click="isOptometryDialogVisible = false;showNewOptometry=true">不,我要新增</el-button>
             <el-button type="primary" @click="isOptometryDialogVisible = false;includeOptometry()">调入</el-button>
@@ -342,7 +344,7 @@
         <SelectRHModal  v-on:getProductSku="getProductSku" v-on:selectSku="selectSku"   :selectProductSku="selectProductSku"></SelectRHModal>
     </el-dialog>
     <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="700px">
-        <SelectShopModal  v-on:setBuyShop="selectSku"></SelectShopModal>
+        <SelectShopModal  v-on:setBuyShop="selectSku"  v-on:getProductSku="getProductSku" :selectProductSku="selectProductSku"></SelectShopModal>
     </el-dialog>
     <el-dialog class="customizeRH" title="定做-右镜片" :visible.sync="customizeRH" width="690px">
         <CustomizeRHModal></CustomizeRHModal>
@@ -509,13 +511,27 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             return {
                 options: [{
                     value: "选项1",
-                    label: "选项1"
+                    label: "暂无"
                 }],
-                value: "",
+                value: '',
+                selectOptions: '',
+                publicSelcet:{
+                    glassesTypeOptions:[{
+                        name:'',
+                        id:''
+                    }],
+                    glassesTypeModel:null,
+                    comTypeOptions:[],
+                    comTypeModel:null,
+                    processMemoOptions:[],
+                    processMemo:null,
+                    specialMemoOptions:[],
+                    specialMemo:null,
+                },
                 orderTemp:{
                     memberId:'',
                     prescriptionsId :'',
-                    urgent:'',
+                    urgent:false,
                     glassesTime:'',
                     glassesType:'',
                     glassesCompany:'',
@@ -525,10 +541,12 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     specialMemo:'',
                     roundOffFlag:'',
                     couponDetailId:'',
-                    process:'',
-                    service:'',
+                    process:'0',
+                    service:'0',
+                    singleSupTime:null,
                 },
                 optometryId:'',
+                optometryTime:'',
                 submitNewOptometry:false,//控制 提交验光单子组件传值
                 includeOptometryData:null,//保存即将录入验光单信息 作为验光单数据副本
                 optometryData:null,//验光单数据
@@ -538,7 +556,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 },
                 saleCount:'0',//合计
                 receivable:'',//应收金额
-                actionSale:20,//活动金额
+                actionSale:0,//活动金额
                 numCount:0,//件数
                 allDisCount:'',//整单折扣
                 memberShipDisCount:'10',//会员折扣
@@ -547,6 +565,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 selectProductSku:{
                     selectR:'',
                     selectL:'',
+                    selectSP:'',
                     productSkuData:'',
                     cylinder:'',
                     count: 0,
@@ -590,6 +609,68 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             AddMember
         },
         methods:{
+            //双击删除表格td
+            delThisRow(row, event){
+                this.tableData.forEach(function(element,index) {
+                    if(element==row){
+                        this.tableData.splice(index,1)
+                    }
+                }, this);
+            },
+            //取镜公司地点
+            sameComType(value){
+                this.orderTemp.glassesAddress=value
+            },
+            //获取取镜公司
+            getCompanyList(){
+                var that = this;
+                that.$axios({
+                    url: 'http://myc.qineasy.cn/pos-api/shopBy/getShopByList',
+                    method: 'post',
+                    params: {
+                        jsonObject: {           
+                        },
+                        keyParams: {
+                            weChat: true,
+                            userId: '8888',
+                            orgId: '11387'
+                        }
+                    }
+                })
+                .then(function (response) {                    
+                    that.publicSelcet.comTypeOptions=response.data.data.shopByList;
+                })  
+            },
+            //获取公共select options
+            getPublicSelect(type,options){
+                if(options==''){
+                    console.log("1")
+                }else{
+                    console.log("2")
+                }
+                var that = this;
+                that.$axios({
+                    url: 'http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList',
+                    method: 'post',
+                    params: {
+                        jsonObject: {
+                            pid:'',
+                            id:'',
+                            type: type    
+                            //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）                 
+                        },
+                        keyParams: {
+                            weChat: true,
+                            userId: '8888',
+                            orgId: '11387'
+                        }
+                    }
+                })
+                .then(function (response) {                    
+                    that.selectOptions=response.data.data.list;
+                })   
+            },
+            //选择镜片 商品
             selectGlass(type){
                 var that=this;
                 if(type&&type==1){
@@ -598,6 +679,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 }else if(type==2){
                     this.selectProductSku.cylinder='';
                     this.selectProductSku.cylinder=that.selectProductSku.selectL;
+                }else if(type==3){
+                    this.selectProductSku.cylinder='';
+                    this.selectProductSku.cylinder=that.selectProductSku.selectSP;
                 }else if(type==null){
                 }else{
                     this.selectProductSku.cylinder='';
@@ -688,6 +772,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         that.isOptometryDialogVisible=true;
                         that.optometryData=response.data.data.eyes;
                         that.optometryId=response.data.data.prescriptions.prescriptionId;
+                        that.optometryTime=response.data.data.prescriptions.prescriptionTime;
                     }
                 })
                 .catch(function (error) {
@@ -718,6 +803,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 this.showNewOptometry=false;
                 this.optometryData=value.eyes;
                 this.optometryId=value.prescriptions.prescriptionId;
+                this.optometryTime=value.prescriptions.prescriptionTime;
                 this.includeOptometry();
             },
             //录入验光单信息
@@ -882,6 +968,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     orderItemsList.push({
                         itemId:this.tableData[item].sku,
                         itemName:this.tableData[item].skuName,
+                        proMemo:this.tableData[item].skuName,
                         quantity:1,
                         discountRate:this.tableData[item].discount,
                         orderPromotionId:'',
@@ -903,17 +990,19 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     urgent : this.orderTemp.urgent,
                     glassesTime : this.orderTemp.glassesTime,
                     glassesType : this.orderTemp.glassesType,
-                    glassesCompany : this.orderTemp.glassesCompany,
+                    glassesCompany : this.publicSelcet.comTypeModel,
                     glassesAddress : this.orderTemp.glassesAddress,
                     saleMemo : this.orderTemp.saleMemo,
-                    processMemo : this.orderTemp.processMemo,
-                    specialMemo : this.orderTemp.specialMemo,
+                    processMemo : this.publicSelcet.processMemo,
+                    specialMemo : this.publicSelcet.specialMemo,
                     roundOffFlag : this.orderTemp.roundOffFlag,
                     couponDetailId : this.orderTemp.couponDetailId,
                     process : this.orderTemp.process,
                     service : this.orderTemp.service,
                     orderItemsList:orderItemsList
                 }
+                console.log(jsonObject);
+                debugger;
                 that.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp',
                     method: 'post',
