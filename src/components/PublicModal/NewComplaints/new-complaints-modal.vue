@@ -197,7 +197,7 @@ export default {
         ],
         activeName: '1',
         data:[
-            {
+            // {
             //     memberCard:'0012345',
             //     memberName:'张三',
             //     phone:'15383465790',
