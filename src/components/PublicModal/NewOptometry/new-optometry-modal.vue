@@ -310,9 +310,10 @@
                 <div class="labelInput lineHeightAuto mgl30">
                     <label class="mgr10">验光日期 :</label>
                     <el-date-picker
+                    style="width:180px"
                     v-model="prescriptions.prescriptionTime"
-                    value-format="yyyy-MM-dd"
-                    type="date"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    type="datetime"
                     placeholder="选择日期">
                     </el-date-picker>
                 </div>                           

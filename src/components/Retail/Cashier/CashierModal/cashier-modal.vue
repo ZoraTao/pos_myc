@@ -185,6 +185,19 @@
         })
         .then((res)=>{
           console.log(res)
+          if(res.data.code==1){
+                    _this.$message({
+                        showClose: true,
+                        message: '收款成功!',
+                        type: 'success'
+                    })   
+          }else{
+                    _this.$message({
+                        showClose: true,
+                        message: res.data.msg,
+                        type: 'error'
+                    })              
+          }
         }).catch((err)=>{
           console.log(err)
         })

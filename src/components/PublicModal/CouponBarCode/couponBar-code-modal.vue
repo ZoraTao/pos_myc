@@ -12,7 +12,7 @@
                     <el-input placeholder=""></el-input>
                 </div>
                 <div class="CouponBarCard">
-                    <p class="memberInfo"><span>张丽丽</span>有{{conponData.userCouponCount}}张优惠券可用：</p>
+                    <p class="memberInfo"><span><!--张丽丽-->会员</span>有{{conponData.userCouponCount}}张优惠券可用：</p>
                     <div class="CouponBarItemBox" v-for="item in conponData.canUserCoupon" :key="item.createTime">
                         <div class="CouponBarItem blueStatus" :style="{'background-color':item.colorValue,'border-color':item.colorValue}">
                             <div class="cardConstBox">
