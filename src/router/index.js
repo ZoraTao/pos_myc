@@ -268,8 +268,8 @@ const router = new Router({
 })
 
 router.beforeEach((to,from,next)=>{
-  console.log('从'+from.name)
-  console.log('去'+to.name)
+  // console.log('从'+from.name)
+  // console.log('去'+to.name)
   next();
 })
 

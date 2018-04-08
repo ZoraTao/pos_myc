@@ -88,26 +88,26 @@
               <td>{{list.itemId}}</td>
               <td>{{list.itemName||'商品名'}}</td>
               <td>{{parseInt(list.quantity)}}</td>
-              <td>{{list.listPrice||'商品原单价'}}</td>
-              <td><strong>{{list.price||'商品实售单价'}}</strong></td>
+              <td>{{parseFloat(list.price)||'商品原单价'}}</td>
+              <td><strong>{{parseFloat(list.money)||'商品实售单价'}}</strong></td>
               <td>{{order.shopName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
-                  <div class="priceAll am-ft-22">{{order.moneyAmount}}</div>
-                  <div>商品合计：<strong>{{order.moneyProduct}}</strong></div>
-                  <div>卡券：<strong>{{order.coupon_money}}</strong></div>
-                  <div>折扣：<strong>{{order.discount_money}}</strong></div>
-                  <div>活动：<strong>{{order.activity_money}}</strong></div>
+                  <div class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
+                  <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
+                  <div>卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div>折扣：<strong>{{parseFloat(order.discount)>0?parseFloat(order.discount).toFixed(2):'0.00'}}</strong></div>
+                  <div>活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                 <div class="am-ft-orange">{{order.statusName}}</div>
-                <div class="look_d" @click="showCashier = true">查看详情</div>
+                <div class="look_d" @click="changePay(order)">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange priceAll am-ft-22 mgb10">{{order.moneyAmount}}</div>
+                <div class="am-ft-orange priceAll am-ft-22 mgb10">{{order.moneyPaid}}</div>
                 <div class="button">
-                  <el-button type="primary" v-on:click="showModalMiddle()">收银</el-button>
+                  <el-button type="primary" v-on:click="changePay(order)" >收银</el-button>
                 </div>
                <a href="javascript:;" class="fn-block mgt5">重新开单</a>
                <a href="javascript:;" class="am-ft-gray9 fn-block">关闭订单</a>
@@ -151,7 +151,7 @@
                 <div class="fn-left">
                   <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
                   <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span>
-                  <span class="order_id">{{order.orderNo}}</span>
+                  <span class="order_id">{{order.orderId}}</span>
                   <span v-if="order.source=='0'" class="sign_blue">本店签批</span>
                   <span v-else class="sign_orange">跨店签批</span>
                   <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
@@ -163,30 +163,49 @@
               </td>
             </tr>
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
-              <td>{{list.orderItemId}}</td>
-              <td>{{list.itemName}}</td>
-              <td>{{list.quantity}}</td>
-              <td>{{list.listPrice}}</td>
-              <td><strong>{{list.price}}</strong></td>
-              <td>--</td>
+              <td>{{list.itemId}}</td>
+              <td>{{list.itemName||'商品名'}}</td>
+              <td>{{parseInt(list.quantity)}}</td>
+              <td>{{parseFloat(list.price)||'商品原单价'}}</td>
+              <td><strong>{{parseFloat(list.money)||'商品实售单价'}}</strong></td>
+              <td>{{order.shopName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
-                  <div class="priceAll">{{order.moneyAmount}}</div>
-                  <div>商品合计：<strong>{{order.moneyProduct}}</strong></div>
-                  <div>卡券：<strong>{{order.coupon_money}}</strong></div>
-                  <div>折扣：<strong>{{order.discount_money}}</strong></div>
-                  <div>活动：<strong>{{order.activity_money}}</strong></div>
-                  <div class=" am-ft-16">已收:<strong>{{order.moneyPaid}}</strong></div>
+                  <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
+                  <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
+                  <div>卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div>折扣：<strong>{{parseFloat(order.discount)>0?parseFloat(order.discount).toFixed(2):'0.00'}}</strong></div>
+                  <div>活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div class=" am-ft-16">已收:<strong>{{parseFloat(order.moneyPaid)>0?parseFloat(order.moneyPaid).toFixed(2):'0.00'}}</strong></div>
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-red">{{order.statusName}}</div>
-                <div class="look_d" @click="showCashier = true">查看详情</div>
+                <div class="am-ft-red">
+                  <span v-if="order.status == 0 " >初始状态</span>
+                  <span v-if="order.status ==  1" >审核中</span>
+                  <span v-if="order.status ==  2" >审核完成</span>
+                  <span v-if="order.status ==  3" >记账</span>
+                  <span v-if="order.status ==  4" >部分付款</span>
+                  <span v-if="order.status ==  5" >已付款</span>
+                  <span v-if="order.status ==  6" >已完成</span>
+                  <span v-if="order.status ==  7" >已关闭</span>
+                  <span v-if="order.status ==  8" >已冲红</span>
+                  <span v-if="order.status ==  9" >已经删除</span>
+                  <span v-if="order.status ==  10" >退货</span>
+                  <span v-if="order.status ==  51" >待发单</span>
+                  <span v-if="order.status ==  52" >待发料</span>
+                  <span v-if="order.status ==  53" >待装配</span>
+                  <span v-if="order.status ==  54" >待检验</span>
+                  <span v-if="order.status ==  55" >待配送</span>
+                  <span v-if="order.status ==  56" >待收单</span>
+                  <span v-if="order.status ==  57" >代取件</span>
+                </div>
+                <div class="look_d" @click="changePay(order)">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                 <div class="am-ft-orange priceAll">{{order.moneyAmount}}</div>
                 <div class="button">
-                  <el-button type="primary" v-on:click="showModalMiddle()">收银</el-button>
+                  <el-button type="primary" v-on:click="changePay(order)">收银</el-button>
                 </div>
               </td>
             </tr>
@@ -279,7 +298,7 @@
 
     <!--收银弹窗-->
     <el-dialog title="收银" :visible.sync="showCashier">
-      <CashierModal></CashierModal>
+      <CashierModal :datas="payData"></CashierModal>
     </el-dialog>
     <!--打印取货单弹窗-->
     <el-dialog custom-class="noheader" title="" :visible.sync="consoleCashier">
@@ -307,6 +326,7 @@
         },
         nub:1,
         size:5,
+        payData:'',//收银信息
         count:'',
         showCashier: false,
         consoleCashier: false,
@@ -342,8 +362,12 @@
           }
         })
       },
-      showModalMiddle: function () {
+      changePay(data){
+        this.payData = data;
         this.showCashier = true;
+      },
+      //开启弹窗
+      openDialog(){
       },
       //获取列表
       getOrderList: function () {
