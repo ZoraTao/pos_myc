@@ -181,14 +181,14 @@ export default {
         width: 27.5%;
         float: left;
         background: #fff;
-        height: 100%;
+        height: 350px;
     }
     .homeMid {
         width: 43.5%;
         float: left;
         background: #fff;
         margin: 0 0.7%;
-        height: 100%;
+        height: 350px;
         .hcBottom {
             padding-top: 0;
             .hcGgItem {
@@ -204,6 +204,7 @@ export default {
                     width: 56px;
                     height: 56px;
                     float: left;
+                    object-fit: contain;
                 }
                 div {
                     text-align: left;
@@ -273,6 +274,8 @@ export default {
             p {
                 font-size: 13px;
                 color: #666666;
+                width: 80px;
+                margin: 0 auto;
             }
             &:nth-of-type(n+4) {
                 margin-top: 30px;
@@ -290,7 +293,8 @@ export default {
                 margin: 0 10px;
                 width: 18px;
                 height: 18px;
-                vertical-align: top;
+                vertical-align: middle;
+                margin-left: 20px;
             }
         }
         .hcCxRight {
@@ -299,6 +303,7 @@ export default {
                 font-size: 16px;
                 color: #333333;
                 margin-bottom: 5px;
+                font-weight: 400;
             }
             p {
                 font-size: 13px;

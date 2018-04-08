@@ -6,6 +6,12 @@
                 <el-form ref="form">
                     <el-form-item label="销售员 :">
                         <el-select size="mini" placeholder="请选择">
+                            <el-option
+                            v-for="item in publicSelcet.comTypeOptions"
+                            :key="item.shopId"
+                            :label="item.shopName"
+                            :value="item.shopId">
+                            </el-option>                            
                         </el-select>
                     </el-form-item>
                     <el-form-item label="补单日期 :">
@@ -151,8 +157,8 @@
                 <!-- <p><span>整单折扣 :</span><el-input class="" placeholder=""></el-input></p> -->
                 <p>
                     <span>应收 :</span>
-                    <el-input class="setNum" placeholder='' type="number"  v-model.number="receivable" />
-                    <!-- <span class="ant_text">1999.00</span> -->
+                    <!-- <el-input class="setNum" placeholder='' type="number"  v-model.number="receivable" /> -->
+                    <span class="ant_text">{{receivable||'0'}}</span>
                 </p>
             </div>
         </div>
@@ -248,7 +254,7 @@
                 <div class="memberName">
                     <div class="memberTx">
                         <p>
-                            <img :src="selectMember.memberInfo?selectMember.memberInfo.headpicpath:'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_touxiang.png'"/>{{selectMember.memberInfo?selectMember.memberInfo.name:'--'}}
+                            <img :src="selectMember.memberInfo?selectMember.memberInfo.headpicpath:'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_touxiang.png'"/>{{selectMember.memberInfo?selectMember.memberInfo.name:''}}
                         </p>
                         <span>···</span>
                     </div>
@@ -356,7 +362,7 @@
             <el-button type="primary" @click="submitNewOptometry=true">保 存</el-button>
         </div>
     </el-dialog>
-    <el-dialog class="selectRH" title="选择右镜片" :visible.sync="showSelectRH">
+    <el-dialog class="selectRH" :title="selectProductSku.title" :visible.sync="showSelectRH" width="870px">
         <SelectRHModal  v-on:getProductSku="getProductSku" v-on:selectSku="selectSku"   :selectProductSku="selectProductSku"></SelectRHModal>
     </el-dialog>
     <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="700px">
@@ -585,6 +591,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     selectSP:'',
                     productSkuData:'',
                     cylinder:'',
+                    title:'',
                     count: 0,
                     nub: 0,
                     size: 5
@@ -693,9 +700,11 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 var that=this;
                 if(type&&type==1){
                     this.selectProductSku.cylinder='';
+                    this.selectProductSku.title="选择右镜片";
                     this.selectProductSku.cylinder=that.selectProductSku.selectR;
                 }else if(type==2){
                     this.selectProductSku.cylinder='';
+                    this.selectProductSku.title="选择左镜片"
                     this.selectProductSku.cylinder=that.selectProductSku.selectL;
                 }else if(type==3){
                     this.selectProductSku.cylinder='';

@@ -11,26 +11,32 @@
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="memberCardNo"
+                width="110px"
                 label="会员卡号">
                 </el-table-column>
                 <el-table-column
+                width="100px"
                 prop="name"
                 label="会员姓名">
                 </el-table-column>
                 <el-table-column
+                width="120px"
                 prop="telphone"
                 label="手机号">
                 </el-table-column>
                 <el-table-column
                 prop="sex"
+                width="60px"
                 label="性别">
                 </el-table-column>
                 <el-table-column
                 prop="age"
+                width="60px"
                 label="年龄">
                 </el-table-column>
                 <el-table-column
                 prop="lastPrescriptionTime"
+                width="220px"
                 label="最近验光时间">
                 </el-table-column>
                 <el-table-column
