@@ -47,14 +47,15 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="20">
+      <el-row>
         <el-col :span="6">
           <el-form-item
             label="出生日期："
+            style="margin-left:10px;"
             prop="birthday"
             :rules="{required: true, message: '请选择出生日期', trigger: 'blur'}">
             <el-date-picker
-              style="margin-left:10px;width: 120px"
+              style="width: 120px"
               type="date"
               placeholder="选择日期"
               v-model="addMemberForm.birthday"
@@ -67,7 +68,7 @@
         <!--<span class="addMemberInfo">如:19880901</span>-->
         <!--</el-col>-->
         <el-col :span="6">
-          <el-form-item style="margin-left:10px;" label="职业：" prop="job">
+          <el-form-item style="margin-left:15px;" label="职业：" prop="job">
             <el-select v-model="addMemberForm.job" placeholder="请选择">
               <el-option
                 v-for="item in options"
@@ -81,7 +82,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="20">
-          <el-form-item label="联系地址：">
+          <el-form-item label="联系地址：" style="margin-left:10px;">
             <template>
               <area-select style="margin-top: 5px;margin-bottom: -10px;" :level='2' type='text'
                            v-model='addMemberForm.adr'></area-select>
@@ -95,16 +96,16 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-form-item label="备注：" prop="note">
+        <el-form-item label="备注：" prop="note" style="margin-left:10px;">
           <el-col :span="18">
-            <el-input v-model="addMemberForm.note" style="margin-left:10px;width: 100%"></el-input>
+            <el-input v-model="addMemberForm.note" style="width: 100%"></el-input>
           </el-col>
         </el-form-item>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="7">
-          <el-form-item label="会员来源：" prop="memberFrom">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.memberFrom" filterable placeholder="请选择">
+        <el-col :span="6">
+          <el-form-item label="会员来源：" prop="memberFrom" style="margin-left:10px;">
+            <el-select style="width:120px;" v-model="addMemberForm.memberFrom" filterable placeholder="请选择">
               <el-option
                 v-for="item in memberFrom"
                 :key="item.value"
@@ -116,7 +117,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item style="margin-left:10px;" label="会员状态：" prop="status">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.status" placeholder="请选择">
+            <el-select style="width:120px;" v-model="addMemberForm.status" placeholder="请选择">
               <el-option
                 v-for="item in memberStatus"
                 :key="item.value"
@@ -128,7 +129,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item style="margin-left:10px;" label="会员属性：" prop="attributes">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.attributes" placeholder="请选择">
+            <el-select style="" v-model="addMemberForm.attributes" placeholder="请选择">
               <el-option
                 v-for="item in memberAttributes"
                 :key="item.value"
@@ -140,9 +141,9 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="7">
-          <el-form-item label="负责部门：" prop="orgName">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.orgName" placeholder="请选择">
+        <el-col :span="6">
+          <el-form-item label="负责部门：" prop="orgName" style="margin-left:10px;">
+            <el-select style="width:120px;" v-model="addMemberForm.orgName" placeholder="请选择">
               <el-option
                 label="毛源昌杭州西湖店"
                 value="0">
@@ -152,7 +153,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item style="margin-left:10px;" label="负责员工：" prop="resEmployees">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.resEmployees" placeholder="请选择">
+            <el-select style="width:120px;" v-model="addMemberForm.resEmployees" placeholder="请选择">
               <el-option
                 label="白小亭"
                 value="0">
@@ -331,6 +332,9 @@
 
   .addMember {
     .addMemberContent {
+      .el-form-item__content {
+          line-height: 40px;
+      }
       padding-top: 20px;
       .addMemberRow {
         padding: 20px;

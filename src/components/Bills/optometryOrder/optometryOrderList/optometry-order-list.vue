@@ -156,6 +156,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                         this.noSearchText="未查询到验光单"
                     }
                 }
+                    this.detailData=[];
                     var that = this;
                     setTimeout(function() {
                         

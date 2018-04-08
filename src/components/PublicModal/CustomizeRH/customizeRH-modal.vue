@@ -124,6 +124,7 @@ export default {
                     text-align: right;
                     display: inline-block;
                     margin-right: 10px;
+                    font-weight: 400;
                 }
                 .el-select{
                     width: 100px;

@@ -5,12 +5,12 @@
             <div class="salesclerkInfo">
                 <el-form ref="form">
                     <el-form-item label="销售员 :">
-                        <el-select size="mini" placeholder="请选择">
+                        <el-select size="mini" v-model="shopMember" placeholder="请选择" @visible-change="getPrivateSelect()">
                             <el-option
-                            v-for="item in publicSelcet.comTypeOptions"
-                            :key="item.shopId"
-                            :label="item.shopName"
-                            :value="item.shopId">
+                            v-for="item in options"
+                            :key="item.userId"
+                            :label="item.trueName"
+                            :value="item.userId">
                             </el-option>                            
                         </el-select>
                     </el-form-item>
@@ -76,7 +76,7 @@
                     prop="num"
                     label="数量">
                         <template slot-scope="scope">
-                            <span class="am-ft-bold">
+                            <span class="am-ft-bold am-ft-black">
                                 1
                             </span>
                         </template>
@@ -114,7 +114,9 @@
                     label="实售单价"
                     width="100px">
                         <template slot-scope="scope">
-                            <el-input class="" placeholder="" v-model="scope.row.realSale" @input="changePrice(scope.row,2)"></el-input>
+                            <div class="inputBold  am-ft-black">
+                                <el-input class="" placeholder="" v-model="scope.row.realSale" @input="changePrice(scope.row,2)"></el-input>
+                            </div>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -536,6 +538,8 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     label: "暂无"
                 }],
                 value: '',
+                //销售人员
+                shopMember:'',
                 selectOptions: '',
                 publicSelcet:{
                     glassesTypeOptions:[{
@@ -634,6 +638,28 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             AddMember
         },
         methods:{
+            //获取销售人员
+            getPrivateSelect(type,options){
+                var that = this;
+                that.$axios({
+                    url: 'http://myc.qineasy.cn/cas-api/user/getUserByOrg',
+                    method: 'post',
+                    params: {
+                        jsonObject: {
+                            orgId:'11387', 
+                            //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）                 
+                        },
+                        keyParams: {
+                            weChat: true,
+                            userId: '8888',
+                            orgId: '11387'
+                        }
+                    }
+                })
+                .then(function (response) {                    
+                    that.options=response.data.data.list;
+                })  
+            },
             //双击删除表格td
             delThisRow(row, event){
                 this.tableData.forEach(function(element,index) {
