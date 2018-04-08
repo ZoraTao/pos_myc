@@ -751,9 +751,11 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             computedPay(){
                 let _this = this;
                 let countSale = 0; 
+                let n = 0;
                 for(let i=0;i<_this.tableData.length;i++){//循环计算价格
                     let thisSale = _this.tableData[i].discount/10 * parseFloat(_this.tableData[i].realSale);
                     countSale = countSale+thisSale
+                    n++;
                 }
                 if(this.conponResponse.couponAmount>0){//如果有优惠券
                     countSale = countSale - this.conponResponse.couponAmount;//优惠价 = 无折扣前 - 优惠价↓
@@ -764,6 +766,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     this.memberShipDisCountSale = memberDisCount
                     countSale = countSale - parseFloat(memberDisCount); //会员价
                 }
+                this.numCount = n;
                 this.saleCount = countSale.toFixed(2);//无整单折扣情况下
             },
             changePrice(value,type){
