@@ -182,23 +182,23 @@
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                 <div class="am-ft-red">
                   <span v-if="order.status == 0 " >初始状态</span>
-                  <span else-if="order.status ==  1" >审核中</span>
-                  <span else-if="order.status ==  2" >审核完成</span>
-                  <span else-if="order.status ==  3" >记账</span>
-                  <span else-if="order.status ==  4" >部分付款</span>
-                  <span else-if="order.status ==  5" >已付款</span>
-                  <span else-if="order.status ==  6" >已完成</span>
-                  <span else-if="order.status ==  7" >已关闭</span>
-                  <span else-if="order.status ==  8" >已冲红</span>
-                  <span else-if="order.status ==  9" >已经删除</span>
-                  <span else-if="order.status ==  10" >退货</span>
-                  <span else-if="order.status ==  51" >待发单</span>
-                  <span else-if="order.status ==  52" >待发料</span>
-                  <span else-if="order.status ==  53" >待装配</span>
-                  <span else-if="order.status ==  54" >待检验</span>
-                  <span else-if="order.status ==  55" >待配送</span>
-                  <span else-if="order.status ==  56" >待收单</span>
-                  <span else-if="order.status ==  57" >代取件</span>
+                  <span v-if="order.status ==  1" >审核中</span>
+                  <span v-if="order.status ==  2" >审核完成</span>
+                  <span v-if="order.status ==  3" >记账</span>
+                  <span v-if="order.status ==  4" >部分付款</span>
+                  <span v-if="order.status ==  5" >已付款</span>
+                  <span v-if="order.status ==  6" >已完成</span>
+                  <span v-if="order.status ==  7" >已关闭</span>
+                  <span v-if="order.status ==  8" >已冲红</span>
+                  <span v-if="order.status ==  9" >已经删除</span>
+                  <span v-if="order.status ==  10" >退货</span>
+                  <span v-if="order.status ==  51" >待发单</span>
+                  <span v-if="order.status ==  52" >待发料</span>
+                  <span v-if="order.status ==  53" >待装配</span>
+                  <span v-if="order.status ==  54" >待检验</span>
+                  <span v-if="order.status ==  55" >待配送</span>
+                  <span v-if="order.status ==  56" >待收单</span>
+                  <span v-if="order.status ==  57" >代取件</span>
                 </div>
                 <div class="look_d" @click="changePay(order)">查看详情</div>
               </td>
