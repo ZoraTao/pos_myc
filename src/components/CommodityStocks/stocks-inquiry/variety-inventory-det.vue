@@ -59,7 +59,7 @@
         <!--layout="total, prev, pager, next"-->
         <!--:total="varietyDetData.count">-->
       <!--</el-pagination>-->
-    <!--</div>-->
+    </div>
   </div>
 </template>
 

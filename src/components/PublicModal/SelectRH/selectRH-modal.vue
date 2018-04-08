@@ -1,12 +1,12 @@
 <template>
 <div class="selectMember" id="selectRH">
     <div nz-form-item class="w150 mgb10">                    
-        <el-select style="width:120px" v-model="value" placeholder="请选择">
+        <el-select style="width:120px" clearable v-model="value" placeholder="请选择" @visible-change="getWareHouseList()" @change="emitThisValue()">
             <el-option
             v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item.warehouseId"
+            :label="item.warehouseName"
+            :value="item.warehouseName">
             </el-option>
         </el-select>
     </div>
@@ -20,7 +20,7 @@
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="sku"
-                width="100px"
+                width="130px"
                 label="商品编码">
                 </el-table-column>
                 <el-table-column
@@ -92,6 +92,30 @@ export default {
         value.discount=10;
         value.realSale=value.price;
         this.$emit('selectSku',value);
+      },
+      getWareHouseList(){
+        var that = this;
+        if(that.options==''){
+            that.$axios({
+                url: 'http://myc.qineasy.cn/pos-api/warehouse/getWarehouseList',
+                method: 'post',
+                params: {
+                    jsonObject: {           
+                    },
+                    keyParams: {
+                        weChat: true,
+                        userId: '8888',
+                        orgId: '11387'
+                    }
+                }
+            })
+            .then(function (response) {                    
+                that.options=response.data.data.list;
+            })  
+        }
+      },
+      emitThisValue(){
+        this.$emit('rhtWareHouse',{wareh:this.value});
       }
   },
   created:function(){

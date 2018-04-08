@@ -71,11 +71,11 @@
             <tr class="order_header">
               <td colspan="9">
                 <div class="fn-left">
-                  <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
-                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span>
+                  <!-- <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
+                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span> -->
                   <span class="order_id">{{order.orderId}}</span>
-                  <span v-if="order.source=='0'" class="sign_blue">本店签批</span>
-                  <span v-else class="sign_orange">跨店签批</span>
+                  <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
+                  <!-- <span v-else class="sign_orange">跨店签批</span> -->
                   <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
                 </div>
                 <div class=" fn-right">
@@ -149,11 +149,11 @@
             <tr class="order_header">
               <td colspan="9">
                 <div class="fn-left">
-                  <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
-                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span>
+                  <!-- <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
+                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span> -->
                   <span class="order_id">{{order.orderNo}}</span>
-                  <span v-if="order.source=='0'" class="sign_blue">本店签批</span>
-                  <span v-else class="sign_orange">跨店签批</span>
+                  <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
+                  <!-- <span v-else class="sign_orange">跨店签批</span> -->
                   <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
                 </div>
                 <div class=" fn-right">
@@ -217,12 +217,13 @@
               label="订单号"
               width="400">
               <template slot-scope="scope">
-                <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
+                <!-- <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
                 <span v-if="scope.row.statusCode=='4'" class="am-bg-orange icon">欠</span>
                 <span v-if="scope.row.statusCode=='10'" class="am-bg-red icon">退</span>
                 <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
                 <span v-if="scope.row.source=='0'" class="sign_blue">本店签批</span>
-                <span v-else class="sign_orange">跨店签批</span>
+                <span v-else class="sign_orange">跨店签批</span> -->
+                <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
               </template>
             </el-table-column>
             <el-table-column
