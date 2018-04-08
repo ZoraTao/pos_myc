@@ -1,5 +1,5 @@
 <template>
-<div class="selectMember">
+<div id="selectMember">
 <!--body-top-->
 <div class="clearfix modal-content-top">
     <el-tabs type="border-card" v-model="activeName">
@@ -7,7 +7,6 @@
             <el-table
                 :data="data.memberList"
                 size="small"
-                align="left"
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="memberCardNo"
@@ -133,7 +132,7 @@ export default {
 
 <style lang="scss">
 
-.selectMember{
+#selectMember{
     .el-dialog__body {
         padding: 10px 0;
         padding-bottom: 0;
@@ -158,14 +157,12 @@ export default {
     }
     th{
         background: #fff;
-        text-align: center;
         padding: 7px 8px !important;
         border-bottom: 1px solid #DDDDDD;
         font-weight: bold;
         color: #555;
     }
     td{
-        text-align: center;
         padding: 8.5px 8px;
     }
     tr:nth-of-type(even){

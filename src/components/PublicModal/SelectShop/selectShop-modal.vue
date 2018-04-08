@@ -2,42 +2,42 @@
 <div class="selectMember" id="selectRH">
     <el-form ref="form">
         <el-form-item label="商品 : ">            
-            <el-input style="width:90px" class="" placeholder=""/>                 
-            <el-select style="width:90px" v-model="value" placeholder="请选择">
+            <el-input style="width:90px" class="" placeholder="" v-model="shopIdName"/>                 
+            <el-select style="width:90px" v-model="value" placeholder="请选择" @visible-change="getWareHouseList()">
                 <el-option
                 v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.warehouseId"
+                :label="item.warehouseName"
+                :value="item.warehouseName">
                 </el-option>
             </el-select>                    
-            <el-select style="width:90px" v-model="value" placeholder="请选择">
+            <el-select style="width:90px" v-model="typeValue" placeholder="请选择" @change="selectBrands(2)">
                 <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="item in typeOptions"
+                :key="item.classCode"
+                :label="item.className"
+                :value="item.productCategoryId">
                 </el-option>
             </el-select>           
-            <el-select style="width:90px" v-model="value" placeholder="请选择">
+            <el-select style="width:90px" v-model="brandsValue" placeholder="请选择" @change="selectBrands(3)">
                 <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="item in brandsOptions"
+                :key="item.classCode"
+                :label="item.className"
+                :value="item.productCategoryId">
                 </el-option>
             </el-select>           
-            <el-select style="width:90px" v-model="value" placeholder="请选择">
+            <el-select style="width:90px" v-model="varietysValue" placeholder="请选择">
                 <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="item in varietysOptions"
+                :key="item.classCode"
+                :label="item.className"
+                :value="item.productCategoryId">
                 </el-option>
             </el-select>
         </el-form-item>
         <el-form-item>
-            <el-button>查询</el-button>
+            <el-button @click="emitThisValue()">查询</el-button>
         </el-form-item>
     </el-form>
     <div class="">
@@ -50,12 +50,12 @@
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="sku"
-                width="100px"
+                width="120px"
                 label="商品编码">
                 </el-table-column>
                 <el-table-column
                 prop="skuName"
-                width="200px"
+                width="210px"
                 label="商品名称">
                 </el-table-column>
                 <el-table-column
@@ -111,6 +111,13 @@ export default {
         options: [],
         cpSelectProductSku:null,
         value:"",
+        typeOptions:[],
+        brandsOptions:[],
+        varietysOptions:[],
+        typeValue:'',
+        brandsValue:'',
+        varietysValue:'',
+        shopIdName:'',
         data:[]
     }
   },
@@ -124,7 +131,101 @@ export default {
         this.cpSelectProductSku=this.selectProductSku;
         this.$emit('getProductSku', this.cpSelectProductSku);
       },
-  }
+      getWareHouseList(){
+        var that = this;
+        if(that.options==''){
+            that.$axios({
+                url: 'http://myc.qineasy.cn/pos-api/warehouse/getWarehouseList',
+                method: 'post',
+                params: {
+                    jsonObject: {           
+                    },
+                    keyParams: {
+                        weChat: true,
+                        userId: '8888',
+                        orgId: '11387'
+                    }
+                }
+            })
+            .then(function (response) {                    
+                that.options=response.data.data.list;
+            })  
+        }
+      },
+      emitThisValue(){
+            var arr = [] ;
+            arr.push(this.typeValue,this.brandsValue,this.varietysValue)
+            this.$emit('rhtWareHouse',{
+                product:this.shopIdName,
+                categoryCode:arr,
+                wareh:this.value
+            });
+      },
+      selectBrands(type){
+          var id = '';
+          switch ((type).toString()) {
+            case '1':
+                  break;
+            case '2':
+                  id=this.typeValue;
+                  break;
+            case '3':
+                  id=this.brandsValue;
+                  break;
+              default:
+                  break;
+          }
+            var that = this;
+            that.$axios({
+                url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
+                method: 'post',
+                params: {
+                    jsonObject: {
+                        productCategoryId: id
+                    },
+                    keyParams: {
+                        weChat: true
+                    }
+                }
+            })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+                switch ((type).toString()) {
+                    case '1':
+                        that.typeOptions=response.data.data.productCategoryList;
+                        break;
+                    case '2':
+                        that.brandsOptions=response.data.data.productCategoryList;
+                        break;
+                    case '3':
+                        that.varietysOptions=response.data.data.productCategoryList;
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })          
+      }
+    },
+    created: function () {
+        this.selectBrands(1)
+    }
 }
 </script>
 

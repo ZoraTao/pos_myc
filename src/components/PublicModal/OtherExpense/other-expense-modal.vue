@@ -6,18 +6,23 @@
             <el-table
             size="small"
             :span-method="objectSpanMethod"
-            :data="data"
+            v-for="(item,index) in data"
+            :key="item.p.id"
+            :data="item.list"
+            :show-header="index==0"
             style="width: 100%">
                 <el-table-column
-                    prop="category"
                     label="项目">
+                    <template slot-scope="scope">
+                        {{item.p.name}}
+                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop="brand"
+                    prop="name"
                     label="分类">
                 </el-table-column>
                 <el-table-column
-                    prop="sellingPrice"
+                    prop="value"
                     label="应收金额">
                 </el-table-column>
                 <el-table-column
@@ -31,12 +36,12 @@
                     prop="displacement"
                     label="实收金额">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.displacement" placeholder="请输入内容"></el-input>
+                        <el-input v-model="scope.row.displacement" placeholder=""></el-input>
                     </template>
                 </el-table-column>
             </el-table>
             <div class="otherExpenseTotal">
-                <p>合计 :<span>498.00</span></p>
+                <p>合计 :<span>0.00</span></p>
             </div>
         </div>
     </div>
@@ -49,51 +54,15 @@ export default {
   name: 'OtherExpenseModal',
   data () {
     return { 
-        data:[{
-            category:"医学费用",
-            brand:"验光费",
-            sellingPrice:"10.00",
-            packagePrice:"125.00",
-            displacement:"10.00"
-        },{
-            category:"医学费用",
-            brand:"验光费",
-            sellingPrice:"10.00",
-            packagePrice:"125.00",
-            displacement:"10.00"
-        },{
-            category:"医学费用",
-            brand:"验光费",
-            sellingPrice:"10.00",
-            packagePrice:"125.00",
-            displacement:"10.00"
-        },{
-            category:"医学费用",
-            brand:"验光费",
-            sellingPrice:"10.00",
-            packagePrice:"125.00",
-            displacement:"10.00"
-        },{
-            category:"医学费用",
-            brand:"验光费",
-            sellingPrice:"10.00",
-            packagePrice:"125.00",
-            displacement:"10.00"
-        },{
-            category:"医学费用",
-            brand:"验光费",
-            sellingPrice:"10.00",
-            packagePrice:"125.00",
-            displacement:"10.00"
-        }]
+        data:[]
     }
   },
   methods:{
         objectSpanMethod({ row, column, rowIndex, columnIndex }) {
             if (columnIndex === 0) {
-                if (rowIndex % 3 === 0) {
+                if (rowIndex % 6 === 0) {
                     return {
-                        rowspan: 3,
+                        rowspan: 6,
                         colspan: 1
                     };
                 } else {
@@ -104,6 +73,26 @@ export default {
                 }
             }
         }
+  },
+  created:function(){
+        var that=this;
+        that.$axios({
+            url: 'http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList',
+            method: 'post',
+            params: {
+                jsonObject: {  
+                    type:'6'     
+                },
+                keyParams: {
+                    weChat: true,
+                    userId: '8888',
+                    orgId: '11387'
+                }
+            }
+        })
+        .then(function (response) {                    
+            that.data=response.data.data.list;
+        })       
   }
 }
 </script>

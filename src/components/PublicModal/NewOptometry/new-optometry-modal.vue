@@ -292,7 +292,7 @@
                         v-for="item in options"
                         :key="item.id"
                         :label="item.name"
-                        :value="item.id">
+                        :value="item.name">
                         </el-option>
                     </el-select>
                 </div>
@@ -303,7 +303,7 @@
                         v-for="item in options"
                         :key="item.userId"
                         :label="item.trueName"
-                        :value="item.userId">
+                        :value="item.trueName">
                         </el-option>
                     </el-select>
                 </div>   
@@ -561,6 +561,7 @@ export default {
                     response.data.data.memberList[0][trait];
                 }
               });
+              that.prescriptions.memberId = response.data.data.memberList[0].memberId;
               that.ruleForm.hasMember = true;
               that.needReg = false;
             } else {
@@ -637,6 +638,18 @@ export default {
           .then(function(response) {
             if (response.data.code == 1) {
               that.$emit("getNewoptometry", jsonObject);
+              that.$message({
+                  showClose: true,
+                  message: '新增成功！',
+                  type: 'success'
+              })      
+            }else{
+              console.log(response)
+              that.$message({
+                  showClose: true,
+                  message: '新增失败，请联系管理人员！',
+                  type: 'error'
+              })                    
             }
           });
       }, 100);
