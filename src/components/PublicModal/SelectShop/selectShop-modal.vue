@@ -55,7 +55,7 @@
                 </el-table-column>
                 <el-table-column
                 prop="skuName"
-                width="220px"
+                width="200px"
                 label="商品名称">
                 </el-table-column>
                 <el-table-column
@@ -75,7 +75,7 @@
                 </el-table-column>
                 <el-table-column
                 prop="price"
-                width="50px"
+                width="80px"
                 label="单价">
                 </el-table-column>
                 <el-table-column

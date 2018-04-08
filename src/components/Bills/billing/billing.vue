@@ -155,10 +155,10 @@
             </div>
             <div class="fn-right singleDiscount">
                 <!-- <p><span>整单折扣 :</span><el-input class="" placeholder=""></el-input></p> -->
-                <p>
+                <p >
                     <span>应收 :</span>
                     <!-- <el-input class="setNum" placeholder='' type="number"  v-model.number="receivable" /> -->
-                    <span class="ant_text">{{receivable||'0'}}</span>
+                    <span class="ant_text">{{saleCount}}元</span>
                 </p>
             </div>
         </div>
@@ -571,18 +571,20 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 optometryTime:'',
                 submitNewOptometry:false,//控制 提交验光单子组件传值
                 includeOptometryData:null,//保存即将录入验光单信息 作为验光单数据副本
+                amountSale:'',//原价合计
                 optometryData:null,//验光单数据
                 selectMember:{//选择会员数据集合
                     selectM:'',
                     memberInfo:null//会员信息
                 },
                 saleCount:'0',//合计
-                receivable:'',//应收金额
+                // receivable:'',//应收金额
                 actionSale:0,//活动金额
                 numCount:0,//件数
                 allDisCount:'',//整单折扣
                 memberShipDisCount:'10',//会员折扣
                 memberShipDisCountSale:0,//会员折扣抵扣金额
+                discountFlag:1,
                 discountSale:0,//优惠券折扣金额
                 conponResponse:{},
                 selectProductSku:{
@@ -766,10 +768,13 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     countSale = countSale+thisSale
                     n++;
                 }
+                this.amountSale = countSale;//原价合计
+
                 if(this.conponResponse.couponAmount>0){//如果有优惠券
                     countSale = countSale - this.conponResponse.couponAmount;//优惠价 = 无折扣前 - 优惠价↓
                 }
                 if(_this.selectMember.memberInfo!=null){//如果有会员id
+                    this.discountFlag = 0;
                     var difference = (this.memberShipDisCount*countSale).toFixed(2); //会员价 = 会员价格 * 总价
                     let memberDisCount = (countSale - difference).toFixed(2);//会员折扣差价 = 总金额 - 会员价
                     this.memberShipDisCountSale = memberDisCount
@@ -1032,9 +1037,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             },
             //开单
             addOrderTemp(){
-                var that=this;
+                var _this=this;
                 if(this.selectMember.memberInfo==null){
-                    that.$message({
+                    _this.$message({
                         showClose: true,
                         message: '会员信息获取失败',
                             type: 'error'
@@ -1042,7 +1047,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     return false;
                 }
                 if(!this.optometryId){
-                    that.$message({
+                    _this.$message({
                         showClose: true,
                         message: '验光单信息获取失败',
                             type: 'error'
@@ -1058,11 +1063,11 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         quantity:1,//数量
                         discountRate:this.tableData[item].discount,//折扣比率
                         orderPromotionId:'',//订单营销活动id
-                        money:this.tableData[item].realSale,//金额
+                        price:this.tableData[item].realSale,//金额
                     })
                 }
                 if(orderItemsList==''){
-                    that.$message({
+                    _this.$message({
                         showClose: true,
                         message: '商品信息获取失败',
                             type: 'error'
@@ -1083,12 +1088,21 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     specialMemo : this.publicSelcet.specialMemo||'特殊备注',//特殊备注
                     roundOffFlag : this.orderTemp.roundOffFlag,//取整表示
                     couponDetailId : this.orderTemp.couponDetailId,//优惠券id
+                    moneyProduct:parseFloat(this.amountSale).toFixed(2),//原价合计
+                    moneyAmount:parseFloat(this.countSale).toFixed(2),//应付
+                    moneyPaid:0,//应收
+                    activityMoney:this.actionSale,//活动优惠金额,
+                    couponMoney:this.conponResponse.couponAmount,//卡券优惠金额,优惠券
+                    discountMoney:this.memberShipDisCountSale,//折扣优惠金额,会员
+                    cardDiscount:this.memberShipDisCount,//会员折扣
+                    discountFlag:this.discountFlag,//是否使用会员折扣
+                    roundOffFlag:1,//取整标识 0使用 1不用
                     process : this.orderTemp.process,//加工费
                     service : this.orderTemp.service,//服务费
                     orderItemsList:orderItemsList
                 }
                 console.log(jsonObject);
-                that.$axios({
+                _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp',
                     method: 'post',
                     params: {
@@ -1102,38 +1116,31 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 })
                 .then(function (response) {
                     if (response.data.code != '1') {
-                        that.$message({
+                        _this.$message({
                             showClose: true,
                             message: '请求数据出问题喽，请重试！',
                             type: 'error'
                         })
                         return false;
                     } else {
-                        that.$message({
+                        _this.$message({
                             showClose: true,
                             message: '开单成功',
                             type: 'success'
                         });
+                        debugger
+                        setTimeout(function(){
+                            location.reload();
+                        },1000)
                     }
                 })                   
             }
         },
         computed:{
-            // mustNumberForReceivable:{
-            //     get:function(){
-            //     return this.receivable;
-            //     },
-            //     set:function(newValue){
-            //         console.log(1)
-            //         this.receivable = newValue.replace(/[^\d]/g,'');
-            //     }
-            // }
+           
         },
         watch:{
-            // receivable:function(){
-            //     console.log(1)
-            //     this.receivable = this.receivable.replace(/[^\d]/g,'');
-            // }
+            
         }
     };
 </script>
