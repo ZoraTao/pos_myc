@@ -277,6 +277,9 @@
         this.getOptometryRecord();
       }
     },
+    mounted(){
+      // console.log(this.$route.params.data.memberId)
+    },
     methods: {
       getOptometryRecord() {
         var that = this;
@@ -285,7 +288,7 @@
           method: 'post',
           params: {
             jsonObject: {
-              memberId: '2222767'
+              memberId: this.$route.params.data.memberId
             },
             keyParams: {
               weChat: true

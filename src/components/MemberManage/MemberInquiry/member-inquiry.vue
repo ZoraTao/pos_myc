@@ -360,7 +360,7 @@ export default {
     checkDetail(data) {
       // console.log(data);
       this.$router.push({
-        path: "/member/memberDetail",
+        // path: "/member/memberDetail",
         name: "member-detail",
         params: { data }
       });

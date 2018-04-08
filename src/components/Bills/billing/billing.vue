@@ -61,7 +61,7 @@
                     <el-table-column
                     prop="skuName"
                     label="建议配镜"
-                    width="600px">
+                    width="400px">
                         <template slot-scope="scope">
                             <span v-html="scope.row.skuName"></span>
                         </template>
@@ -85,6 +85,22 @@
                     width="100px">
                         <template slot-scope="scope">
                             <el-input class="" placeholder="" v-model="scope.row.discount" @input="changePrice(scope.row,1)"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                    prop=""
+                    label="加工费"
+                    width="100px">
+                        <template slot-scope="scope">
+                            <span class="" placeholder="" >--</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                    prop=""
+                    label="服务费"
+                    width="100px">
+                        <template slot-scope="scope">
+                            <span class="" placeholder=""  >--</span>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -573,6 +589,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     size: 5
                 },
                 tableData:[],//用户保存商品信息
+                userData:{},
                 //以下为控制modal弹框变量
                 isSubmit: false,
                 reprint:false,
@@ -934,7 +951,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 })
                 .then(function (response) {
                     if(response.data.code==1){
-                        that.getMemberInfo(response.data.data.memberList[0])
+                        that.getMemberInfo(response.data.data.memberList[0]);
                     }else{
                         that.$message({
                             showClose: true,
@@ -985,24 +1002,23 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 }
                 var jsonObject=
                 {
-                    memberId : this.selectMember.memberInfo.memberId,
-                    prescriptionsId  : this.optometryId,
-                    urgent : this.orderTemp.urgent,
-                    glassesTime : this.orderTemp.glassesTime,
-                    glassesType : this.orderTemp.glassesType,
-                    glassesCompany : this.publicSelcet.comTypeModel,
-                    glassesAddress : this.orderTemp.glassesAddress,
-                    saleMemo : this.orderTemp.saleMemo,
-                    processMemo : this.publicSelcet.processMemo,
-                    specialMemo : this.publicSelcet.specialMemo,
-                    roundOffFlag : this.orderTemp.roundOffFlag,
-                    couponDetailId : this.orderTemp.couponDetailId,
-                    process : this.orderTemp.process,
-                    service : this.orderTemp.service,
+                    memberId : this.selectMember.memberInfo.memberId,//会员id
+                    prescriptionsId  : this.optometryId,//验光单id
+                    urgent : this.orderTemp.urgent,//是否加急
+                    glassesTime : this.orderTemp.glassesTime,//取镜时间
+                    glassesType : this.orderTemp.glassesType,//取镜类型
+                    glassesCompany : this.publicSelcet.comTypeModel,//取镜公司
+                    glassesAddress : this.orderTemp.glassesAddress,//取镜地址
+                    saleMemo : this.orderTemp.saleMemo,//销售备注
+                    processMemo : this.publicSelcet.processMemo,//加工备注
+                    specialMemo : this.publicSelcet.specialMemo,//特殊备注
+                    roundOffFlag : this.orderTemp.roundOffFlag,//取整表示
+                    couponDetailId : this.orderTemp.couponDetailId,//优惠券id
+                    process : this.orderTemp.process,//加工费
+                    service : this.orderTemp.service,//服务费
                     orderItemsList:orderItemsList
                 }
                 console.log(jsonObject);
-                debugger;
                 that.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp',
                     method: 'post',

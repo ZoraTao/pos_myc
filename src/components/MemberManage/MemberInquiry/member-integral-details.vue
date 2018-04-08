@@ -60,8 +60,8 @@
           method: 'post',
           params: {
             jsonObject: {
-              memberCardId: '2054440',
-              memberId: '2222767',
+              memberCardId: this.$route.params.data.memberCardId,
+              memberId: this.$route.params.data.memberId,
               nub: (this.nub==0?0:(this.nub-1)*this.size),
               size: this.size
             },
