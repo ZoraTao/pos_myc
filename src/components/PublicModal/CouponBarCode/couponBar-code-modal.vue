@@ -12,73 +12,30 @@
                     <el-input placeholder=""></el-input>
                 </div>
                 <div class="CouponBarCard">
-                    <p class="memberInfo"><span>张丽丽</span>有3张优惠券可用：</p>
-                    <div class="CouponBarItemBox">
-                        <div class="CouponBarItem blueStatus">
+                    <p class="memberInfo"><span>张丽丽</span>有{{conponData.userCouponCount}}张优惠券可用：</p>
+                    <div class="CouponBarItemBox" v-for="item in conponData.canUserCoupon" :key="item.createTime">
+                        <div class="CouponBarItem blueStatus" :style="{'background-color':item.colorValue,'border-color':item.colorValue}">
                             <div class="cardConstBox">
                                 <div class="cardConst">
-                                    <p><span>¥</span>100</p>
+                                    <p><span>¥</span>{{parseFloat(item.couponAmount)}}</p>
                                 </div>
                                 <div class="cardInfo">
                                     <div class="cardInfoBox">
-                                        <p>新品优惠券</p>
-                                        <span>满1000使用</span>
+                                        <p>{{item.couponName}}</p>
+                                        <span v-if="item.fullAmount>0">满{{item.fullAmount}}使用</span>
+                                        <span v-else>无门槛</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="CouponBarTime">
-                                <p>2016-07-10  00:00 至 2016-07-16  24:00</p>
+                            <div class="CouponBarTime" style="background:rgba(0,0,0,0.1);">
+                                <p>{{item.activeTime.substring(0,16)}} 至 {{item.lapsedTime.substring(0,16)}}</p>
                             </div>
                             <div class="whiteBox"></div>
                         </div>    
                         <div class="userThisCard">
-                            <span>使用</span>
+                            <span @click="receive(item)">使用</span>
                         </div>                                    
                     </div>
-                    <div class="CouponBarItemBox">
-                        <div class="CouponBarItem greenStatus">
-                            <div class="cardConstBox">
-                                <div class="cardConst">
-                                    <p><span>¥</span>100</p>
-                                </div>
-                                <div class="cardInfo">
-                                    <div class="cardInfoBox">
-                                        <p>新品优惠券</p>
-                                        <span>满1000使用</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="CouponBarTime">
-                                <p>2016-07-10  00:00 至 2016-07-16  24:00</p>
-                            </div>
-                            <div class="whiteBox"></div>
-                        </div>   
-                        <div class="userThisCard">
-                            <span>使用</span>
-                        </div>                                            
-                    </div>    
-                    <div class="CouponBarItemBox">
-                        <div class="CouponBarItem yellowStatus">
-                            <div class="cardConstBox">
-                                <div class="cardConst">
-                                    <p><span>¥</span>100</p>
-                                </div>
-                                <div class="cardInfo">
-                                    <div class="cardInfoBox">
-                                        <p>新品优惠券</p>
-                                        <span>满1000使用</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="CouponBarTime">
-                                <p>2016-07-10  00:00 至 2016-07-16  24:00</p>
-                            </div>
-                            <div class="whiteBox"></div>
-                        </div>  
-                        <div class="userThisCard">
-                            <span>使用</span>
-                        </div>                                              
-                    </div>                                                                    
                 </div>
             </div>
         </div>
@@ -95,6 +52,12 @@ export default {
 
     }
   },
+  props:{
+      conponData:{
+          type:Object,
+          default:null
+      }
+  },
   methods:{
         objectSpanMethod({ row, column, rowIndex, columnIndex }) {
             if (columnIndex === 0) {
@@ -110,7 +73,14 @@ export default {
                     };
                 }
             }
+        },
+        receive(value){
+            console.log(value);
+            this.$emit('receiveconpon',value)
         }
+  },
+  mounted(){
+    //   console.log(1111,this.conponData)
   }
 }
 </script>
@@ -171,7 +141,7 @@ export default {
                         height: auto;
                         font-size: 13px;
                         color: #666666;
-                        width: 230px;
+                        width: 280px;
                         margin: 0 auto;
                         text-align: left;
                         margin-top: 24px;
@@ -183,6 +153,7 @@ export default {
                     .CouponBarItemBox{
                         margin: 0 auto;
                         margin-bottom: 8px;
+                        width: 290px;
                         overflow: hidden;
                         display: flex;
                         justify-content: center;
@@ -192,7 +163,7 @@ export default {
                             border-width: 1px;
                             border-style: solid;
                             color: #fff;
-                            width: 220px;
+                            width: 280px;
                             float: left;
                             .cardConstBox{
                                 height: 54px;
@@ -202,6 +173,7 @@ export default {
                                 .cardConst{
                                     width: 83px;
                                     float: left;
+                                    font-weight: 300;
                                     p{
                                         font-size: 30px;
                                         span{
@@ -214,11 +186,23 @@ export default {
                                     float: left;
                                     line-height: 20px;
                                     border-left: 1px solid #FFFFFF40;
+                                    
                                     .cardInfoBox{
                                         text-align: left;
                                         margin-left: 5px;
                                         overflow: hidden;
+                                        p{
+                                        font-family: MicrosoftYaHei;
+                                        font-size: 14px;
+                                        color: #FFFFFF;
                                     }
+                                        span{
+                                            font-family: MicrosoftYaHei;
+                                            font-size: 10px;
+                                            color: #FFFFFF;
+                                        }
+                                    }
+
                                 }
                             }
                         }
@@ -236,6 +220,13 @@ export default {
                                 background: #7DB6CB;
                                 height: 24px;
                                 line-height: 24px;
+                                white-space: nowrap;
+                                p{
+                                    font-family: MicrosoftYaHei;
+                                    font-size: 12px;
+                                    color: #FFFFFF;
+                                }
+                                
                             }
                         }
                         .greenStatus{

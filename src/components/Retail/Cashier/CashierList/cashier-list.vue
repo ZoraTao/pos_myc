@@ -73,7 +73,7 @@
                 <div class="fn-left">
                   <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
                   <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span>
-                  <span class="order_id">{{order.orderNo}}</span>
+                  <span class="order_id">{{order.orderId}}</span>
                   <span v-if="order.source=='0'" class="sign_blue">本店签批</span>
                   <span v-else class="sign_orange">跨店签批</span>
                   <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
@@ -85,12 +85,12 @@
               </td>
             </tr>
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
-              <td>{{list.orderItemId}}</td>
-              <td>{{list.itemName}}</td>
-              <td>{{list.quantity}}</td>
-              <td>{{list.listPrice}}</td>
-              <td><strong>{{list.price}}</strong></td>
-              <td>--</td>
+              <td>{{list.itemId}}</td>
+              <td>{{list.itemName||'商品名'}}</td>
+              <td>{{parseInt(list.quantity)}}</td>
+              <td>{{list.listPrice||'商品原单价'}}</td>
+              <td><strong>{{list.price||'商品实售单价'}}</strong></td>
+              <td>{{order.shopName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
                   <div class="priceAll am-ft-22">{{order.moneyAmount}}</div>

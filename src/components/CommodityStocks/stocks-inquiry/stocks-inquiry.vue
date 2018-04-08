@@ -448,7 +448,7 @@
       min-width: 60px !important;
     }
     .search-bt{
-      margin-top: 6px !important;
+      margin-top: 4px !important;
     }
     .el-table__body-wrapper{
       &::-webkit-scrollbar{
