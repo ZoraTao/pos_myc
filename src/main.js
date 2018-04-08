@@ -7,9 +7,15 @@ import App from './App'
 import router from './router'
 import VueResource from 'vue-resource'
 import axios from 'axios'
-import VueBus from 'vue-bus';
+import VueBus from 'vue-bus'
 import store from './vuex/store'
-import VueAreaLinkage from 'vue-area-linkage';
+import VueAreaLinkage from 'vue-area-linkage'
+// import VueContextMenuComponent from './VueContextMenu.vue'
+// const VueContextMenu = {
+//   install: function (Vue) {
+//     Vue.component('VueContextMenu', VueContextMenuComponent)
+//   }
+// }
 Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false
@@ -25,6 +31,7 @@ new Vue({
   el: '#app',
   router,
   store,
+  // VueContextMenu,
   components: { App },
   template: '<App/>',
   render: h => h(App)

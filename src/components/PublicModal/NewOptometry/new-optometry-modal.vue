@@ -40,7 +40,7 @@
             <el-checkbox v-model="prescription.isGradually">隐形</el-checkbox>
         </div>
         <ul class="glass_combination_table">
-            <li class="clearfix combination_table_list" v-if="prescription.isDistance">
+            <li class="clearfix combination_table_list">
                 <ul class="glass_table_head">
                     <li class="wid80"> &nbsp;&nbsp;</li>
                     <li class="w10"> &nbsp;&nbsp;</li>
@@ -53,7 +53,7 @@
                     <li class="w90">HPD</li>
                     <li class="w90">ADD</li>
                 </ul>
-                <ul>
+                <ul v-if="prescription.isDistance">
                     <li class="fn-left  msg_left">远用</li>
                     <li class="fn-left glass_table_770 pb10">
                         <table>
@@ -287,23 +287,23 @@
             <li class="fn-left glass_table_770">
                 <div class="labelInput lineHeightAuto">
                     <label class="mgr10">验光来源：</label>
-                    <el-select style="width:120px" v-model="prescriptions.source" placeholder="请选择">
+                    <el-select style="width:120px" v-model="prescriptions.source" placeholder="请选择" @visible-change="getPublicSelect(7,sourceOptions)">
                         <el-option
                         v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
                 <div class="labelInput lineHeightAuto mgl30">
                     <label class="mgr10">验光师：</label>
-                    <el-select style="width:120px" v-model="prescriptions.optometrist" placeholder="请选择">
+                    <el-select style="width:120px" v-model="prescriptions.optometrist" placeholder="请选择" @visible-change="getPrivateSelect(4,optometristOptions)">
                         <el-option
                         v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                        :key="item.userId"
+                        :label="item.trueName"
+                        :value="item.userId">
                         </el-option>
                     </el-select>
                 </div>   
@@ -329,6 +329,8 @@ export default {
   data() {
     return {
       options: [],
+      sourceOptions:[],
+      optometristOptions:[],
       value: "",
       needReg: false,
       ruleForm: {
@@ -488,6 +490,50 @@ export default {
     };
   },
   methods: {
+    getPrivateSelect(type,options){
+      var that = this;
+      that.$axios({
+          url: 'http://myc.qineasy.cn/cas-api/user/getUserByOrg',
+          method: 'post',
+          params: {
+              jsonObject: {
+                  orgId:'11387', 
+                  //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）                 
+              },
+              keyParams: {
+                  weChat: true,
+                  userId: '8888',
+                  orgId: '11387'
+              }
+          }
+      })
+      .then(function (response) {                    
+          that.options=response.data.data.list;
+      })  
+    },
+    getPublicSelect(type,options) {
+      var that = this;
+      that.$axios({
+          url: 'http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList',
+          method: 'post',
+          params: {
+              jsonObject: {
+                  pid:'',
+                  id:'',
+                  type: type    
+                  //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）                 
+              },
+              keyParams: {
+                  weChat: true,
+                  userId: '8888',
+                  orgId: '11387'
+              }
+          }
+      })
+      .then(function (response) {                    
+          that.options=response.data.data.list;
+      })   
+    },
     searchUser() {
       var that = this;
       if (this.ruleForm.telphone.length == 11) {
@@ -699,6 +745,7 @@ export default {
     overflow: hidden;
     li {
       float: left;
+      width: auto;
     }
   }
 

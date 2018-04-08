@@ -2,14 +2,7 @@
 <div class="selectMember" id="selectRH">
     <el-form ref="form">
         <el-form-item label="商品 : ">            
-            <el-select style="width:90px" v-model="value" placeholder="请选择">
-                <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                </el-option>
-            </el-select>                    
+            <el-input style="width:90px" class="" placeholder=""/>                 
             <el-select style="width:90px" v-model="value" placeholder="请选择">
                 <el-option
                 v-for="item in options"
@@ -57,26 +50,32 @@
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="sku"
+                width="100px"
                 label="商品编码">
                 </el-table-column>
                 <el-table-column
                 prop="skuName"
+                width="220px"
                 label="商品名称">
                 </el-table-column>
                 <el-table-column
                 prop="warehouseName"
+                width="70px"
                 label="出货仓库">
                 </el-table-column>
                 <el-table-column
                 prop="quantity"
+                width="70px"
                 label="库存数">
                 </el-table-column>
                 <el-table-column
                 prop="allotQuantity"
+                width="70px"
                 label="可分配数">
                 </el-table-column>
                 <el-table-column
                 prop="price"
+                width="50px"
                 label="单价">
                 </el-table-column>
                 <el-table-column

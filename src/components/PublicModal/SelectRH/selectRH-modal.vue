@@ -16,30 +16,36 @@
             <el-table
                 :data="selectProductSku.productSkuData.skulist"
                 size="small"
-                align="left"
+                align="center"
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="sku"
+                width="100px"
                 label="商品编码">
                 </el-table-column>
                 <el-table-column
+                width="200px"
                 prop="skuName"
                 label="商品名称">
                 </el-table-column>
                 <el-table-column
                 prop="warehouseName"
+                width="90px"
                 label="出货仓库">
                 </el-table-column>
                 <el-table-column
                 prop="quantity"
+                width="80px"
                 label="库存数">
                 </el-table-column>
                 <el-table-column
                 prop="allotQuantity"
+                width="90px"
                 label="可分配数">
                 </el-table-column>
                 <el-table-column
                 prop="price"
+                width="80px"
                 label="单价">
                 </el-table-column>
                 <el-table-column
