@@ -227,6 +227,12 @@ import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
     background-color: #f4f4f5;
   }
 
+  .el-form-item__error {
+      padding-top: 0px;
+      top: auto;
+      left: 0;
+      z-index: 1111111;
+  }
 .packageDetailButtonGroup{
     overflow: hidden;
     padding:20px 10px;

@@ -122,6 +122,10 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <!-- <vue-context-menu :contextMenuData="contextMenuData"
+	                  @savedata="savedata"
+	                  @newdata="newdata">
+                </vue-context-menu> -->
                 <div class="settleAccounts">
                     <p>
                         <span>共计 :<b>{{numCount}}件</b></span>
@@ -303,12 +307,12 @@
                 <el-button type="primary" @click="showNewOptometry=true">新增</el-button>
             </div>            
             <div class="selectEyeglass">
-                <el-select size="mini" v-model="value" placeholder="">
+                <el-select size="mini" v-model="optometryId" placeholder="" @change="getPrescriptions()">
                     <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in optometryList"
+                    :key="item.prescriptionId"
+                    :label="item.prescriptionTime+' 验光师：'+item.optometrist"
+                    :value="item.prescriptionId">
                     </el-option>
                 </el-select>
             </div>
@@ -534,6 +538,28 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
         name: "billing",
         data() {
             return {
+                // contextMenuData: {
+                // // the contextmenu name(@1.4.1 updated)
+                // menuName: 'demo',
+                // // The coordinates of the display(菜单显示的位置)
+                // axios: {
+                //     x: null,
+                //     y: null
+                // },
+                // // Menu options (菜单选项)
+                // menulists: [
+                //     {
+                //     fnHandler: 'savedata', // Binding events(绑定事件)
+                //     icoName: 'fa fa-home fa-fw', // icon (icon图标 )
+                //     btnName: 'Save' // The name of the menu option (菜单名称)
+                //     },
+                //     {
+                //     fnHandler: 'newdata',
+                //     icoName: 'fa fa-home fa-fw',
+                //     btnName: 'New'
+                //     }
+                // ]
+                // },
                 options: [{
                     value: "选项1",
                     label: "暂无"
@@ -578,6 +604,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 includeOptometryData:null,//保存即将录入验光单信息 作为验光单数据副本
                 amountSale:'',//原价合计
                 optometryData:null,//验光单数据
+                optometryList:null,//验光单列表数据
                 selectMember:{//选择会员数据集合
                     selectM:'',
                     memberInfo:null//会员信息
@@ -644,6 +671,21 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             AddMember
         },
         methods:{
+            // showMenu () {
+            //     event.preventDefault()
+            //     var x = event.clientX
+            //     var y = event.clientY
+            //     // Get the current location
+            //     this.contextMenuData.axios = {
+            //     x, y
+            //     }
+            // },
+            // savedata () {
+            //     alert(1)
+            // },
+            // newdata () {
+            //     console.log('newdata!')
+            // },
             //打开优惠券
             openCouponBarCode(){
                 console.log(this.selectMember.memberInfo)
@@ -914,6 +956,68 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                  this.tableData.splice(index,1,value);
                 this.computedPay();
             },
+            //获取用户验光单列表
+            getOptometryRecordList() {
+                var that = this;
+                that.$axios({
+                url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsList',
+                method: 'post',
+                params: {
+                    jsonObject: {
+                        memberId: this.selectMember.memberInfo.memberId
+                    },
+                    keyParams: {
+                        weChat: true
+                    }
+                }
+                })
+                .then(function (response) {
+                    if(response.data.code=='1'){
+                        that.optometryList=response.data.data.list;
+                    }else{
+                        that.$message({
+                            showClose: true,
+                            message: response.data.msg,
+                                type: 'error'
+                        })                        
+                    }
+                })
+                .catch(function (error) {
+                    console.info(error)
+                })
+            },
+            getPrescriptions(){
+                var that = this;
+                that.$axios({
+                url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptions',
+                method: 'post',
+                params: {
+                    jsonObject: {
+                        prescriptionId: this.optometryId
+                    },
+                    keyParams: {
+                        weChat: true
+                    }
+                }
+                })
+                .then(function (response) {
+                    if(response.data.code==1&&response.data.data.eyes.length>0){
+                        that.optometryData=response.data.data.eyes;
+                        that.optometryId=response.data.data.prescriptions.prescriptionId;
+                        that.optometryTime=response.data.data.prescriptions.prescriptionTime;
+                        that.includeOptometry();
+                    }else{
+                        that.$message({
+                            showClose: true,
+                            message: response.data.msg,
+                                type: 'error'
+                        })                        
+                    }
+                })
+                .catch(function (error) {
+                    console.info(error)
+                })
+            },
             //获取用户最后一次验光单信息
             getOptometryRecord() {
                 var that = this;
@@ -991,6 +1095,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 this.conpon();
                 if(value){
                     this.getOptometryRecord();
+                    this.getOptometryRecordList();
                 }
             },
             //使用优惠券
@@ -1079,7 +1184,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     var tableArr=[];
                     that.optometryData.forEach(element => {
                         // console.log(object.keys(element.value[0]))
-                        if(element.key!="0"){
+                        if(element.key!="0"&&element.key!="1"){
                         var tArr=[];
                         var keys=[];
                         var lData=[];
@@ -1111,9 +1216,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                             // case '0':
                             //     name='检影';
                             //     break;
-                            case '1':
-                                name='主观';
-                                break;
+                            // case '1':
+                            //     name='主观';
+                            //     break;
                             case '2':
                                 name='远用';
                                 break;    

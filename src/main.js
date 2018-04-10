@@ -10,16 +10,13 @@ import axios from 'axios'
 import VueBus from 'vue-bus'
 import store from './vuex/store'
 import VueAreaLinkage from 'vue-area-linkage'
-// import VueContextMenuComponent from './VueContextMenu.vue'
-// const VueContextMenu = {
-//   install: function (Vue) {
-//     Vue.component('VueContextMenu', VueContextMenuComponent)
-//   }
-// }
+import VueContextMenu from 'vue-contextmenu'
+import 'vue-contextmenu/style/css/font-awesome.min.css'
 Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false
 
+Vue.use(VueContextMenu)
 Vue.use(VueResource)
 Vue.use(ElementUI)
 Vue.use(VueBus)

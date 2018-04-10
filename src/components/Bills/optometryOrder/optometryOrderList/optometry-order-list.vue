@@ -88,7 +88,7 @@
                 <el-table-column
                 label="操作">
                     <template slot-scope="scope">
-                        <span class="am-ft-blue" @click="getMemberDetail(scope.row.prescriptionId)"><a>查看详情</a></span>
+                        <span class="am-ft-blue" @click="getMemberDetail(scope.row.prescriptionId,scope.row.memberId)"><a>查看详情</a></span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -203,7 +203,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                     })
                 }, 0);
             },
-            getMemberDetail(id) {
+            getMemberDetail(id,memberId) {
                 var that = this;
                 that.$axios({
                     url: this.deatilUrl,
@@ -226,8 +226,10 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                         path: '/bills/optometryOrderCu',
                         name: 'optometryOrderCu',
                         params: {
-                            detailData:response.data.data.member,
-                            eyesData:response.data.data
+                            data:
+                            {
+                                memberId:memberId,
+                            }
                         }
                     });
                 })
