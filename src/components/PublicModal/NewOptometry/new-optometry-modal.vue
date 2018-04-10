@@ -36,8 +36,8 @@
             <label class="mgr10">配镜处方：</label>
             <el-checkbox v-model="prescription.isDistance">远用</el-checkbox>
             <el-checkbox v-model="prescription.isNigh">近用</el-checkbox>
-            <el-checkbox v-model="prescription.isContact">渐进</el-checkbox>
-            <el-checkbox v-model="prescription.isGradually">隐形</el-checkbox>
+            <el-checkbox v-model="prescription.isGradually">渐进</el-checkbox>
+            <el-checkbox v-model="prescription.isContact">隐形</el-checkbox>
         </div>
         <ul class="glass_combination_table">
             <li class="clearfix combination_table_list">
@@ -134,7 +134,7 @@
                     </li>
                 </ul>
             </li>         
-            <li class="clearfix combination_table_list" v-if="prescription.isGradually">
+            <li class="clearfix combination_table_list" :class="{'mgl450':!prescription.isContact}" v-if="prescription.isGradually">
                 <ul>
                     <li class="fn-left  msg_left">渐进</li>
                     <li class="fn-left glass_table_770">
@@ -668,6 +668,9 @@ export default {
 
 <style lang="scss">
 .newOptometry {
+  .mgl450{
+    margin-left: 450px;
+  }
   .el-dialog__body {
     padding: 0;
   }

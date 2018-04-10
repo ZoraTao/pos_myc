@@ -60,7 +60,7 @@ export default {
   methods:{
         objectSpanMethod({ row, column, rowIndex, columnIndex }) {
             if (columnIndex === 0) {
-                if (rowIndex % 6 === 0) {
+                if (rowIndex % this.data[0].list.length === 0) {
                     return {
                         rowspan: 6,
                         colspan: 1

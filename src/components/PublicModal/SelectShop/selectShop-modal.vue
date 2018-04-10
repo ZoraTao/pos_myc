@@ -162,20 +162,32 @@ export default {
             });
       },
       selectBrands(type){
+            var that = this;
           var id = '';
           switch ((type).toString()) {
             case '1':
+                    that.typeOptions=[];
+                    that.brandsOptions=[];
+                    that.varietysOptions=[];
+                    that.typeValue='';
+                    that.brandsValue='';
+                    that.varietysValue='';
                   break;
             case '2':
-                  id=this.typeValue;
+                    id=this.typeValue;
+                    that.brandsOptions=[];
+                    that.varietysOptions=[];
+                    that.brandsValue='';
+                    that.varietysValue='';
                   break;
             case '3':
-                  id=this.brandsValue;
+                    id=this.brandsValue;
+                    that.varietysOptions=[];
+                    that.varietysValue='';
                   break;
               default:
                   break;
           }
-            var that = this;
             that.$axios({
                 url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
                 method: 'post',
