@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import {mapActions,mapState,mapMutations,mapGetters} from 'vuex'
+// import {mapActions,mapState,mapMutations,mapGetters} from 'vuex'
 import store from '../vuex/store'
 export default {
   name: 'login',
@@ -73,19 +73,19 @@ export default {
     }
   },
   computed:{
-    ...mapState([
-      "accessKey"
-    ]),
+    // ...mapState([
+    //   "accessKey"
+    // ]),
     // count:function(store){
     //   return this.$store.getters.addCount;
     // }
   },
   methods:{
-    ...mapMutations([
-      "LOGIN_LOCAL_STORAGE"
-    ]),
+    // ...mapMutations([
+    //   "LOGIN_LOCAL_STORAGE"
+    // ]),
     // ...mapActions([
-    //   ""
+    //   "LOGIN_LOCAL_STORAGE"
     // ]),
     toLogin(){
       var _this = this;
@@ -104,8 +104,8 @@ export default {
       }).then((res)=>{
         if(res.status == '200'){
           if(res.data.code ==  1 && res.data.msg == "登录成功"){
-              _this.goHome();
-              _this.LOGIN_LOCAL_STORAGE(res.data.data.user);
+            console.log(res.data.data)
+              _this.$store.commit('LOGIN_LOCAL_STORAGE',res.data.data.user.token)
           }else{
               _this.dialogVisible = true
               console.log(res)
@@ -119,7 +119,19 @@ export default {
     },
     goHome(){
       this.$router.push('/base/homeIndex')
+    },
+    isLogin(){
+       return !!localStorage.token
+    },
+    userAccessKeyLogin(){
+        let _this = this;
+        if(localStorage.getItem('token')){//有用户秘钥直接登录,未进行MD5解密
+          _this.goHome();
+        }
     }
+  },
+  beforemounted(){
+    // this.userAccessKeyLogin();
   }
 }
 </script>

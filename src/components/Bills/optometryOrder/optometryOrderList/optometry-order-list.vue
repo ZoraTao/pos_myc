@@ -106,7 +106,7 @@
         <optometryOrderCu :memberDet="''" :memberInfo="detailData" :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
     </div>
     <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="900px">
-        <NewOptometryModal :submit="submitNewOptometry"></NewOptometryModal>
+        <NewOptometryModal :submit="submitNewOptometry" @modalSuccess="modalSuccess"></NewOptometryModal>
         <div class="packageDetailButtonGroup">
             <el-button @click="showNewOptometry = false">取 消</el-button>
             <el-button type="primary" @click="submitNewOptometry=true">保 存</el-button>
@@ -116,6 +116,7 @@
 </template>
 
 <script>
+import RegTest from '../../../../utils/Reg'
 import optometryOrderCu from '../optometryOrderCu/optometry-order-cu.vue'
 import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-modal.vue'
     export default {
@@ -136,7 +137,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 value: '',
                 count: 0,
                 nub: 1,
-                size: 5
+                size: 15,
             };
         },
         components:{
@@ -149,6 +150,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
         },
         methods:{
             getOrderList(isFirst) {
+                console.log(RegTest)
                 if(isFirst){
                     this.noSearchText="输入会员信息查询验光单"
                 }else{
@@ -158,14 +160,25 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 }
                     this.detailData=[];
                     var that = this;
+                    let message = that.memberInfo;
+                    console.log(message)
+                    let mobile = '',memberId = '',customerName = '';
+                    if(RegTest.phone(message)){//手机判断
+                        mobile = message;
+                    }else if(RegTest.isNum(message)){//会员ID
+                        memberId = message;
+                    }else{//姓名
+                        customerName = message
+                    }
                     setTimeout(function() {
-                        
                     that.$axios({
                         url: that.listUrl,
                         method: 'post',
                         params: {
                             jsonObject: {
-                                memberId: that.memberInfo,
+                                memberId: memberId,
+                                mobile:mobile,
+                                customerName:customerName,
                                 nub: (that.nub==1?0:(that.nub-1)*that.size),
                                 size: that.size
                             },
@@ -210,6 +223,9 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                     that.detailData=response.data.data.prescriptions;
                     that.eyesData=response.data.data.eyes;
                 })
+            },
+            modalSuccess(){
+                this.showNewOptometry = false;
             }
         }
     };

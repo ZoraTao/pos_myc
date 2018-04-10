@@ -92,7 +92,7 @@
                     label="折扣"
                     width="100px">
                         <template slot-scope="scope">
-                            <el-input class="" placeholder="" v-model="scope.row.discount" @input="changePrice(scope.row,1)"></el-input>
+                            <el-input class="" placeholder="" v-model="tableData[scope.$index].discount" @change="changePrice(scope.row,1,scope.$index)"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -117,7 +117,7 @@
                     width="100px">
                         <template slot-scope="scope">
                             <div class="inputBold  am-ft-black">
-                                <el-input class="" placeholder="" v-model="scope.row.realSale" @input="changePrice(scope.row,2)"></el-input>
+                                <span class="" placeholder="" @change="changePrice(scope.row,2)">{{tableData[scope.$index].realSale}}</span>
                             </div>
                         </template>
                     </el-table-column>
@@ -130,8 +130,7 @@
                     <p>
                         <span v-show="conponResponse.couponAmount == '' || !conponResponse.couponAmount ">促销活动 : 无</span>
                         <span v-show="conponResponse.couponAmount !='' & conponResponse.couponAmount">促销活动 : {{conponResponse.couponName}}<b>-{{conponResponse.couponAmount}}元</b></span>
-                        <span v-show="discountSale == '' & allDisCount == '' || discountSale == 0 & allDisCount == ''" >折扣 : 无</span>
-                        <span v-show="discountSale != '' & discountSale != 0 || allDisCount != ''">折扣 :<b>{{allDisCount}}折 (-{{discountSale}}元)</b></span>
+                        <span v-show=" typeof parseFloat(allDisCount) == 'number'">折扣 : {{allDisCount}}折</span>
                         <span v-show="memberShipDisCount==10">无会员折扣</span>
                         <span v-show="memberShipDisCount<10">会员折扣 : {{parseFloat(memberShipDisCount*10).toFixed(2)}}折  <b v-show="memberShipDisCountSale!= '' &memberShipDisCountSale!= '0'">(-{{memberShipDisCountSale}}元)</b></span>
                     </p>
@@ -451,7 +450,7 @@
         </div>
         <div slot="footer" class="dialog-footer">
             <div class="mgt10">
-                <el-button @click="permission = false;">取消</el-button>
+                <el-button @click="permission = false;allDisCount=''">取消</el-button>
                 <el-button type="primary" @click="permission = false">直接签批</el-button>
                 <el-popover
                 ref="popover"
@@ -867,6 +866,12 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             //选择商品后进行关闭弹窗计算
             selectSku(value){
                 var _this= this;
+                let alldis = _this.allDisCount;
+                if(alldis != '' && typeof parseFloat(alldis) == 'number'){
+                    alert(1)
+                    value.discount = alldis;
+                    value.realSale =  ((value.discount * value.price)/10).toFixed(2);
+                }
                 _this.tableData.push(value);
                 _this.showSelectRH = false;
                 _this.customizeRH = false;
@@ -878,11 +883,13 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 let _this = this;
                 let countSale = 0; 
                 let n = 0;
+                // _this.allDisCount = '';
                 for(let i=0;i<_this.tableData.length;i++){//循环计算价格
-                    let thisSale = _this.tableData[i].discount/10 * parseFloat(_this.tableData[i].realSale);
+                    let thisSale =  parseFloat(_this.tableData[i].realSale);
                     countSale = countSale+thisSale
                     n++;
                 }
+                // debugger
                 this.amountSale = countSale;//原价合计
 
                 if(this.conponResponse.couponAmount>0){//如果有优惠券
@@ -898,12 +905,14 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 this.numCount = n;
                 this.saleCount = countSale.toFixed(2);//无整单折扣情况下
             },
-            changePrice(value,type){
+            changePrice(value,type,index){
                 if(type==1){
-                    value.realSale=value.price/value.discount/10
+                    value.realSale=parseFloat(value.price*value.discount/10).toFixed(2);
                 }else{
-                    value.realSale=value.price/value.discount*10
+                    value.realSale=parseFloat(value.price/value.discount*10).toFixed(2);
                 }
+                 this.tableData.splice(index,1,value);
+                this.computedPay();
             },
             //获取用户最后一次验光单信息
             getOptometryRecord() {
@@ -1017,7 +1026,6 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 .then(function(res){
                     if(res.data.code == 1){
                         _this.conponData = res.data.data;
-                        console.log(_this.conponData)
                     }else{
                          _this.$message({
                                 showClose: true,
@@ -1037,14 +1045,24 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             },
             //整单折扣
             afterDiscount(){
+                let _this = this ;
+                _this.permission=true;
                 if(this.allDisCount!='' && this.allDisCount != 0 ){//有整单折扣
-                    //整单折扣金额差价 = 折扣前 - 折扣后↓
-                    console.log(`计算`)
-                    this.discountSale = this.saleCount - (this.allDisCount*this.saleCount)/10;   
-                    //最后价格 = 整单折扣前 * 折扣 ↓
-                    this.saleCount = (this.allDisCount/10 * this.saleCount).toFixed(2); 
+                    // //整单折扣金额差价 = 折扣前 - 折扣后↓
+                    // console.log(`计算`)
+                    // this.discountSale = this.saleCount - (this.allDisCount*this.saleCount)/10;   
+                    // //最后价格 = 整单折扣前 * 折扣 ↓
+                    // this.saleCount = (this.allDisCount/10 * this.saleCount).toFixed(2); 
+                    let discount = _this.tableData;
+                    for(var i=0;i<discount.length;i++){
+                        discount[i].discount = parseFloat(_this.allDisCount);
+                        discount[i].realSale = (discount[i].discount*discount[i].price/10).toFixed(2);
+                    }
+                    console.log(discount)
+                    _this.tableData = [];
+                    _this.tableData = discount;
+                    _this.computedPay();
                 }
-                this.permission=true;
             },
             //获取新增验光单信息
             getNewoptometry(value){
@@ -1110,7 +1128,6 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         tableArr.push({item:tArr,name:name})
                         }
                     });
-                    console.log(tableArr)
                     that.includeOptometryData=tableArr;
                 }
             },
@@ -1247,17 +1264,17 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     saleMemo : this.orderTemp.saleMemo||'销售备注',//销售备注
                     processMemo : this.publicSelcet.processMemo||'加工备注',//加工备注
                     specialMemo : this.publicSelcet.specialMemo||'特殊备注',//特殊备注
-                    roundOffFlag : this.orderTemp.roundOffFlag,//取整表示
+                    // roundOffFlag : this.orderTemp.roundOffFlag,//取整表示
                     couponDetailId : this.orderTemp.couponDetailId,//优惠券id
-                    moneyProduct:parseFloat(this.amountSale).toFixed(2),//原价合计
-                    moneyAmount:parseFloat(this.countSale).toFixed(2),//应付
+                    moneyProduct:(parseFloat(this.amountSale)).toFixed(2),//原价合计
+                    moneyAmount:(parseFloat(this.saleCount)).toFixed(2),//应付
                     moneyPaid:0,//应收
                     activityMoney:this.actionSale,//活动优惠金额,
                     discountMoney:this.memberShipDisCountSale,//折扣优惠金额,会员
                     cardDiscount:this.memberShipDisCount,//会员折扣
                     discountFlag:this.discountFlag,//是否使用会员折扣
-                    roundOffFlag:1,//取整标识 0使用 1不用
-                    decimal : (this.selectMember.memberInfo.discount*10).toString(),//会员卡折扣
+                    roundOffFlag:this.allDisCount==''?'1':'0',//整单折扣 取整标识 0使用 1不用
+                    decimal : (parseFloat(this.selectMember.memberInfo.discount*10)).toFixed(2),//会员卡折扣
                     couponMoney : this.conponResponse.couponAmount||'0',//卡券优惠金额
                     process : this.orderTemp.process,//加工费
                     service : this.orderTemp.service,//服务费

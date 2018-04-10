@@ -15,10 +15,10 @@
                 </el-form-item>
                 <el-form-item label="性别:" v-show="ruleForm.telphone.length==11">
                     <el-select v-if="!ruleForm.hasMember" v-model="ruleForm.sex" placeholder="请选择">
-                        <el-option label="男" value="F"></el-option>
-                        <el-option label="女" value="M"></el-option>
+                        <el-option label="男" value="M"></el-option>
+                        <el-option label="女" value="F"></el-option>
                     </el-select>
-                    <span class="nopText" v-else>{{ruleForm.sex=='M'?'女':'男'}}</span>
+                    <span class="nopText" v-else>{{ruleForm.sex=='M'?'男':'女'}}</span>
                 </el-form-item>
                 <el-form-item label="出生年月:" v-show="ruleForm.telphone.length==11">
                     <el-date-picker
@@ -308,12 +308,14 @@
                     </el-select>
                 </div>   
                 <div class="labelInput lineHeightAuto mgl30">
-                    <label class="mgr10">验光日期 :</label>
+                    <label class="mgr10" >验光日期 :</label>
                     <el-date-picker
                     style="width:180px"
                     v-model="prescriptions.prescriptionTime"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     type="datetime"
+                    :default-value="defaultValue"
+                    :picker-options="pickerOptions0"
                     placeholder="选择日期">
                     </el-date-picker>
                 </div>                           
@@ -324,6 +326,7 @@
 </template>
 
 <script>
+import {allDate} from '../../../utils/date.js'
 export default {
   name: "NewOptometryModal",
   props: ["submit"],
@@ -351,6 +354,13 @@ export default {
         isContact: false,
         isGradually: false
       },
+       pickerOptions0: {
+          disabledDate(time) {
+            return time.getTime() > Date.now() - 8.64e6
+          }
+        }, 
+      
+      defaultValue:allDate.TimeToDay(),
       distanceData: [
         {
           sph: "",
@@ -491,6 +501,7 @@ export default {
     };
   },
   methods: {
+    
     getPrivateSelect(type,options){
       var that = this;
       that.$axios({
@@ -639,6 +650,7 @@ export default {
           .then(function(response) {
             if (response.data.code == 1) {
               that.$emit("getNewoptometry", jsonObject);
+              that.$emit('modalSuccess')
               that.$message({
                   showClose: true,
                   message: '新增成功！',
@@ -655,6 +667,10 @@ export default {
           });
       }, 100);
     }
+  },
+  mounted(){
+    // this.defaultValue = this.allDate.TimeToDay(Date.parse(new Date()))
+            // console.log(this.defaultValue)
   },
   watch: {
     submit: function(value) {

@@ -2,7 +2,7 @@
   <section class=" content_box">
     <div class="am_bg_white cashier_box">
       <ul class="cashier_tab">
-        <li v-for="item of tabs" :key="item.value" :class="{'on':item.isActived}" v-on:click="changeTab(item)">
+        <li v-for="item of tabs" :key="item.value" :class="{'on':item.isActived}" v-on:click="changeTab(item);getOrderList(item.status)">
           {{item.value}}
         </li>
       </ul>
@@ -93,7 +93,9 @@
               <td>{{order.shopName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
-                  <div class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
+                  <div class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}
+                  <small v-if="order.roundOffFlag == '0' && typeof parseFloat(list.discountRate) == 'number' && parseFloat(list.discountRate) < 10 ">({{parseFloat(list.discountRate)}}折)</small>
+                  </div>
                   <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
                   <div>卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
                   <div>折扣：<strong>{{parseFloat(order.discount)>0?parseFloat(order.discount).toFixed(2):'0.00'}}</strong></div>
@@ -105,7 +107,8 @@
                 <div class="look_d" @click="changePay(order)">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange priceAll am-ft-22 mgb10">{{order.moneyPaid}}</div>
+                <div class="am-ft-orange priceAll am-ft-22 mgb10">{{(parseFloat(order.moneyAmount)-parseFloat(order.moneyPaid)).toFixed(2)}}
+                </div>
                 <div class="button">
                   <el-button type="primary" v-on:click="changePay(order)" >收银</el-button>
                 </div>
@@ -122,7 +125,7 @@
             layout="prev, pager, next"
             :page-size="5"
             :total="Number(count)"
-            @current-change="getOrderList"
+            @current-change="getOrderList(3)"
             :current-page.sync="nub">
           </el-pagination>
         </div>
@@ -146,70 +149,55 @@
             </tr>
             </thead>
             <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
-            <tr class="order_header">
-              <td colspan="9">
-                <div class="fn-left">
-                  <!-- <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
-                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span> -->
-                  <span class="order_id">{{order.orderNo}}</span>
-                  <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
-                  <!-- <span v-else class="sign_orange">跨店签批</span> -->
-                  <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
-                </div>
-                <div class=" fn-right">
-                  <span class="msg">销售：&nbsp;</span>
-                  <span class="msg">{{order.salesName}}&nbsp;&nbsp;&nbsp;{{order.orderTime}}</span>
-                </div>
-              </td>
-            </tr>
-            <tr v-for="(list,index) in order.orderItems" :key="list.name">
-              <td>{{list.itemId}}</td>
-              <td>{{list.itemName||'商品名'}}</td>
-              <td>{{parseInt(list.quantity)}}</td>
-              <td>{{parseFloat(list.price)||'商品原单价'}}</td>
-              <td><strong>{{parseFloat(list.money)||'商品实售单价'}}</strong></td>
-              <td>{{order.shopName}}</td>
-              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
-                <div class="order_price_box">
-                  <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
-                  <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
-                  <div>卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
-                  <div>折扣：<strong>{{parseFloat(order.discount)>0?parseFloat(order.discount).toFixed(2):'0.00'}}</strong></div>
-                  <div>活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
-                  <div class=" am-ft-16">已收:<strong>{{parseFloat(order.moneyPaid)>0?parseFloat(order.moneyPaid).toFixed(2):'0.00'}}</strong></div>
-                </div>
-              </td>
-              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-red">
-                  <span v-if="order.status == 0 " >初始状态</span>
-                  <span v-if="order.status ==  1" >审核中</span>
-                  <span v-if="order.status ==  2" >审核完成</span>
-                  <span v-if="order.status ==  3" >记账</span>
-                  <span v-if="order.status ==  4" >部分付款</span>
-                  <span v-if="order.status ==  5" >已付款</span>
-                  <span v-if="order.status ==  6" >已完成</span>
-                  <span v-if="order.status ==  7" >已关闭</span>
-                  <span v-if="order.status ==  8" >已冲红</span>
-                  <span v-if="order.status ==  9" >已经删除</span>
-                  <span v-if="order.status ==  10" >退货</span>
-                  <span v-if="order.status ==  51" >待发单</span>
-                  <span v-if="order.status ==  52" >待发料</span>
-                  <span v-if="order.status ==  53" >待装配</span>
-                  <span v-if="order.status ==  54" >待检验</span>
-                  <span v-if="order.status ==  55" >待配送</span>
-                  <span v-if="order.status ==  56" >待收单</span>
-                  <span v-if="order.status ==  57" >代取件</span>
-                </div>
-                <div class="look_d" @click="changePay(order)">查看详情</div>
-              </td>
-              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange priceAll">{{order.moneyAmount}}</div>
-                <div class="button">
-                  <el-button type="primary" v-on:click="changePay(order)">收银</el-button>
-                </div>
-              </td>
-            </tr>
-            <div class="gekai"></div>
+                <tr class="order_header">
+                  <td colspan="9">
+                    <div class="fn-left">
+                      <!-- <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
+                      <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span> -->
+                      <span class="order_id">{{order.orderNo}}</span>
+                      <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
+                      <!-- <span v-else class="sign_orange">跨店签批</span> -->
+                      <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
+                    </div>
+                    <div class=" fn-right">
+                      <span class="msg">销售：&nbsp;</span>
+                      <span class="msg">{{order.salesName}}&nbsp;&nbsp;&nbsp;{{order.orderTime}}</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr   v-for="(list,index) in order.orderItems" :key="list.name">
+                  <td>{{list.itemId}}</td>
+                  <td>{{list.itemName||'商品名'}}</td>
+                  <td>{{parseInt(list.quantity)}}</td>
+                  <td>{{parseFloat(list.price)||'商品原单价'}}</td>
+                  <td><strong>{{parseFloat(list.money)}}</strong></td>
+                  <td>{{order.shopName}}</td>
+                  <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
+                    <div class="order_price_box">
+                      <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}
+                        <small v-if="order.roundOffFlag == '0' && typeof parseFloat(list.discountRate) == 'number' && parseFloat(list.discountRate) < 10 ">({{parseFloat(list.discountRate)}}折)</small>
+                      </div>
+                      <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
+                      <div>卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                      <div>折扣：<strong>{{parseFloat(order.discount)>0?parseFloat(order.discount).toFixed(2)+'(会员)':'0.00'}}</strong></div>
+                      <div>活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                      <div class=" am-ft-16">已收:<strong>{{parseFloat(order.moneyPaid)>0?parseFloat(order.moneyPaid).toFixed(2):'0.00'}}</strong></div>
+                    </div>
+                  </td>
+                  <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                    <div class="am-ft-red">
+                        {{order.statusName}}
+                    </div>
+                    <div class="look_d" @click="changePay(order)">查看详情</div>
+                  </td>
+                  <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                    <div class="am-ft-orange priceAll">{{(parseFloat(order.moneyAmount)-parseFloat(order.moneyPaid)).toFixed(2)}}</div>
+                    <div class="button">
+                      <el-button type="primary" v-on:click="changePay(order)">收银</el-button>
+                    </div>
+                  </td>
+                </tr>
+                <div class="gekai"></div>
             </tbody>
           </table>
           <el-pagination
@@ -218,7 +206,7 @@
             layout="prev, pager, next"
             :page-size="5"
             :total="Number(count)"
-            @current-change="getOrderList"
+            @current-change="getOrderList(4)"
             :current-page.sync="nub">
           </el-pagination>
         </div>
@@ -280,7 +268,7 @@
             <el-table-column
               label="操作">
               <template slot-scope="scope">
-                <span class="am-ft-blue" @click="showCashier = true">查看详情</span>
+                <span class="am-ft-blue" @click="showCashier = true;changePay(scope.row)">查看详情</span>
               </template>
             </el-table-column>
           </el-table>
@@ -299,7 +287,7 @@
 
     <!--收银弹窗-->
     <el-dialog title="收银" :visible.sync="showCashier">
-      <CashierModal :datas="payData"></CashierModal>
+      <CashierModal :datas="payData" @closePayMoney="showCashier=false"></CashierModal>
     </el-dialog>
     <!--打印取货单弹窗-->
     <el-dialog custom-class="noheader" title="" :visible.sync="consoleCashier">
@@ -336,22 +324,25 @@
         tabs: [{
             'value': '收银',
             'isActived': true,
-            'srcNum': '1'
+            'srcNum': '1',
+            'status':'3'
           },
           {
             'value': '欠还款',
             'isActived': false,
-            'srcNum': '2'
+            'srcNum': '2',
+            'status':'4'
           },
           {
             'value': '全部',
             'isActived': false,
-            'srcNum': '3'
+            'srcNum': '3',
+            'status':''
           }],
       }
     },
     created(){
-      this.getOrderList();
+      this.getOrderList(3);
     },
     methods: {
       changeTab: function (item) {
@@ -369,9 +360,14 @@
       },
       //开启弹窗
       openDialog(){
+
       },
       //获取列表
-      getOrderList: function () {
+      getOrderList: function (value) {
+        let status = null;
+        if(value == 3 || value == 4){
+           status = value
+        }
         var that = this;
         setTimeout(() => {
           that.$axios({
@@ -380,7 +376,8 @@
             params: {
               jsonObject: {
                 nub:that.nub==1?0:(that.nub-1)*that.size,
-                size:that.size
+                size:that.size,
+                status: status
               },
               keyParams: {
                 weChat: true
@@ -570,6 +567,9 @@
     font-size: 16px;
     color: #333333;
     letter-spacing: 0;
+    small{
+      font-size: 12px;
+    }
   }
 
   .gekai {

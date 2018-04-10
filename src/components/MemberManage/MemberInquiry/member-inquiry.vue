@@ -400,27 +400,14 @@ export default {
       var _this = this;
       let seaStr = _this.searchStr;
       this.searchStr = removeAllSpace( this.searchStr, 'g');//去空格
-      console.log(this.searchStr)
-      let phones, names, memberCardNos;
-      if (reg.RegTest.phone(seaStr)) {//电话号
-        phones = seaStr;
-        console.log('手机号')
-      } else if (reg.RegTest.chcn(seaStr)) {//纯中文姓名
-        names = seaStr
-        console.log('姓名')
-      } else {//卡类型未定
-        memberCardNos = seaStr
-        console.log('卡号')
-      }
       this.$axios({
           url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang ",
           method: "post",
           params: {
             jsonObject: {
-              // _this.searchStr
-              telphone: phones,
-              name: names ,
-              memberCardNo: memberCardNos
+              seachCode:_this.searchStr,
+              nub:_this.nub,
+              size:_this.size
             },
             keyParams: {
               weChat: true,

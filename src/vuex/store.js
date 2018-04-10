@@ -1,47 +1,27 @@
 import Vue from 'vue'
 import Vuex from 'vuex';
 import * as types from './mutation-types'
-// import mutations from './mutation/mutations'
 import * as actions from './action/action'
-// import * as getters from './getter/getters'
 import {cookie} from '../utils/cookie'
 
 Vue.use(Vuex)
 
 //存储数据
 const state = {
-  //顶部NAVtop导航
-  // item: [
-  //   {
-  //     text: "首页",
-  //     name: "Home",
-  //     url: "/base/homeIndex",
-  //     isActive: true
-  //   }
-  // ],
-  num:10086,
-  accessKey: cookie.getCookie('accessKey')||'',
+  // count:10086,
+  token: localStorage.getItem('token')||'',//用户秘钥token
   bool:false
 }
 
 const mutations = {
-  [types.CHANGE_STATE](state){
-    state.count++
-  },
-  // [types.PUSH_ITEM](state, dataObj){
-  //   state.item.push({
-  //       text: data.text,
-  //       name: data.name,
-  //       url: data.link,
-  //       isActive: data.line
-  //   })
+  // [types.CHANGE_STATE](state){
+  //   state.count++
   // },
-  add(state){
-    state.num +=1;
+  [types.LOGIN_LOCAL_STORAGE](state,datas){//更新用户token
+    state.token = datas;
+    localStorage.setItem('token',state.token);//存储用户token
   },
-  increment(state){  
-    state.num += 2;  
-}, 
+
 }
 
 const getters ={
