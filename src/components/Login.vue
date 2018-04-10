@@ -105,7 +105,8 @@ export default {
         if(res.status == '200'){
           if(res.data.code ==  1 && res.data.msg == "登录成功"){
             console.log(res.data.data)
-              _this.$store.commit('LOGIN_LOCAL_STORAGE',res.data.data.user.token)
+              _this.$store.commit('LOGIN_LOCAL_STORAGE',res.data.data.user.token);
+              _this.goHome();
           }else{
               _this.dialogVisible = true
               console.log(res)
