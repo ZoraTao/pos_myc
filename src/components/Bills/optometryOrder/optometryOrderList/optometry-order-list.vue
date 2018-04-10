@@ -45,7 +45,7 @@
                     未查询到验光单
                 </li> -->
                 <li>
-                <button class="add_btn bg_white_col_blue">
+                <button class="add_btn bg_white_col_blue" @click="showNewOptometry=true">
                 + 新增验光单
               </button>
                 </li>
@@ -106,7 +106,7 @@
         <optometryOrderCu :memberDet="''" :memberInfo="detailData" :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
     </div>
     <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="900px">
-        <NewOptometryModal :submit="submitNewOptometry" @modalSuccess="modalSuccess"></NewOptometryModal>
+        <NewOptometryModal :submit="submitNewOptometry" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
         <div class="packageDetailButtonGroup">
             <el-button @click="showNewOptometry = false">取 消</el-button>
             <el-button type="primary" @click="submitNewOptometry=true">保 存</el-button>
@@ -145,8 +145,8 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
             NewOptometryModal
         },
         created: function() {
-            const isFirst = true;
-            this.getOrderList(isFirst);
+            // const isFirst = true;
+            // this.getOrderList(isFirst);
         },
         methods:{
             getOrderList(isFirst) {
@@ -201,7 +201,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                             that.noSearchText="未查询到验光单"
                         }
                     })
-                    }, 0);
+                }, 0);
             },
             getMemberDetail(id) {
                 var that = this;
@@ -222,10 +222,19 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 .then(function (response) {
                     that.detailData=response.data.data.prescriptions;
                     that.eyesData=response.data.data.eyes;
+                    that.$router.push({
+                        path: '/bills/optometryOrderCu',
+                        name: 'optometryOrderCu',
+                        params: {
+                            detailData:response.data.data.member,
+                            eyesData:response.data.data
+                        }
+                    });
                 })
-            },
-            modalSuccess(){
-                this.showNewOptometry = false;
+            },              
+            getNewoptometry(){
+                this.showNewOptometry=false;      
+                this.getOrderList();        
             }
         }
     };

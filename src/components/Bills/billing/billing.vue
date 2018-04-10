@@ -56,7 +56,7 @@
                 </el-form>
             </div>
         </div>
-        <div class="borderfff mgt5 am_bg_white flex3">
+        <div class="borderfff mgt5 am_bg_white flex5">
             <div class="salesSuggest">
                 <el-table
                     :data="tableData"
@@ -582,7 +582,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     selectM:'',
                     memberInfo:null//会员信息
                 },
-                saleCount:'0',//合计
+                saleCount:'0.00',//合计
                 // receivable:'',//应收金额
                 actionSale:0,//活动金额
                 numCount:0,//件数
@@ -1089,6 +1089,10 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                                 delete element.value[0].perscriptionType;
                                 delete element.value[0].prescriptionId;
                                 delete element.value[0].prescriptionEye;
+                                delete element.value[0].nub;
+                                delete element.value[0].size;
+                                delete element.value[1].nub;
+                                delete element.value[1].size;
                                 delete element.value[1].prescriptionEye;
                                 delete element.value[1].leftRight;
                                 delete element.value[1].perscriptionType;

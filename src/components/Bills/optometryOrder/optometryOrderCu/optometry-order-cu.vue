@@ -12,11 +12,11 @@
         <ul class="optometry_head_msg">
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">手机号:</span>{{userInfo.mobile}}</li>
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">姓名:</span>&nbsp;{{userInfo.memberName}}</li>
-          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;{{memberInfo.memberCardNo}}</li>
+          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;{{memberInfo.memberCardNo?memberInfo.memberCardNo:userInfo.memberCardNo}}</li>
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">性别 :</span>&nbsp;<em
             v-if="memberInfo.sex=='M'">男</em>
             <em v-else>女</em></li>
-          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">出生年月 :</span>&nbsp;{{memberInfo.birthday}}</li>
+          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">出生年月 :</span>&nbsp;{{memberInfo.birthday?memberInfo.birthday:userInfo.birthday}}</li>
         </ul>
 
         <div class="glass_combination">
@@ -268,13 +268,20 @@
     },
     props: ['memberDet', 'memberInfo','eyes'],
     created: function () {
-      console.log(this.eyes&&this.eyes!='')
-      if(this.eyes&&this.eyes!=''){
-        this.eyesData=this.eyes;
-        this.userInfo=this.memberInfo;
-        this.setData();
+      if(this.$route.params!=''&&this.$route.params!=null){
+          // console.log(this.$route.params.eyesData.eyes)
+          // debugger;
+          this.eyesData=this.$route.params.eyesData.eyes;
+          this.userInfo=this.$route.params.eyesData.prescriptions;
+          this.setData();        
       }else{
-        this.getOptometryRecord();
+        if(this.eyes&&this.eyes!=''){
+          this.eyesData=this.eyes;
+          this.userInfo=this.memberInfo;
+          this.setData();
+        }else{
+          this.getOptometryRecord();
+        }
       }
     },
     mounted(){
