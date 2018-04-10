@@ -94,7 +94,7 @@ const router = new Router({
           component: resolve => require(['../components/Bills/optometryOrder/optometryOrderList/optometry-order-list.vue'], resolve)
         },
         {
-          path: 'optometryOrderCu',
+          path: 'optometryOrderCu/:data',
           name: 'optometryOrderCu',
           component: resolve => require(['../components/Bills/optometryOrder/optometryOrderCu/optometry-order-cu.vue'], resolve)
         }]

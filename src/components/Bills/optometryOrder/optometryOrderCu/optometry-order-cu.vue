@@ -12,11 +12,11 @@
         <ul class="optometry_head_msg">
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">手机号:</span>{{userInfo.mobile}}</li>
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">姓名:</span>&nbsp;{{userInfo.memberName}}</li>
-          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;{{memberInfo.memberCardNo?memberInfo.memberCardNo:userInfo.memberCardNo}}</li>
+          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;{{cpMemberInfo.memberCardNo}}</li>
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">性别 :</span>&nbsp;<em
-            v-if="memberInfo.sex=='M'">男</em>
+            v-if="cpMemberInfo.sex=='M'">男</em>
             <em v-else>女</em></li>
-          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">出生年月 :</span>&nbsp;{{memberInfo.birthday?memberInfo.birthday:userInfo.birthday}}</li>
+          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">出生年月 :</span>&nbsp;{{cpMemberInfo.birthday}}</li>
         </ul>
 
         <div class="glass_combination">
@@ -151,11 +151,11 @@
           </ul>
           <ul class="eye_healthy">
             <li class="wid80 fn-left">眼部健康</li>
-            <li class="data_li">上下眼睑：<span>{{userInfo.health.k1}}</span></li>
-            <li class="data_li">角膜：<span>{{userInfo.health.k2}}</span></li>
-            <li class="data_li">结膜：<span>{{userInfo.health.k3}}</span></li>
-            <li class="data_li">泪腺：<span>{{userInfo.health.k4}}</span></li>
-            <li class="data_li">其他：<span>{{userInfo.health.k5}}</span></li>
+            <li class="data_li">上下眼睑：<span>{{userInfo.health?JSON.parse(userInfo.health).k1:''}}</span></li>
+            <li class="data_li">角膜：<span>{{userInfo.health?JSON.parse(userInfo.health).k2:''}}</span></li>
+            <li class="data_li">结膜：<span>{{userInfo.health?JSON.parse(userInfo.health).k3:''}}</span></li>
+            <li class="data_li">泪腺：<span>{{userInfo.health?JSON.parse(userInfo.health).k4:''}}</span></li>
+            <li class="data_li">其他：<span>{{userInfo.health?JSON.parse(userInfo.health).k5:''}}</span></li>
           </ul>
 
 
@@ -255,34 +255,32 @@
     name: "optometryOrderCu",
     data() {
       return {
+        cpMemberInfo:{
+          memberCardNo:'',
+          sex:'',
+          birthday:''
+        },
         eyesData: [],//验光数据
-        userInfo: '',//验光人信息
-        data1: '', //检影数据
-        data2: '',//主观数据
-        data3: '',//远用数据
-        data4: '', //近用数据
-        data5: '', //隐形数据
-        data6: '', //渐进数据
+        userInfo: {},//验光人信息
+        data1: [{},{}], //检影数据
+        data2: [{},{}],//主观数据
+        data3: [{},{}],//远用数据
+        data4: [{},{}], //近用数据
+        data5: [{},{}], //隐形数据
+        data6: [{},{}], //渐进数据
         showDiv: "2",
       };
     },
     props: ['memberDet', 'memberInfo','eyes'],
     created: function () {
-      if(this.$route.params!=''&&this.$route.params!=null){
-          // console.log(this.$route.params.eyesData.eyes)
-          // debugger;
-          this.eyesData=this.$route.params.eyesData.eyes;
-          this.userInfo=this.$route.params.eyesData.prescriptions;
-          this.setData();        
-      }else{
         if(this.eyes&&this.eyes!=''){
           this.eyesData=this.eyes;
           this.userInfo=this.memberInfo;
+          this.cpMemberInfo=this.memberInfo;
           this.setData();
         }else{
           this.getOptometryRecord();
         }
-      }
     },
     mounted(){
       // console.log(this.$route.params.data.memberId)
@@ -291,7 +289,7 @@
       getOptometryRecord() {
         var that = this;
         that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately ',
+          url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately',
           method: 'post',
           params: {
             jsonObject: {
@@ -306,6 +304,7 @@
             // console.info(response.data.data)
             that.eyesData = response.data.data.eyes; //左右眼数据
             that.userInfo = response.data.data.prescriptions; //检查数据
+            that.cpMemberInfo=response.data.data.member;
             //检影数据
             that.setData()
           })
