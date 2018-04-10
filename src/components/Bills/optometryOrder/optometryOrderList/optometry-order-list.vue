@@ -138,6 +138,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 count: 0,
                 nub: 1,
                 size: 15,
+                
             };
         },
         components:{

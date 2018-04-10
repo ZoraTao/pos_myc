@@ -55,7 +55,6 @@ const allDate = {
                     : ("00" + o[k]).substr(("" + o[k]).length));
             }
         }
-        console.log(format)
         return format;
     },
     timeToTime(startTime, endTime) {

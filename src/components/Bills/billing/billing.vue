@@ -5,7 +5,7 @@
             <div class="salesclerkInfo">
                 <el-form ref="form">
                     <el-form-item label="销售员 :">
-                        <el-select size="mini" v-model="shopMember" placeholder="请选择" @visible-change="getPrivateSelect()">
+                        <el-select size="mini" class="placeHolder" v-model="shopMember" placeholder="请选择" @visible-change="getPrivateSelect()">
                             <el-option
                             v-for="item in options"
                             :key="item.userId"
@@ -17,7 +17,9 @@
                     <el-form-item label="补单日期 :">
                         <el-date-picker
                         v-model="orderTemp.singleSupTime"
+                        class="placeHolder"
                         align="left" 
+                        style="width: 130px;"
                         placeholder="选择日期">
                         </el-date-picker>
                     </el-form-item>  
@@ -243,7 +245,7 @@
             <div class="fn-right">
                 <el-button type="primary">重置</el-button>
                 <el-button type="primary">挂单[F7]</el-button>
-                <el-button type="primary" @click="addOrderTemp">开单[F5]</el-button>
+                <button type="primary" @click="addOrderTemp">开单[F5]</button>
             </div>
         </div>
     </div>
@@ -531,6 +533,7 @@ import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
 import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
 
     export default {
+        
         name: "billing",
         data() {
             return {
@@ -577,7 +580,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 submitNewOptometry:false,//控制 提交验光单子组件传值
                 includeOptometryData:null,//保存即将录入验光单信息 作为验光单数据副本
                 amountSale:'',//原价合计
-                optometryData:null,//验光单数据
+                optometryData:[],//验光单数据
                 selectMember:{//选择会员数据集合
                     selectM:'',
                     memberInfo:null//会员信息
@@ -643,6 +646,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             ReprintModal,
             AddMember
         },
+        
         methods:{
             //打开优惠券
             openCouponBarCode(){
@@ -652,15 +656,15 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 }else{
                     this.$message({
                         showClose: true,
-                        message: '用户数据获取失败！',
+                        message: '用户数据获取失败，请先选择用户',
                         type: 'error'
                     })                    
                 }
             },
             //获取销售人员
             getPrivateSelect(type,options){
-                var that = this;
-                that.$axios({
+                var _this = this;
+                _this.$axios({
                     url: 'http://myc.qineasy.cn/cas-api/user/getUserByOrg',
                     method: 'post',
                     params: {
@@ -676,7 +680,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     }
                 })
                 .then(function (response) {                    
-                    that.options=response.data.data.list;
+                    _this.options=response.data.data.list;
                 })  
             },
             //双击删除表格td
@@ -693,8 +697,8 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             },
             //获取取镜公司
             getCompanyList(){
-                var that = this;
-                that.$axios({
+                var _this = this;
+                _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/shopBy/getShopByList',
                     method: 'post',
                     params: {
@@ -708,7 +712,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     }
                 })
                 .then(function (response) {                    
-                    that.publicSelcet.comTypeOptions=response.data.data.shopByList;
+                    _this.publicSelcet.comTypeOptions=response.data.data.shopByList;
                 })  
             },
             //获取公共select options
@@ -718,8 +722,8 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 }else{
                     console.log("2")
                 }
-                var that = this;
-                that.$axios({
+                var _this = this;
+                _this.$axios({
                     url: 'http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList',
                     method: 'post',
                     params: {
@@ -737,7 +741,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     }
                 })
                 .then(function (response) {                    
-                    that.selectOptions=response.data.data.list;
+                    _this.selectOptions=response.data.data.list;
                 })   
             },
             //选择镜片 商品
@@ -748,14 +752,14 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         message: '验光单获取失败!',
                             type: 'error'
                     })                    
-                    return false;
+                    // return false;
                 }
-                var that=this;
+                var _this= this;
                 var sph ='';
                 var cyl ='';
                 var add ='';
-                // Object.keys(that.selectProductSku).forEach(element => {
-                //    that.selectProductSku[element]
+                // Object.keys(_this.selectProductSku).forEach(element => {
+                //    _this.selectProductSku[element]
                 // });
                 this.selectProductSku.wareh='';
                 this.selectProductSku.cylinder='';
@@ -766,7 +770,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 if(type&&type==1){
                     this.showSelectRH=true;
                     this.selectProductSku.title="选择右镜片";
-                    this.selectProductSku.cylinder=that.selectProductSku.selectR;
+                    this.selectProductSku.cylinder=_this.selectProductSku.selectR;
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
                             if(this.optometryData[i].value[0].sph!=''){
@@ -780,7 +784,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 }else if(type==2){
                     this.showSelectRH=true;
                     this.selectProductSku.title="选择左镜片"
-                    this.selectProductSku.cylinder=that.selectProductSku.selectL;
+                    this.selectProductSku.cylinder=_this.selectProductSku.selectL;
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
                             if(this.optometryData[i].value[0].sph!=''){
@@ -793,11 +797,11 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     }
                 }else if(type==3){
                     this.showSelectShop=true;
-                    this.selectProductSku.cylinder=that.selectProductSku.selectSP;
+                    this.selectProductSku.cylinder=_this.selectProductSku.selectSP;
                 }else if(type==null){
                 }else{
                 }
-                that.$axios({
+                _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/productSku/list',
                     method: 'post',
                     params: {
@@ -821,7 +825,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     }
                 })
                 .then(function (response) {
-                    that.selectProductSku.productSkuData=response.data.data;
+                    _this.selectProductSku.productSkuData=response.data.data;
                 })                 
 
             },
@@ -829,8 +833,8 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 this.selectProductSku.wareh=value.wareh||"";
                 this.selectProductSku.product=value.product||"";
                 this.selectProductSku.categoryCode=value.categoryCode||"";
-                var that = this;
-                that.$axios({
+                var _this = this;
+                _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/productSku/list',
                     method: 'post',
                     params: {
@@ -854,7 +858,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     }
                 })
                 .then(function (response) {
-                    that.selectProductSku.productSkuData=response.data.data;
+                    _this.selectProductSku.productSkuData=response.data.data;
                 })                       
             },
             getProductSku(info){
@@ -916,8 +920,8 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             },
             //获取用户最后一次验光单信息
             getOptometryRecord() {
-                var that = this;
-                that.$axios({
+                var _this = this;
+                _this.$axios({
                 url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately',
                 method: 'post',
                 params: {
@@ -931,17 +935,19 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 })
                 .then(function (response) {
                     if(response.data.code==1&&response.data.data.eyes.length>0){
-                        that.showSelectMember=false;
-                        that.isOptometryDialogVisible=true;
-                        that.optometryData=response.data.data.eyes;
-                        that.optometryId=response.data.data.prescriptions.prescriptionId;
-                        that.optometryTime=response.data.data.prescriptions.prescriptionTime;
+                        _this.showSelectMember=false;
+                        _this.isOptometryDialogVisible=true;
+                        _this.optometryData=response.data.data.eyes;
+                        _this.optometryId=response.data.data.prescriptions.prescriptionId;
+                        _this.optometryTime=response.data.data.prescriptions.prescriptionTime;
                     }else{
-                        that.$message({
+                        _this.$message({
                             showClose: true,
                             message: response.data.msg,
                                 type: 'error'
-                        })                        
+                        });
+                        _this.includeOptometryData = null;
+                        _this.showSelectMember = false ;                        
                     }
                 })
                 .catch(function (error) {
@@ -950,15 +956,15 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             },
             //回车查询会员
             key13GetMemberInfo(){
-                var that=this;
+                var _this=this;
                 setTimeout(() => {
-                    if(that.selectMember.selectM.length==11){
-                        that.$axios({
+                    if(_this.selectMember.selectM.length==11){
+                        _this.$axios({
                             url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
                             method: 'post',
                             params: {
                                 jsonObject: {
-                                    seachCode:that.selectMember.selectM,
+                                    seachCode:_this.selectMember.selectM,
                                 },
                                 keyParams: {
                                     weChat: true,
@@ -970,11 +976,11 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         .then(function (response) {
                             if(response.data.code==1){
                                 // console.log(response)
-                                // that.isOptometryDialogVisible = false;
-                                // that.includeOptometry()
-                                that.getMemberInfo(response.data.data.memberList[0])
+                                // _this.isOptometryDialogVisible = false;
+                                // _this.includeOptometry()
+                                _this.getMemberInfo(response.data.data.memberList[0])
                             }else{
-                                that.$message({
+                                _this.$message({
                                     showClose: true,
                                     message: '会员信息获取失败',
                                         type: 'error'
@@ -991,6 +997,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 this.conpon();
                 if(value){
                     this.getOptometryRecord();
+
                 }
             },
             //使用优惠券
@@ -1074,10 +1081,10 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             },
             //录入验光单信息
             includeOptometry(){
-                var that=this;
-                if(that.optometryData!=null){
+                var _this=this;
+                if(_this.optometryData!=null){
                     var tableArr=[];
-                    that.optometryData.forEach(element => {
+                    _this.optometryData.forEach(element => {
                         // console.log(object.keys(element.value[0]))
                         if(element.key!="0"){
                         var tArr=[];
@@ -1129,19 +1136,22 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                             default:
                                 break;
                         }
-                        tableArr.push({item:tArr,name:name})
+                        if(name != "主观"){
+                            tableArr.push({item:tArr,name:name})
+                        }
                         }
                     });
-                    that.includeOptometryData=tableArr;
+                    if(tableArr)
+                    _this.includeOptometryData=tableArr;
                 }
             },
             //添加会员 子组件返回事件 提交表单信息
             memberAddSubmit: function (formdata) {
             //data为从子组件取到的数据
-                var that = this;
-                that.isSubmit = !that.isSubmit;
+                var _this = this;
+                _this.isSubmit = !_this.isSubmit;
                 if (formdata.name != '' && formdata.telphone != '' && formdata.birthday != '' && formdata.sex != '') {
-                    that.$axios({
+                    _this.$axios({
                         url: 'http://myc.qineasy.cn/member-api/member/addMember',
                         method: 'post',
                         params: {
@@ -1155,16 +1165,16 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     })
                     .then(function (response) {
                         if (response.data.code != '1') {
-                            that.$message({
+                            _this.$message({
                                 showClose: true,
                                 message: '请求数据出问题喽，请重试！',
                                 type: 'error'
                             })
                             return false;
                         } else {
-                            that.addMember = false;
-                            that.MemberInfoForAdd(response.data.data.memberId)
-                            that.$message({
+                            _this.addMember = false;
+                            _this.MemberInfoForAdd(response.data.data.memberId)
+                            _this.$message({
                                 showClose: true,
                                 message: '新增会员成功',
                                 type: 'success'
@@ -1173,14 +1183,14 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     })
                     .catch(function (error) {
                         console.info(error)
-                        that.$message({
+                        _this.$message({
                             showClose: true,
                             message: error,
                             type: 'error'
                         })
                     })
                 } else {
-                    that.$message({
+                    _this.$message({
                         showClose: true,
                         message: '请输入完整信息',
                         type: 'error'
@@ -1189,8 +1199,8 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             },
             //新增验光单后获取用户信息录入到页面
             MemberInfoForAdd(memberId){
-                var that=this;
-                that.$axios({
+                var _this=this;
+                _this.$axios({
                     url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
                     method: 'post',
                     params: {
@@ -1206,9 +1216,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 })
                 .then(function (response) {
                     if(response.data.code==1){
-                        that.getMemberInfo(response.data.data.memberList[0]);
+                        _this.getMemberInfo(response.data.data.memberList[0]);
                     }else{
-                        that.$message({
+                        _this.$message({
                             showClose: true,
                             message: '会员信息获取失败',
                                 type: 'error'
@@ -1225,7 +1235,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         message: '会员信息获取失败',
                             type: 'error'
                     })                    
-                    return false;
+                    // return false;
                 }
                 if(!this.optometryId){
                     _this.$message({
@@ -1233,7 +1243,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         message: '验光单信息获取失败',
                             type: 'error'
                     })                    
-                    return false;
+                    // return false;
                 }
                 var orderItemsList=[];
                 for(var item in this.tableData){
@@ -1256,9 +1266,18 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     })                        
                     return false;
                 }
-                var jsonObject=
+                var memberId = null;//会员id
+                if(_this.selectMember.memberInfo){
+                    memberId = _this.selectMember.memberInfo.memberId
+                }
+                var memberDiscount = 10;//会员卡折扣  游客默认10 满折
+                if(_this.selectMember.memberInfo){
+                    console.log(this.selectMember.memberInfo)
+                    memberDiscount = (parseFloat(this.selectMember.memberInfo.discount*10)).toFixed(2)
+                }
+                var jsonObject =
                 {
-                    memberId : this.selectMember.memberInfo.memberId,//会员id
+                    memberId : memberId,//会员id
                     prescriptionsId  : this.optometryId,//验光单id
                     urgent : (this.orderTemp.urgent).toString(),//是否加急
                     glassesTime : this.orderTemp.glassesTime,//取镜时间
@@ -1268,7 +1287,6 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     saleMemo : this.orderTemp.saleMemo||'销售备注',//销售备注
                     processMemo : this.publicSelcet.processMemo||'加工备注',//加工备注
                     specialMemo : this.publicSelcet.specialMemo||'特殊备注',//特殊备注
-                    // roundOffFlag : this.orderTemp.roundOffFlag,//取整表示
                     couponDetailId : this.orderTemp.couponDetailId,//优惠券id
                     moneyProduct:(parseFloat(this.amountSale)).toFixed(2),//原价合计
                     moneyAmount:(parseFloat(this.saleCount)).toFixed(2),//应付
@@ -1278,7 +1296,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     cardDiscount:this.memberShipDisCount,//会员折扣
                     discountFlag:this.discountFlag,//是否使用会员折扣
                     roundOffFlag:this.allDisCount==''?'1':'0',//整单折扣 取整标识 0使用 1不用
-                    decimal : (parseFloat(this.selectMember.memberInfo.discount*10)).toFixed(2),//会员卡折扣
+                    decimal : memberDiscount,//会员卡折扣
                     couponMoney : this.conponResponse.couponAmount||'0',//卡券优惠金额
                     process : this.orderTemp.process,//加工费
                     service : this.orderTemp.service,//服务费
@@ -1310,10 +1328,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                             message: '开单成功',
                             type: 'success'
                         });
-                        debugger
-                        setTimeout(function(){
-                            location.reload();
-                        },1000)
+                        let orderId = response.data.data.orderId;
+                        _this.$bus.emit('startPayOrderMoney',orderId);
+                        _this.$router.push({path:'/cashier/cashierList'})
                     }
                 })                   
             }
@@ -1321,8 +1338,13 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
         computed:{
            
         },
+        beforeDestory(){
+            _this.$bus.off('startPayOrderMoney',orderId);
+        },
         watch:{
-            
+           memberShipDisCount(newValue,oldValue){
+               console.log(newValue,oldValue)
+           } 
         }
     };
 </script>
@@ -1339,4 +1361,22 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
         }
         input[type="number"]{-moz-appearance:textfield;}
     }
+    .placeHolder{
+            input::input-placeholder{color:#606266!important;} 
+            input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { 
+            color: #606266!important; 
+            } 
+            input:-moz-placeholder, textarea:-moz-placeholder { 
+            color: #606266!important; 
+            } 
+            input::-moz-placeholder, textarea::-moz-placeholder { 
+            color: #606266!important; 
+            } 
+            input:-ms-input-placeholder, textarea:-ms-input-placeholder { 
+            color: #606266!important; 
+            } 
+            .el-input__inner{
+                width: 150px;
+            }
+        }
 </style>

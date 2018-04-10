@@ -14,7 +14,7 @@
         <!--body-top-->
         <div class="clearfix modal-content-top">
             <el-table
-                :data="selectProductSku.productSkuData.skulist"
+                :data="selectProductSku.productSkuData.list"
                 size="small"
                 align="center"
                 style="width: 100%;margin-bottom:10px">
@@ -118,7 +118,8 @@ export default {
         this.$emit('rhtWareHouse',{wareh:this.value});
       }
   },
-  created:function(){
+  mounted:function(){
+      console.log(this.selectProductSku.productSkuData)
   }
 }
 </script>

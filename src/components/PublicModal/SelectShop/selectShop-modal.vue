@@ -44,7 +44,7 @@
         <!--body-top-->
         <div class="clearfix modal-content-top">
             <el-table
-                :data="selectProductSku.productSkuData.skulist"
+                :data="selectProductSku.productSkuData.list"
                 size="small"
                 align="left"
                 style="width: 100%;margin-bottom:10px">
@@ -55,7 +55,7 @@
                 </el-table-column>
                 <el-table-column
                 prop="skuName"
-                width="210px"
+                width="180px"
                 label="商品名称">
                 </el-table-column>
                 <el-table-column
@@ -131,14 +131,14 @@ export default {
         this.cpSelectProductSku=this.selectProductSku;
         this.$emit('getProductSku', this.cpSelectProductSku);
       },
-      getWareHouseList(){
-        var that = this;
-        if(that.options==''){
-            that.$axios({
+      getWareHouseList(){//查询仓库列表
+        var _this = this;
+        if(_this.options==''){
+            _this.$axios({
                 url: 'http://myc.qineasy.cn/pos-api/warehouse/getWarehouseList',
                 method: 'post',
                 params: {
-                    jsonObject: {           
+                    jsonObject: {   
                     },
                     keyParams: {
                         weChat: true,
@@ -147,8 +147,16 @@ export default {
                     }
                 }
             })
-            .then(function (response) {                    
-                that.options=response.data.data.list;
+            .then(function (response) {   
+                if(response.code == 1){
+                    _this.options=response.data.data.list;
+                }else{
+                    _this.$message({
+                        showClose: true,
+                        message: '会员信息获取失败',
+                        type: 'error'
+                    })
+                }               
             })  
         }
       },
@@ -162,38 +170,39 @@ export default {
             });
       },
       selectBrands(type){
-            var that = this;
+            var _this = this;
           var id = '';
           switch ((type).toString()) {
             case '1':
-                    that.typeOptions=[];
-                    that.brandsOptions=[];
-                    that.varietysOptions=[];
-                    that.typeValue='';
-                    that.brandsValue='';
-                    that.varietysValue='';
+                    _this.typeOptions=[];
+                    _this.brandsOptions=[];
+                    _this.varietysOptions=[];
+                    _this.typeValue='';
+                    _this.brandsValue='';
+                    _this.varietysValue='';
                   break;
             case '2':
                     id=this.typeValue;
-                    that.brandsOptions=[];
-                    that.varietysOptions=[];
-                    that.brandsValue='';
-                    that.varietysValue='';
+                    _this.brandsOptions=[];
+                    _this.varietysOptions=[];
+                    _this.brandsValue='';
+                    _this.varietysValue='';
                   break;
             case '3':
                     id=this.brandsValue;
-                    that.varietysOptions=[];
-                    that.varietysValue='';
+                    _this.varietysOptions=[];
+                    _this.varietysValue='';
                   break;
               default:
                   break;
           }
-            that.$axios({
+            _this.$axios({
                 url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
                 method: 'post',
                 params: {
                     jsonObject: {
-                        productCategoryId: id
+                        // productCategoryId: id
+                        warehouseId:_this.value        
                     },
                     keyParams: {
                         weChat: true
@@ -202,7 +211,7 @@ export default {
             })
           .then(function (response) {
             if (response.data.code != '1') {
-              that.$message({
+              _this.$message({
                 showClose: true,
                 message: '请求数据出问题喽，请重试！',
                 type: 'error'
@@ -211,13 +220,13 @@ export default {
             } else {
                 switch ((type).toString()) {
                     case '1':
-                        that.typeOptions=response.data.data.productCategoryList;
+                        _this.typeOptions=response.data.data.productCategoryList;
                         break;
                     case '2':
-                        that.brandsOptions=response.data.data.productCategoryList;
+                        _this.brandsOptions=response.data.data.productCategoryList;
                         break;
                     case '3':
-                        that.varietysOptions=response.data.data.productCategoryList;
+                        _this.varietysOptions=response.data.data.productCategoryList;
                         break;
                     default:
                         break;
@@ -227,7 +236,7 @@ export default {
           })
           .catch(function (error) {
             console.info(error);
-            that.$message({
+            _this.$message({
               showClose: true,
               message: '请求数据失败，请联系管理员',
               type: 'error'
