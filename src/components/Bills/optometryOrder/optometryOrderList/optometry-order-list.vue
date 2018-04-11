@@ -56,6 +56,7 @@
             <div class="list_name">验光列表(23)</div>
             <el-table
                 :data="listData"
+                stripe
                 size="small"
                 align="left"
                 style="width: 100%;margin-bottom:10px;">
@@ -105,7 +106,7 @@
         <!--验光单一条数据详情-->
         <optometryOrderCu :memberDet="''" :memberInfo="detailData" :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
     </div>
-    <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="900px">
+    <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="950px">
         <NewOptometryModal :submit="submitNewOptometry" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
         <div class="packageDetailButtonGroup">
             <el-button @click="showNewOptometry = false">取 消</el-button>

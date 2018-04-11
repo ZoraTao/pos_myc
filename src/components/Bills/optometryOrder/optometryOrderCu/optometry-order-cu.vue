@@ -66,7 +66,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list" v-if="data3[1].add !== ''">
+            <li class="clearfix combination_table_list" v-if="data4[0].sph !== ''">
               <ul>
                 <li class="fn-left msg_left">近用</li>
                 <li class="fn-left glass_table_770">
@@ -95,7 +95,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list">
+            <li class="clearfix combination_table_list" v-if="data5[0].sph !== ''">
               <ul>
                 <li class="fn-left msg_left">隐形</li>
                 <li class="fn-left glass_table_770">
@@ -118,7 +118,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list">
+            <li class="clearfix combination_table_list" v-if="data6[0].sph !== ''">
               <ul>
                 <li class="fn-left  msg_left">渐进</li>
                 <li class="fn-left glass_table_770">
@@ -159,7 +159,7 @@
           </ul>
 
 
-          <ul class="glass_combination_table">
+          <ul class="glass_combination_table" v-if="data1[0].sph !== ''">
             <li class="clearfix combination_table_list">
               <ul class="glass_table_head">
                 <li class="wid80"> &nbsp;&nbsp;</li>
@@ -171,7 +171,7 @@
                 <li class="w90">PD</li>
                 <li class="w90">ADD</li>
               </ul>
-              <ul>
+              <ul v-if="data1[0].sph !== ''">
                 <li class="fn-left  msg_left">检影</li>
                 <li class="fn-left glass_table_770">
                   <table>
@@ -197,7 +197,7 @@
               </ul>
             </li>
             <li class="clearfix combination_table_list">
-              <ul>
+              <ul v-if="data2[0].sph !== ''">
                 <li class="fn-left  msg_left">主观</li>
                 <li class="fn-left glass_table_770">
                   <table>
@@ -234,16 +234,14 @@
         </div>
 
         <div class="glass_combination">
-          <div class="glass_combination">
-            <div class="am-ft-gray6 clearfix pb10">
-              <div class=" fn-left optometry_remarks">验光备注：</div>
-              <p class=" fn-left optometry_remarks_text">{{userInfo.memo}}</p>
-            </div>
-            <ul class="clearfix" v-if="memberDet !='detail'">
-              <li class=" fn-left optometry_origin">验光来源：<span>{{userInfo.source}}</span></li>
-              <li class="fn-left optometrist">验光师：<span>{{userInfo.optometrist}} </span></li>
-            </ul>
+          <div class="am-ft-gray6 clearfix pb10">
+            <div class=" fn-left optometry_remarks">验光备注：</div>
+            <p class=" fn-left optometry_remarks_text">{{userInfo.memo}}</p>
           </div>
+          <ul class="clearfix" v-if="memberDet !='detail'">
+            <li class=" fn-left optometry_origin">验光来源：<span>{{userInfo.source}}</span></li>
+            <li class="fn-left optometrist">验光师：<span>{{userInfo.optometrist}} </span></li>
+          </ul>
         </div>
       </div>
     </div>
