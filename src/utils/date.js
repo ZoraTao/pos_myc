@@ -74,7 +74,6 @@ const allDate = {
          * 不传 返回当前日期格式 
         */
         uTime = uTime.toString().length === 13 ? uTime / 1000 : uTime
-        console.log(new Date(parseInt(uTime) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " "))
         return new Date(parseInt(uTime) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
     },
     TimetoDateDay(uTime = Date.parse(new Date())) {
@@ -87,7 +86,8 @@ const allDate = {
         let year = myDate.getFullYear();
         let month = myDate.getMonth() + 1;
         let day = myDate.getDate();
-        console.log(year + '-' + month + '-' + day);
+        month = parseInt(month)<10?'0'+month:month;
+        day = parseInt(day)<10?'0'+day:day;
         return year + '-' + month + '-' + day;
     },
     timetoDateClock(uTime = Date.parse(new Date())) {

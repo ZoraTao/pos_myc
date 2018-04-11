@@ -117,7 +117,7 @@
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                 <div class="am-ft-orange">{{order.statusName}}</div>
-                <div class="look_d" @click="changePay(order)">查看详情</div>
+                <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                 <div class="am-ft-orange priceAll am-ft-22 mgb10">{{(parseFloat(order.moneyAmount)-parseFloat(order.moneyPaid)).toFixed(2)}}
@@ -201,7 +201,7 @@
                     <div class="am-ft-red">
                         {{order.statusName}}
                     </div>
-                    <div class="look_d" @click="changePay(order)">查看详情</div>
+                    <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
                   </td>
                   <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                     <div class="am-ft-orange priceAll">{{(parseFloat(order.moneyAmount)-parseFloat(order.moneyPaid)).toFixed(2)}}</div>
@@ -281,7 +281,7 @@
             <el-table-column
               label="操作">
               <template slot-scope="scope">
-                <span class="am-ft-blue" @click="showCashier = true;changePay(scope.row)">查看详情</span>
+                <span class="am-ft-blue" @click="toOrderDetail(scope.row)">查看详情</span>
               </template>
             </el-table-column>
           </el-table>
@@ -427,16 +427,30 @@ export default {
               }
             }
           })
-          .then(function(response) {
-            // console.info(response.data.data)
-            _this.count = response.data.data.count;
-            _this.orderTempList = [];
-            _this.orderTempList = response.data.data.orderTempList;
+          .then(function(res) {
+            // console.info(res.data.data)
+            if(res.data.code == 1){
+              _this.count = res.data.data.count;
+              _this.orderTempList = [];
+              _this.orderTempList = res.data.data.orderTempList;
+            }else{
+               _this.$message({
+                showClose: true,
+                message: '请求数据失败，请联系管理员',
+                type: 'error'
+              })
+            }
+            
           })
           .catch(function(error) {
             console.info(error);
           });
       }, 100);
+    },
+    toOrderDetail(data){
+      let _this = this;
+      console.log(data.orderId)
+      _this.$router.push({path:'/cashier/orderDetail',query:{orderId:data.orderId}})
     },
     searchOrder(orderId){
       let _this = this;
@@ -454,7 +468,15 @@ export default {
             }
           })
           .then(function(res) {
+            if(res.data.code == 1){
               _this.changePay(res.data.data.orderTempList[0])
+            }else{
+               _this.$message({
+                showClose: true,
+                message: '请求数据失败，请联系管理员',
+                type: 'error'
+              })
+            }
           })
           .catch(function(error) {
             console.info(error);
@@ -465,15 +487,15 @@ export default {
   },
   mounted(){
     let _this = this;
-    _this.$bus.on('startPayOrderMoney',(orderId)=>{
-      _this.searchOrder(orderId)
-    });
+    if(_this.$route.query.orderId){
+      let routerQuery = _this.$route.query.orderId;
+      _this.searchOrder(routerQuery)
+    }
   },
   components: {
     CashierModal
   },
   watch:{
-    // showCashier(new)
   }
 };
 </script>

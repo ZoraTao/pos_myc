@@ -20,7 +20,7 @@
                         class="placeHolder"
                         align="left" 
                         style="width: 130px;"
-                        placeholder="选择日期">
+                        :placeholder='timeDefaultShow'>
                         </el-date-picker>
                     </el-form-item>  
                     <el-form-item label="会员 :" class="memberInput">
@@ -136,7 +136,8 @@
                     <p>
                         <span v-show="conponResponse.couponAmount == '' || !conponResponse.couponAmount ">促销活动 : 无</span>
                         <span v-show="conponResponse.couponAmount !='' & conponResponse.couponAmount">促销活动 : {{conponResponse.couponName}}<b>-{{conponResponse.couponAmount}}元</b></span>
-                        <span v-show=" typeof parseFloat(allDisCount) == 'number'">折扣 : {{allDisCount}}折</span>
+                        <span v-show=" allDisCount == ''">折扣 : 无</span>
+                        <span v-show="parseFloat(allDisCount) < 10">折扣 : {{allDisCount}}折(-{{parseFloat(discountSale).toFixed(2)}}元)</span>
                         <span v-show="memberShipDisCount==10">无会员折扣</span>
                         <span v-show="memberShipDisCount<10">会员折扣 : {{parseFloat(memberShipDisCount*10).toFixed(2)}}折  <b v-show="memberShipDisCountSale!= '' &memberShipDisCountSale!= '0'">(-{{memberShipDisCountSale}}元)</b></span>
                     </p>
@@ -208,29 +209,32 @@
                 <el-form-item label="取镜地点 :">
                     <p style="width:100px;">{{orderTemp.glassesAddress||'--'}}</p>
                 </el-form-item>
-                <el-form-item>
-                    <el-input class="" v-model="orderTemp.saleMemo" placeholder="销售备注"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-select size="mini" v-model="publicSelcet.processMemo" placeholder="加工备注" @visible-change="getPublicSelect(3,publicSelcet.processMemoOptions)">
-                        <el-option
-                        v-for="item in selectOptions"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.name">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-select size="mini" v-model="publicSelcet.specialMemo" placeholder="特殊备注" @visible-change="getPublicSelect(4,publicSelcet.specialMemoOptions)">
-                        <el-option
-                        v-for="item in selectOptions"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.name">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
+                <div style="overflow:hidden;width:800px;">
+                    <el-form-item>
+                        <el-input class="" v-model="orderTemp.saleMemo" placeholder="销售备注"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-select size="mini" v-model="publicSelcet.processMemo" placeholder="加工备注" @visible-change="getPublicSelect(3,publicSelcet.processMemoOptions)">
+                            <el-option
+                            v-for="item in selectOptions"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.name">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-select size="mini" v-model="publicSelcet.specialMemo" placeholder="特殊备注" @visible-change="getPublicSelect(4,publicSelcet.specialMemoOptions)">
+                            <el-option
+                            v-for="item in selectOptions"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.name">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </div>
+                
             </el-form>
         </div>
         <div class="buttonGroup flex1">
@@ -249,7 +253,8 @@
             <div class="fn-right">
                 <el-button type="primary">重置</el-button>
                 <el-button type="primary">挂单[F7]</el-button>
-                <button type="primary" @click="addOrderTemp">开单[F5]</button>
+                <el-button type="primary" @click="addOrderTemp">开单[F5]</el-button>
+                <!-- <el-button type="primary" @click="addOrderTemp">收银[F5]</el-butt> 根据状态判断收银开单-->
             </div>
         </div>
     </div>
@@ -523,6 +528,7 @@
 </template>
 
 <script>
+import {allDate} from '../../../utils/date'
 import SelectMemberModal from '../../PublicModal/SelectMember/select-member-modal.vue'
 import NewOptometryModal from '../../PublicModal/NewOptometry/new-optometry-modal.vue'
 import SelectRHModal from '../../PublicModal/SelectRH/selectRH-modal.vue'
@@ -622,6 +628,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 discountFlag:1,
                 discountSale:0,//优惠券折扣金额
                 conponResponse:{},
+                timeDefaultShow:'',//当前日期默认值
                 selectProductSku:{
                     selectR:'',
                     selectL:'',
@@ -929,6 +936,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 let _this = this;
                 let countSale = 0; 
                 let n = 0;
+                if(parseFloat(this.allDisCount) > 0 ){
+
+                }
                 // _this.allDisCount = '';
                 for(let i=0;i<_this.tableData.length;i++){//循环计算价格
                     let thisSale =  parseFloat(_this.tableData[i].realSale);
@@ -1158,21 +1168,21 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             afterDiscount(){
                 let _this = this ;
                 _this.permission=true;
-                if(this.allDisCount!='' && this.allDisCount != 0 ){//有整单折扣
+                if(parseFloat(this.allDisCount) > 0 ){//有整单折扣
                     // //整单折扣金额差价 = 折扣前 - 折扣后↓
                     // console.log(`计算`)
-                    // this.discountSale = this.saleCount - (this.allDisCount*this.saleCount)/10;   
-                    // //最后价格 = 整单折扣前 * 折扣 ↓
-                    // this.saleCount = (this.allDisCount/10 * this.saleCount).toFixed(2); 
-                    let discount = _this.tableData;
-                    for(var i=0;i<discount.length;i++){
-                        discount[i].discount = parseFloat(_this.allDisCount);
-                        discount[i].realSale = (discount[i].discount*discount[i].price/10).toFixed(2);
-                    }
-                    console.log(discount)
-                    _this.tableData = [];
-                    _this.tableData = discount;
-                    _this.computedPay();
+                    this.discountSale = this.saleCount - (this.allDisCount*this.saleCount)/10;   
+                    //最后价格 = 整单折扣前 * 折扣 ↓
+                    this.saleCount = (this.allDisCount/10 * this.saleCount).toFixed(2); 
+                    // let discount = _this.tableData;
+                    // for(var i=0;i<discount.length;i++){
+                    //     discount[i].discount = parseFloat(_this.allDisCount);
+                    //     discount[i].realSale = (discount[i].discount*discount[i].price/10).toFixed(2);
+                    // }
+                    // // console.log(discount)
+                    // _this.tableData = [];
+                    // _this.tableData = discount;
+                    // _this.computedPay();
                 }
             },
             //获取新增验光单信息
@@ -1370,6 +1380,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     })                        
                     return false;
                 }
+                if(this.orderTemp.singleSupTime == ''){//如果没选择时间 默认当天
+                    this.orderTemp.singleSupTime = allDate.TimetoDateDay();
+                }
                 var memberId = null;//会员id
                 if(_this.selectMember.memberInfo){
                     memberId = _this.selectMember.memberInfo.memberId
@@ -1432,9 +1445,15 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                             message: '开单成功',
                             type: 'success'
                         });
-                        let orderId = response.data.data.orderId;
-                        _this.$bus.emit('startPayOrderMoney',orderId);
-                        _this.$router.push({path:'/cashier/cashierList'})
+                        debugger
+                        setTimeout(function(){
+                            location.reload();
+                        },1000)
+                        // if(是门店收银){
+                            // let orderId = response.data.data.orderId;//直接开单收银  门店收银
+                            // _this.$router.push({path:'/cashier/cashierList',query:{orderId:orderId}})
+                        // }
+                        
                     }
                 })                   
             }
@@ -1442,13 +1461,15 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
         computed:{
            
         },
+        mounted(){
+            let _this = this;
+            _this.timeDefaultShow = allDate.TimetoDateDay();
+        },
         beforeDestory(){
-            _this.$bus.off('startPayOrderMoney',orderId);
+
         },
         watch:{
-           memberShipDisCount(newValue,oldValue){
-               console.log(newValue,oldValue)
-           } 
+       
         }
     };
 </script>

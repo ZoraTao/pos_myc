@@ -112,7 +112,13 @@ const router = new Router({
         path: 'cashierCu',
         name: 'cashierCu',
         component: resolve => require(['../components/Retail/Cashier/CashierCu/cashier-cu.vue'], resolve)
-      }]
+      },
+      {
+        path: 'orderDetail',
+        name: 'orderDetail',
+        component: resolve => require(['../components/Retail/orderDetail/orderDetail.vue'], resolve)
+      }
+    ]
     },
     // 三级路由只拥有layout
     {

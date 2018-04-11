@@ -93,115 +93,126 @@
 </template>
 
 <script>
-  export default {
-    name: "member-order-record",
-    data() {
-      return {
-        orderList: [{
-          a: '20170909000000001',
-          b: '待收银',
+export default {
+  name: "member-order-record",
+  data() {
+    return {
+      orderList: [
+        {
+          a: "20170909000000001",
+          b: "待收银",
           tableData: []
         },
         {
-          a: '20170909000000002',
-          b: '已完成',
+          a: "20170909000000002",
+          b: "已完成",
           tableData: []
-        }],
-        tableData6: [{
-          id: '',
-          a: '562536256452',
-          b: '右镜片：毛源昌1.55非球面防辐射远+1.50',
-          c: '1',
-          d: '230.00',
-          e: '134.00',
-          f: '天一恒泰店',
-          g: '未取件',
-          h: '2017-10-22 13:23:45'
-        }, {
-        id: '',
-        a: '562536256452',
-        b: '右镜片：毛源昌1.55非球面防辐射远+1.50',
-        c: '1',
-        d: '230.00',
-        e: '134.00',
-        f: '天一恒泰店',
-        g: '未取件',
-        h: '2017-10-22 13:23:45'
-      }, {
-        id: '',
-        a: '562536256452',
-        b: '右镜片：毛源昌1.55非球面防辐射远+1.50',
-        c: '1',
-        d: '230.00',
-        e: '134.00',
-        f: '天一恒泰店',
-        g: '未取件',
-        h: '2017-10-22 13:23:45'
-      }, {
-        id: '',
-        a: '562536256452',
-        b: '右镜片：毛源昌1.55非球面防辐射远+1.50',
-        c: '1',
-        d: '230.00',
-        e: '134.00',
-        f: '天一恒泰店',
-        g: '未取件',
-        h: '2017-10-22 13:23:45'
-        }]
-      };
-    },
-    methods: {
-      objectSpanMethod({row, column, rowIndex, columnIndex}) {
-        if (columnIndex === 7 || columnIndex === 8 || columnIndex === 9) {
-          if (rowIndex % this.tableData6.length === 0) {
-            return {
-              rowspan: this.tableData6.length,
-              colspan: 1
-            };
-          } else {
-            return {
-              rowspan: 0,
-              colspan: 0
-            };
-          }
+        }
+      ],
+      tableData6: [
+        {
+          id: "",
+          a: "562536256452",
+          b: "右镜片：毛源昌1.55非球面防辐射远+1.50",
+          c: "1",
+          d: "230.00",
+          e: "134.00",
+          f: "天一恒泰店",
+          g: "未取件",
+          h: "2017-10-22 13:23:45"
+        },
+        {
+          id: "",
+          a: "562536256452",
+          b: "右镜片：毛源昌1.55非球面防辐射远+1.50",
+          c: "1",
+          d: "230.00",
+          e: "134.00",
+          f: "天一恒泰店",
+          g: "未取件",
+          h: "2017-10-22 13:23:45"
+        },
+        {
+          id: "",
+          a: "562536256452",
+          b: "右镜片：毛源昌1.55非球面防辐射远+1.50",
+          c: "1",
+          d: "230.00",
+          e: "134.00",
+          f: "天一恒泰店",
+          g: "未取件",
+          h: "2017-10-22 13:23:45"
+        },
+        {
+          id: "",
+          a: "562536256452",
+          b: "右镜片：毛源昌1.55非球面防辐射远+1.50",
+          c: "1",
+          d: "230.00",
+          e: "134.00",
+          f: "天一恒泰店",
+          g: "未取件",
+          h: "2017-10-22 13:23:45"
+        }
+      ]
+    };
+  },
+  methods: {
+    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 7 || columnIndex === 8 || columnIndex === 9) {
+        if (rowIndex % this.tableData6.length === 0) {
+          return {
+            rowspan: this.tableData6.length,
+            colspan: 1
+          };
+        } else {
+          return {
+            rowspan: 0,
+            colspan: 0
+          };
         }
       }
     }
   }
+};
 </script>
 
 <style lang="scss">
-  .content-out-wrapper-md{
-    margin: 10px 15px;
-  }
-  .order-record {
-    .order-record-item{
-      width: 100%;
-      line-height: 24px;
-      margin-top: 10px;
-      margin-bottom: 20px;
-      .item-top{
-        font-size: 12px;
-        color: #555555;
-        padding: 0 25px;
-        margin-bottom: 10px;
-        overflow: hidden;
-        .order-num{
-          font-size: 18px;
-          margin-right: 30px;
-        }
+.content-out-wrapper-md {
+  margin: 10px 15px;
+}
+.order-record {
+  .order-record-item {
+    width: 100%;
+    line-height: 24px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    .item-top {
+      font-size: 12px;
+      color: #555555;
+      padding: 0 25px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      .order-num {
+        font-size: 18px;
+        margin-right: 30px;
       }
     }
-    .el-table td, .el-table th.is-leaf {
-      border-color: #EFEFEF !important;
-    }
-    .el-table th {
-      background-color: #FFF4E5 !important;
-      color: #555555;
-      border: 0;
-    }
-    .el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell {
-      padding-left: 20px;
-    }
   }
+  .el-table td,
+  .el-table th.is-leaf {
+    border-color: #efefef !important;
+  }
+  .el-table th {
+    background-color: #fff4e5 !important;
+    color: #555555;
+    border: 0;
+  }
+  .el-table .cell,
+  .el-table th div,
+  .el-table--border td:first-child .cell,
+  .el-table--border th:first-child .cell {
+    padding-left: 20px;
+  }
+}
 </style>

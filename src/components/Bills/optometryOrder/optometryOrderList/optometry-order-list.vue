@@ -161,25 +161,13 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 }
                     this.detailData=[];
                     var that = this;
-                    let message = that.memberInfo;
-                    console.log(message)
-                    let mobile = '',memberId = '',customerName = '';
-                    if(RegTest.phone(message)){//手机判断
-                        mobile = message;
-                    }else if(RegTest.isNum(message)){//会员ID
-                        memberId = message;
-                    }else{//姓名
-                        customerName = message
-                    }
                     setTimeout(function() {
                     that.$axios({
                         url: that.listUrl,
                         method: 'post',
                         params: {
                             jsonObject: {
-                                memberId: memberId,
-                                mobile:mobile,
-                                customerName:customerName,
+                                seachKey:that.memberInfo,
                                 nub: (that.nub==1?0:(that.nub-1)*that.size),
                                 size: that.size
                             },
