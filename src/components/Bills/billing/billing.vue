@@ -626,6 +626,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     wareh:'',
                     product:'',
                     categoryCode:'',
+                    type:'',
                     count: 0,
                     nub: 0,
                     size: 5
@@ -714,7 +715,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     _this.options=response.data.data.list;
                 })  
             },
-            //双击删除表格td
+            //删除表格td
             delThisRow(){
                 var that=this;
                 this.tableData.forEach(function(element,index) {
@@ -722,6 +723,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         this.tableData.splice(index,1)
                     }
                 }, this);
+                that.computedPay();
             },
             //取镜公司地点
             sameComType(value){
@@ -793,6 +795,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 // Object.keys(_this.selectProductSku).forEach(element => {
                 //    _this.selectProductSku[element]
                 // });
+                this.selectProductSku.type='';
                 this.selectProductSku.wareh='';
                 this.selectProductSku.cylinder='';
                 this.selectProductSku.selectR='';
@@ -803,6 +806,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     this.showSelectRH=true;
                     this.selectProductSku.title="选择右镜片";
                     this.selectProductSku.cylinder=_this.selectProductSku.selectR;
+                    this.selectProductSku.type='0';
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
                             if(this.optometryData[i].value[0].sph!=''){
@@ -817,6 +821,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     this.showSelectRH=true;
                     this.selectProductSku.title="选择左镜片"
                     this.selectProductSku.cylinder=_this.selectProductSku.selectL;
+                    this.selectProductSku.type='0';
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
                             if(this.optometryData[i].value[0].sph!=''){
@@ -845,6 +850,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                             colorCode:'',
                             categoryCode:'',
                             product:'',
+                            type:this.selectProductSku.type,
                             wareh:this.selectProductSku.wareh,                         
                             nub: (this.selectProductSku.nub==0?0:(this.selectProductSku.nub-1)*this.selectProductSku.size),
                             size: this.selectProductSku.size

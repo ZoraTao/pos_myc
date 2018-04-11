@@ -201,8 +201,8 @@ export default {
                 method: 'post',
                 params: {
                     jsonObject: {
-                        // productCategoryId: id
-                        warehouseId:_this.value        
+                        productCategoryId: id
+                        // warehouseId:_this.value        
                     },
                     keyParams: {
                         weChat: true
@@ -245,6 +245,13 @@ export default {
       }
     },
     created: function () {
+        var _this = this;
+        _this.typeOptions=[];
+        _this.brandsOptions=[];
+        _this.varietysOptions=[];
+        _this.typeValue='';
+        _this.brandsValue='';
+        _this.varietysValue='';
         this.selectBrands(1)
     }
 }

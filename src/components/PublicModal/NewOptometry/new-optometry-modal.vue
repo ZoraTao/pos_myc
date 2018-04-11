@@ -57,26 +57,22 @@
                     <li class="fn-left  msg_left">远用</li>
                     <li class="fn-left glass_table_770 pb10">
                         <table>
-                            <tr class="">
-                                <td class="w10 ft_bold">L</td>
-                                <td class="w90"><el-input v-model="distanceData[0].sph"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[0].cyl"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[0].ax"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[0].va"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[0].dpd"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[0].npd"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[0].hpd"></el-input></td>
-                                <td class="w90 glass_table_2x" rowspan="2"><el-input v-model="distanceData[0].add"></el-input></td>
-                            </tr>
-                            <tr class="">
-                                <td class="w10 ft_bold">R</td>
-                                <td class="w90"><el-input v-model="distanceData[1].sph"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[1].cyl"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[1].ax"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[1].va"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[1].dpd"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[1].npd"></el-input></td>
-                                <td class="w90"><el-input v-model="distanceData[1].hpd"></el-input></td>
+                            <tr class="" v-for="(item,index) in distanceData" :key="index">
+                                <el-form :model="item" :rules="rules" ref="distanceData">
+                                <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
+                                <td class="w90">
+                                  <el-form-item prop="sph">
+                                    <el-input v-model="item.sph"></el-input>
+                                  </el-form-item>
+                                </td>
+                                <td class="w90"><el-input v-model="item.cyl"></el-input></td>
+                                <td class="w90"><el-input v-model="item.ax"></el-input></td>
+                                <td class="w90"><el-input v-model="item.va"></el-input></td>
+                                <td class="w90"><el-input v-model="item.dpd"></el-input></td>
+                                <td class="w90"><el-input v-model="item.npd"></el-input></td>
+                                <td class="w90"><el-input v-model="item.hpd"></el-input></td>
+                                <td class="w90 glass_table_2x" rowspan="2" v-if="index==0"><el-input v-model="item.add"></el-input></td>
+                                </el-form>
                             </tr>
                         </table>
                     </li>
@@ -346,7 +342,8 @@ export default {
         birthday: ""
       },
       rules: {
-        name: [{ required: true, message: "请输入", trigger: "blur" }]
+        telphone: [{ required: true, message: "请输入", trigger: "blur" }],
+        sph : [{ required: true, message: "", trigger: "blur" }],
       },
       prescription: {
         isDistance: true,
@@ -683,6 +680,14 @@ export default {
 
 <style lang="scss">
 .newOptometry {
+  .glass_combination_table{
+    .el-form-item__content::after, .el-form-item__content::before {
+        display: none;
+    }
+    .el-form-item::after, .el-form-item::before {
+        display: none;
+    }
+  }
   .mgl450{
     margin-left: 450px;
   }
