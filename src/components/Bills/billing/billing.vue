@@ -58,13 +58,16 @@
                 </el-form>
             </div>
         </div>
+        <vue-context-menu :contextMenuData="contextMenuData"
+                        @delThisRow="delThisRow">
+        </vue-context-menu>
         <div class="borderfff mgt5 am_bg_white flex5">
             <div class="salesSuggest">
                 <el-table
                     :data="tableData"
                     size="small"
                     align="left"
-                    @row-dblclick="delThisRow"
+                    @row-contextmenu="showMenu"
                     style="width: 100%;margin-bottom:10px;min-height:300px">
                     <el-table-column
                     prop="skuName"
@@ -124,10 +127,6 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <!-- <vue-context-menu :contextMenuData="contextMenuData"
-	                  @savedata="savedata"
-	                  @newdata="newdata">
-                </vue-context-menu> -->
                 <div class="settleAccounts">
                     <p>
                         <span>共计 :<b>{{numCount}}件</b></span>
@@ -249,7 +248,7 @@
             <div class="fn-right">
                 <el-button type="primary">重置</el-button>
                 <el-button type="primary">挂单[F7]</el-button>
-                <button type="primary" @click="addOrderTemp">开单[F5]</button>
+                <el-button type="primary" @click="addOrderTemp">开单[F5]</el-button>
             </div>
         </div>
     </div>
@@ -541,28 +540,23 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
         name: "billing",
         data() {
             return {
-                // contextMenuData: {
-                // // the contextmenu name(@1.4.1 updated)
-                // menuName: 'demo',
-                // // The coordinates of the display(菜单显示的位置)
-                // axios: {
-                //     x: null,
-                //     y: null
-                // },
-                // // Menu options (菜单选项)
-                // menulists: [
-                //     {
-                //     fnHandler: 'savedata', // Binding events(绑定事件)
-                //     icoName: 'fa fa-home fa-fw', // icon (icon图标 )
-                //     btnName: 'Save' // The name of the menu option (菜单名称)
-                //     },
-                //     {
-                //     fnHandler: 'newdata',
-                //     icoName: 'fa fa-home fa-fw',
-                //     btnName: 'New'
-                //     }
-                // ]
-                // },
+                contextMenuData: {
+                // the contextmenu name(@1.4.1 updated)
+                menuName: 'demo',
+                // The coordinates of the display(菜单显示的位置)
+                axios: {
+                    x: null,
+                    y: null
+                },
+                row:'',
+                // Menu options (菜单选项)
+                menulists: [
+                    {
+                        fnHandler: 'delThisRow', // Binding events(绑定事件)
+                        btnName: '删除' // The name of the menu option (菜单名称)
+                    }
+                ]
+                },
                 options: [{
                     value: "选项1",
                     label: "暂无"
@@ -675,21 +669,16 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
         },
         
         methods:{
-            // showMenu () {
-            //     event.preventDefault()
-            //     var x = event.clientX
-            //     var y = event.clientY
-            //     // Get the current location
-            //     this.contextMenuData.axios = {
-            //     x, y
-            //     }
-            // },
-            // savedata () {
-            //     alert(1)
-            // },
-            // newdata () {
-            //     console.log('newdata!')
-            // },
+            showMenu (row, event) {
+                event.preventDefault()
+                var x = event.clientX
+                var y = event.clientY
+                // Get the current location
+                this.contextMenuData.axios = {
+                    x, y
+                }
+                this.contextMenuData.row=row;
+            },
             //打开优惠券
             openCouponBarCode(){
                 console.log(this.selectMember.memberInfo)
@@ -726,9 +715,10 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 })  
             },
             //双击删除表格td
-            delThisRow(row, event){
+            delThisRow(){
+                var that=this;
                 this.tableData.forEach(function(element,index) {
-                    if(element==row){
+                    if(element==that.contextMenuData.row){
                         this.tableData.splice(index,1)
                     }
                 }, this);
