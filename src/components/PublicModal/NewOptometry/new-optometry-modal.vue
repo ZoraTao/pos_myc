@@ -482,6 +482,7 @@ export default {
         k5: ""
       },
       prescriptions: {
+        health:"",
         createEndTime: "",
         createStartTime: "",
         createTime: "",
@@ -686,6 +687,7 @@ export default {
       that.prescriptions.memberName = that.ruleForm.name;
       that.prescriptions.customerName = that.ruleForm.name;
       that.prescriptions.sex = that.ruleForm.sex;
+      that.prescriptions.health=JSON.stringify(that.health);
       //   that.prescriptions.nub=that.ruleForm.memberCardNo;
       var jsonObject = {
         eyes: eyes,
