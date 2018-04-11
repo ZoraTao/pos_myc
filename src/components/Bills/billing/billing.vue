@@ -363,7 +363,7 @@
     <el-dialog class="selectMember" title="选择会员 (23)" :visible.sync="showSelectMember" width="62.5%">
         <SelectMemberModal :selectM="selectMember.selectM" v-on:memberInfo="getMemberInfo"></SelectMemberModal>
     </el-dialog>
-    <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="900px">
+    <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="950px">
         <NewOptometryModal :submit="submitNewOptometry" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
         <div class="packageDetailButtonGroup">
             <el-button @click="showNewOptometry = false">取 消</el-button>

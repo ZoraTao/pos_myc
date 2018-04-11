@@ -51,6 +51,7 @@
                     <li class="w90">DPD</li>
                     <li class="w90">NPD</li>
                     <li class="w90">HPD</li>
+                    <li class="w90">PD</li>
                     <li class="w90">ADD</li>
                 </ul>
                 <ul v-if="prescription.isDistance">
@@ -58,21 +59,28 @@
                     <li class="fn-left glass_table_770 pb10">
                         <table>
                             <tr class="" v-for="(item,index) in distanceData" :key="index">
-                                <el-form :model="item" :rules="rules" ref="distanceData">
                                 <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
                                 <td class="w90">
+                                <el-form :model="item" :rules="rules" ref="distanceData">
                                   <el-form-item prop="sph">
                                     <el-input v-model="item.sph"></el-input>
                                   </el-form-item>
+                                </el-form>
                                 </td>
-                                <td class="w90"><el-input v-model="item.cyl"></el-input></td>
+                                <td class="w90">
+                                  <el-form :model="item" :rules="rules" ref="distanceData">
+                                    <el-form-item prop="sph">
+                                      <el-input v-model="item.cyl"></el-input>
+                                    </el-form-item>
+                                  </el-form>                                  
+                                </td>
                                 <td class="w90"><el-input v-model="item.ax"></el-input></td>
                                 <td class="w90"><el-input v-model="item.va"></el-input></td>
                                 <td class="w90"><el-input v-model="item.dpd"></el-input></td>
                                 <td class="w90"><el-input v-model="item.npd"></el-input></td>
                                 <td class="w90"><el-input v-model="item.hpd"></el-input></td>
+                                <td class="w90"><el-input v-model="item.pd"></el-input></td>
                                 <td class="w90 glass_table_2x" rowspan="2" v-if="index==0"><el-input v-model="item.add"></el-input></td>
-                                </el-form>
                             </tr>
                         </table>
                     </li>
@@ -83,25 +91,27 @@
                     <li class="fn-left  msg_left">近用</li>
                     <li class="fn-left glass_table_770 pb10">
                         <table>
-                            <tr class="">
-                                <td class="w10 ft_bold">L</td>
-                                <td class="w90"><el-input v-model="nighData[0].sph"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[0].cyl"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[0].ax"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[0].va"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[0].dpd"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[0].npd"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[0].hpd"></el-input></td>
-                            </tr>
-                            <tr class="">
-                                <td class="w10 ft_bold">R</td>
-                                <td class="w90"><el-input v-model="nighData[1].sph"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[1].cyl"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[1].ax"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[1].va"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[1].dpd"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[1].npd"></el-input></td>
-                                <td class="w90"><el-input v-model="nighData[1].hpd"></el-input></td>
+                            <tr class="" v-for="(item,index) in nighData" :key="index">
+                                <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
+                                <td class="w90">
+                                <el-form :model="item" :rules="rules" ref="nighData">
+                                  <el-form-item prop="sph">
+                                    <el-input v-model="item.sph"></el-input>
+                                  </el-form-item>
+                                </el-form>
+                                </td>
+                                <td class="w90">
+                                  <el-form :model="item" :rules="rules" ref="nighData">
+                                    <el-form-item prop="sph">
+                                      <el-input v-model="item.cyl"></el-input>
+                                    </el-form-item>
+                                  </el-form>                                  
+                                </td>
+                                <td class="w90"><el-input v-model="item.ax"></el-input></td>
+                                <td class="w90"><el-input v-model="item.va"></el-input></td>
+                                <td class="w90"><el-input v-model="item.dpd"></el-input></td>
+                                <td class="w90"><el-input v-model="item.npd"></el-input></td>
+                                <td class="w90"><el-input v-model="item.hpd"></el-input></td>
                             </tr>
                         </table>
                     </li>
@@ -112,19 +122,24 @@
                     <li class="fn-left  msg_left">隐形</li>
                     <li class="fn-left glass_table_770">
                         <table>
-                            <tr class="">
-                                <td class="w10 ft_bold">L</td>
-                                <td class="w90"><el-input v-model="contactData[0].sph"></el-input></td>
-                                <td class="w90"><el-input v-model="contactData[0].cyl"></el-input></td>
-                                <td class="w90"><el-input v-model="contactData[0].ax"></el-input></td>
-                                <td class="w90"><el-input v-model="contactData[0].va"></el-input></td>
-                            </tr>
-                            <tr class="">
-                                <td class="w10 ft_bold">R</td>
-                                <td class="w90"><el-input v-model="contactData[1].sph"></el-input></td>
-                                <td class="w90"><el-input v-model="contactData[1].cyl"></el-input></td>
-                                <td class="w90"><el-input v-model="contactData[1].ax"></el-input></td>
-                                <td class="w90"><el-input v-model="contactData[1].va"></el-input></td>
+                            <tr class="" v-for="(item,index) in contactData" :key="index">
+                                <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
+                                <td class="w90">
+                                <el-form :model="item" :rules="rules" ref="contactData">
+                                  <el-form-item prop="sph">
+                                    <el-input v-model="item.sph"></el-input>
+                                  </el-form-item>
+                                </el-form>
+                                </td>
+                                <td class="w90">
+                                  <el-form :model="item" :rules="rules" ref="contactData">
+                                    <el-form-item prop="sph">
+                                      <el-input v-model="item.cyl"></el-input>
+                                    </el-form-item>
+                                  </el-form>                                  
+                                </td>
+                                <td class="w90"><el-input v-model="item.ax"></el-input></td>
+                                <td class="w90"><el-input v-model="item.va"></el-input></td>
                             </tr>
                         </table>
                     </li>
@@ -135,14 +150,16 @@
                     <li class="fn-left  msg_left">渐进</li>
                     <li class="fn-left glass_table_770">
                         <table>
-                            <tr class="">
-                                <td class="w10 ft_bold">L</td>
-                                <td class="w90"><el-input v-model="graduallyData[0].npd"></el-input></td>
-                            </tr>
-                            <tr class="">
-                                <td class="w10 ft_bold">R</td>
-                                <td class="w90"><el-input v-model="graduallyData[0].npd"></el-input></td>
-                            </tr>
+                            <tr class="" v-for="(item,index) in graduallyData" :key="index">
+                                <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
+                                <td class="w90">
+                                  <el-form :model="item" :rules="rules" ref="graduallyData">
+                                    <el-form-item prop="npd">
+                                      <el-input v-model="item.npd"></el-input>
+                                    </el-form-item>
+                                  </el-form>                                  
+                                </td>
+                            </tr>     
                         </table>
                     </li>
                 </ul>
@@ -308,8 +325,8 @@
                     <el-date-picker
                     style="width:180px"
                     v-model="prescriptions.prescriptionTime"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    type="datetime"
+                    value-format="yyyy-MM-dd"
+                    type="date"
                     :default-value="defaultValue"
                     :picker-options="pickerOptions0"
                     placeholder="选择日期">
@@ -343,7 +360,9 @@ export default {
       },
       rules: {
         telphone: [{ required: true, message: "请输入", trigger: "blur" }],
-        sph : [{ required: true, message: "", trigger: "blur" }],
+        sph : [{ required: true, message: " ", trigger: "blur" }],
+        cyl : [{ required: true, message: " ", trigger: "blur" }],
+        npd : [{ required: true, message: " ", trigger: "blur" }],
       },
       prescription: {
         isDistance: true,
@@ -506,7 +525,8 @@ export default {
           method: 'post',
           params: {
               jsonObject: {
-                  orgId:'11387', 
+                 "orgId":"",
+                 "userType":"9"
                   //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）                 
               },
               keyParams: {
@@ -584,8 +604,49 @@ export default {
           });
       }
     },
+    validationStart(formName){
+      var flag=false;
+        if (this.$refs[formName] instanceof Array && this.$refs[formName].length > 0) {
+            this.$refs[formName].forEach((obj, index) => {
+              obj.validate((valid) => {
+                if (valid) {
+                  flag=true;
+                  return true;
+                } else {
+                  flag=false;
+                  return false;
+                }
+              });
+          });       
+          return flag;
+        }
+    },
+    validation(){
+      var canNext = false;
+      if(this.prescription.isDistance){
+        canNext=this.validationStart('distanceData');
+      }
+      if(this.prescription.isNigh){
+        canNext=this.validationStart('nighData');
+      }
+      if(this.prescription.isContact){
+        canNext=this.validationStart('contactData');
+      }
+      if(this.prescription.isGradually){
+        canNext=this.validationStart('graduallyData');
+      }
+      return canNext;
+    },
     submitThisModal() {
       var that = this;
+      if(!this.validation()){
+        that.$message({
+            showClose: true,
+            message: '请填写配镜处方！',
+            type: 'error'
+        })              
+        return false;
+      }
       var memberId;
       if (that.needReg) {
         that
@@ -687,6 +748,14 @@ export default {
     .el-form-item::after, .el-form-item::before {
         display: none;
     }
+    .el-form{
+      position: relative;
+      font-size: 14px;
+      display: inline-block;
+      width: 100%;
+      height: 40px;
+      line-height: 40px;      
+    }
   }
   .mgl450{
     margin-left: 450px;
@@ -705,6 +774,7 @@ export default {
     text-align: center;
   }
   .newOptometry {
+    background: #f8f8f8;
     padding: 15px;
     font-size: 12px;
     .newOptometryPhone {
@@ -765,7 +835,6 @@ export default {
     .optometryMemo {
       overflow: hidden;
       padding-top: 14px;
-      background: #fff;
       li:first-child {
         font-size: 12px;
         color: #666666;
@@ -780,6 +849,7 @@ export default {
     min-height: 100px;
     border: 1px solid #e1e1e1;
     overflow: hidden;
+    background: #fff;
     li {
       float: left;
       width: auto;
@@ -832,8 +902,8 @@ export default {
 
   .msg_left {
     width: 80px !important;
-    height: 82px;
-    line-height: 82px;
+    height: 62px;
+    line-height: 62px;
     text-align: right;
     padding-right: 22px;
   }
@@ -842,14 +912,14 @@ export default {
     background: #fff;
     // margin-top: 13px;
     &:last-child {
-      padding-bottom: 20px;
+      padding-bottom: 10px;
     }
   }
 
   .labelInput {
     float: left;
-    line-height: 82px;
-    height: 82px;
+    line-height: 62px;
+    height: 62px;
     label {
       min-width: 50px;
     }
