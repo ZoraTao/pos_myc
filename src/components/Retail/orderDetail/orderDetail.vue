@@ -1,6 +1,6 @@
 <template>
   <div >
-  <section class="content_box" >
+  <section class="content_box"  v-if="orderData!=null">
     <div class="orderHeader">
       <div  v-if="orderData.ordertemp.orderType == 1" style="float:left;">
         <div class="ding">
@@ -352,7 +352,7 @@ export default {
       presc:{},
       orderItemsList:[],//商品详情
       ordertemp:{},//订单详情
-      orderData: {},
+      orderData: null,
       far: [], //远用
       subjective: [], //主观
       near: [], //近用
@@ -515,11 +515,8 @@ export default {
         .then(res => {
           if (res.data.code == 1) {
             _this.eyesDate(res.data.data.prescription.eyes);
-            // _this.orderItemsList = res.data.data.orderItemsList;
             _this.orderData = res.data.data;
-            // _this.presc = orderData.prescription.prescriptions;
-            // _this.ordertemp = res.data.data.ordertemp;
-            // _this.member = orderData.prescription.member;
+            
           } else {
             _this.$message({
               showClose: true,
@@ -539,10 +536,13 @@ export default {
   },
   created() {
     let _this = this;
-    if (_this.$route.query.orderId) {
-      let routerQueryofOrderId = _this.$route.query.orderId;
-      _this.orderDetail(routerQueryofOrderId);
-    }
+    this.$nextTick(() => { 
+      if (_this.$route.query.orderId) {
+        let routerQueryofOrderId = _this.$route.query.orderId;
+        _this.orderDetail(routerQueryofOrderId);
+      }
+     })
+    
   },
   components: {}
 };
