@@ -16,6 +16,9 @@ import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
     box-sizing: border-box;
   }
 
+  [v-cloak] {
+    display: none;
+  }
   html, body {
     min-width: 1270px;
     width: 100%;

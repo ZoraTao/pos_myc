@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-table
-      v-loading="loading"
       :data="totalStocksData"
       size="small"
       stripe
@@ -59,22 +58,16 @@
     components: {},
     props: ['totalStocksData'],
     created: function() {
-      this.closeLoading();
+
     },
     data() {
       return {
         nub: 0,//起始条数
         size: 10,//每页显示数据条数
         counts: 0,//总条数
-        loading: true
       }
     },
     methods: {
-      closeLoading(){
-        setTimeout(() => {
-          this.loading = false;
-        }, 1000);
-      },
       //分页
       handleCurrentChange(val) {
         this.nub = (`${val}`-1) * this.size;

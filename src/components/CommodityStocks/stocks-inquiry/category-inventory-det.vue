@@ -89,6 +89,7 @@
         totalCount: '',//库存总计
         totalPrice: '',//不含税零售价合计
         totalTaxPrice: '',//含税零售价合
+        loading: true
       }
     },
     created() {
@@ -121,9 +122,12 @@
               })
               return false;
             } else {
-              console.info(response.data.data)
+              // console.info(response.data.data)
               that.categoryData = response.data.data.list;
               that.counts = parseInt(response.data.data.count);
+              setTimeout(() => {
+                that.loading = false;
+              }, 2000);
             }
           })
           .catch(function (error) {

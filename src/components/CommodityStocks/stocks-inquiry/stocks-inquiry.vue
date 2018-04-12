@@ -4,7 +4,7 @@
     <el-row class="inquiry-row mgt6">
       <el-form :inline="true" :model="formInline" ref="formInline" class="demo-form-inline am-ft-left">
       <!--普通搜索-->
-      <el-col :span="21" v-if="normalsearch">
+      <el-col :span="21" v-if="normalsearch" v-cloak>
         <el-col :span="5">
           <el-form-item prop="sku">
           <el-input
@@ -19,7 +19,7 @@
         </el-col>
       </el-col>
       <!--高级搜索-->
-      <el-col :span="21" v-if="moresearch">
+      <el-col :span="22" v-if="moresearch" v-cloak>
           <el-col :span="24">
             <el-form-item label="商品编码：">
               <el-input placeholder="输入商品编码" clearable v-model="formInline.sku" style="width: 130px"></el-input>
@@ -83,6 +83,7 @@
             </el-form-item>
             <el-form-item>
               <a class="fn-left am-ft-12 mgl10" href="javascript:;" @click="changeSearch('1')">普通搜索</a>
+              <a class="fn-left am-ft-12 mgl10 am-ft-gray9" href="javascript:;" @click="resetSearch">重置条件</a>
             </el-form-item>
           </el-col>
       </el-col>
@@ -91,7 +92,7 @@
     <!------/top------>
 
     <!--无数据时缺省显示-->
-    <el-row class="inquiry-row content-info-box" v-if="stocksCount=='0'">
+    <el-row class="inquiry-row content-info-box" v-if="stocksCount=='0'" v-cloak>
       <el-col :span="24">
         <div class="default-show">
           <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/image_quesheng.png"/>
@@ -103,7 +104,7 @@
 
     <!--有数据时显示-->
     <!--tab-->
-    <el-tabs type="border-card" class="mgt15" v-if="stocksCount!='0'">
+    <el-tabs type="border-card" class="mgt15" v-if="stocksCount!='0'" v-cloak>
       <el-tab-pane>
         <span slot="label" @click="getStocksList">总计库存</span>
         <total-inventory :totalStocksData="stocksData"></total-inventory>
@@ -177,7 +178,8 @@
           warehouseId: '',//仓库id
           nub: "0",
           size: "10"
-        }
+        },
+        loading: true
       }
     },
     created: function () {
@@ -189,6 +191,24 @@
       this.getWarehouseType();
     },
     methods: {
+      //重置查询条件
+      resetSearch(){
+        this.formInline={
+          categoryCode: [],//类别+品牌+品种
+            sku: '',//商品sku
+            areaId: '',//区域id
+            warehouseClass: '',//区域大类
+            warehouseType: '',//仓库类型
+            warehouseId: '',//仓库id
+            nub: "0",
+            size: "10"
+        },
+          this.categoryLevel={
+          category1: '',
+          category2: '',
+          category3: '',
+        }
+      },
       //查询类别+品牌+品种
       getType(){
         var that = this;
@@ -457,6 +477,9 @@
              that.stocksData = response.data.data.list;
              that.stocksCount = parseInt(response.data.data.count);
              // console.info(response.data.data)
+              setTimeout(() => {
+                that.loading = false;
+              }, 2000);
             }
           })
           .catch(function (error) {
