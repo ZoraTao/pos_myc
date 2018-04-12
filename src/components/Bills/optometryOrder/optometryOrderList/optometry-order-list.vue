@@ -45,7 +45,7 @@
                     未查询到验光单
                 </li> -->
                 <li>
-                <button class="add_btn bg_white_col_blue">
+                <button class="add_btn bg_white_col_blue" @click="showNewOptometry=true">
                 + 新增验光单
               </button>
                 </li>
@@ -56,6 +56,7 @@
             <div class="list_name">验光列表(23)</div>
             <el-table
                 :data="listData"
+                stripe
                 size="small"
                 align="left"
                 style="width: 100%;margin-bottom:10px;">
@@ -88,7 +89,7 @@
                 <el-table-column
                 label="操作">
                     <template slot-scope="scope">
-                        <span class="am-ft-blue" @click="getMemberDetail(scope.row.prescriptionId)"><a>查看详情</a></span>
+                        <span class="am-ft-blue" @click="getMemberDetail(scope.row.prescriptionId,scope.row.memberId)"><a>查看详情</a></span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -105,8 +106,8 @@
         <!--验光单一条数据详情-->
         <optometryOrderCu :memberDet="''" :memberInfo="detailData" :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
     </div>
-    <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="900px">
-        <NewOptometryModal :submit="submitNewOptometry"></NewOptometryModal>
+    <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="950px">
+        <NewOptometryModal :submit="submitNewOptometry" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
         <div class="packageDetailButtonGroup">
             <el-button @click="showNewOptometry = false">取 消</el-button>
             <el-button type="primary" @click="submitNewOptometry=true">保 存</el-button>
@@ -116,6 +117,7 @@
 </template>
 
 <script>
+import RegTest from '../../../../utils/Reg'
 import optometryOrderCu from '../optometryOrderCu/optometry-order-cu.vue'
 import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-modal.vue'
     export default {
@@ -135,8 +137,9 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 options: [],
                 value: '',
                 count: 0,
-                nub: 0,
-                size: 5
+                nub: 1,
+                size: 15,
+                
             };
         },
         components:{
@@ -144,11 +147,12 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
             NewOptometryModal
         },
         created: function() {
-            const isFirst = true;
-            this.getOrderList(isFirst);
+            // const isFirst = true;
+            // this.getOrderList(isFirst);
         },
         methods:{
             getOrderList(isFirst) {
+                console.log(RegTest)
                 if(isFirst){
                     this.noSearchText="输入会员信息查询验光单"
                 }else{
@@ -156,15 +160,17 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                         this.noSearchText="未查询到验光单"
                     }
                 }
+                    this.detailData=[];
                     var that = this;
+                    setTimeout(function() {
                     that.$axios({
-                        url: this.listUrl,
+                        url: that.listUrl,
                         method: 'post',
                         params: {
                             jsonObject: {
-                                memberId: this.memberInfo,
-                                nub: (this.nub==0?0:(this.nub-1)*this.size),
-                                size: this.size
+                                seachKey:that.memberInfo,
+                                nub: (that.nub==1?0:(that.nub-1)*that.size),
+                                size: that.size
                             },
                             keyParams: {
                                 weChat: true,
@@ -185,8 +191,9 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                             that.noSearchText="未查询到验光单"
                         }
                     })
+                }, 0);
             },
-            getMemberDetail(id) {
+            getMemberDetail(id,memberId) {
                 var that = this;
                 that.$axios({
                     url: this.deatilUrl,
@@ -205,7 +212,21 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 .then(function (response) {
                     that.detailData=response.data.data.prescriptions;
                     that.eyesData=response.data.data.eyes;
+                    that.$router.push({
+                        path: '/bills/optometryOrderCu',
+                        name: 'optometryOrderCu',
+                        params: {
+                            data:
+                            {
+                                memberId:memberId,
+                            }
+                        }
+                    });
                 })
+            },              
+            getNewoptometry(){
+                this.showNewOptometry=false;      
+                this.getOrderList();        
             }
         }
     };

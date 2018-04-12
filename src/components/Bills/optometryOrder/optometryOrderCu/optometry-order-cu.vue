@@ -12,11 +12,11 @@
         <ul class="optometry_head_msg">
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">手机号:</span>{{userInfo.mobile}}</li>
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">姓名:</span>&nbsp;{{userInfo.memberName}}</li>
-          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;{{memberInfo.memberCardNo}}</li>
+          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;{{cpMemberInfo.memberCardNo}}</li>
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">性别 :</span>&nbsp;<em
-            v-if="memberInfo.sex=='M'">男</em>
+            v-if="cpMemberInfo.sex=='M'">男</em>
             <em v-else>女</em></li>
-          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">出生年月 :</span>&nbsp;{{memberInfo.birthday}}</li>
+          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">出生年月 :</span>&nbsp;{{cpMemberInfo.birthday}}</li>
         </ul>
 
         <div class="glass_combination">
@@ -66,7 +66,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list" v-if="data3[1].add !== ''">
+            <li class="clearfix combination_table_list" v-if="data4[0].sph !== ''">
               <ul>
                 <li class="fn-left msg_left">近用</li>
                 <li class="fn-left glass_table_770">
@@ -95,7 +95,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list">
+            <li class="clearfix combination_table_list" v-if="data5[0].sph !== ''">
               <ul>
                 <li class="fn-left msg_left">隐形</li>
                 <li class="fn-left glass_table_770">
@@ -118,7 +118,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list">
+            <li class="clearfix combination_table_list" v-if="data6[0].sph !== ''">
               <ul>
                 <li class="fn-left  msg_left">渐进</li>
                 <li class="fn-left glass_table_770">
@@ -151,15 +151,15 @@
           </ul>
           <ul class="eye_healthy">
             <li class="wid80 fn-left">眼部健康</li>
-            <li class="data_li">上下眼睑：<span>{{userInfo.health.k1}}</span></li>
-            <li class="data_li">角膜：<span>{{userInfo.health.k2}}</span></li>
-            <li class="data_li">结膜：<span>{{userInfo.health.k3}}</span></li>
-            <li class="data_li">泪腺：<span>{{userInfo.health.k4}}</span></li>
-            <li class="data_li">其他：<span>{{userInfo.health.k5}}</span></li>
+            <li class="data_li">上下眼睑：<span>{{userInfo.health?JSON.parse(userInfo.health).k1:''}}</span></li>
+            <li class="data_li">角膜：<span>{{userInfo.health?JSON.parse(userInfo.health).k2:''}}</span></li>
+            <li class="data_li">结膜：<span>{{userInfo.health?JSON.parse(userInfo.health).k3:''}}</span></li>
+            <li class="data_li">泪腺：<span>{{userInfo.health?JSON.parse(userInfo.health).k4:''}}</span></li>
+            <li class="data_li">其他：<span>{{userInfo.health?JSON.parse(userInfo.health).k5:''}}</span></li>
           </ul>
 
 
-          <ul class="glass_combination_table">
+          <ul class="glass_combination_table" v-if="data1[0].sph !== ''">
             <li class="clearfix combination_table_list">
               <ul class="glass_table_head">
                 <li class="wid80"> &nbsp;&nbsp;</li>
@@ -171,7 +171,7 @@
                 <li class="w90">PD</li>
                 <li class="w90">ADD</li>
               </ul>
-              <ul>
+              <ul v-if="data1[0].sph !== ''">
                 <li class="fn-left  msg_left">检影</li>
                 <li class="fn-left glass_table_770">
                   <table>
@@ -197,7 +197,7 @@
               </ul>
             </li>
             <li class="clearfix combination_table_list">
-              <ul>
+              <ul v-if="data2[0].sph !== ''">
                 <li class="fn-left  msg_left">主观</li>
                 <li class="fn-left glass_table_770">
                   <table>
@@ -234,16 +234,14 @@
         </div>
 
         <div class="glass_combination">
-          <div class="glass_combination">
-            <div class="am-ft-gray6 clearfix pb10">
-              <div class=" fn-left optometry_remarks">验光备注：</div>
-              <p class=" fn-left optometry_remarks_text">{{userInfo.memo}}</p>
-            </div>
-            <ul class="clearfix" v-if="memberDet !='detail'">
-              <li class=" fn-left optometry_origin">验光来源：<span>{{userInfo.source}}</span></li>
-              <li class="fn-left optometrist">验光师：<span>{{userInfo.optometrist}} </span></li>
-            </ul>
+          <div class="am-ft-gray6 clearfix pb10">
+            <div class=" fn-left optometry_remarks">验光备注：</div>
+            <p class=" fn-left optometry_remarks_text">{{userInfo.memo}}</p>
           </div>
+          <ul class="clearfix" v-if="memberDet !='detail'">
+            <li class=" fn-left optometry_origin">验光来源：<span>{{userInfo.source}}</span></li>
+            <li class="fn-left optometrist">验光师：<span>{{userInfo.optometrist}} </span></li>
+          </ul>
         </div>
       </div>
     </div>
@@ -255,37 +253,45 @@
     name: "optometryOrderCu",
     data() {
       return {
+        cpMemberInfo:{
+          memberCardNo:'',
+          sex:'',
+          birthday:''
+        },
         eyesData: [],//验光数据
-        userInfo: '',//验光人信息
-        data1: '', //检影数据
-        data2: '',//主观数据
-        data3: '',//远用数据
-        data4: '', //近用数据
-        data5: '', //隐形数据
-        data6: '', //渐进数据
+        userInfo: {},//验光人信息
+        data1: [{},{}], //检影数据
+        data2: [{},{}],//主观数据
+        data3: [{},{}],//远用数据
+        data4: [{},{}], //近用数据
+        data5: [{},{}], //隐形数据
+        data6: [{},{}], //渐进数据
         showDiv: "2",
       };
     },
     props: ['memberDet', 'memberInfo','eyes'],
     created: function () {
-      console.log(this.eyes&&this.eyes!='')
-      if(this.eyes&&this.eyes!=''){
-        this.eyesData=this.eyes;
-        this.userInfo=this.memberInfo;
-        this.setData();
-      }else{
-        this.getOptometryRecord();
-      }
+        if(this.eyes&&this.eyes!=''){
+          this.eyesData=this.eyes;
+          this.userInfo=this.memberInfo;
+          this.cpMemberInfo=this.memberInfo;
+          this.setData();
+        }else{
+          this.getOptometryRecord();
+        }
+    },
+    mounted(){
+      // console.log(this.$route.params.data.memberId)
     },
     methods: {
       getOptometryRecord() {
         var that = this;
         that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately ',
+          url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately',
           method: 'post',
           params: {
             jsonObject: {
-              memberId: '2222767'
+              memberId: this.$route.params.data.memberId
             },
             keyParams: {
               weChat: true
@@ -296,6 +302,7 @@
             // console.info(response.data.data)
             that.eyesData = response.data.data.eyes; //左右眼数据
             that.userInfo = response.data.data.prescriptions; //检查数据
+            that.cpMemberInfo=response.data.data.member;
             //检影数据
             that.setData()
           })

@@ -6,7 +6,7 @@
 
 <script>
   import optometryOrderCu from '../../Bills/optometryOrder/optometryOrderCu/optometry-order-cu'
-
+ 
   export default {
     name: "member-optometry-record",
     components: {
@@ -23,6 +23,8 @@
     props: ['memberBaseInfo'],
     methods: {
 
+    },mounted(){
+      console.log(1,this.memberBaseInfo)
     }
   }
 </script>

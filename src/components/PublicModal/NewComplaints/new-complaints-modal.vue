@@ -1,5 +1,5 @@
 <template>
-<div class="newOptometry">
+<div id="newOptometry" class="newOptometry">
     <div class="textCenter newOptometryBody">
         <div class="newOptometryPhone">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
@@ -197,22 +197,22 @@ export default {
         ],
         activeName: '1',
         data:[
-            {
-                memberCard:'0012345',
-                memberName:'张三',
-                phone:'15383465790',
-                sex:'男',
-                age:'12',
-                time:'2017-10-12 12:34:55'
-            },
-            {
-                memberCard:'0012345',
-                memberName:'张三',
-                phone:'15383465790',
-                sex:'男',
-                age:'12',
-                time:'2017-10-12 12:34:55'
-            }
+            // {
+            //     memberCard:'0012345',
+            //     memberName:'张三',
+            //     phone:'15383465790',
+            //     sex:'男',
+            //     age:'12',
+            //     time:'2017-10-12 12:34:55'
+            // },
+            // {
+            //     memberCard:'0012345',
+            //     memberName:'张三',
+            //     phone:'15383465790',
+            //     sex:'男',
+            //     age:'12',
+            //     time:'2017-10-12 12:34:55'
+            // }
         ]
     }
   },
@@ -242,7 +242,7 @@ label {
     margin-bottom: 5px;
     font-weight: 700;
 }
-.newOptometry{
+#newOptometry{
     padding: 0;
     font-size: 12px;
     .newOptometryPhone{
@@ -302,6 +302,22 @@ label {
             margin-top: 2px;
         }
     }
+    .labelInput{
+        float: left;    
+        line-height: 32px;
+        label{
+            min-width: 50px;
+            float: left;
+        }
+        .el-textarea{
+            width: calc(100% - 100px);
+            float: left;
+        }
+        .el-input{
+            width: 110px;;
+            padding:0; 
+        }
+    }
 }   
 .grayTable{
     .el-table--small td, .el-table--small th{
@@ -325,22 +341,6 @@ label {
     }
     .el-table--small th{
         border-bottom: 1px solid #ccc;
-    }
-}
-.labelInput{
-    float: left;    
-    line-height: 32px;
-    label{
-        min-width: 50px;
-        float: left;
-    }
-    .el-textarea{
-        width: calc(100% - 100px);
-        float: left;
-    }
-    .el-input{
-        width: 110px;;
-        padding:0; 
     }
 }
 .complaintsType{

@@ -2,6 +2,7 @@
   <div>
     <el-table
       v-for="(tableData,index) in categoryData"
+      :key="tableData.className"
       v-if="tableData.length!=0"
       :data="tableData"
       size="small"
@@ -99,13 +100,14 @@
       //查询库存明细--类别列表
       getCategoryInventory() {
         var that = this;
-        that.formInline.nub = that.nub;
-        that.formInline.size = that.size;
+        let setData = that.formInline;
+        delete setData.size;
+        delete setData.nub;
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getClassStockList',
           method: 'post',
           params: {
-            jsonObject: that.formInline,
+            jsonObject: setData,
             keyParams: {
               weChat: true
             }
@@ -141,7 +143,7 @@
           url: 'http://myc.qineasy.cn/pos-api/stock/getStockCount',
           method: 'post',
           params: {
-            jsonObject: {},
+            jsonObject:  that.formInline,
             keyParams: {
               weChat: true
             }

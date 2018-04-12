@@ -82,17 +82,19 @@ c<template>
               </div>
             </el-form-item>
             <el-form-item label="超过：">
-              <el-select v-model="sreen.mangDayNotShine"  placeholder="0" style="width: 60px">
-                <el-option label="0" value="1"></el-option>
-                <el-option label="1" value="2"></el-option>
-              </el-select>
+              <el-input
+                placeholder="0"
+                style="width: 60px"
+                v-model="sreen.lastPrescriptionDays">
+              </el-input>
               &nbsp;<strong class="am-ft-12 am-text-normal">天无验光记录</strong>
             </el-form-item>
             <el-form-item label="超过：">
-              <el-select v-model="sreen.manyDayNotBuy" placeholder="0" style="width: 60px">
-                <el-option label="0" value="1"></el-option>
-                <el-option label="1" value="2"></el-option>
-              </el-select>
+              <el-input
+                placeholder="0"
+                style="width: 60px"
+                v-model="sreen.lastShopDays">
+              </el-input>
               &nbsp;<strong class="am-ft-12 am-text-normal">天无购买记录</strong>
             </el-form-item>
             <el-form-item>
@@ -161,16 +163,16 @@ c<template>
             </template>
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="shoppingCount"
             label="消费次数"
             width="100px">
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="totalConsumption"
             label="消费金额">
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="lastShopTime"
             label="最近消费时间">
           </el-table-column>
           <el-table-column
@@ -233,7 +235,7 @@ export default {
   },
   data() {
     return {
-      nub: 0,//起始条数
+      nub: 1,//起始条数
       size: 10,//每页显示数据条数
       counts: 0,//总条数
       isSubmit: false,
@@ -244,8 +246,8 @@ export default {
       sreen: {
         cardId: "", //卡类型
         memberType: "", //会员类型
-        cardId: 1, //没有购买记录
-        lastPrescriptionDays: 1, //没有验光记录
+        lastPrescriptionDays: "", //没有验光记录
+        lastShopDays:"",//隔无购物天数
         startTime: "", //开始时间
         endTime: "", //结束时间
         nub: "0",
@@ -269,7 +271,6 @@ export default {
   methods: {
     onSubmit() {
       //根据条件筛选会员信息
-      console.log(this.sreen);
       let _this = this;
       this.$axios({
         url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
@@ -283,8 +284,9 @@ export default {
           }
         }
       })
-        .then(function(res) {
-          console.log(res);
+        .then(function(response) {
+            _this.memberList = response.data.data.memberList;
+            _this.counts = parseInt(response.data.data.count);
         })
         .catch(function(err) {
           console.log(err);
@@ -360,7 +362,7 @@ export default {
     checkDetail(data) {
       // console.log(data);
       this.$router.push({
-        path: "/member/memberDetail",
+        // path: "/member/memberDetail",
         name: "member-detail",
         params: { data }
       });
@@ -400,27 +402,14 @@ export default {
       var _this = this;
       let seaStr = _this.searchStr;
       this.searchStr = removeAllSpace( this.searchStr, 'g');//去空格
-      console.log(this.searchStr)
-      let phones, names, memberCardNos;
-      if (reg.RegTest.phone(seaStr)) {//电话号
-        phones = seaStr;
-        console.log('手机号')
-      } else if (reg.RegTest.chcn(seaStr)) {//纯中文姓名
-        names = seaStr
-        console.log('姓名')
-      } else {//卡类型未定
-        memberCardNos = seaStr
-        console.log('卡号')
-      }
       this.$axios({
           url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang ",
           method: "post",
           params: {
             jsonObject: {
-              // _this.searchStr
-              telphone: phones,
-              name: names ,
-              memberCardNo: memberCardNos
+              seachCode:_this.searchStr,
+              nub:_this.nub,
+              size:_this.size
             },
             keyParams: {
               weChat: true,

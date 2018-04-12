@@ -1,7 +1,7 @@
 $red: #F56C6C;
 $dark-red: #D0021B;
 $white: #FFFFFF;
-$blue: #00A2DE;
+$blue: #009fcf;
 $yellow: #EA9100;
 $orange: #FF6600;
 
@@ -39,6 +39,9 @@ $radius3: $h3 solid #E1E1E1;
 
 .am-ft-blue {
     color: $blue !important;
+}
+.am-ft-black {
+    color: #000 !important;
 }
 .am-ft-aa{
     color: #aaaaaa !important;
@@ -443,4 +446,7 @@ i,em{
   width: 100%;
   height: 1px;
   border-bottom: 1px dashed #E1E1E1;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: #009fcf !important;
 }

@@ -9,10 +9,10 @@
         <h5>V 1.0.0</h5>
         <div class="formGroup">
           <div class="formItem">
-            <input type="text" value="" v-model="LoginData.user" placeholder="用户名13777822654 "/>
+            <input type="text" value="" v-model="LoginData.user" placeholder="用户名"/>
           </div>
           <div class="formItem">
-            <input type="password" value="" v-model="LoginData.pass" placeholder="密码123456"/>
+            <input type="password" value="" v-model="LoginData.pass" placeholder="密码"/>
           </div>
           <div class="formItem">
             <select class="form-control">
@@ -58,6 +58,8 @@
 </template>
 
 <script>
+// import {mapActions,mapState,mapMutations,mapGetters} from 'vuex'
+import store from '../vuex/store'
 export default {
   name: 'login',
   data () {
@@ -70,7 +72,21 @@ export default {
       errorTitle:'密码错误，登录失败！'
     }
   },
+  computed:{
+    // ...mapState([
+    //   "accessKey"
+    // ]),
+    // count:function(store){
+    //   return this.$store.getters.addCount;
+    // }
+  },
   methods:{
+    // ...mapMutations([
+    //   "LOGIN_LOCAL_STORAGE"
+    // ]),
+    // ...mapActions([
+    //   "LOGIN_LOCAL_STORAGE"
+    // ]),
     toLogin(){
       var _this = this;
       this.$axios({
@@ -88,9 +104,9 @@ export default {
       }).then((res)=>{
         if(res.status == '200'){
           if(res.data.code ==  1 && res.data.msg == "登录成功"){
-              
+            console.log(res.data.data)
+              _this.$store.commit('LOGIN_LOCAL_STORAGE',res.data.data.user.token);
               _this.goHome();
-              console.log(res)
           }else{
               _this.dialogVisible = true
               console.log(res)
@@ -104,7 +120,19 @@ export default {
     },
     goHome(){
       this.$router.push('/base/homeIndex')
+    },
+    isLogin(){
+       return !!localStorage.token
+    },
+    userAccessKeyLogin(){
+        let _this = this;
+        if(localStorage.getItem('token')){//有用户秘钥直接登录,未进行MD5解密
+          _this.goHome();
+        }
     }
+  },
+  beforemounted(){
+    // this.userAccessKeyLogin();
   }
 }
 </script>

@@ -94,7 +94,7 @@ const router = new Router({
           component: resolve => require(['../components/Bills/optometryOrder/optometryOrderList/optometry-order-list.vue'], resolve)
         },
         {
-          path: 'optometryOrderCu',
+          path: 'optometryOrderCu/:data',
           name: 'optometryOrderCu',
           component: resolve => require(['../components/Bills/optometryOrder/optometryOrderCu/optometry-order-cu.vue'], resolve)
         }]
@@ -112,7 +112,13 @@ const router = new Router({
         path: 'cashierCu',
         name: 'cashierCu',
         component: resolve => require(['../components/Retail/Cashier/CashierCu/cashier-cu.vue'], resolve)
-      }]
+      },
+      {
+        path: 'orderDetail',
+        name: 'orderDetail',
+        component: resolve => require(['../components/Retail/orderDetail/orderDetail.vue'], resolve)
+      }
+    ]
     },
     // 三级路由只拥有layout
     {
@@ -268,8 +274,8 @@ const router = new Router({
 })
 
 router.beforeEach((to,from,next)=>{
-  console.log('从'+from.name)
-  console.log('去'+to.name)
+  // console.log('从'+from.name)
+  // console.log('去'+to.name)
   next();
 })
 

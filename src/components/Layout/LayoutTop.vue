@@ -16,7 +16,8 @@
       </ul>
       <div class="header-top-right">
         <a href="javascript:;" class="am-ft-FF2601">
-          <i class="el-icon-bell"></i>
+          <!-- <i class="el-icon-bell"></i> -->
+          <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img%2Ficon_xiaoxi.png"/>
           您有一个折扣签批已审核
         </a>
         <el-dropdown>
@@ -37,7 +38,8 @@
           </el-dropdown-menu>
         </el-dropdown>
         <a href="javascript:;" class="am-ft-white mgr15">
-          <i class="el-icon-setting"></i>
+          <!-- <i class="el-icon-setting"></i> -->
+          <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img%2Ficon_shezhi.png"/>
         </a>
       </div>
     </div>
@@ -261,6 +263,11 @@ export default {
   height: 100%;
   text-align: right;
   color: #fff;
+}
+.header-top-right img{
+    height: 16px;
+    line-height: 30px;
+    vertical-align: text-bottom;
 }
 .el-dropdown {
   font-size: 12px;

@@ -2,7 +2,7 @@
   <section class=" content_box">
     <div class="am_bg_white cashier_box">
       <ul class="cashier_tab">
-        <li v-for="item of tabs" :key="item.value" :class="{'on':item.isActived}" v-on:click="changeTab(item)">
+        <li v-for="item of tabs" :key="item.value" :class="{'on':item.isActived}" v-on:click="changeTab(item);getOrderList(item.status)">
           {{item.value}}
         </li>
       </ul>
@@ -12,20 +12,20 @@
         <ul class="clearfix cashier_top">
           <li class="fn-left">
             <el-form-item label="零售单号：" prop="orderNum">
-              <el-input v-model="searchForm.orderNum" placeholder="请输入零售单号" style="min-width: 100px"></el-input>
+              <el-input v-model="searchForm.orderNo" placeholder="请输入零售单号" style="min-width: 100px"></el-input>
             </el-form-item>
           </li>
           <li class="fn-left">
             <el-form-item label="会员：" prop="member">
-              <el-input v-model="searchForm.member" placeholder="请输入" style="min-width: 80px"></el-input>
+              <el-input v-model="searchForm.name" placeholder="请输入" style="min-width: 80px"></el-input>
             </el-form-item>
           </li>
           <li class="fn-left">
             <el-form-item label="订单类型：" prop="orderType">
               <el-select prop="adr.district" v-model="searchForm.orderType" placeholder="请选择"
                          style="width:120px;">
-                <el-option label="1" value="选项1"></el-option>
-                <el-option label="2" value="选项2"></el-option>
+                <el-option label="普通订单" value="1"></el-option>
+                <el-option label="定做单" value="2"></el-option>
               </el-select>
             </el-form-item>
           </li>
@@ -34,16 +34,29 @@
               label="零售时间："
               prop="birthday">
               <div class="fn-line-block">
-                <el-date-picker type="date" placeholder="选择日期" v-model="searchForm.saleStartTime" style="width: 120px;"></el-date-picker>
+                <el-date-picker 
+                    :picker-options="pickerOptions0"
+                    type="date"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    placeholder="开始日期"
+                    v-model="searchForm.saleTimeStart"
+                    style="width: 120px;"></el-date-picker>
               </div>
               <div class="fn-line-block am-ft-center">-</div>
               <div class="fn-line-block">
-                <el-time-picker type="fixed-time" placeholder="选择时间" v-model="searchForm.saleEndTime" style="width: 120px;"></el-time-picker>
+                <el-date-picker 
+                    :picker-options="pickerOptions0"
+                    :default-value="defaultValue"
+                    type="date"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    placeholder="结束日期"
+                    v-model="searchForm.saleTimeEnd"
+                    style="width: 120px;"></el-date-picker>
               </div>
             </el-form-item>
           </li>
           <li class="fn-left">
-            <el-button type="primary" plain class="find_btn">查询</el-button>
+            <el-button type="primary" plain class="find_btn" @click="getOrderList()">查询</el-button>
           </li>
         </ul>
         </el-form>
@@ -67,15 +80,15 @@
             </tr>
             </thead>
 
-            <tbody class="orders_tbody" v-for="(order, index) in orderTempList" :key="order.orderId">
+            <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
             <tr class="order_header">
               <td colspan="9">
                 <div class="fn-left">
-                  <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
-                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span>
-                  <span class="order_id">{{order.orderNo}}</span>
-                  <span v-if="order.source=='0'" class="sign_blue">本店签批</span>
-                  <span v-else class="sign_orange">跨店签批</span>
+                  <!-- <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
+                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span> -->
+                  <span class="order_id">{{order.orderId}}</span>
+                  <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
+                  <!-- <span v-else class="sign_orange">跨店签批</span> -->
                   <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
                 </div>
                 <div class=" fn-right">
@@ -85,29 +98,32 @@
               </td>
             </tr>
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
-              <td>{{list.orderItemId}}</td>
-              <td>{{list.itemName}}</td>
-              <td>{{list.quantity}}</td>
-              <td>{{list.listPrice}}</td>
-              <td><strong>{{list.price}}</strong></td>
-              <td>--</td>
+              <td>{{list.itemId}}</td>
+              <td>{{list.itemName||'商品名'}}</td>
+              <td>{{parseInt(list.quantity)}}</td>
+              <td>{{parseFloat(list.price)||'商品原单价'}}</td>
+              <td><strong>{{parseFloat(list.money)||'商品实售单价'}}</strong></td>
+              <td>{{order.shopName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
-                  <div class="priceAll am-ft-22">{{order.moneyAmount}}</div>
-                  <div>商品合计：<strong>{{order.moneyProduct}}</strong></div>
-                  <div>卡券：<strong>{{order.coupon_money}}</strong></div>
-                  <div>折扣：<strong>{{order.discount_money}}</strong></div>
-                  <div>活动：<strong>{{order.activity_money}}</strong></div>
+                  <div class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}
+                  <small v-if="order.roundOffFlag == '0' && typeof parseFloat(list.discountRate) == 'number' && parseFloat(list.discountRate) < 10 ">({{parseFloat(list.discountRate)}}折)</small>
+                  </div>
+                  <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
+                  <div>卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div>折扣：<strong>{{parseFloat(order.discount)>0?parseFloat(order.discount).toFixed(2):'0.00'}}</strong></div>
+                  <div>活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                 <div class="am-ft-orange">{{order.statusName}}</div>
-                <div class="look_d" @click="showCashier = true">查看详情</div>
+                <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange priceAll am-ft-22 mgb10">{{order.moneyAmount}}</div>
+                <div class="am-ft-orange priceAll am-ft-22 mgb10">{{(parseFloat(order.moneyAmount)-parseFloat(order.moneyPaid)).toFixed(2)}}
+                </div>
                 <div class="button">
-                  <el-button type="primary" v-on:click="showModalMiddle()">收银</el-button>
+                  <el-button type="primary" v-on:click="changePay(order)" >收银</el-button>
                 </div>
                <a href="javascript:;" class="fn-block mgt5">重新开单</a>
                <a href="javascript:;" class="am-ft-gray9 fn-block">关闭订单</a>
@@ -120,7 +136,10 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="10">
+            :page-size="5"
+            :total="Number(count)"
+            @current-change="getOrderList(3)"
+            :current-page.sync="nub">
           </el-pagination>
         </div>
       </div>
@@ -142,59 +161,66 @@
               <th>操作</th>
             </tr>
             </thead>
-            <tbody class="orders_tbody" v-for="(order, index) in orderTempList" :key="order.orderId">
-            <tr class="order_header">
-              <td colspan="9">
-                <div class="fn-left">
-                  <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
-                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span>
-                  <span class="order_id">{{order.orderNo}}</span>
-                  <span v-if="order.source=='0'" class="sign_blue">本店签批</span>
-                  <span v-else class="sign_orange">跨店签批</span>
-                  <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
-                </div>
-                <div class=" fn-right">
-                  <span class="msg">销售：&nbsp;</span>
-                  <span class="msg">{{order.salesName}}&nbsp;&nbsp;&nbsp;{{order.orderTime}}</span>
-                </div>
-              </td>
-            </tr>
-            <tr v-for="(list,index) in order.orderItems" :key="list.name">
-              <td>{{list.orderItemId}}</td>
-              <td>{{list.itemName}}</td>
-              <td>{{list.quantity}}</td>
-              <td>{{list.listPrice}}</td>
-              <td><strong>{{list.price}}</strong></td>
-              <td>--</td>
-              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
-                <div class="order_price_box">
-                  <div class="priceAll">{{order.moneyAmount}}</div>
-                  <div>商品合计：<strong>{{order.moneyProduct}}</strong></div>
-                  <div>卡券：<strong>{{order.coupon_money}}</strong></div>
-                  <div>折扣：<strong>{{order.discount_money}}</strong></div>
-                  <div>活动：<strong>{{order.activity_money}}</strong></div>
-                  <div class=" am-ft-16">已收:<strong>{{order.moneyPaid}}</strong></div>
-                </div>
-              </td>
-              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-red">{{order.statusName}}</div>
-                <div class="look_d" @click="showCashier = true">查看详情</div>
-              </td>
-              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange priceAll">{{order.moneyAmount}}</div>
-                <div class="button">
-                  <el-button type="primary" v-on:click="showModalMiddle()">收银</el-button>
-                </div>
-              </td>
-            </tr>
-            <div class="gekai"></div>
+            <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
+                <tr class="order_header">
+                  <td colspan="9">
+                    <div class="fn-left">
+                      <!-- <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
+                      <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span> -->
+                      <span class="order_id">{{order.orderNo}}</span>
+                      <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
+                      <!-- <span v-else class="sign_orange">跨店签批</span> -->
+                      <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
+                    </div>
+                    <div class=" fn-right">
+                      <span class="msg">销售：&nbsp;</span>
+                      <span class="msg">{{order.salesName}}&nbsp;&nbsp;&nbsp;{{order.orderTime}}</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr   v-for="(list,index) in order.orderItems" :key="list.name">
+                  <td>{{list.itemId}}</td>
+                  <td>{{list.itemName||'商品名'}}</td>
+                  <td>{{parseInt(list.quantity)}}</td>
+                  <td>{{parseFloat(list.price)||'商品原单价'}}</td>
+                  <td><strong>{{parseFloat(list.money)}}</strong></td>
+                  <td>{{order.shopName}}</td>
+                  <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
+                    <div class="order_price_box">
+                      <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}
+                        <small v-if="order.roundOffFlag == '0' && typeof parseFloat(list.discountRate) == 'number' && parseFloat(list.discountRate) < 10 ">({{parseFloat(list.discountRate)}}折)</small>
+                      </div>
+                      <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
+                      <div>卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                      <div>折扣：<strong>{{parseFloat(order.discount)>0?parseFloat(order.discount).toFixed(2)+'(会员)':'0.00'}}</strong></div>
+                      <div>活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                      <div class=" am-ft-16">已收:<strong>{{parseFloat(order.moneyPaid)>0?parseFloat(order.moneyPaid).toFixed(2):'0.00'}}</strong></div>
+                    </div>
+                  </td>
+                  <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                    <div class="am-ft-red">
+                        {{order.statusName}}
+                    </div>
+                    <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
+                  </td>
+                  <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                    <div class="am-ft-orange priceAll">{{(parseFloat(order.moneyAmount)-parseFloat(order.moneyPaid)).toFixed(2)}}</div>
+                    <div class="button">
+                      <el-button type="primary" v-on:click="changePay(order)">收银</el-button>
+                    </div>
+                  </td>
+                </tr>
+                <div class="gekai"></div>
             </tbody>
           </table>
           <el-pagination
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="10">
+            :page-size="5"
+            :total="Number(count)"
+            @current-change="getOrderList(4)"
+            :current-page.sync="nub">
           </el-pagination>
         </div>
       </div>
@@ -211,12 +237,13 @@
               label="订单号"
               width="400">
               <template slot-scope="scope">
-                <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
+                <!-- <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
                 <span v-if="scope.row.statusCode=='4'" class="am-bg-orange icon">欠</span>
                 <span v-if="scope.row.statusCode=='10'" class="am-bg-red icon">退</span>
                 <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
                 <span v-if="scope.row.source=='0'" class="sign_blue">本店签批</span>
-                <span v-else class="sign_orange">跨店签批</span>
+                <span v-else class="sign_orange">跨店签批</span> -->
+                <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
               </template>
             </el-table-column>
             <el-table-column
@@ -254,7 +281,7 @@
             <el-table-column
               label="操作">
               <template slot-scope="scope">
-                <span class="am-ft-blue" @click="showCashier = true">查看详情</span>
+                <span class="am-ft-blue" @click="toOrderDetail(scope.row)">查看详情</span>
               </template>
             </el-table-column>
           </el-table>
@@ -262,7 +289,10 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="10">
+            :page-size="5"
+            :total="Number(count)"
+            @current-change="getOrderList('5')"
+            :current-page.sync="nub">
           </el-pagination>
         </div>
       </div>
@@ -270,7 +300,7 @@
 
     <!--收银弹窗-->
     <el-dialog title="收银" :visible.sync="showCashier">
-      <CashierModal></CashierModal>
+      <CashierModal :datas="payData" @closePayMoney="showCashier=false"></CashierModal>
     </el-dialog>
     <!--打印取货单弹窗-->
     <el-dialog custom-class="noheader" title="" :visible.sync="consoleCashier">
@@ -283,327 +313,439 @@
 </template>
 
 <script>
-  import CashierModal from '../CashierModal/cashier-modal.vue'
+import CashierModal from "../CashierModal/cashier-modal.vue";
+import {allDate} from '../../../../utils/date.js'
 
-  export default {
-    name: 'CashierList',
-    data() {
-      return {
-        searchForm: {
-          orderNum: '',
-          member: '',
-          orderType: '',
-          saleStartTime: '',
-          saleEndTime: ''
+export default {
+  name: "CashierList",
+  data() {
+    return {
+      searchForm: {
+        orderNo: "",
+        name: "",
+        orderType: "",
+        saleTimeStart: "",
+        saleTimeEnd: "",
+      },
+      nub: 1,
+      status:'3',// 当前栏 1收银  2欠还  3全部
+      size: 5,
+      payData: "", //收银信息
+      count: "",
+      showCashier: false,
+      consoleCashier: false,
+      srcNum: "1",
+      orderTempList: {},
+      tabs: [
+        {
+          value: "收银",
+          isActived: true,
+          srcNum: "1",
+          status: "3"
         },
-        showCashier: false,
-        consoleCashier: false,
-        srcNum: '1',
-        orderTempList: {},
-        tabs: [{
-          'value': '收银',
-          'isActived': true,
-          'srcNum': '1'
+        {
+          value: "欠还款",
+          isActived: false,
+          srcNum: "2",
+          status: "4"
         },
-          {
-            'value': '欠还款',
-            'isActived': false,
-            'srcNum': '2'
-          },
-          {
-            'value': '全部',
-            'isActived': false,
-            'srcNum': '3'
-          }],
+        {
+          value: "全部",
+          isActived: false,
+          srcNum: "3",
+          status: "5"
+        }
+      ],
+      pickerOptions0: {
+        disabledDate(time) {
+          return time.getTime() > Date.now() - 8.64e6;
+        }
+      },
+      defaultValue: allDate.TimeToDay()
+    };
+  },
+  created() {
+    this.getOrderList(3);
+  },
+  methods: {
+    changeTab: function(item) {
+      this.srcNum = item.srcNum;
+      this.tabs.forEach(function(element) {
+        element.isActived = false;
+        if (element == item) {
+          element.isActived = true;
+        }
+      });
+    },
+    changePay(data) {
+      this.payData = data;
+      this.showCashier = true;
+      console.log(this.payData)
+      console.log(this.showCashier)
+    },
+    //开启弹窗
+    openDialog() {},
+    //获取列表
+    getOrderList: function(value) {
+      var _this = this;
+      let status = _this.status;
+      if (value == 5){
+        _this.orderTempList = [];
+        _this.count = 0;
+        return 
+      } 
+      // if(value == null){
+      
+      // }
+      if (value == 3 || value == 4) {
+        status = value;
+        value == 3 ?_this.status = 3 : _this.status = 4;
+        _this.searchForm.orderNo = '';
+        _this.searchForm.name = '';
+        _this.searchForm.orderType = '';
+        _this.searchForm.saleTimeStart = '';
+        _this.searchForm.saleTimeEnd = '';
       }
-    },
-    created(){
-      this.getOrderList();
-    },
-    methods: {
-      changeTab: function (item) {
-        this.srcNum = item.srcNum;
-        this.tabs.forEach(function (element) {
-          element.isActived = false;
-          if (element == item) {
-            element.isActived = true;
-          }
-        })
-      },
-      showModalMiddle: function () {
-        this.showCashier = true;
-      },
-      //获取列表
-      getOrderList: function () {
-        var that = this;
-        that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList',
-          method: 'post',
-          params: {
-            jsonObject: {},
-            keyParams: {
-              weChat: true
+      
+      setTimeout(() => {
+        _this.$axios({
+            url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
+            method: "post",
+            params: {
+              jsonObject: {
+                orderNo: _this.searchForm.orderNo,
+                name: _this.searchForm.name,
+                orderType: _this.searchForm.orderType,
+                saleTimeStart: _this.searchForm.saleTimeStart,
+                saleTimeEnd: _this.searchForm.saleTimeEnd,
+                nub: _this.nub == 1 ? 0 : (_this.nub - 1) * _this.size,
+                size: _this.size,
+                status: status
+              },
+              keyParams: {
+                weChat: true
+              }
             }
-          }
-        })
-        .then(function (response) {
-          // console.info(response.data.data)
-          that.orderTempList = response.data.data.orderTempList;
-        })
-        .catch(function (error) {
-          console.info(error)
-        })
-      }
+          })
+          .then(function(res) {
+            // console.info(res.data.data)
+            if(res.data.code == 1){
+              _this.count = res.data.data.count;
+              _this.orderTempList = [];
+              _this.orderTempList = res.data.data.orderTempList;
+            }else{
+               _this.$message({
+                showClose: true,
+                message: '请求数据失败，请联系管理员',
+                type: 'error'
+              })
+            }
+            
+          })
+          .catch(function(error) {
+            console.info(error);
+          });
+      }, 100);
     },
-    components: {
-      CashierModal
+    toOrderDetail(data){
+      let _this = this;
+      console.log(data.orderId)
+      _this.$router.push({path:'/cashier/orderDetail',query:{orderId:data.orderId}})
+    },
+    searchOrder(orderId){
+      let _this = this;
+      setTimeout(() => {
+      this.$axios({
+            url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
+            method: "post",
+            params: {
+              jsonObject: {
+                orderNo: orderId,
+              },
+              keyParams: {
+                weChat: true
+              }
+            }
+          })
+          .then(function(res) {
+            if(res.data.code == 1){
+              _this.changePay(res.data.data.orderTempList[0])
+            }else{
+               _this.$message({
+                showClose: true,
+                message: '请求数据失败，请联系管理员',
+                type: 'error'
+              })
+            }
+          })
+          .catch(function(error) {
+            console.info(error);
+          });
+      }, 100);
+          
     }
+  },
+  mounted(){
+    let _this = this;
+    if(_this.$route.query.orderId){
+      let routerQuery = _this.$route.query.orderId;
+      _this.searchOrder(routerQuery)
+    }
+  },
+  components: {
+    CashierModal
+  },
+  watch:{
   }
+};
 </script>
 
 <style scoped lang="scss">
-  @import "../../../../reset";
+@import "../../../../reset";
 
-  .search-top {
-    background-color: #ffffff;
-    overflow: hidden;
+.search-top {
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+.cashier_box {
+  width: 100%;
+  height: 100%;
+}
+
+.cashier_tab {
+  height: 40px;
+  width: 100%;
+  background: #f4f4f4;
+}
+
+.cashier_tab li {
+  width: 95px;
+  height: 40px;
+  font-size: 15px;
+  line-height: 40px;
+  font-weight: bold;
+  float: left;
+  text-align: center;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  cursor: pointer;
+  /* box-shadow: 0 -2px 10px 0 rgba(0, 0, 0, 0.05); */
+}
+
+.cashier_tab li.on {
+  background: #fff;
+  color: #00afe4;
+}
+
+.content {
+  width: 100%;
+  height: calc(100% - 70px);
+  min-width: 360px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background: #fff;
+}
+
+.cashier_input {
+  background: #f8f8f8;
+  border: 1px solid #e1e1e1;
+  padding: 2px 10px;
+  height: 30px;
+}
+
+.cashier_top {
+  height: 70px;
+  padding-top: 20px;
+}
+
+.find_btn {
+  margin: 7px 0 0 15px;
+}
+
+.orders {
+  padding: 9px;
+}
+
+.orders_table {
+  width: 100%;
+}
+
+.orders_table thead tr {
+  height: 40px;
+}
+
+.orders_table thead tr th {
+  background: #f4f4f4;
+  font-weight: bold;
+  color: #555555;
+  text-align: center;
+  font-size: 12px;
+  padding: 0 2px;
+  line-height: 40px;
+  border-bottom: 10px solid #fff;
+}
+
+.orders_table tr td {
+  padding: 11px;
+  text-align: center;
+  font-size: 13px;
+  color: #333333;
+  letter-spacing: 0;
+}
+
+.orders_table tr td:nth-child(2) {
+  text-align: left;
+}
+
+.orders_table tr td:nth-child(2) .td_msg {
+  max-width: 350px;
+}
+
+.orders_tbody .order_header {
+  background: #fff4e5 !important;
+  text-align: left;
+  border-top: none;
+  border-bottom: none;
+}
+
+.orders_table .order_header .order_id {
+  font-size: 16px;
+  color: #555555;
+  letter-spacing: 0;
+  font-weight: bold;
+}
+
+.icon {
+  padding: 2px 5px;
+  color: #fff;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.order_header .msg {
+  font-size: 12px;
+  color: #555555;
+}
+
+.orders_tbody tr {
+  /* display: inline-block; */
+  height: 40px;
+  line-height: 18px;
+  border: 1px solid #e1e1e1;
+}
+
+.orders_tbody tr:nth-child(2n-1) {
+  background: rgba(246, 246, 246, 0.5);
+}
+
+.orders_tbody .rowspan_td {
+  border: 1px solid #e1e1e1;
+  font-size: 12px;
+  line-height: 24px;
+  &:not(:last-child) {
+    border-right: none;
   }
+}
 
-  .cashier_box {
-    width: 100%;
-    height: 100%;
-  }
+.orders_tbody .rowspan_td button {
+  font-size: 14px;
+  font-weight: bold;
+}
 
-  .cashier_tab {
-    height: 40px;
-    width: 100%;
-    background: #f4f4f4;
-  }
+.orders_tbody .rowspan_td div {
+  color: #666666;
+}
 
-  .cashier_tab li {
-    width: 95px;
-    height: 40px;
-    font-size: 15px;
-    line-height: 40px;
-    font-weight: bold;
-    float: left;
-    text-align: center;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    cursor: pointer;
-    /* box-shadow: 0 -2px 10px 0 rgba(0, 0, 0, 0.05); */
-  }
+.orders_tbody .rowspan_td strong {
+  color: #000;
+}
 
-  .cashier_tab li.on {
-    background: #fff;
-    color: #00AFE4;
-  }
-
-  .content {
-    width: 100%;
-    height: calc(100% - 70px);
-    min-width: 360px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    background: #fff;
-  }
-
-  .cashier_input {
-    background: #F8F8F8;
-    border: 1px solid #E1E1E1;
-    padding: 2px 10px;
-    height: 30px;
-  }
-
-  .cashier_top {
-    height: 70px;
-    padding-top: 20px;
-  }
-
-  .find_btn {
-    margin: 7px 0 0 15px;
-  }
-
-  .orders {
-    padding: 9px;
-  }
-
-  .orders_table {
-    width: 100%;
-  }
-
-  .orders_table thead tr {
-    height: 40px;
-  }
-
-  .orders_table thead tr th {
-    background: #F4F4F4;
-    font-weight: bold;
-    color: #555555;
-    text-align: center;
+.orders_tbody .rowspan_td .priceAll {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333333;
+  letter-spacing: 0;
+  small {
     font-size: 12px;
-    padding: 0 2px;
-    line-height: 40px;
-    border-bottom: 10px solid #fff;
   }
+}
 
-  .orders_table tr td {
-    padding: 11px;
-    text-align: center;
-    font-size: 13px;
-    color: #333333;
-    letter-spacing: 0;
-  }
+.gekai {
+  height: 15px;
+  width: 100%;
+}
 
-  .orders_table tr td:nth-child(2) {
-    text-align: left;
-  }
+.look_d {
+  cursor: pointer;
+}
 
-  .orders_table tr td:nth-child(2) .td_msg {
-    max-width: 350px;
-  }
+.sign_orange {
+  border: 1px solid #ff6600;
+  border-radius: 0 10px 10px 0;
+  padding: 0 15px 0 5px;
+}
 
-  .orders_tbody .order_header {
-    background: #FFF4E5 !important;
-    text-align: left;
-    border-top: none;
-    border-bottom: none;
-  }
+.sign_blue {
+  border: 1px solid #00afe4;
+  border-radius: 0 10px 10px 0;
+  padding: 0 15px 0 5px;
+}
 
-  .orders_table .order_header .order_id {
-    font-size: 16px;
-    color: #555555;
-    letter-spacing: 0;
-    font-weight: bold;
-  }
+.order_price {
+  max-width: 130px;
+}
 
-  .icon {
-    padding: 2px 5px;
-    color: #fff;
-    font-size: 12px;
-    border-radius: 5px;
-  }
+.order_price_box {
+  margin: 0 auto;
+  text-align: left;
+  padding: 0 10px;
+}
 
-  .order_header .msg {
-    font-size: 12px;
-    color: #555555;
-  }
+.fixd5Iblock {
+  display: inline-block;
+  margin-top: 5px;
+}
 
-  .orders_tbody tr {
-    /* display: inline-block; */
-    height: 40px;
-    line-height: 18px;
-    border: 1px solid #E1E1E1;
-  }
+/* 全部 */
 
-  .orders_tbody tr:nth-child(2n-1) {
-    background: rgba(246, 246, 246, 0.50);
-  }
+.orderList_table tbody tr:nth-child(2n) {
+  background: rgba(246, 246, 246, 0.5);
+}
 
-  .orders_tbody .rowspan_td {
-    border: 1px solid #E1E1E1;
-    font-size: 12px;
-    line-height: 24px;
-    &:not(:last-child) {
-      border-right: none;
-    }
-  }
+/*打印小票*/
 
-  .orders_tbody .rowspan_td button {
-    font-size: 14px;
-    font-weight: bold;
-  }
+.print-frame {
+  padding: 40px 0;
+  font-size: 14px;
+  color: #666666;
+  width: 400px;
+  text-align: center;
+  margin: 0 auto;
+}
 
-  .orders_tbody .rowspan_td div {
-    color: #666666;
-  }
+.print-frame img {
+  margin-left: 20px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
 
-  .orders_tbody .rowspan_td strong {
-    color: #000;
-  }
+.print-frame span {
+  font-size: 14px;
+  color: #666666;
+}
 
-  .orders_tbody .rowspan_td .priceAll {
-    font-weight: bold;
-    font-size: 16px;
-    color: #333333;
-    letter-spacing: 0;
-  }
+.modal-content {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
 
-  .gekai {
-    height: 15px;
-    width: 100%;
-  }
+.modal-body {
+  padding: 0;
+}
 
-  .look_d {
-    cursor: pointer;
-  }
-
-  .sign_orange {
-    border: 1px solid #FF6600;
-    border-radius: 0 10px 10px 0;
-    padding: 0 15px 0 5px;
-  }
-
-  .sign_blue {
-    border: 1px solid #00AFE4;
-    border-radius: 0 10px 10px 0;
-    padding: 0 15px 0 5px;
-  }
-
-  .order_price {
-    max-width: 130px;
-  }
-
-  .order_price_box {
-    margin: 0 auto;
-    text-align: left;
-    padding: 0 10px;
-  }
-
-  .fixd5Iblock {
-    display: inline-block;
-    margin-top: 5px;
-  }
-
-  /* 全部 */
-
-  .orderList_table tbody tr:nth-child(2n) {
-    background: rgba(246, 246, 246, 0.50);
-  }
-
-  /*打印小票*/
-
-  .print-frame {
-    padding: 40px 0;
-    font-size: 14px;
-    color: #666666;
-    width: 400px;
-    text-align: center;
-    margin: 0 auto;
-  }
-
-  .print-frame img {
-    margin-left: 20px;
-    margin-right: 10px;
-    vertical-align: middle;
-  }
-
-  .print-frame span {
-    font-size: 14px;
-    color: #666666;
-  }
-
-  .modal-content {
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .modal-body {
-    padding: 0;
-  }
-
-  .height30 {
-    line-height: 30px;
-  }
+.height30 {
+  line-height: 30px;
+}
 </style>

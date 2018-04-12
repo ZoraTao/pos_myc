@@ -36,7 +36,7 @@ import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
   }
 
   a {
-    color: #108ee9;
+    color: #00AFE4;
     background: transparent;
     text-decoration: none;
     outline: none;
@@ -227,6 +227,20 @@ import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
     background-color: #f4f4f5;
   }
 
+  .el-form-item__error {
+      padding-top: 0px;
+      top: auto;
+      left: 0;
+      z-index: 1111111;
+  }
+  .el-checkbox__input.is-checked+.el-checkbox__label {
+      color: #00A2DE;
+      font-weight: 400;
+  }
+  .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+    background-color: #00A2DE;
+    border-color: #00A2DE;
+  }
 .packageDetailButtonGroup{
     overflow: hidden;
     padding:20px 10px;
