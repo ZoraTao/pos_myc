@@ -66,7 +66,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list" v-if="data4[0].sph !== ''">
+            <li class="clearfix combination_table_list" v-if="data4[0].sph">
               <ul>
                 <li class="fn-left msg_left">近用</li>
                 <li class="fn-left glass_table_770">
@@ -95,7 +95,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list" v-if="data5[0].sph !== ''">
+            <li class="clearfix combination_table_list" v-if="data5[0].sph">
               <ul>
                 <li class="fn-left msg_left">隐形</li>
                 <li class="fn-left glass_table_770">
@@ -118,7 +118,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list" v-if="data6[0].sph !== ''">
+            <li class="clearfix combination_table_list" v-if="data6[0].sph">
               <ul>
                 <li class="fn-left  msg_left">渐进</li>
                 <li class="fn-left glass_table_770">
@@ -159,7 +159,7 @@
           </ul>
 
 
-          <ul class="glass_combination_table" v-if="data1[0].sph !== ''">
+          <ul class="glass_combination_table" v-if="data1[0].sph">
             <li class="clearfix combination_table_list">
               <ul class="glass_table_head">
                 <li class="wid80"> &nbsp;&nbsp;</li>
@@ -171,7 +171,7 @@
                 <li class="w90">PD</li>
                 <li class="w90">ADD</li>
               </ul>
-              <ul v-if="data1[0].sph !== ''">
+              <ul v-if="data1[0].sph">
                 <li class="fn-left  msg_left">检影</li>
                 <li class="fn-left glass_table_770">
                   <table>
@@ -197,7 +197,7 @@
               </ul>
             </li>
             <li class="clearfix combination_table_list">
-              <ul v-if="data2[0].sph !== ''">
+              <ul v-if="data2[0].sph">
                 <li class="fn-left  msg_left">主观</li>
                 <li class="fn-left glass_table_770">
                   <table>
@@ -271,12 +271,14 @@
     },
     props: ['memberDet', 'memberInfo','eyes'],
     created: function () {
-        if(this.eyes&&this.eyes!=''){
+        if(this.eyes!=undefined){
           this.eyesData=this.eyes;
           this.userInfo=this.memberInfo;
           this.cpMemberInfo=this.memberInfo;
           this.setData();
         }else{
+          this.userInfo=this.memberInfo;
+          this.cpMemberInfo=this.memberInfo;
           this.getOptometryRecord();
         }
     },
