@@ -207,7 +207,7 @@ const router = new Router({
           name: 'staffSale',
           component: resolve => require(['../components/Statistical/staffSale/staffSale.vue'],resolve)
         }
-      ]      
+      ]
     },
     // 商品库存
     {
@@ -222,7 +222,7 @@ const router = new Router({
         },
         // 库存盘点
         {
-          path: '/inventory-check',
+          path: 'inventory-check',
           name: 'inventory-check-index',
           component: resolve => require(['../components/CommodityStocks/inventory-check/inventory-check-index'], resolve)
         },
