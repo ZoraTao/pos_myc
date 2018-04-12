@@ -3,8 +3,8 @@
     <el-table
       :data="varietyDetData"
       size="small"
-      stripe
       max-height="400"
+      stripe
       :summary-method="getSummaries"
       show-summary
       style="width: 100%;">
@@ -49,16 +49,16 @@
       </el-table-column>
     </el-table>
     <!--分页-->
-    <!--<div class="block mgt10">-->
-      <!--<el-pagination-->
-        <!--class="am-ft-right"-->
-        <!--background-->
-        <!--@size-change="handleSizeChange"-->
-        <!--@current-change="handleCurrentChange"-->
-        <!--:page-size="15"-->
-        <!--layout="total, prev, pager, next"-->
-        <!--:total="varietyDetData.count">-->
-      <!--</el-pagination>-->
+    <div class="block mgt10">
+      <el-pagination
+        class="am-ft-right"
+        background
+        @current-change="handleCurrentChange"
+        :page-size="10"
+        layout="total, prev, pager, next"
+        :total="counts"
+        :current-page.sync="nub">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -67,19 +67,71 @@
   export default {
     name: "variety-inventory-det",
     components: {},
-    props: ['varietyDetData'],
+    props: ['formInline','categoryLevelInfo'],
     data() {
       return {
-
+        nub: 0,//起始条数
+        size: 10,//每页显示数据条数
+        counts: 0,
+        varietyDetData: [],
+        loading: true
       }
     },
+    created(){
+
+    },
     methods: {
-      //分页
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+      closeLoading(){
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000);
       },
+      //查询库存明细--品种列表
+      getVarietyDetList(){
+        var that = this;
+        let setData = that.formInline;
+        setData.size = that.size;
+        setData.nub = that.nub;
+        setData.categoryCode = [that.categoryLevelInfo.category1,that.categoryLevelInfo.category2,that.categoryLevelInfo.category3];
+
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/stock/getVarietyStockList',
+          method: 'post',
+          params: {
+            jsonObject: setData,
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              // console.info('品种 '+response.data.data)
+              that.varietyDetData = response.data.data.list;
+              that.counts = parseInt(response.data.data.count);
+              that.closeLoading();
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //分页
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.nub = (`${val}`-1) * this.size;
+        this.getVarietyDetList();
       },
       //合计
       getSummaries(param) {
@@ -90,7 +142,7 @@
             sums[index] = '合计';
             return;
           }
-          if (index === 1 || index === 2 || index === 4 || index === 5) {
+          if (index === 1 || index === 2 || index === 3 || index === 4 || index === 5) {
             sums[index] = ' ';
             return;
           }
@@ -105,7 +157,7 @@
               }
             }, 0);
           } else {
-            sums[index] = ' ';
+            sums[index] = '';
           }
         });
         return sums;

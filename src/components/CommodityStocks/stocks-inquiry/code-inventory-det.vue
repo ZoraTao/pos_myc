@@ -59,17 +59,17 @@
       </el-table-column>
     </el-table>
     <!--分页-->
-    <!--<div class="block mgt10">-->
-      <!--<el-pagination-->
-        <!--class="am-ft-right"-->
-        <!--background-->
-        <!--@size-change="handleSizeChange"-->
-        <!--@current-change="handleCurrentChange"-->
-        <!--:page-size="15"-->
-        <!--layout="total, prev, pager, next"-->
-        <!--:total="codeStockData.count">-->
-      <!--</el-pagination>-->
-    <!--</div>-->
+    <div class="block mgt10">
+      <el-pagination
+        class="am-ft-right"
+        background
+        @current-change="handleCurrentChange"
+        :page-size="15"
+        layout="total, prev, pager, next"
+        :total="counts"
+        :current-page.sync="nub">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -77,19 +77,71 @@
   export default {
     name: "code-inventory-det",
     components: {},
-    props: ['codeStockData'],
+    props: ['formInline','categoryLevelInfo'],
     data() {
       return {
-
+        codeStockData: [],
+        nub: 0,//起始条数
+        size: 2,//每页显示数据条数
+        counts: 0,//总条数-库存明细类别数量
+        loading: true
       }
     },
+    created(){
+
+    },
     methods: {
-      //分页
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+      closeLoading(){
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000);
       },
+      //查询库存明细--编码列表
+      getCodeStockList(){
+        var that = this;
+        let setData = that.formInline;
+        setData.size = that.size;
+        setData.nub = that.nub;
+
+        setData.categoryCode = [that.categoryLevelInfo.category1,that.categoryLevelInfo.category2,that.categoryLevelInfo.category3];
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/stock/getCodeStockList',
+          method: 'post',
+          params: {
+            jsonObject: that.formInline,
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              // console.info(response.data.data)
+              that.codeStockData = response.data.data.list;
+              that.codeStockCount = parseInt(response.data.data.count);
+              that.closeLoading();
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //分页
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.nub = (`${val}`-1) * this.size;
+        this.getCodeStockList();
       },
       //合计
       getSummaries(param) {

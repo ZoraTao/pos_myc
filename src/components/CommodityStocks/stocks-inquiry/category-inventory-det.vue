@@ -3,7 +3,7 @@
     <el-table
       v-for="(tableData,index) in categoryData"
       :key="tableData.className"
-      v-if="tableData.length!=0"
+      v-if="counts!=0"
       :data="tableData"
       size="small"
       stripe
@@ -68,7 +68,7 @@
         @current-change="handleCurrentChange"
         :page-size="2"
         layout="total, prev, pager, next"
-        :total="categoryCount"
+        :total="counts"
         :current-page.sync="nub">
       </el-pagination>
     </div>
@@ -79,30 +79,29 @@
   export default {
     name: "category-inventory-det",
     components: {},
-    props: ['formInline', 'goCategoryInventory'],
+    props: ['formInline'],
     data() {
       return {
         nub: 0,//起始条数
         size: 2,//每页显示数据条数
-        counts: 0,//总条数
+        counts: 0,//总条数-库存明细类别数量
         categoryData: [],//库存明细类别列表
-        categoryCount: 0,//库存明细类别数量
         totalCount: '',//库存总计
         totalPrice: '',//不含税零售价合计
         totalTaxPrice: '',//含税零售价合
       }
     },
     created() {
-      this.getSum();
-      this.getCategoryInventory();
+
     },
     methods: {
       //查询库存明细--类别列表
       getCategoryInventory() {
         var that = this;
         let setData = that.formInline;
-        delete setData.size;
-        delete setData.nub;
+        setData.size = that.size;
+        setData.nub = that.nub;
+
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getClassStockList',
           method: 'post',
@@ -122,9 +121,9 @@
               })
               return false;
             } else {
-              // console.info(response.data.data)
-              that.categoryData = response.data.data.classStockList;
-              that.categoryCount = parseInt(response.data.data.count);
+              console.info(response.data.data)
+              that.categoryData = response.data.data.list;
+              that.counts = parseInt(response.data.data.count);
             }
           })
           .catch(function (error) {
@@ -187,8 +186,8 @@
             sums[index] = '小计';
             return;
           }
-          if (index === 1 || index === 2 || index === 4 || index === 5) {
-            sums[index] = ' ';
+          if (index === 1 || index === 2 || index === 3 || index === 4 || index === 5 ) {
+            sums[index] = '';
             return;
           }
           const values = data.map(item => Number(item[column.property]));
