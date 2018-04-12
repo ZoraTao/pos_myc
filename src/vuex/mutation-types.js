@@ -8,3 +8,5 @@ export const SET_BOOL_TRUE ='SET_BOOL_TRUE';
 export const SET_BOOL_FALSE ='SET_BOOL_FALSE';
 //登录
 export const LOGIN_LOCAL_STORAGE = 'LOGIN_LOCAL_STORAGE';
+//退出
+export const CLEAR_LOCAL_STORAGE = 'CLEAR_LOCAL_STORAGE';
