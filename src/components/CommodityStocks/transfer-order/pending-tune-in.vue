@@ -47,6 +47,7 @@
         label="操作">
         <template slot-scope="scope">
           <a href="javascript:;" @click="goDetail">查看详情</a>
+          <a href="javascript:;" class="mgl20" @click="checkIn">调入接收</a>
         </template>
       </el-table-column>
     </el-table>
@@ -57,6 +58,45 @@
       layout="prev, pager, next"
       :total="10">
     </el-pagination>
+
+    <!--立即调入弹窗-->
+    <el-dialog class="comen-dialog" title="调入接收" :visible.sync="openCheckIn" width="870px">
+      <div class="dialog-body">
+        <div class="dialog-top">
+          <strong class="fn-left"><em>调拨单号：</em>ROV263212126536</strong>
+        </div>
+        <el-table
+          :data="tableData"
+          stripe
+          max-height="360"
+          style="width: 100%">
+          <el-table-column
+            prop="a"
+            label="商品编码"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="b"
+            label="商品名称"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="c"
+            label="调入数量">
+          </el-table-column>
+          <el-table-column
+            label="实物码">
+            <template slot-scope="scope">
+              <span>无实物码调拨</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="openCheckIn = false">取 消</el-button>
+        <el-button type="primary">确认调出</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -75,7 +115,9 @@
           f: '玉素甫',
           g: '2017-12-25 16:26:00',
           h: '待调入'
-        }]
+        }],
+        openCheckIn: false,
+        checked: true
       }
     },
     methods: {
@@ -85,12 +127,45 @@
           name: 'transfer-order-detail',
           params: {}
         })
-      }
+      },
+      //立即调出弹窗
+      checkIn() {
+          this.openCheckIn = true;
+      },
     }
   }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   @import "../../../reset";
-
+  .comen-dialog{
+    .el-table th{
+      background-color: transparent !important;
+    }
+    .el-table td, .el-table th {
+      padding: 6px 0 !important;
+      font-size: 12px;
+    }
+    .dialog-body{
+      padding: 10px 20px;
+      .dialog-top{
+        width: 100%;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #E1E1E1;
+        font-size: 14px;
+        color: #333333;
+        overflow: hidden;
+        em{
+          font-size: 12px;
+          color: #555555;
+        }
+      }
+      .el-checkbox__label{
+        font-size: 12px !important;
+      }
+    }
+    .el-dialog__footer{
+      background-color: #EEEEEE !important;
+    }
+  }
 </style>

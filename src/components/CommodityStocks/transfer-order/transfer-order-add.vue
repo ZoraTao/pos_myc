@@ -242,6 +242,9 @@
   @import "../../MemberManage/MemberInquiry/member-public-css";
 
   .transfer-wrapper{
+    .el-input__inner[type='number']{
+      padding-right: 0 !important;
+    }
     .top-box{
       .el-form--inline .el-form-item__label {
         float: none;
