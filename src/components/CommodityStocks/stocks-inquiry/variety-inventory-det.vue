@@ -49,7 +49,6 @@
       </el-table-column>
     </el-table>
     <!--分页-->
-<<<<<<< HEAD
     <div class="block mgt10">
       <el-pagination
         class="am-ft-right"
@@ -61,19 +60,6 @@
         :current-page.sync="nub">
       </el-pagination>
     </div>
-=======
-    <!--<div class="block mgt10">-->
-      <!--<el-pagination-->
-        <!--class="am-ft-right"-->
-        <!--background-->
-        <!--@size-change="handleSizeChange"-->
-        <!--@current-change="handleCurrentChange"-->
-        <!--:page-size="15"-->
-        <!--layout="total, prev, pager, next"-->
-        <!--:total="varietyDetData.count">-->
-      <!--</el-pagination>-->
-    <!--</div>-->
->>>>>>> 9a68434d8c3c04286ddea02e3ef104dc5c8fb1a9
   </div>
 </template>
 
