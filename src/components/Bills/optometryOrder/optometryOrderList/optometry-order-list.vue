@@ -1,6 +1,6 @@
 <template>
 <div class="optometry_list content_box flexH100">
-    <div class="optometry_list_top am-bg-white">
+    <div class="optometry_list_top am-bg-white" v-show="memberDet==''||memberDet==undefined">
 
         <div class="fn-left mgt4">
             <span class="member">会员:</span>
@@ -31,7 +31,7 @@
         </div>
 
     </div>
-    <div class="optometry_content optometry_content">
+    <div class="optometry_content optometry_content" style="min-height:500px;">
         <!--查询之前-->
         <div v-show="listData.length==0">
             <ul class="find_before">
@@ -45,7 +45,7 @@
                     未查询到验光单
                 </li> -->
                 <li>
-                <button class="add_btn bg_white_col_blue" @click="showNewOptometry=true">
+                <button class="add_btn bg_white_col_blue" v-show="memberDet==''||memberDet==undefined" @click="showNewOptometry=true">
                 + 新增验光单
               </button>
                 </li>
@@ -104,7 +104,7 @@
             </el-pagination>            
         </div>
         <!--验光单一条数据详情-->
-        <optometryOrderCu :memberDet="''" :memberInfo="detailData" :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
+        <optometryOrderCu :memberDet="memberDet" :memberInfo="detailData" :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
     </div>
     <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="950px">
         <NewOptometryModal :submit="submitNewOptometry" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
@@ -122,6 +122,7 @@ import optometryOrderCu from '../optometryOrderCu/optometry-order-cu.vue'
 import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-modal.vue'
     export default {
         name: "optometryOrderList",
+        props: ['memberDet', 'memberInfos'],
         data() {
             return {
                 submitNewOptometry:false,
@@ -147,12 +148,15 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
             NewOptometryModal
         },
         created: function() {
-            // const isFirst = true;
-            // this.getOrderList(isFirst);
+            console.log(this.memberDet)
+            if(this.memberDet=='detail'){
+                this.memberInfo=this.memberInfos.telphone;
+                const isFirst = true;
+                this.getOrderList(isFirst);
+            }
         },
         methods:{
             getOrderList(isFirst) {
-                console.log(RegTest)
                 if(isFirst){
                     this.noSearchText="输入会员信息查询验光单"
                 }else{
@@ -212,16 +216,18 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 .then(function (response) {
                     that.detailData=response.data.data.prescriptions;
                     that.eyesData=response.data.data.eyes;
-                    that.$router.push({
-                        path: '/bills/optometryOrderCu',
-                        name: 'optometryOrderCu',
-                        params: {
-                            data:
-                            {
-                                memberId:memberId,
+                    if(that.memberDet!='detail'){
+                        that.$router.push({
+                            path: '/bills/optometryOrderCu',
+                            name: 'optometryOrderCu',
+                            params: {
+                                data:
+                                {
+                                    memberId:memberId,
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 })
             },              
             getNewoptometry(){

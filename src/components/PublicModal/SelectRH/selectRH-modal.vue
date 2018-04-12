@@ -1,12 +1,12 @@
 <template>
 <div class="selectMember" id="selectRH">
     <div nz-form-item class="w150 mgb10">                    
-        <el-select style="width:120px" clearable v-model="value" placeholder="请选择" @visible-change="getWareHouseList()" @change="emitThisValue()">
+        <el-select style="width:120px" clearable v-model="value" placeholder="请选择" @change="emitThisValue()">
             <el-option
             v-for="item in options"
             :key="item.warehouseId"
             :label="item.warehouseName"
-            :value="item.warehouseName">
+            :value="item.warehouseId">
             </el-option>
         </el-select>
     </div>
@@ -78,8 +78,17 @@ export default {
   props:['selectProductSku'],
   data () {
     return { 
-        options: [],
-        value:"",
+        options: [
+            {
+                warehouseId:'0',
+                warehouseName:'本出货库位'
+            },
+            {
+                warehouseId:'1',
+                warehouseName:'本分公司'
+            }            
+        ],
+        value:"0",
         cpSelectProductSku:null,
     }
   },

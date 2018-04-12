@@ -1,7 +1,7 @@
 <template>
   <div class="flexH100">
 
-    <div class="optometry_content">
+    <div class="optometry_content" style="min-height:500px;">
       <!--验光单一条数据详情-->
       <div class="list_one">
         <ul class="optometry_head">
