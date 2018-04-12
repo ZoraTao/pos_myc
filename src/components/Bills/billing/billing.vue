@@ -1482,7 +1482,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                             message: '开单成功',
                             type: 'success'
                         });
-                        debugger
+                        
                         setTimeout(function(){
                             location.reload();
                         },1000)

@@ -278,7 +278,20 @@
     methods: {
       //向父组件传送的数据
       sendToParent() {
+        // let _this = this;
+      //   if(_this.addMemberForm.name ==''||_this.addMemberForm.telphone ==''||_this.addMemberForm.birthday ==''){
+      //       _this.$message({
+      //         showClose:true,
+      //         message:'请填入必选项',
+      //         type:'error'
+      //       })
+      //       return false
+      //   }
+
+        console.log('准备接受啦',this.addMemberForm)
+        if(this.addMemberForm.name != ''){
         this.$emit('listenToChild', this.addMemberForm)
+        }
       },
       //取会员类型
       getMemberCard(){

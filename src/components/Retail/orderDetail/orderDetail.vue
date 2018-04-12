@@ -1,31 +1,31 @@
 <template>
-  <div>
-  <section class="content_box">
+  <div >
+  <section class="content_box" >
     <div class="orderHeader">
       <div class="ding">
       </div>
       <span class="dingText">定</span>
-      <div class="orderTitle">
-          <span>零售单号：R41432424243</span> <i v-show="true">已完成</i>
+      <div class="orderTitle" >
+          <span v-cloak >零售单号：{{orderData.ordertemp.orderNo}}</span> <i v-show="false">已完成</i>
       </div>
       <div class="orderMemberdDetail">
           <div>
-              <span>开单时间：<i>2018年04月11日11:15:10</i></span>
-              <span>销售部门：<i>武林店</i></span>
+              <span>开单时间：<i>{{orderData.ordertemp.createTime}}</i></span>
+              <span>销售部门：<i>{{orderData.ordertemp.shopName}}</i></span>
               <span>&nbsp;&nbsp;销售：<i>李四</i></span>
           </div>
           <div>
-              <span>会员姓名：<i>张三</i></span>
-              <span>&nbsp;&nbsp;&nbsp;手机号：<i>17373737737</i></span>
-              <span>&nbsp;&nbsp;取件：<i>2018-04-11</i></span>
+              <span>会员姓名：<i>{{orderData.ordertemp.name}}</i></span>
+              <span>&nbsp;&nbsp;&nbsp;手机号：<i>{{orderData.ordertemp.telphone}}</i></span>
+              <span>&nbsp;&nbsp;取件：<i>{{(orderData.ordertemp.glassesTime)}}</i></span>
           </div>
       </div>
     </div>
     <div class="orderShoppingDetail">
       <h3>商品信息</h3>
-      <div class="table-box" >
+      <div class="table-box" v-cloak >
         <el-table 
-        :data="tableData2"
+        :data="orderData.orderItemsList"
         :row-class-name="tableRowClassName"
         :span-method="objectSpanMethod"
         align="left"
@@ -33,38 +33,42 @@
         border
         style="width: 100%;">
         <el-table-column
-          prop="nameNo"
+          prop="itemId"
           label="商品编码"
           width="120px">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="itemName"
           label="商品名称">
         </el-table-column>
         <el-table-column
-          prop="num"
           label="数量"
           width="120px">
+          <template slot-scope="scope">
+            <strong>{{ parseFloat(scope.row.quantity)}}</strong>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="price"
           label="原单价"
           width="120px">
+          <template slot-scope="scope">
+            <strong>{{ parseFloat(scope.row.price)}}</strong>
+          </template>
         </el-table-column>
         <el-table-column
           label="实售单价"
           width="120px">
           <template slot-scope="scope">
-            <strong>{{ scope.row.money}}</strong>
+            <strong>{{ parseFloat(scope.row.money)}}</strong>
           </template>
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="warehouseName"
           label="出货仓库"
           width="120px">
         </el-table-column>
          <el-table-column
-          prop="time"
+          prop="receiveTime"
           label="取件时间"
           width="200px">
         </el-table-column>
@@ -72,24 +76,24 @@
           label="订单金额"
           width="260px">
           <template slot-scope="scope">
-            <strong class="am-ft-22 mgb15">1299.00</strong>
-            <p class="am-ft-12 am-text-normal">卡券 :<strong class="am-ft-13">－20</strong></p>
-            <p class="am-ft-12 am-text-normal">折扣 :<strong class="am-ft-13">－50</strong></p>
-            <p class="am-ft-12 am-text-normal">活动 :<strong class="am-ft-13">－20</strong></p>
+            <strong class="am-ft-22 mgb15">{{orderData.ordertemp.moneyAmount}}</strong>
+            <p class="am-ft-12 am-text-normal" v-show="orderData.ordertemp.couponMoney>0">卡券 :<strong class="am-ft-13">－{{orderData.ordertemp.couponMoney}}</strong></p>
+            <p class="am-ft-12 am-text-normal" v-show="orderData.ordertemp.discountMoney>0">折扣 :<strong class="am-ft-13">－{{orderData.ordertemp.discountMoney}}</strong></p>
+            <p class="am-ft-12 am-text-normal" v-show="orderData.ordertemp.activityMoney>0">活动 :<strong class="am-ft-13">－{{orderData.ordertemp.activityMoney}}</strong></p>
           </template>
         </el-table-column>
       </el-table>
       </div>
       <h3>验光信息</h3>
-      <!-- <div class="optometry">
+      <div class="optometry" v-cloak>
         <div class="memberMessage">
-          <span>ID : <i>YGD1240001</i></span>
-          <span>验光日期 :<i>20171230</i></span><br>
-          <span>手机号 : <i>123141244</i></span>
-          <span>姓名 : <i>张三</i></span>
-          <span>会员卡号 : <i>HY12340001</i></span>
-          <span>性别 : <i>女</i></span>
-          <span>出生年月 : <i>2018-04-22</i></span>
+          <span>ID : <i>{{orderData.prescription.prescriptions.prescriptionId}}</i></span>
+          <span>验光日期 :<i>{{orderData.prescription.prescriptions.prescriptionTime}}</i></span><br>
+          <span>手机号 : <i>{{orderData.prescription.prescriptions.mobile}}</i></span>
+          <span>姓名 : <i>{{orderData.prescription.prescriptions.customerName}}</i></span>
+          <span>会员卡号 : <i>{{orderData.prescription.member.memberCardNo}}</i></span>
+          <span>性别 : <i>{{orderData.prescription.prescriptions.sex}}</i></span>
+          <span>出生年月 : <i>{{orderData.prescription.member.birthday}}</i></span>
         </div>
         <div class="optometryTable">
           <ul class="glass_combination_table">
@@ -207,8 +211,8 @@
 
           </ul>
         </div>
-      </div> -->
-      <h3>操作流转</h3>
+      </div>
+      <h3 v-if="orderData.orderLogList.length!=0">操作流转</h3>
 
       <div class="operation">
             <div class="operation_title">
@@ -224,22 +228,22 @@
             </div>
             <div class="divBorder" ></div>
            <el-table
-            :data="operation"
+            :data="orderData.orderLogList"
             size="small"
             :show-header = false
             style="width: 100%;margin-left:26px;">
             <el-table-column
-              prop="operationContent"
+              prop="opreateTitle"
               label="操作内容"
               width="120">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="organizationName"
               label="操作人"
               width="100">
             </el-table-column>
             <el-table-column
-              prop="time"
+              prop="createTime"
               label="操作时间"
               width="200px">
             </el-table-column>
@@ -341,6 +345,10 @@
 export default {
   data() {
     return {
+      member:{},
+      presc:{},
+      orderItemsList:[],//商品详情
+      ordertemp:{},//订单详情
       orderData: {},
       far: [], //远用
       subjective: [], //主观
@@ -387,33 +395,7 @@ export default {
           time: "2018-04-11 13:02:53"
         }
       ],
-      operation:[
-        {
-          operationContent: "开单",
-          name: '某某',
-          time: "2018-04-11 17:07:02",
-        },
-        {
-          operationContent: "开单",
-          name: '某某',
-          time: "2018-04-11 17:07:02",
-        },
-        {
-          operationContent: "开单",
-          name: '某某',
-          time: "2018-04-11 17:07:02",
-        },
-        {
-          operationContent: "开单",
-          name: '某某',
-          time: "2018-04-11 17:07:02",
-        },
-        {
-          operationContent: "开单",
-          name: '某某',
-          time: "2018-04-11 17:07:02",
-        },
-      ],
+      
       tableData: [
         {
           money: "1200.00",
@@ -529,8 +511,12 @@ export default {
         })
         .then(res => {
           if (res.data.code == 1) {
-            _this.orderData = res.data.data;
             _this.eyesDate(res.data.data.prescription.eyes);
+            // _this.orderItemsList = res.data.data.orderItemsList;
+            _this.orderData = res.data.data;
+            // _this.presc = orderData.prescription.prescriptions;
+            // _this.ordertemp = res.data.data.ordertemp;
+            // _this.member = orderData.prescription.member;
           } else {
             _this.$message({
               showClose: true,
@@ -548,7 +534,7 @@ export default {
         });
     }
   },
-  mounted() {
+  created() {
     let _this = this;
     if (_this.$route.query.orderId) {
       let routerQueryofOrderId = _this.$route.query.orderId;
@@ -789,11 +775,12 @@ export default {
     }
   }
 }
+
+</style>
+<style>
 [v-cloak] {
   display: none;
 }
-</style>
-<style>
 .el-table .warning-row {
   background: rgba(246, 246, 246, 0.5);
 }

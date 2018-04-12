@@ -211,7 +211,7 @@ c<template>
 
     <!--新增会员弹窗-->
     <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
-      <AddMember :submit="isSubmit" v-on:listenToChild="memberAddSubmit"></AddMember>
+      <AddMember :submit="isSubmit" :listenToChild="memberAddSubmit"></AddMember>
       <div class="packageDetailButtonGroup">
         <el-button @click="addMember = false">取消</el-button>
         <el-button type="primary" @click="memberAddSubmit">确定</el-button>
@@ -226,7 +226,6 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
 import reg from "../../../utils/Reg";
 import {removeAllSpace} from '../../../utils/other'
 import store from '../../../vuex/store'
-import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
 export default {
   name: "member-inquiry",
   components: {
@@ -306,23 +305,13 @@ export default {
       this.addMember = true;
     },
     //保存新增
-    memberAddSubmit: function (formdata) {
+    memberAddSubmit(formdata) {
       //data为从子组件取到的数据
       // console.log(formdata)
       // return false
-      // let _this = this;
-      //   if(_this.addMemberForm.name ==''||_this.addMemberForm.telphone ||_this.addMemberForm.birthday){
-      //       _this.$message({
-      //         showClose:true,
-      //         message:'请填入必选项',
-      //         type:'error'
-      //       })
-      //       return false
-      //   }
         var that = this;
         that.isSubmit = !that.isSubmit;
         if (formdata.name != '' && formdata.telphone != '' && formdata.birthday != '' && formdata.sex != '') {
-          console.log(formdata)
           that.$axios({
             url: 'http://myc.qineasy.cn/member-api/member/addMember',
             method: 'post',
