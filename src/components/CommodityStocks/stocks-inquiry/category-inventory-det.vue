@@ -93,7 +93,7 @@
       }
     },
     created() {
-
+      this.getCategoryInventory();
     },
     methods: {
       //查询库存明细--类别列表
