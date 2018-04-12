@@ -367,7 +367,7 @@
         <SelectMemberModal :selectM="selectMember.selectM" v-on:memberInfo="getMemberInfo"></SelectMemberModal>
     </el-dialog>
     <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="950px">
-        <NewOptometryModal :submit="submitNewOptometry" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
+        <NewOptometryModal :submit="submitNewOptometry" :memberInfo="selectMember.memberInfo" :showNewOptometry="showNewOptometry" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
         <div class="packageDetailButtonGroup">
             <el-button @click="showNewOptometry = false">取 消</el-button>
             <el-button type="primary" @click="submitNewOptometry=true">保 存</el-button>
@@ -814,11 +814,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 this.selectProductSku.type='';
                 this.selectProductSku.wareh='';
                 this.selectProductSku.cylinder='';
-                this.selectProductSku.selectR='';
-                this.selectProductSku.selectL='';
-                this.selectProductSku.selectSP='';
                 this.selectProductSku.productSkuData='';
                 if(type&&type==1){
+                    this.selectProductSku.selectSP='';
                     this.showSelectRH=true;
                     this.selectProductSku.title="选择右镜片";
                     this.selectProductSku.cylinder=_this.selectProductSku.selectR;
@@ -851,6 +849,8 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         }                        
                     }
                 }else if(type==3){
+                    this.selectProductSku.selectR='';
+                    this.selectProductSku.selectL='';
                     this.showSelectShop=true;
                     this.selectProductSku.cylinder=_this.selectProductSku.selectSP;
                 }else if(type==null){
@@ -1212,6 +1212,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             //获取新增验光单信息
             getNewoptometry(value){
                 this.showNewOptometry=false;
+                this.submitNewOptometry=false;
                 this.optometryData=value.eyes;
                 this.optometryId=value.prescriptions.prescriptionId;
                 this.optometryTime=value.prescriptions.prescriptionTime;
@@ -1482,7 +1483,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                             message: '开单成功',
                             type: 'success'
                         });
-                        debugger
+                        
                         setTimeout(function(){
                             location.reload();
                         },1000)

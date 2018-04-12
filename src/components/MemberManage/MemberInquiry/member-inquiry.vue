@@ -37,8 +37,9 @@ c<template>
         <el-col :span="5">
           <el-input
             placeholder="输入会员姓名/手机号／卡号"
+            @keyup.enter.native="getMemberList(1)"
             v-model="searchStr">
-            <i slot="suffix" class="el-input__icon el-icon-search search-bt" @click="searchMember"></i>
+            <i slot="suffix" class="el-input__icon el-icon-search search-bt" @click="getMemberList(1)"></i>
           </el-input>
         </el-col>
         <el-col :span="2" :offset="1">
@@ -98,7 +99,7 @@ c<template>
               &nbsp;<strong class="am-ft-12 am-text-normal">天无购买记录</strong>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" plain @click="onSubmit">查询</el-button>
+              <el-button type="primary" plain @click="getMemberList">查询</el-button>
             </el-form-item>
             <el-form-item>
               <a class="fn-left am-ft-12 mgl10" href="javascript:;" @click="changeSearch('1')">普通搜索</a>
@@ -193,13 +194,14 @@ c<template>
           <el-pagination
             class="am-ft-right"
             background
-            @current-change="handleCurrentChange"
+            @current-change="getMemberList"
             :page-size="10"
             layout="total, prev, pager, next"
             :total="counts"
-            :current-page.sync="nub">
+            :current-page.sync="sreen.nub">
           </el-pagination>
         </div>
+        {{sreen.nub}}
         <!--/多个数据时显示-->
         <!--单个数据时显示：会员资料-->
         <member-detail v-if="false"></member-detail>
@@ -211,7 +213,7 @@ c<template>
 
     <!--新增会员弹窗-->
     <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
-      <AddMember :submit="isSubmit" v-on:listenToChild="memberAddSubmit"></AddMember>
+      <AddMember :submit="isSubmit" :listenToChild="memberAddSubmit"></AddMember>
       <div class="packageDetailButtonGroup">
         <el-button @click="addMember = false">取消</el-button>
         <el-button type="primary" @click="memberAddSubmit">确定</el-button>
@@ -226,7 +228,6 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
 import reg from "../../../utils/Reg";
 import {removeAllSpace} from '../../../utils/other'
 import store from '../../../vuex/store'
-import { mapState,mapMutations,mapGetters,mapActions } from 'vuex'
 export default {
   name: "member-inquiry",
   components: {
@@ -235,8 +236,6 @@ export default {
   },
   data() {
     return {
-      nub: 1,//起始条数
-      size: 10,//每页显示数据条数
       counts: 0,//总条数
       isSubmit: false,
       addMember: false,
@@ -250,8 +249,8 @@ export default {
         lastShopDays:"",//隔无购物天数
         startTime: "", //开始时间
         endTime: "", //结束时间
-        nub: "0",
-        size: "10"
+        nub: 1,
+        size: 10
       },
       memberList: [], //会员列表
       memberCount: [], //会员汇总数量
@@ -268,28 +267,50 @@ export default {
   computed:{
   },
   methods: {
-    onSubmit() {
-      //根据条件筛选会员信息
-      let _this = this;
-      this.$axios({
-        url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
-        method: "post",
-        params: {
-          jsonObject: _this.sreen,
-          keyParams: {
-            weChat: true,
-            userId: "8888",
-            orgId: "11387"
-          }
+    //查询会员列表
+    getMemberList(type) {
+      var that = this;
+      var jsonObject={};
+      if(type){
+        that.sreen.nub=1;
+      }
+      setTimeout(function(){
+        if(that.normalsearch){
+          jsonObject.seachCode=that.searchStr;
+          jsonObject.nub=(that.sreen.nub==1?0:(that.sreen.nub-1)*that.sreen.size);
+          jsonObject.size=that.sreen.size;
         }
-      })
-        .then(function(response) {
-            _this.memberList = response.data.data.memberList;
-            _this.counts = parseInt(response.data.data.count);
-        })
-        .catch(function(err) {
-          console.log(err);
-        });
+        if(that.moresearch){
+          jsonObject=that.sreen;
+        }
+        that.$axios({
+            url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
+            method: "post",
+            params: {
+              jsonObject: jsonObject,
+              keyParams: {
+                weChat: true
+              }
+            }
+          })
+          .then(function(response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              // console.info(response.data.data)
+              that.memberList = response.data.data.memberList;
+              that.counts = parseInt(response.data.data.count);
+            }
+          })
+          .catch(function(error) {
+            console.info(error);
+          });
+      },0)
     },
     //切换搜索模式
     changeSearch(v) {
@@ -306,23 +327,13 @@ export default {
       this.addMember = true;
     },
     //保存新增
-    memberAddSubmit: function (formdata) {
+    memberAddSubmit(formdata) {
       //data为从子组件取到的数据
       // console.log(formdata)
       // return false
-      // let _this = this;
-      //   if(_this.addMemberForm.name ==''||_this.addMemberForm.telphone ||_this.addMemberForm.birthday){
-      //       _this.$message({
-      //         showClose:true,
-      //         message:'请填入必选项',
-      //         type:'error'
-      //       })
-      //       return false
-      //   }
         var that = this;
         that.isSubmit = !that.isSubmit;
         if (formdata.name != '' && formdata.telphone != '' && formdata.birthday != '' && formdata.sex != '') {
-          console.log(formdata)
           that.$axios({
             url: 'http://myc.qineasy.cn/member-api/member/addMember',
             method: 'post',
@@ -378,11 +389,6 @@ export default {
         params: { data }
       });
     },
-    //分页
-    handleCurrentChange(val) {
-      this.nub = (`${val}`-1) * this.size;
-      this.getMemberList();
-    },
     //查询会员汇总数量
     getMemberCount() {
       var that = this;
@@ -408,72 +414,6 @@ export default {
           console.info(error);
         });
     },
-    searchMember() {
-      //普通搜索
-      var _this = this;
-      let seaStr = _this.searchStr;
-      this.searchStr = removeAllSpace( this.searchStr, 'g');//去空格
-      this.$axios({
-          url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang ",
-          method: "post",
-          params: {
-            jsonObject: {
-              seachCode:_this.searchStr,
-              nub:_this.nub,
-              size:_this.size
-            },
-            keyParams: {
-              weChat: true,
-              userId: "8888",
-              orgId: "11387"
-            }
-          }
-        })
-        .then(function(response) {
-          // console.info(response.data.data)
-          _this.memberCount = response.data.data;
-          _this.cardNumList = response.data.data.cardNumList;
-          console.log( response.data.memberList)
-          _this.memberList = response.data.data.memberList;
-        })
-        .catch(function(error) {
-          console.info(error);
-        });
-    },
-    //查询会员列表
-    getMemberList() {
-      var that = this;
-      that.$axios({
-          url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
-          method: "post",
-          params: {
-            jsonObject: {
-              nub: that.nub,
-              size: that.size
-            },
-            keyParams: {
-              weChat: true
-            }
-          }
-        })
-        .then(function(response) {
-          if(response.data.code != '1'){
-            that.$message({
-              showClose: true,
-              message: '请求数据出问题喽，请重试！',
-              type: 'error'
-            })
-            return false;
-          }else {
-            // console.info(response.data.data)
-            that.memberList = response.data.data.memberList;
-            that.counts = parseInt(response.data.data.count);
-          }
-        })
-        .catch(function(error) {
-          console.info(error);
-        });
-    }
   }
 };
 </script>

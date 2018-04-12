@@ -1,16 +1,16 @@
 <template>
   <div>
-    <optometryOrderCu :memberDet="'detail'" :memberInfo="memberBaseInfo"></optometryOrderCu>
+    <optometryOrderList :memberDet="'detail'" :memberInfos="memberBaseInfo"></optometryOrderList>
   </div>
 </template>
 
 <script>
-  import optometryOrderCu from '../../Bills/optometryOrder/optometryOrderCu/optometry-order-cu'
+  import optometryOrderList from '../../Bills/optometryOrder/optometryOrderList/optometry-order-list'
  
   export default {
     name: "member-optometry-record",
     components: {
-      optometryOrderCu
+      optometryOrderList
     },
     data() {
       return {
@@ -30,5 +30,7 @@
 </script>
 
 <style scoped>
-
+  .content_box{
+    padding: 0 !important;
+  }
 </style>
