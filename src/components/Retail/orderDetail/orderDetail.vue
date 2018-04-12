@@ -2,11 +2,14 @@
   <div >
   <section class="content_box" >
     <div class="orderHeader">
-      <div class="ding">
+      <div  v-if="orderData.ordertemp.orderType == 1" style="float:left;">
+        <div class="ding">
       </div>
       <span class="dingText">定</span>
+      </div>
+      
       <div class="orderTitle" >
-          <span v-cloak >零售单号：{{orderData.ordertemp.orderNo}}</span> <i v-show="false">已完成</i>
+          <span>零售单号：{{orderData.ordertemp.orderNo}}</span> <i v-show="false">已完成</i>
       </div>
       <div class="orderMemberdDetail">
           <div>
