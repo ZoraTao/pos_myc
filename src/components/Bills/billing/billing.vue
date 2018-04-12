@@ -20,7 +20,7 @@
                         class="placeHolder"
                         align="left" 
                         style="width: 130px;"
-                        :placeholder='timeDefaultShow'>
+                        placeholder='选择日期'>
                         </el-date-picker>
                     </el-form-item>  
                     <el-form-item label="会员 :" class="memberInput">
@@ -32,13 +32,13 @@
             <div class="salesclerkParam">
                 <el-form ref="form">
                     <el-form-item label="右镜片 :" class="ParamInput">
-                        <el-input class="" placeholder="" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1);"></el-input>
-                        <el-button @click="selectGlass(1)">···</el-button>
+                        <el-input class="" placeholder="" @input="setWhere('left')" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1);"></el-input>
+                        <el-button @click="selectGlass(1);setWhere('left')">···</el-button>
                         <el-button @click="customizeRH=true">定做</el-button>
                     </el-form-item>
                     <el-form-item label="左镜片 :" class="ParamInput">
-                        <el-input class="" placeholder="" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2);"></el-input>
-                        <el-button @click="selectGlass(2)">···</el-button>
+                        <el-input class="" placeholder="" @input="setWhere('right')" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2);"></el-input>
+                        <el-button @click="selectGlass(2);setWhere('right')">···</el-button>
                         <el-button @click="customizeRH=true">定做</el-button>
                     </el-form-item>
                     <el-form-item label="商品 :" class="ParamInput">
@@ -75,7 +75,7 @@
                     width="400px">
                         <template slot-scope="scope">
                             <span>
-                               {{scope.row.className}}-{{scope.row.skuName}}
+                               {{scope.row.where}}{{scope.row.className}}-{{scope.row.skuName}}
                             </span>
                         </template>
                     </el-table-column>
@@ -122,7 +122,7 @@
                     width="100px">
                         <template slot-scope="scope">
                             <div class="inputBold  am-ft-black">
-                                <span class="" placeholder="" @change="changePrice(scope.row,2)">{{tableData[scope.$index].realSale}}</span>
+                                <span class="" placeholder="" >{{tableData[scope.$index].realSale}}</span>
                             </div>
                         </template>
                     </el-table-column>
@@ -130,13 +130,14 @@
                 <div class="settleAccounts">
                     <p>
                         <span>共计 :<b>{{numCount}}件</b></span>
-                        <span>合计 :<b v-show="saleCount!=''&saleCount!=0">{{saleCount}}</b><b v-show="saleCount==0">0.00</b></span>
+                        <span>合计 :<b v-show="amountSale!=''&amountSale!=0">{{amountSale}}</b><b v-show="amountSale==0">0.00</b></span>
                     </p>
-                    <p>
-                        <span v-show="conponResponse.couponAmount == '' || !conponResponse.couponAmount ">促销活动 : 无</span>
-                        <span v-show="conponResponse.couponAmount !='' & conponResponse.couponAmount">促销活动 : {{conponResponse.couponName}}<b>-{{conponResponse.couponAmount}}元</b></span>
-                        <span v-show=" allDisCount == ''">折扣 : 无</span>
-                        <span v-show="parseFloat(allDisCount) < 10">折扣 : {{allDisCount}}折(-{{parseFloat(discountSale).toFixed(2)}}元)</span>
+                    <p> 
+                        <span>促销活动:无</span>
+                        <span v-show="conponResponse.couponAmount == '' || !conponResponse.couponAmount ">折扣券 : 无</span>
+                        <span v-show="conponResponse.couponAmount !='' & conponResponse.couponAmount">折扣券 : {{conponResponse.couponName}}<b>-{{conponResponse.couponAmount}}元</b></span>
+                        <span v-show=" allDisCount == 0">折扣 : 无</span>
+                        <span v-show="parseFloat(allDisCount) > 0">折扣 : {{allDisCount}}折(-{{discountSale}}元)</span>
                         <span v-show="memberShipDisCount==10">无会员折扣</span>
                         <span v-show="memberShipDisCount<10">会员折扣 : {{parseFloat(memberShipDisCount*10).toFixed(2)}}折  <b v-show="memberShipDisCountSale!= '' &memberShipDisCountSale!= '0'">(-{{memberShipDisCountSale}}元)</b></span>
                     </p>
@@ -147,10 +148,7 @@
             <div class="fn-left">
                 <el-form ref="form">
                     <el-form-item class="ParamButton">
-                        <el-button>折扣券</el-button>
-                    </el-form-item>
-                    <el-form-item class="ParamButton">
-                        <el-button @click="openCouponBarCode">优惠券</el-button>
+                        <el-button @click="openCouponBarCode">折扣券</el-button>
                     </el-form-item>
                     <el-form-item class="ParamButton">
                         <el-button >促销活动</el-button>
@@ -159,7 +157,7 @@
             </div>
             <div class="fn-left singleDiscount">
                 <p><span>整单折扣 :</span>
-                <el-input class="" placeholder="" v-model="allDisCount" @change="afterDiscount"/> 折
+                <el-input class="" placeholder="" v-model="allDisCount" @input="afterDiscount"/> 折
                 </p>
             </div>
             <div class="fn-right singleDiscount">
@@ -250,7 +248,7 @@
                 </el-badge>
             </div>
             <div class="fn-right">
-                <el-button type="primary">重置</el-button>
+                <el-button type="primary" @click="resetPage">重置</el-button>
                 <el-button type="primary">挂单[F7]</el-button>
                 <el-button type="primary" @click="addOrderTemp">开单[F5]</el-button>
                 <!-- <el-button type="primary" @click="addOrderTemp">收银[F5]</el-butt> 根据状态判断收银开单-->
@@ -376,10 +374,10 @@
         </div>
     </el-dialog>
     <el-dialog class="selectRH" :title="selectProductSku.title" :visible.sync="showSelectRH" width="870px">
-        <SelectRHModal  v-on:getProductSku="getProductSku" v-on:selectSku="selectSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku"></SelectRHModal>
+        <SelectRHModal v-on:where="where"  v-on:getProductSku="getProductSku" v-on:selectSku="selectSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku"></SelectRHModal>
     </el-dialog>
     <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="700px">
-        <SelectShopModal  v-on:setBuyShop="selectSku"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku"></SelectShopModal>
+        <SelectShopModal :where="where" v-on:setBuyShop="selectSku"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku"></SelectShopModal>
     </el-dialog>
     <el-dialog class="customizeRH" title="定做-右镜片" :visible.sync="customizeRH" width="690px">
         <CustomizeRHModal></CustomizeRHModal>
@@ -460,8 +458,8 @@
         </div>
         <div slot="footer" class="dialog-footer">
             <div class="mgt10">
-                <el-button @click="permission = false;allDisCount=''">取消</el-button>
-                <el-button type="primary" @click="permission = false">直接签批</el-button>
+                <el-button @click="permission = false;confirmAllDiscount(false);">取消</el-button>
+                <el-button type="primary" @click="permission = false;confirmAllDiscount(true);">直接签批</el-button>
                 <el-popover
                 ref="popover"
                 placement="bottom-start"
@@ -576,7 +574,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         name:'',
                         id:''
                     }],
-                    glassesTypeModel:'自取',
+                    glassesTypeModel:'到店自取',
                     comTypeOptions:[],
                     comTypeModel:null,
                     processMemoOptions:[],
@@ -599,13 +597,13 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     couponDetailId:'',
                     process:'0',
                     service:'0',
-                    singleSupTime:null,
+                    singleSupTime:new Date(),
                 },
                 optometryId:'',
                 optometryTime:'',
                 submitNewOptometry:false,//控制 提交验光单子组件传值
                 includeOptometryData:null,//保存即将录入验光单信息 作为验光单数据副本
-                amountSale:'',//原价合计
+                amountSale:0,//原价合计
                 optometryData:[],//验光单数据
                 optometryList:null,//验光单列表数据
                 selectMember:{//选择会员数据集合
@@ -626,6 +624,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 selectProductSku:{
                     selectR:'',
                     selectL:'',
+                    where:'',
                     selectSP:'',
                     productSkuData:'',
                     cylinder:'',
@@ -639,6 +638,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     size: 5
                 },
                 tableData:[],//用户保存商品信息
+                where:'',//左右镜片
                 //以下为控制modal弹框变量,
                 conponData:null,
                 isSubmit: false,
@@ -721,6 +721,15 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 .then(function (response) {                    
                     _this.options=response.data.data.list;
                 })  
+            },
+            setWhere(value){
+                let _this =this;
+                // 辨别左右镜片
+                if(value == 'left'){
+                    this.where = '左镜片: '
+                }else if (value == 'right'){
+                    this.where = '右镜片: '
+                }
             },
             //删除表格td
             delThisRow(){
@@ -813,6 +822,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     this.showSelectRH=true;
                     this.selectProductSku.title="选择右镜片";
                     this.selectProductSku.cylinder=_this.selectProductSku.selectR;
+                    var where = '右'
                     this.selectProductSku.type='0';
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
@@ -828,6 +838,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     this.showSelectRH=true;
                     this.selectProductSku.title="选择左镜片"
                     this.selectProductSku.cylinder=_this.selectProductSku.selectL;
+                    var where = '左'
                     this.selectProductSku.type='0';
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
@@ -871,6 +882,11 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 })
                 .then(function (response) {
                     _this.selectProductSku.productSkuData=response.data.data;
+                    let list = _this.selectProductSku.productSkuData.list;
+                    for(var i = 0;i<list.length;i++){
+                        list[i].where = where;
+                    }
+
                 })                 
 
             },
@@ -917,10 +933,10 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 var _this= this;
                 let alldis = _this.allDisCount;
                 if(alldis != '' && typeof parseFloat(alldis) == 'number'){
-                    alert(1)
-                    value.discount = alldis;
                     value.realSale =  ((value.discount * value.price)/10).toFixed(2);
                 }
+                this.allDisCount = '';
+                this.discountSale = '';
                 _this.tableData.push(value);
                 _this.showSelectRH = false;
                 _this.customizeRH = false;
@@ -942,7 +958,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     n++;
                 }
                 // debugger
-                this.amountSale = countSale;//原价合计
+                this.amountSale = parseFloat(countSale).toFixed(2);//原价合计
 
                 if(this.conponResponse.couponAmount>0){//如果有优惠券
                     countSale = countSale - this.conponResponse.couponAmount;//优惠价 = 无折扣前 - 优惠价↓
@@ -958,6 +974,8 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 this.saleCount = countSale.toFixed(2);//无整单折扣情况下
             },
             changePrice(value,type,index){
+                this.allDisCount = '';
+                this.discountSale = '';
                 if(type==1){
                     value.realSale=parseFloat(value.price*value.discount/10).toFixed(2);
                 }else{
@@ -965,6 +983,34 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 }
                  this.tableData.splice(index,1,value);
                 this.computedPay();
+            },
+            confirmAllDiscount(value){
+                if(value){
+                    if(parseFloat(this.allDisCount) > 0 ){//有整单折扣
+                        this.computedPay();
+                        // //整单折扣金额差价 = 折扣前 - 折扣后↓
+                        this.discountSale = parseFloat(this.saleCount - (this.allDisCount*this.saleCount)/10).toFixed(2);   
+                        //最后价格 = 整单折扣前 * 折扣 ↓
+                        this.saleCount = (this.allDisCount/10 * this.saleCount).toFixed(2); 
+                        // let discount = _this.tableData;
+                        // for(var i=0;i<discount.length;i++){
+                        //     discount[i].discount = parseFloat(_this.allDisCount);
+                        //     discount[i].realSale = (discount[i].discount*discount[i].price/10).toFixed(2);
+                        // }
+                        // // console.log(discount)
+                        // _this.tableData = [];
+                        // _this.tableData = discount;
+                        // _this.computedPay();
+                    }
+                }else{
+                    this.computedPay();
+                }
+                
+            },
+            //整单折扣
+            afterDiscount(){
+                let _this = this ;
+                _this.permission=true;
             },
             //获取用户验光单列表
             getOptometryRecordList() {
@@ -1104,7 +1150,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             getMemberInfo(value){
                 this.selectMember.memberInfo=value
                 this.memberShipDisCount=this.selectMember.memberInfo.discount;
-                this.conpon();
+                this.conpon();//选择用户后，获取优惠券信息
+                this.computedPay();//如果选择用户前选择商品了就再次进行计算
+                this.allDisCount='';//整单折扣归零,重新输入进行计算
                 if(value){
                     this.getOptometryRecord();
                     this.getOptometryRecordList();
@@ -1160,27 +1208,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 })
                 
             },
-            //整单折扣
-            afterDiscount(){
-                let _this = this ;
-                _this.permission=true;
-                if(parseFloat(this.allDisCount) > 0 ){//有整单折扣
-                    // //整单折扣金额差价 = 折扣前 - 折扣后↓
-                    // console.log(`计算`)
-                    this.discountSale = this.saleCount - (this.allDisCount*this.saleCount)/10;   
-                    //最后价格 = 整单折扣前 * 折扣 ↓
-                    this.saleCount = (this.allDisCount/10 * this.saleCount).toFixed(2); 
-                    // let discount = _this.tableData;
-                    // for(var i=0;i<discount.length;i++){
-                    //     discount[i].discount = parseFloat(_this.allDisCount);
-                    //     discount[i].realSale = (discount[i].discount*discount[i].price/10).toFixed(2);
-                    // }
-                    // // console.log(discount)
-                    // _this.tableData = [];
-                    // _this.tableData = discount;
-                    // _this.computedPay();
-                }
-            },
+            
             //获取新增验光单信息
             getNewoptometry(value){
                 this.showNewOptometry=false;
@@ -1254,6 +1282,10 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     if(tableArr)
                     _this.includeOptometryData=tableArr;
                 }
+            },
+            //刷新页面
+            resetPage(){
+                location.reload();
             },
             //添加会员 子组件返回事件 提交表单信息
             memberAddSubmit: function (formdata) {
@@ -1364,9 +1396,11 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                         quantity:'1',//数量
                         discountRate:(this.tableData[item].discount).toString(),//折扣比率
                         orderPromotionId:'',//订单营销活动id
-                        money:(this.tableData[item].realSale).toString(),//金额
-                        price:(this.tableData[item].price).toString(),//金额
+                        listPrice:this.tableData[item].price,//原价
+                        roundFlag:"1"
+                        // price:this.tableData[item].realSale,//实售单价
                     })
+                    
                 }
                 if(orderItemsList==''){
                     _this.$message({
@@ -1376,17 +1410,23 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     })                        
                     return false;
                 }
-                if(this.orderTemp.singleSupTime == ''){//如果没选择时间 默认当天
-                    this.orderTemp.singleSupTime = allDate.TimetoDateDay();
-                }
-                var memberId = null;//会员id
+                
+                let memberId = '';//会员id
                 if(_this.selectMember.memberInfo){
                     memberId = _this.selectMember.memberInfo.memberId
                 }
-                var memberDiscount = 10;//会员卡折扣  游客默认10 满折
+                let memberDiscount = 10;//会员卡折扣  游客默认10 满折
                 if(_this.selectMember.memberInfo){
                     console.log(this.selectMember.memberInfo)
                     memberDiscount = (parseFloat(this.selectMember.memberInfo.discount*10)).toFixed(2)
+                }
+                let alldis = this.allDisCount;//整单折扣
+                if(alldis  == ''){
+                    alldis = "10";
+                }
+                let coupon = this.conponResponse.couponAmount;//卡券优惠金额
+                if(!coupon){
+                    coupon = '0'
                 }
                 var jsonObject =
                 {
@@ -1408,12 +1448,13 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     discountMoney:this.memberShipDisCountSale,//折扣优惠金额,会员
                     cardDiscount:this.memberShipDisCount,//会员折扣
                     discountFlag:this.discountFlag,//是否使用会员折扣
-                    roundOffFlag:this.allDisCount==''?'1':'0',//整单折扣 取整标识 0使用 1不用
+                    roundOffFlag:"1",//取整标识 0使用 1不用
                     decimal : memberDiscount,//会员卡折扣
-                    couponMoney : this.conponResponse.couponAmount||'0',//卡券优惠金额
+                    couponMoney : coupon,//卡券优惠金额
                     process : this.orderTemp.process,//加工费
                     service : this.orderTemp.service,//服务费
-                    orderItemsList:orderItemsList
+                    orderItemsList:orderItemsList,
+                    orderDiscount:alldis//整单折扣
                 }
                 _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp',
@@ -1464,8 +1505,12 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
         beforeDestory(){
 
         },
+        mounted(){
+        },
         watch:{
-       
+            tableData(newValue,oldValue){
+                console.log(newValue,oldValue)
+            }
         }
     };
 </script>
