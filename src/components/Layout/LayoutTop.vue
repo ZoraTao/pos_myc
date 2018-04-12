@@ -22,25 +22,31 @@
         </a>
         <el-dropdown>
           <span class="el-dropdown-link">
-            毛源昌眼镜店建国北路店
+            {{this.$store.state.user.orgName}}
           <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>黄金糕</el-dropdown-item>
+            <el-dropdown-item>{{this.$store.state.user.orgName}}1</el-dropdown-item>
+            <el-dropdown-item>{{this.$store.state.user.orgName}}2</el-dropdown-item>
+            <el-dropdown-item>{{this.$store.state.user.orgName}}3</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <el-dropdown>
-          <span class="el-dropdown-link">
-            王大锤<i class="el-icon-arrow-down el-icon--right"></i>
+          <span>
+            {{this.$store.state.user.LoginName}}
           </span>
+          
+
+        <el-dropdown @command="getout">
+            <a href="javascript:;" class="am-ft-white mgr15 el-dropdown-link">
+              <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img%2Ficon_shezhi.png"/>
+          <i class="el-icon-arrow-down el-icon--right"></i>
+            </a>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>黄金糕</el-dropdown-item>
+            <el-dropdown-item command="goout">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <a href="javascript:;" class="am-ft-white mgr15">
-          <!-- <i class="el-icon-setting"></i> -->
-          <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img%2Ficon_shezhi.png"/>
-        </a>
+
+        
       </div>
     </div>
   </div>
@@ -49,7 +55,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
+import store from '../../vuex/store'
 import { judgeCode } from "../../utils/other";
 export default {
   name: "LayoutTop",
@@ -69,21 +75,33 @@ export default {
     };
   },
   methods: {
-    ...mapMutations({}),
-    ...mapActions([
-      // "PUSH_ITEM_FN"
-    ])
   },
   computed: {
-    ...mapState([
-      // "item"
-    ]),
-    ...mapGetters([])
+      LoginName(){
+        return this.$store.state.LoginName;
+      }
   },
 
   beforeMount() {},
-  created() {},
+  mounted() {
+    let _this = this;
+    if(_this.$store.state.user.orgName == '' || _this.$store.state.user.LoginName == ''|| _this.$store.state.user.token ==''){
+      _this.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+            })
+      _this.$router.push({path:'/login'})
+    }
+  },
   methods: {
+    //退出
+    getout(data){
+      if(data == 'goout'){
+        this.$store.commit('CLEAR_LOCAL_STORAGE');
+        this.$router.push({path:'/login'});
+      }
+    },
     //切换tab
     changeTab(items) {
       let _this = this;

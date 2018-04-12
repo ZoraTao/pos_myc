@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import store from '../vuex/store';
 Vue.use(Router)
 
 
@@ -274,9 +274,8 @@ const router = new Router({
 })
 
 router.beforeEach((to,from,next)=>{
-  // console.log('从'+from.name)
-  // console.log('去'+to.name)
+// 　　router.app.$options.store.state.user.token
   next();
-})
+});
 
 export default router

@@ -88,9 +88,11 @@ export default {
         this.cpSelectProductSku=this.selectProductSku;
         this.$emit('getProductSku', this.cpSelectProductSku);
       },
-      selectThis(value){
-        value.discount=10;
+      selectThis(value){//选择镜片 传值
+        value.discount = 10;
+        // value.skuName = '';
         value.realSale=value.price;
+        console.log(value)
         this.$emit('selectSku',value);
       },
       getWareHouseList(){
@@ -119,7 +121,6 @@ export default {
       }
   },
   mounted:function(){
-      console.log(this.selectProductSku.productSkuData)
   }
 }
 </script>
