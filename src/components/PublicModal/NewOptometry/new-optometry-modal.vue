@@ -4,7 +4,7 @@
         <div class="newOptometryPhone">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
                 <el-form-item label="手机号:" prop="telphone">
-                    <el-input v-model="ruleForm.telphone" @input="searchUser" style="width:100px"></el-input>
+                    <el-input v-model="ruleForm.telphone" @input="searchUser" style="width:110px"></el-input>
                 </el-form-item>
                 <el-form-item label="姓名:" v-show="ruleForm.telphone.length==11">
                     <el-input  v-if="!ruleForm.hasMember" v-model="ruleForm.name"></el-input>
@@ -342,7 +342,7 @@
 import {allDate} from '../../../utils/date.js'
 export default {
   name: "NewOptometryModal",
-  props: ["submit"],
+  props: ["submit","memberInfo","showNewOptometry"],
   data() {
     return {
       options: [],
@@ -728,14 +728,23 @@ export default {
     }
   },
   mounted(){
-    // this.defaultValue = this.allDate.TimeToDay(Date.parse(new Date()))
-            // console.log(this.defaultValue)
+    // this.defaultValue = allDate.TimeToDay(Date.parse(new Date()))
+  },
+  created:function(){
+    if(this.memberInfo){
+      this.ruleForm.telphone=this.memberInfo.telphone;
+      this.searchUser();
+    }
   },
   watch: {
     submit: function(value) {
       if (value == true) {
         this.submitThisModal();
       }
+    },
+    "showNewOptometry":function(){
+      this.ruleForm.telphone=this.memberInfo.telphone;
+      this.searchUser();
     }
   }
 };

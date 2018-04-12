@@ -3,12 +3,12 @@
     <el-form ref="form">
         <el-form-item label="商品 : ">            
             <el-input style="width:90px" class="" placeholder="" v-model="shopIdName"/>                 
-            <el-select style="width:90px" v-model="value" placeholder="请选择" @visible-change="getWareHouseList()">
+            <el-select style="width:90px" v-model="value" placeholder="请选择">
                 <el-option
                 v-for="item in options"
                 :key="item.warehouseId"
                 :label="item.warehouseName"
-                :value="item.warehouseName">
+                :value="item.warehouseId">
                 </el-option>
             </el-select>                    
             <el-select style="width:90px" v-model="typeValue" placeholder="请选择" @change="selectBrands(2)">
@@ -108,9 +108,18 @@ export default {
   props:['selectProductSku'],
   data () {
     return { 
-        options: [],
+        options: [
+            {
+                warehouseId:'0',
+                warehouseName:'本出货库位'
+            },
+            {
+                warehouseId:'1',
+                warehouseName:'本分公司'
+            }            
+        ],
+        value:"0",
         cpSelectProductSku:null,
-        value:"",
         typeOptions:[],
         brandsOptions:[],
         varietysOptions:[],
@@ -252,7 +261,11 @@ export default {
         _this.typeValue='';
         _this.brandsValue='';
         _this.varietysValue='';
+        console.log(_this.selectProductSku)
+        _this.shopIdName=_this.selectProductSku.selectSP
         this.selectBrands(1)
+    },
+    watch:{
     }
 }
 </script>
