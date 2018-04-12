@@ -110,9 +110,9 @@
                   <!-- <small v-if="order.roundOffFlag == '0' && typeof parseFloat(list.discountRate) == 'number' && parseFloat(list.discountRate) < 10 ">({{parseFloat(list.discountRate)}}折)</small> -->
                   </div>
                   <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
-                  <div>卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
-                  <div>折扣：<strong>{{parseFloat(order.discount)>0?parseFloat(order.discount).toFixed(2):'0.00'}}</strong></div>
-                  <div>活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-show="order.discountMoney>0">折扣：<strong>{{order.discountMoney}}</strong></div>
+                  <div v-show="parseFloat(order.activityMoney)!=0">活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">

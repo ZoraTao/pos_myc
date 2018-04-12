@@ -58,11 +58,11 @@
       </div>
       <div class="" v-show="(received-(parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)))>0">
         <span class="am-ft-gray6">找零：</span>
-        <span class="am-ft-20 am-ft-green "  >{{received-(parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2))}}</span>
+        <span class="am-ft-20 am-ft-green "  >{{(received-(parseFloat(datas.moneyAmount)-parseFloat(datas.moneyPaid))).toFixed(2)}}</span>
       </div>
       <div class="" v-show="(received-(parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)))<0">
         <span class="am-ft-gray6">差额：</span>
-        <span class="am-ft-20 am-ft-green "  >{{parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)-parseFloat(received)}}</span>
+        <span class="am-ft-20 am-ft-green "  >{{(parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)-parseFloat(received)).toFixed(2)}}</span>
       </div>
 <!-- {{parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)}} -->
       <el-button type="primary" class="makeCashier" @click="payMoneyToServer">确定</el-button>

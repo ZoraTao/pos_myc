@@ -264,7 +264,6 @@ export default {
     this.getMemberCount();
   },
   mounted(){
-    console.log(this)
   },
   computed:{
   },
@@ -309,9 +308,21 @@ export default {
     //保存新增
     memberAddSubmit: function (formdata) {
       //data为从子组件取到的数据
+      // console.log(formdata)
+      // return false
+      // let _this = this;
+      //   if(_this.addMemberForm.name ==''||_this.addMemberForm.telphone ||_this.addMemberForm.birthday){
+      //       _this.$message({
+      //         showClose:true,
+      //         message:'请填入必选项',
+      //         type:'error'
+      //       })
+      //       return false
+      //   }
         var that = this;
         that.isSubmit = !that.isSubmit;
         if (formdata.name != '' && formdata.telphone != '' && formdata.birthday != '' && formdata.sex != '') {
+          console.log(formdata)
           that.$axios({
             url: 'http://myc.qineasy.cn/member-api/member/addMember',
             method: 'post',
