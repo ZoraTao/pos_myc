@@ -265,7 +265,7 @@
                 <div class="memberName">
                     <div class="memberTx">
                         <p>
-                            <img :src="selectMember.memberInfo?selectMember.memberInfo.headpicpath:'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_touxiang.png'"/>{{selectMember.memberInfo?selectMember.memberInfo.name:''}}
+                            <img :src="selectMember.memberInfo?(selectMember.memberInfo.headpicpath?selectMember.memberInfo.headpicpath : 'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_touxiang.png'):'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_touxiang.png'"/>{{selectMember.memberInfo?selectMember.memberInfo.name:''}}
                         </p>
                         <span>···</span>
                     </div>
@@ -297,7 +297,7 @@
                     </div>
                     <div class="basicInformationItem">
                         <!-- <label>会员折扣 :</label><span>{{memberShipDisCount}}</span> -->
-                        <label>会员折扣 :</label><span>{{selectMember.memberInfo?selectMember.memberInfo.discount*10+'折':'--'}}</span>
+                        <label>会员折扣 :</label><span>{{selectMember.memberInfo?(selectMember.memberInfo.discount*10).toFixed(1)+'折':'--'}}</span>
                     </div>
                     <div class="basicInformationItem">
                         <label>手机号码 :</label><span>{{selectMember.memberInfo?selectMember.memberInfo.telphone:'--'}}</span>
@@ -380,9 +380,9 @@
         <SelectShopModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:setBuyShop="selectSku" ></SelectShopModal>
     </el-dialog>
     <el-dialog class="customizeRH" title="定做" :visible.sync="customizeRH" width="690px">
-        <CustomizeRHModal ></CustomizeRHModal>
+        <CustomizeRHModal></CustomizeRHModal >
         <div class="packageDetailButtonGroup">
-            <el-button type="primary" @click="customizeRH = false">确定</el-button>
+            <el-button type="primary" @click="commitCustom();customizeRH = false">确!定</el-button>
         </div>
     </el-dialog>
     <el-dialog class="packageGoods" title="选择套餐" :visible.sync="packageGoods" width="800px">
@@ -733,6 +733,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 }else if (value == 'right'){
                     this.where = '右镜片: '
                 }
+            },
+            //定做商品
+            commitCustom(){
             },
             //删除表格td
             delThisRow(){
@@ -1509,12 +1512,15 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
         beforeDestory(){
 
         },
+        created(){
+            
+        },
         mounted(){
         },
         watch:{
-            tableData(newValue,oldValue){
-                console.log(newValue,oldValue)
-            }
+            // tableData(newValue,oldValue){
+            //     console.log(newValue,oldValue)
+            // }
         }
     };
 </script>
