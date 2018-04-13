@@ -138,6 +138,8 @@ export default {
       },
       getProductSku(){
         this.cpSelectProductSku=this.selectProductSku;
+          this.cpSelectProductSku.type = '';
+          console.log(this.cpSelectProductSku)
         this.$emit('getProductSku', this.cpSelectProductSku);
       },
       getWareHouseList(){//查询仓库列表
@@ -261,7 +263,7 @@ export default {
         _this.typeValue='';
         _this.brandsValue='';
         _this.varietysValue='';
-        console.log(_this.selectProductSku)
+        // console.log(_this.selectProductSku)
         _this.shopIdName=_this.selectProductSku.selectSP
         this.selectBrands(1)
     },

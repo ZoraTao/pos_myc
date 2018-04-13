@@ -300,7 +300,7 @@
             if(response.data.code != '1'){
               that.$message({
                 showClose: true,
-                message: '请求数据出问题喽，请重试！',
+                message: response.data.msg,
                 type: 'error'
               })
               return false;
