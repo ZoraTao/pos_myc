@@ -249,6 +249,7 @@
       //根据类别选择品牌
       selectBrands(id){
         var that = this;
+        that.categoryLevel.category2 = '';
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
           method: 'post',
@@ -286,6 +287,7 @@
       //根据品牌选择品种
       selectVarietys(id){
         var that = this;
+        that.categoryLevel.category3 = '';
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
           method: 'post',

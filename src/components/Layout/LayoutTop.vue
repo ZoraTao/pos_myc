@@ -4,11 +4,11 @@
 
     <div class="tab-box">
       <ul>
-        <li 
-        class="tab-item" 
-        v-for="(i,index) in items" 
-        v-bind:class="{ active:i.isActive }" 
-        @click="changeTab(i);" 
+        <li
+        class="tab-item"
+        v-for="(i,index) in items"
+        v-bind:class="{ active:i.isActive }"
+        @click="changeTab(i);"
         :key="index">
           {{i.text}}
           <i v-if="i.text != '首页'" class="el-icon-close"  @click="closeTab(index)"></i>
@@ -34,7 +34,7 @@
           <span>
             {{this.$store.state.user.LoginName}}
           </span>
-          
+
 
         <el-dropdown @command="getout">
             <a href="javascript:;" class="am-ft-white mgr15 el-dropdown-link">
@@ -46,7 +46,7 @@
           </el-dropdown-menu>
         </el-dropdown>
 
-        
+
       </div>
     </div>
   </div>
@@ -275,6 +275,7 @@ export default {
   display: inline-block;
   margin-right: 10px;
   line-height: 30px;
+  vertical-align: top;
 }
 .header-top-right {
   overflow: hidden;
@@ -290,8 +291,14 @@ export default {
 .el-dropdown {
   font-size: 12px;
   margin-right: 10px;
+  vertical-align: middle;
+  line-height: 30px;
 }
 .el-dropdown-link {
   color: #fff;
 }
+  .el-dropdown-menu__item{
+    line-height: 30px !important;
+    font-size: 12px !important;
+  }
 </style>

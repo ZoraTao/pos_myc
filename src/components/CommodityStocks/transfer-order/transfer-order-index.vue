@@ -5,7 +5,7 @@
       <el-form :inline="true" :model="formInline" class="demo-form-inline am-ft-left">
         <el-col :span="20">
           <el-form-item label="调拨单号：">
-            <el-input placeholder="输入商品编码" v-model="formInline.input1" style="width: 100px"></el-input>
+            <el-input placeholder="输入商品编码" v-model="formInline.input1" style="width: 130px"></el-input>
           </el-form-item>
           <el-form-item label="调拨部门：">
             <el-select v-model="formInline.select1" placeholder="请选择" style="width: 130px">

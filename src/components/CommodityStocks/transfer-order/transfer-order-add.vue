@@ -79,21 +79,18 @@
         <el-form :inline="true" :model="formInline" class="demo-form-inline am-ft-left">
           <el-form-item label="编码选择过滤："></el-form-item>
           <el-form-item label="类别：">
-            <el-select v-model="formInline.select1" placeholder="请选择" style="width: 100px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="categoryLevel.category1" filterable clearable placeholder="请选择" style="width: 130px" @change="selectBrands">
+              <el-option v-for="(i,index) in categoryCode1" :key="i.className" :label="i.className" :value="i.productCategoryId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="品牌：">
-            <el-select v-model="formInline.select1" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="categoryLevel.category2" filterable clearable placeholder="请选择" style="width: 130px" @change="selectVarietys">
+              <el-option v-for="(i,index) in categoryCode2" :key="i.className" :label="i.className" :value="i.productCategoryId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="品种：">
-            <el-select v-model="formInline.select1" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="categoryLevel.category3" filterable clearable placeholder="请选择" style="width: 130px">
+              <el-option v-for="(i,index) in categoryCode3" :key="i.className" :label="i.className" :value="i.productCategoryId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="度数：" class="input_num">
@@ -207,10 +204,19 @@
     component: {},
     data() {
       return {
+        categoryCode1: [],//类别
+        categoryCode2: [],//品牌
+        categoryCode3: [],//品种
+        categoryLevel:{//类别+品牌+品种
+          category1: '',
+          category2: '',
+          category3: '',
+        },
         input1: '',
         num1: '',
         num2: '',
         formInline: {
+          categoryCode: [],//类别+品牌+品种
           input2: '200',
           select1: '',
           _check: false,
@@ -233,7 +239,124 @@
         }]
       }
     },
-    methods: {}
+    created(){
+      this.getType();
+    },
+    methods: {
+      //查询类别+品牌+品种
+      getType(){
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
+          method: 'post',
+          params: {
+            jsonObject: {
+              productCategoryId: ''
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              // console.info(response.data.data)
+              that.categoryCode1 = response.data.data.productCategoryList;
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //根据类别选择品牌
+      selectBrands(id){
+        var that = this;
+        that.categoryLevel.category2 = '';
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
+          method: 'post',
+          params: {
+            jsonObject: {
+              productCategoryId: id
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              console.info(response.data.data)
+              that.categoryCode2 = response.data.data.productCategoryList;
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //根据品牌选择品种
+      selectVarietys(id){
+        var that = this;
+        that.categoryLevel.category3 = '';
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
+          method: 'post',
+          params: {
+            jsonObject: {
+              productCategoryId: id
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              console.info(response.data.data)
+              that.categoryCode3 = response.data.data.productCategoryList;
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+    }
   }
 </script>
 
