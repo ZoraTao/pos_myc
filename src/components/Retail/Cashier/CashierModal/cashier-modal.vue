@@ -23,7 +23,7 @@
             <td>{{index+1}}</td>
             <td>{{item.type}}</td>
             <td>
-              <el-input type="text"  v-model="AmountOfMoney[index]" @change="computedMoney()"   class="payType"  style="width: 100px;"></el-input>
+              <el-input type="text"  v-model="item.money" @change="computedMoney();"   class="payType"  style="width: 100px;"></el-input>
             </td>
             <td v-if="item.type=='代价券'">
               <a v-if="acPrice=='0'" href="javascript:;">扫一扫</a>
@@ -54,19 +54,17 @@
       </div>
       <div class="">
         <span class="am-ft-gray6">已收：</span>
-        <span class="am-ft-20 am-ft-black "  >{{received}}</span>
+        <span class="am-ft-20 am-ft-black ">{{received}}</span>
       </div>
       <div class="" v-show="(received-(parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)))>0">
         <span class="am-ft-gray6">找零：</span>
-        <span class="am-ft-20 am-ft-green "  >{{(received-(parseFloat(datas.moneyAmount)-parseFloat(datas.moneyPaid))).toFixed(2)}}</span>
+        <span class="am-ft-20 am-ft-green ">{{(received-(parseFloat(datas.moneyAmount)-parseFloat(datas.moneyPaid))).toFixed(2)}}</span>
       </div>
       <div class="" v-show="(received-(parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)))<0">
         <span class="am-ft-gray6">差额：</span>
         <span class="am-ft-20 am-ft-green "  >{{(parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)-parseFloat(received)).toFixed(2)}}</span>
       </div>
-<!-- {{parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)}} -->
       <el-button type="primary" class="makeCashier" @click="payMoneyToServer">确定</el-button>
-
     </div>
   </div>
 </template>
@@ -80,6 +78,7 @@
         AmountOfMoney:[],//列表输入的金额
         received:0,//已收
         giveChangeMoney:0,//找零
+        payContent:[],
         itemData: 
         [
           {
@@ -87,63 +86,73 @@
             type: '现金',
             active: true,
             name:'cash',
-            num:0
+            num:0,
+            money:''
           },
           {
             id: '2',
             type: '会员卡',
             active: true,
             name:'member',
-            num:0
+            num:0,
+            money:''
           },
           {
             id: '3',
             type: '信用卡',
             active: true,
             name:'credit',
-            num:0
+            num:0,
+            money:''
           },
           {
             id: '4',
             type: '支付宝',
             active: true,
             name:'alipay',
-            num:0
+            num:0,
+            money:''
           },
           {
             id: '5',
             type: '微信',
             active: true,
             name:'weChatPay',
-            num:0
+            num:0,
+            money:''
           },
           {
             id: '6',
             type: '银行卡',
             active: true,
             name:'bank',
-            num:0
+            num:0,
+            money:''
           },
           {
             id: '7',
             type: '代价券',
             name:'conpon',
-            num:0
+            num:0,
+            money:''
           },
           {
             id: '8',
             type: '积分抵现',
             name:'integral',
-            num:0
+            num:0,
+            money:''
           }
         ],
         itemSource: [],
-        
       }
     },
     props:{
       datas:{
         type:Object,
+      },
+      status:{
+        type:Number
       }
     },
     methods:{
@@ -153,10 +162,11 @@
         // that.itemSource.forEach(function(element) {
         //   if(element.id != i.id){
             that.itemSource.push({
+              money: i.money,
               id: i.id,
               type: i.type,
               name: i.name,
-              num:i.num
+              num:i.num,
             });
         // };
       // })
@@ -169,27 +179,35 @@
       computedMoney(){
         let money = 0;
         let _this = this;
-       for(let i=0;i<_this.AmountOfMoney.length;i++){
-         if(typeof parseFloat(_this.AmountOfMoney[i]) == 'number'){
-           if(!isNaN(parseFloat(_this.AmountOfMoney[i]))){
-              money+=parseFloat(_this.AmountOfMoney[i]);
+       for(let i=0;i<_this.itemSource.length;i++){
+         if(typeof parseFloat(_this.itemSource[i].money) == 'number'){
+           if(!isNaN(parseFloat(_this.itemSource[i].money))){
+              money+=parseFloat(_this.itemSource[i].money);
            }
          }
        }
        _this.received = money;
-       
-        console.log(money)
       },
       //结算
       payMoneyToServer(){
         let _this = this;
+        console.log(_this.itemSource)
+        let payMessage = [];
+        for(let i=0;i<_this.itemSource.length;i++){
+          let obj = new Object();
+          obj.orderTypeId = _this.itemSource[i].id;
+          obj.name = _this.itemSource[i].type;
+          obj.amount =  _this.itemSource[i].money;
+          payMessage.push(obj)
+        }
+        console.log(payMessage);
         _this.$axios({
           url:'http://myc.qineasy.cn/pos-api/orderTemp/updateCashierStatus',
           method:'post',
           params:{
             jsonObject:{
               orderId:this.datas.orderId,
-              amount:this.received
+              paymentFlowList:payMessage
             },
             keyParams:{
               weChat: true,
@@ -206,7 +224,7 @@
                         message: '收款成功!',
                         type: 'success'
                     })   
-                    _this.$emit('closePayMoney')
+                    _this.$emit('closePayMoney',)
           }else{
                     _this.$message({
                         showClose: true,
@@ -221,7 +239,7 @@
     },
     watch:{
       AmountOfMoney(newValue,oldValue){
-        console.log(newValue,oldValue)
+        // console.log(newValue,oldValue)
       }
     },
     mounted(){
