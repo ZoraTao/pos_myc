@@ -176,8 +176,8 @@
           warehouseClass: '',//区域大类
           warehouseType: '',//仓库类型
           warehouseId: '',//仓库id
-          nub: "0",
-          size: "10"
+          size: '',
+          nub: ''
         },
         loading: true
       }
@@ -200,8 +200,8 @@
             warehouseClass: '',//区域大类
             warehouseType: '',//仓库类型
             warehouseId: '',//仓库id
-            nub: "0",
-            size: "10"
+            size: '',
+            nub: ''
         },
           this.categoryLevel={
           category1: '',
@@ -457,6 +457,7 @@
       getStocksList(){
         var that = this;
         that.formInline.categoryCode = [that.categoryLevel.category1,that.categoryLevel.category2,that.categoryLevel.category3];
+
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getTotalStockList',
           method: 'post',

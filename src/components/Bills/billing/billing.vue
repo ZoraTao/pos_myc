@@ -32,19 +32,19 @@
             <div class="salesclerkParam">
                 <el-form ref="form">
                     <el-form-item label="右镜片 :" class="ParamInput">
-                        <el-input class="" placeholder="" @input="setWhere('left')" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1);"></el-input>
-                        <el-button @click="selectGlass(1);setWhere('left')">···</el-button>
-                        <el-button @click="customizeRH=true">定做</el-button>
+                        <el-input class="" placeholder="" @input="setWhere('left');" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1);"></el-input>
+                        <el-button @click="type='0';selectGlass(1);setWhere('left');">···</el-button>
+                        <el-button @click="custom='right';customizeRH=true">定做</el-button>
                     </el-form-item>
                     <el-form-item label="左镜片 :" class="ParamInput">
-                        <el-input class="" placeholder="" @input="setWhere('right')" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2);"></el-input>
-                        <el-button @click="selectGlass(2);setWhere('right')">···</el-button>
-                        <el-button @click="customizeRH=true">定做</el-button>
+                        <el-input class="" placeholder="" @input="setWhere('right');" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2);"></el-input>
+                        <el-button @click="type='0';selectGlass(2);setWhere('right');">···</el-button>
+                        <el-button @click="custom='left';customizeRH=true">定做</el-button>
                     </el-form-item>
                     <el-form-item label="商品 :" class="ParamInput">
-                        <el-input class="" placeholder="" v-model="selectProductSku.selectSP" @keyup.enter.native="selectGlass(3);"></el-input>
-                        <el-button @click="selectGlass(3)">···</el-button>
-                        <el-button @click="customizeRH=true">定做</el-button>
+                        <el-input class="" placeholder="" v-model="selectProductSku.selectSP" @keyup.enter.native="type='';selectGlass(3);"></el-input>
+                        <el-button @click="type='';selectGlass(3);">···</el-button>
+                        <el-button @click="custom='shop';customizeRH=true">定做</el-button>
                     </el-form-item>
                     <el-form-item class="ParamInput ParamButton">
                         <el-button @click="packageGoods=true">套餐商品</el-button>
@@ -292,12 +292,12 @@
                     </div>
                 </div>
                 <div class="basicInformation">
-                    <div class="basicInformationItem">
+                    <div class="basicInformationItem" >
                         <label>会员卡号 :</label><span>{{selectMember.memberInfo?selectMember.memberInfo.memberCardNo:'--'}}</span>
                     </div>
                     <div class="basicInformationItem">
                         <!-- <label>会员折扣 :</label><span>{{memberShipDisCount}}</span> -->
-                        <label>会员折扣 :</label><span>{{selectMember.memberInfo?selectMember.memberInfo.discount:'--'}}</span>
+                        <label>会员折扣 :</label><span>{{selectMember.memberInfo?selectMember.memberInfo.discount*10+'折':'--'}}</span>
                     </div>
                     <div class="basicInformationItem">
                         <label>手机号码 :</label><span>{{selectMember.memberInfo?selectMember.memberInfo.telphone:'--'}}</span>
@@ -374,13 +374,13 @@
         </div>
     </el-dialog>
     <el-dialog class="selectRH" :title="selectProductSku.title" :visible.sync="showSelectRH" width="870px">
-        <SelectRHModal v-on:where="where"  v-on:getProductSku="getProductSku" v-on:selectSku="selectSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku"></SelectRHModal>
+        <SelectRHModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:selectSku="selectSku" ></SelectRHModal>
     </el-dialog>
     <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="700px">
-        <SelectShopModal :where="where" v-on:setBuyShop="selectSku"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku"></SelectShopModal>
+        <SelectShopModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:setBuyShop="selectSku" ></SelectShopModal>
     </el-dialog>
-    <el-dialog class="customizeRH" title="定做-右镜片" :visible.sync="customizeRH" width="690px">
-        <CustomizeRHModal></CustomizeRHModal>
+    <el-dialog class="customizeRH" title="定做" :visible.sync="customizeRH" width="690px">
+        <CustomizeRHModal ></CustomizeRHModal>
         <div class="packageDetailButtonGroup">
             <el-button type="primary" @click="customizeRH = false">确定</el-button>
         </div>
@@ -568,6 +568,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 value: '',
                 //销售人员
                 shopMember:'',
+                custom:'',//定做状态
                 selectOptions: '',
                 publicSelcet:{
                     glassesTypeOptions:[{
@@ -600,6 +601,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     singleSupTime:new Date(),
                 },
                 optometryId:'',
+                type:'',
                 optometryTime:'',
                 submitNewOptometry:false,//控制 提交验光单子组件传值
                 includeOptometryData:null,//保存即将录入验光单信息 作为验光单数据副本
@@ -724,6 +726,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
             },
             setWhere(value){
                 let _this =this;
+                _this.type='0';
                 // 辨别左右镜片
                 if(value == 'left'){
                     this.where = '左镜片: '
@@ -811,7 +814,7 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                 // Object.keys(_this.selectProductSku).forEach(element => {
                 //    _this.selectProductSku[element]
                 // });
-                this.selectProductSku.type='';
+                this.selectProductSku.type=_this.type;
                 this.selectProductSku.wareh='';
                 this.selectProductSku.cylinder='';
                 this.selectProductSku.productSkuData='';
@@ -821,7 +824,6 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     this.selectProductSku.title="选择右镜片";
                     this.selectProductSku.cylinder=_this.selectProductSku.selectR;
                     var where = '右'
-                    this.selectProductSku.type='0';
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
                             if(this.optometryData[i].value[0].sph!=''){
@@ -837,7 +839,6 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     this.selectProductSku.title="选择左镜片"
                     this.selectProductSku.cylinder=_this.selectProductSku.selectL;
                     var where = '左'
-                    this.selectProductSku.type='0';
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
                             if(this.optometryData[i].value[0].sph!=''){
@@ -854,7 +855,9 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                     this.showSelectShop=true;
                     this.selectProductSku.cylinder=_this.selectProductSku.selectSP;
                 }else if(type==null){
+                    // console.log('null')
                 }else{
+                    // console.log('else')
                 }
                 _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/productSku/list',
@@ -868,10 +871,10 @@ import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
                             colorCode:'',
                             categoryCode:'',
                             product:'',
-                            type:this.selectProductSku.type,
-                            wareh:this.selectProductSku.wareh,                         
-                            nub: (this.selectProductSku.nub==0?0:(this.selectProductSku.nub-1)*this.selectProductSku.size),
-                            size: this.selectProductSku.size
+                            type:_this.type,
+                            wareh:_this.selectProductSku.wareh,                         
+                            nub: (_this.selectProductSku.nub==0?0:(_this.selectProductSku.nub-1)*_this.selectProductSku.size),
+                            size: _this.selectProductSku.size
                         },
                         keyParams: {
                             weChat: true,

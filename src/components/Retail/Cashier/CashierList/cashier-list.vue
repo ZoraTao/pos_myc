@@ -16,10 +16,19 @@
             </el-form-item>
           </li>
           <li class="fn-left">
-            <el-form-item label="会员：" prop="member">
-              <el-input v-model="searchForm.name" placeholder="请输入" style="min-width: 80px"></el-input>
+            <el-form-item label="会员：" >
+              <!-- <el-autocomplete
+                class="inline-input"
+                v-model="state2"
+                :fetch-suggestions="querySearch"
+                placeholder="请输入内容"
+                :trigger-on-focus="false"
+                @select="handleSelect"
+              ></el-autocomplete> 输入建议 -->
+              <el-input v-model="searchForm.name" placeholder="请输入" :change="serachMember(searchForm.name)"  style="min-width: 80px"></el-input>
             </el-form-item>
           </li>
+          
           <li class="fn-left">
             <el-form-item label="订单类型：" prop="orderType">
               <el-select prop="adr.district" v-model="searchForm.orderType" placeholder="请选择"
@@ -300,7 +309,7 @@
 
     <!--收银弹窗-->
     <el-dialog title="收银" :visible.sync="showCashier">
-      <CashierModal :datas="payData" @closePayMoney="showCashier=false"></CashierModal>
+      <CashierModal :datas="payData" :status = "status" @closePayMoney="resetPage"></CashierModal>
     </el-dialog>
     <!--打印取货单弹窗-->
     <el-dialog custom-class="noheader" title="" :visible.sync="consoleCashier">
@@ -367,7 +376,46 @@ export default {
   created() {
     this.getOrderList(3);
   },
+  
   methods: {
+    //会员搜索
+    serachMember(){
+      var _this = this;
+      var jsonObject={};
+      
+      setTimeout(function(){
+        _this.$axios({
+            url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
+            method: "post",
+            params: {
+              jsonObject: {
+                seachCode:_this.searchForm.name,
+                nub: _this.nub == 1 ? 0 : (_this.nub - 1) * _this.size,
+                size: _this.size,
+              },
+              keyParams: {
+                weChat: true
+              }
+            }
+          })
+          .then(function(response) {
+            if(response.data.code != '1'){
+              _this.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              let memberId = response.data.data;
+              console.log(memberId)
+            }
+          })
+          .catch(function(error) {
+            console.info(error);
+          });
+      },0)
+    },
     changeTab: function(item) {
       this.srcNum = item.srcNum;
       this.tabs.forEach(function(element) {
@@ -377,16 +425,19 @@ export default {
         }
       });
     },
+    resetPage(){
+      // 重置列表
+      this.showCashier=false;
+      this.getOrderList(this.status)
+    },
     changePay(data) {
       this.payData = data;
       this.showCashier = true;
-      console.log(this.payData)
-      console.log(this.showCashier)
     },
     //开启弹窗
     openDialog() {},
     //获取列表
-    getOrderList: function(value) {
+    getOrderList(value) {
       var _this = this;
       let status = _this.status;
       if (value == 5){
@@ -394,9 +445,6 @@ export default {
         _this.count = 0;
         return 
       } 
-      // if(value == null){
-      
-      // }
       if (value == 3 || value == 4) {
         status = value;
         value == 3 ?_this.status = 3 : _this.status = 4;
