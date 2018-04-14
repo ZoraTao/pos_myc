@@ -71,19 +71,6 @@
 </template>
 
 <script>
-// myc.qineasy.cn/pos-api/customize/addCustomize
-//   `customizeId` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '定做单ID',
-//   `customizeNo` varchar(50) DEFAULT NULL COMMENT '定做单编号',
-//   `orderNo` varchar(50) DEFAULT NULL COMMENT '订单编号',
-//   `customizeDemand` text DEFAULT NULL COMMENT '定做需求',
-//   `count` int(10) DEFAULT NULL COMMENT '定做数量',
-//   `customizeOrgName` varchar(32) DEFAULT NULL COMMENT '下单公司',
-//   `customizeOrgId` varchar(32) DEFAULT NULL COMMENT '下单公司ID',
-//   `customizeShopName` varchar(25) DEFAULT NULL COMMENT '下单门店',
-//   `customizeShopId` varchar(25) DEFAULT NULL COMMENT '下单门店ID',
-//   `customizePerson` varchar(25) DEFAULT NULL COMMENT '制单人'
-// }
-
 // 出参：
 // {
 // customizeNo:定做单编号

@@ -4,7 +4,7 @@
 
         <div class="fn-left mgt4">
             <span class="member">会员:</span>
-            <el-input class="" v-model="memberInfo" placeholder="卡号/姓名/手机号"></el-input>
+            <el-input class="" v-model="memberInfo" @keyup.enter.native="getOrderList" placeholder="卡号/姓名/手机号"></el-input>
         </div>
         <div class="fn-left mgt4 mgl20" v-show="Object.keys(detailData).length>0">
             <span class="member">验光师:</span>
@@ -19,7 +19,7 @@
         </div>
 
         <div class="fn-left mgt4 mgl30" @click="getOrderList">
-            <button class="col_blue_bg_white find_btn">
+            <button class="col_blue_bg_white find_btn" >
                 查询
             </button>
         </div>
