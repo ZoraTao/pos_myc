@@ -1,7 +1,6 @@
 <template>
 <div id="customizeRH" class=" modal-content-center">
     <div class="customizeRHBody">
-        <h5>定做单号：DZ12340001</h5>
         <div class="customizeInputGroup fn-left">
             <label>球镜：</label>
                 <el-select v-model="customContent.value1" placeholder="请选择">
@@ -72,7 +71,7 @@
 </template>
 
 <script>
-
+import _ from 'lodash'
 export default {
   name: 'CustomizeRHModal',
   data () {
@@ -280,17 +279,17 @@ commitCustom(){
           return false
       }
     }
-    let commits=this.customContent
+    let commits=_.clone(this.customContent)
     console.log('子组件',commits)
     this.$emit('commitCustomMessage',commits)
     // setTimeout(function(){
     //     _this.clear();
     // },1000)
-    // setTimeout(()=>{
-    //     for(var key in this.customContent){
-    //     this.customContent[key]  = ''
-    //     }
-    // },1000)
+    setTimeout(()=>{
+        for(var key in this.customContent){
+        this.customContent[key]  = ''
+        }
+    },1000)
     
 }
   },
