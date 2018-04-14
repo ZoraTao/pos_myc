@@ -315,12 +315,26 @@ export default {
           return false;
         }
       }
-    //   let n='';
-    //   for(let i=0;i<9;i++){
-    //     let num = Math.floor(Math.random()*10);
-    //     n = n+num
-    //   }
-    //   _this.customContent.order_id = 'YD'+n;
+      _this.$myAjax({
+          url:'pos-api/customize/addCustomize',
+          data:{
+                customizeId :'',//定做单ID',
+                customizeNo :'',//定做单编号',
+                orderNo :'',//订单编号',
+                customizeDemand :_this.customContent.customMessage,//定做需求',
+                count:_this.customContent.nums,///'定做数量',
+                customizeOrgName :'',//下单公司',
+                customizeOrgId :'',//下单公司ID',
+                customizeShopName :'',//下单门店',
+                customizeShopId:'',//下单门店ID',
+                customizePerson :'',//制单人'
+          },
+          success:function(res){
+              console.log(res)
+          },error:function(err){
+              console.log(err)
+          }
+      })
       let commits = _.clone(this.customContent);
     //   console.log("子组件", commits);
       this.$emit("commitCustomMessage", commits);
