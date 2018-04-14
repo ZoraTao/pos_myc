@@ -48,7 +48,9 @@ export default {
         lens: "left",
         nums: "",
         message: "",
-        status:'2'
+        status:'2',
+        price:0,
+        realSale:0
       },
       where: [
         {

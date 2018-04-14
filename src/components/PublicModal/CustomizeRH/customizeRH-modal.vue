@@ -292,47 +292,63 @@ export default {
     commitCustom() {
       let _this = this;
       console.log(this.customContent);
-      for (var key in this.customContent) {
-        if (this.customContent[key] == "") {
-          this.$message({
+      if (this.customContent.value1 =='') {
+           this.$message({
             type: "error",
             message: "请填写完整",
             showClose: true
           });
           return false;
-        }
       }
+           let users =  JSON.parse(localStorage.getItem("userData"));
+       
       _this.$myAjax({
           url:'pos-api/customize/addCustomize',
           data:{
-                customizeId :'',//定做单ID',
-                customizeNo :'',//定做单编号',
-                orderNo :'',//订单编号',
+                // customizeId :'',//定做单ID',
+                // customizeNo :'',//定做单编号',
+                // orderNo :'',//订单编号',
                 customizeDemand :_this.customContent.customMessage,//定做需求',
                 count:_this.customContent.nums,///'定做数量',
-                customizeOrgName :'',//下单公司',
-                customizeOrgId :'',//下单公司ID',
-                customizeShopName :'',//下单门店',
-                customizeShopId:'',//下单门店ID',
-                customizePerson :'',//制单人'
+                customizeOrgName :'毛源昌商城',//users.orgName,//下单公司',
+                customizeOrgId :users.orgId,//下单公司ID',
+                customizeShopName : '天一恒泰店',//下单门店',
+                customizeShopId:users.orgId,//下单门店ID',
+                customizePerson :users.trueName,//制单人'
+                // {"customizeDemand":"1111","count":"1","customizeOrgName":"毛源昌商城","customizeOrgId":"11387","customizeShopName":"天一恒泰店","customizeShopId":"11387","customizePerson":"陈中床"}
           },
           success:function(res){
-              console.log(res)
+              console.log(res.code)
+              if(res.code == 1){
+                  _this.customContent.customId = res.data.customizeNo;
+                    let commits = _.clone(_this.customContent);
+                    //   console.log("子组件", commits);
+                    _this.$emit("commitCustomMessage", commits);
+                     _this.$message({
+                        type: "success",
+                        message: "添加成功",
+                        showClose: true
+                    });
+                    setTimeout(() => {
+                        for (var key in _this.customContent) {
+                            _this.customContent[key] = "";
+                        }
+                        _this.customContent.nums = "1";
+                        _this.customContent.discount = "10";
+                        _this.customContent.status = "1";
+                    }, 1000);
+              }else{
+                 _this.$message({
+                      type:'error',
+                      message:'定做失败，请确认需求',
+                      showClose:true
+                  })
+              }
           },error:function(err){
               console.log(err)
           }
       })
-      let commits = _.clone(this.customContent);
-    //   console.log("子组件", commits);
-      this.$emit("commitCustomMessage", commits);
-      setTimeout(() => {
-        for (var key in this.customContent) {
-          this.customContent[key] = "";
-        }
-        this.customContent.nums = "1";
-        this.customContent.discount = "10";
-        this.customContent.status = "1";
-      }, 1000);
+      
     }
   },
   computed: {},
