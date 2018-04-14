@@ -1,5 +1,5 @@
 <template>
-<div id="CouponBarCode">
+<div id="CouponBarCode" v-if="conponContent!==null">
     <!--body-content-->
     <div class="clearfix">
         <div class="CouponBarContent">
