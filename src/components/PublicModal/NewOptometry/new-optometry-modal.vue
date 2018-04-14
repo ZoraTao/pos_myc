@@ -44,15 +44,15 @@
                 <ul class="glass_table_head">
                     <li class="wid80"> &nbsp;&nbsp;</li>
                     <li class="w10"> &nbsp;&nbsp;</li>
-                    <li class="w90">SPH</li>
-                    <li class="w90">CYL</li>
-                    <li class="w90">AX</li>
-                    <li class="w90">VA</li>
-                    <li class="w90">DPD</li>
-                    <li class="w90">NPD</li>
-                    <li class="w90">HPD</li>
-                    <li class="w90">PD</li>
-                    <li class="w90">ADD</li>
+                    <li class="w90">球镜</li>
+                    <li class="w90">柱镜</li>
+                    <li class="w90">轴位</li>
+                    <li class="w90">矫正视力</li>
+                    <li class="w90">远瞳距</li>
+                    <li class="w90">近瞳距</li>
+                    <li class="w90">瞳高</li>
+                    <li class="w90">瞳距</li>
+                    <li class="w90">下加光</li>
                 </ul>
                 <ul v-if="prescription.isDistance">
                     <li class="fn-left  msg_left">远用</li>
@@ -181,7 +181,7 @@
                             <label class="w10">L</label><el-input style="width:80px" v-model="prescriptions.originalL"></el-input>
                         </div>   
                         <div class="labelInput">
-                            <label class="w10">PD</label><el-input style="width:80px" v-model="prescriptions.originalPd"></el-input>
+                            <label class="w10">瞳距</label><el-input style="width:80px" v-model="prescriptions.originalPd"></el-input>
                         </div>                            
                     </li>
                 </ul>
@@ -212,12 +212,12 @@
                 <ul class="glass_table_head">
                     <li class="wid80"> &nbsp;&nbsp;</li>
                     <li class="w10"> &nbsp;&nbsp;</li>
-                    <li class="w90">SPH</li>
-                    <li class="w90">CYL</li>
-                    <li class="w90">AX</li>
-                    <li class="w90">VA</li>
-                    <li class="w90">PD</li>
-                    <li class="w90">ADD</li>
+                    <li class="w90">球镜</li>
+                    <li class="w90">柱镜</li>
+                    <li class="w90">轴位</li>
+                    <li class="w90">矫正视力</li>
+                    <li class="w90">瞳距</li>
+                    <li class="w90">下加光</li>
                 </ul>
                 <ul>
                     <li class="fn-left  msg_left">检影</li>
