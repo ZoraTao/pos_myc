@@ -50,19 +50,19 @@
     <div class="model-bottom mgt15">
       <div class="">
         <span class="am-ft-gray6">应收：</span>
-        <span class="am-ft-20 am-ft-orange">{{parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)}}</span>
+        <span class="am-ft-20 am-ft-orange">{{(parseFloat(datas.moneyAmount)-parseFloat(datas.moneyPaid)).toFixed(2)}}</span>
       </div>
       <div class="">
         <span class="am-ft-gray6">已收：</span>
-        <span class="am-ft-20 am-ft-black ">{{received}}</span>
+        <span class="am-ft-20 am-ft-black ">{{(received).toFixed(2)}}</span>
       </div>
-      <div class="" v-show="(received-(parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)))>0">
+      <div class="" v-show="(received-(parseFloat(datas.moneyAmount)-parseFloat(datas.moneyPaid)))>0">
         <span class="am-ft-gray6">找零：</span>
         <span class="am-ft-20 am-ft-green ">{{(received-(parseFloat(datas.moneyAmount)-parseFloat(datas.moneyPaid))).toFixed(2)}}</span>
       </div>
-      <div class="" v-show="(received-(parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)))<0">
+      <div class="" v-show="(received-(parseFloat(datas.moneyAmount)-parseFloat(datas.moneyPaid)))<0">
         <span class="am-ft-gray6">差额：</span>
-        <span class="am-ft-20 am-ft-green "  >{{(parseFloat(datas.moneyAmount).toFixed(2)-parseFloat(datas.moneyPaid).toFixed(2)-parseFloat(received)).toFixed(2)}}</span>
+        <span class="am-ft-20 am-ft-green "  >{{(parseFloat(datas.moneyAmount)-parseFloat(datas.moneyPaid)-parseFloat(received)).toFixed(2)}}</span>
       </div>
       <el-button type="primary" class="makeCashier" @click="payMoneyToServer">确定</el-button>
     </div>
