@@ -78,7 +78,7 @@
       <el-col :span="24">
         <el-tabs type="border-card" @tab-click="handleClick">
           <el-tab-pane label="调拨待审核" name="0">
-            <pending-review :listData="dRequisitionList" :listCounts="counts"></pending-review>
+            <pending-review :listData="dRequisitionList" :listCounts="30" :mypagination="pagination"></pending-review>
           </el-tab-pane>
           <el-tab-pane label="待调出" name="1">
             <pending-tune-out :listData="dRequisitionList" :listCounts="counts"></pending-tune-out>
@@ -144,6 +144,9 @@
     },
     methods: {
       //tab切换
+      pagination(val) {
+        // console.log(val);
+      },
       handleClick(tab, event) {
         if (tab.name == 5) {
           this.getInquireList({status: ''});

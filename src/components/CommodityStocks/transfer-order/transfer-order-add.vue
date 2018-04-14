@@ -31,8 +31,12 @@
           </el-form-item>
           <el-form-item label="调拨人：">
             <el-select v-model="formInline.requisitionP" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+              <el-option
+                v-for="n in requisitionP"
+                :key="n.userId"
+                :label="n.trueName"
+                :value="n.userId">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="调出仓库：">
@@ -57,22 +61,34 @@
           </el-form-item>
           <el-form-item label="调拨级别：">
             <el-select v-model="formInline.level" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+              <el-option
+                v-for="n in levelList"
+                :key="n.code"
+                :label="n.name"
+                :value="n.name">
+              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="承运类型：">
             <el-select v-model="formInline.carrierType" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+              <el-option
+                v-for="n in carrierType"
+                :key="n.code"
+                :label="n.name"
+                :value="n.name">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="承运人：">
             <el-select v-model="formInline.carrierP" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+              <el-option
+                v-for="n in carrierP"
+                :key="n.userId"
+                :label="n.trueName"
+                :value="n.userId">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="运费：">
@@ -136,32 +152,32 @@
             style="width: 100%">
             <el-table-column
               label="商品编码"
-              prop="d"
+              prop="sku"
               width="120">
               <template slot-scope="scope">
                 <el-input v-model="tableData[scope.$index].proNum" size="small"></el-input>
               </template>
             </el-table-column>
             <el-table-column
-              prop="b"
+              prop="skuName"
               label="商品名称"
               width="150">
             </el-table-column>
             <el-table-column
-              prop="c"
+              prop="unit"
               label="单位"
               width="50">
             </el-table-column>
             <el-table-column
-              prop="d"
+              prop="registerCode"
               label="注册证号">
             </el-table-column>
             <el-table-column
-              prop="e"
+              prop="batchNo"
               label="批次号">
             </el-table-column>
             <el-table-column
-              prop="g"
+              prop="validity"
               label="有效期">
             </el-table-column>
             <el-table-column
@@ -171,25 +187,25 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="调出库库存"
-              prop="i">
+              label="调出库库存">
+              <template slot-scope="scope"></template>
             </el-table-column>
             <el-table-column
-              label="调入库库存"
-              prop="j">
+              label="调入库库存">
+              <template slot-scope="scope"></template>
             </el-table-column>
             <el-table-column
-              label="公司库存"
-              prop="k">
+              label="公司库存">
+              <template slot-scope="scope"></template>
             </el-table-column>
             <el-table-column
               label="零售价"
-              prop="l">
+              prop="price">
             </el-table-column>
             <el-table-column
               label="操作">
               <template slot-scope="scope">
-                <a href="javascript:;" class="am-text-secondary">移除</a>
+                <a href="javascript:;" class="am-text-secondary" @click="removeProduct(scope.$index)">移除</a>
               </template>
             </el-table-column>
           </el-table>
@@ -220,6 +236,10 @@
     data() {
       return {
         warehList: [],//仓库列表
+        requisitionP: [],//调拨人列表
+        carrierP: [],//承运人列表
+        carrierType: [],//承运类型列表
+        levelList: [],//调拨级别列表
         ueserName: '',
         ueserOrgName: '',
         fullDate: '',
@@ -229,6 +249,7 @@
           outWarehId: '',//调出仓库id
           outWarehName: '',//调出仓库名
           inWarehId: '',//调入仓库id
+          inWarehName: '',//调入仓库名
           level: '',//调拨级别
           carrierType: '',//承运类型
           carrierP: '',//承运人
@@ -236,18 +257,7 @@
           memo: '',//备注
           dRequisitionDetailList: [{
             proNum: '',//商品编码,
-            // barcode: '',//货品条码
-            // fastcode: '',//快速码
             count: 0,//调拨数量
-            // proName: '',//商品名称
-            // unit:'',//单位
-            // registrationNo: '',//注册证号
-            // batch: '',//批次号
-            // validrtyDate: '',//有效期
-            // outWarehStk: '',//调出库库存
-            // inWaregStk: '',//调入库库存
-            // allStk: '',//公司库存,
-            // price: '',//零售价
           }],
         },
         categoryCode1: [],//类别
@@ -265,20 +275,7 @@
           categoryCode: [],//类别+品牌+品种
           proNum: ''
         },
-        tableData: [{
-          a: 'BH00001',
-          b: '湿乐光学架6670-6054',
-          c: '副',
-          d: ' ',
-          e: ' ',
-          f: '2017-11-06 11:26:19',
-          g: '1',
-          h: '1',
-          i: '1',
-          j: '1',
-          k: '1',
-          l: '618.00',
-        }]
+        tableData: []
       }
     },
     beforeMount() {
@@ -288,13 +285,17 @@
       this.getType();
       this.getNowDate();
       this.getWarehList();
+      this.getCarrierP();
+      this.getRequisitionP();
+      this.getLevelList();
+      this.getCarrierType();
       // this.ueserName = this.$store.state.LoginName;
       // this.ueserOrgName = this.$store.state.orgName;
     },
     methods: {
       //获取当前时间
       getNowDate(){
-        let that = this;
+        const that = this;
         let date = new Date();
         let y = date.getFullYear();
         let MM = date.getMonth() + 1;
@@ -311,7 +312,7 @@
       },
       //查询仓库列表
       getWarehList() {
-        var that = this;
+        const that = this;
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/warehouse/getWarehouseList',
           method: 'post',
@@ -349,7 +350,7 @@
       },
       //查询类别+品牌+品种
       getType() {
-        var that = this;
+        const that = this;
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
           method: 'post',
@@ -386,7 +387,7 @@
       },
       //根据类别选择品牌
       selectBrands(id) {
-        var that = this;
+        const that = this;
         that.categoryLevel.category2 = '';
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
@@ -409,7 +410,7 @@
               })
               return false;
             } else {
-              console.info(response.data.data)
+              // console.info(response.data.data)
               that.categoryCode2 = response.data.data.productCategoryList;
             }
           })
@@ -424,7 +425,7 @@
       },
       //根据品牌选择品种
       selectVarietys(id) {
-        var that = this;
+        const that = this;
         that.categoryLevel.category3 = '';
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
@@ -462,66 +463,249 @@
       },
       //新增调拨单
       addTransferOrder(){
-        let that = this;
-        console.info(that.formInline)
-        console.info(that.tableData)
-        // that.$axios({
-        //   url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
-        //   method: 'post',
-        //   params: {
-        //     jsonObject: that.formInline,
-        //     keyParams: {
-        //       weChat: true
-        //     }
-        //   }
-        // })
-        //   .then(function (response) {
-        //     if(response.data.code != '1'){
-        //       that.$message({
-        //         showClose: true,
-        //         message: '新增调拨单失败，请检查后重试！',
-        //         type: 'error'
-        //       })
-        //       return false;
-        //     }else {
-        //       that.$message({
-        //         showClose: true,
-        //         message: '新增成功！',
-        //         type: 'success'
-        //       })
-        //     }
-        //   })
-        //   .catch(function (error) {
-        //     console.info(error);
-        //     that.$message({
-        //       showClose: true,
-        //       message: '请求数据失败，请联系管理员',
-        //       type: 'error'
-        //     })
-        //   })
+        const that = this;
+        if (that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId )) {
+          that.formInline.outWarehName = that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId).warehouseName;
+        }
+        if (that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId )) {
+          that.formInline.inWarehName = that.warehList.find( ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
+        }
+        that.formInline.dRequisitionDetailList = that.tableData;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
+          method: 'post',
+          params: {
+            jsonObject: that.formInline,
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: '新增调拨单失败，请检查后重试！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              that.$message({
+                showClose: true,
+                message: '新增成功！',
+                type: 'success'
+              })
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
       },
-
       //追加商品
       addOrder(){
-        let that = this;
+        const that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/stock/getStockListBysku',
+          method: 'post',
+          params: {
+            jsonObject: {
+              sku: that.searchForm.proNum,
+              warehouse_id: that.formInline.outWarehId
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: '无此商品！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              console.info(response.data.data)
+              that.tableData = response.data.data.list;
+              const params = {
+                  proNum: that.searchForm.proNum,
+                  count: that.formInline.dRequisitionDetailList.count,
+              };
+              const newParams = Object.assign(that.formInline, params);
+              that.tableData.push(newParams);
+              that.searchForm.proNum = '';
+              console.info(that.tableData)
+            }
 
-        that.tableData.push({
-          proNum: that.searchForm.proNum,
-          count: that.formInline.dRequisitionDetailList.count,
-          a: 'BH00001',
-          b: '湿乐光学架6670-6054',
-          c: '副',
-          d: ' ',
-          e: ' ',
-          g: '1',
-          h: '1',
-          i: '1',
-          j: '1',
-          k: '1',
-          l: '618.00',
-        });
-        that.searchForm.proNum = '';
-      }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //承运人列表
+      getCarrierP() {
+        const that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/cas-api/user/getUserByOrg',
+          method: 'post',
+          params: {
+            jsonObject: {
+              userType: 7
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              // console.info(response.data.data);
+              that.carrierP = response.data.data.list;
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //调拨人列表
+      getRequisitionP() {
+        const that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/cas-api/user/getUserByOrg',
+          method: 'post',
+          params: {
+            jsonObject: {
+              userType: 8
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              // console.info(response.data.data);
+              that.requisitionP = response.data.data.list;
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //调拨级别列表
+      getLevelList() {
+        const that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList',
+          method: 'post',
+          params: {
+            jsonObject: {
+              type: 14
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              // console.info(response.data.data);
+              that.levelList = response.data.data.list;
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //承运类型列表
+      getCarrierType() {
+        const that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList',
+          method: 'post',
+          params: {
+            jsonObject: {
+              type: 15
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              // console.info(response.data.data);
+              that.carrierType = response.data.data.list;
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //移除商品
+      removeProduct(item){
+        const that = this;
+        that.tableData.splice(item,1);
+      },
     }
   }
 </script>
