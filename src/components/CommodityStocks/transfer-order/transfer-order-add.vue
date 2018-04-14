@@ -13,7 +13,7 @@
           </el-form-item>
           <el-form-item
             label="制单人：">
-            <span>张三</span>
+            <span>{{ueserName}}</span>
           </el-form-item>
           <el-form-item
             label="调拨部门：">
@@ -36,15 +36,23 @@
             </el-select>
           </el-form-item>
           <el-form-item label="调出仓库：">
-            <el-select v-model="formInline.outWarehId" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="formInline.outWarehId" filterable placeholder="请选择" style="width: 130px">
+              <el-option
+                v-for="n in warehList"
+                :key="n.warehouseId"
+                :label="n.warehouseName"
+                :value="n.warehouseId">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="调入仓库：">
-            <el-select v-model="formInline.inWarehId" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="formInline.inWarehId" filterable placeholder="请选择" style="width: 130px">
+              <el-option
+                v-for="n in warehList"
+                :key="n.warehouseId"
+                :label="n.warehouseName"
+                :value="n.warehouseId">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="调拨级别：">
@@ -204,11 +212,16 @@
 </template>
 
 <script>
+  import store from '../../../vuex/store'
+
   export default {
     name: "transfer-order-add",
     component: {},
     data() {
       return {
+        warehList: [],//仓库列表
+        ueserName: '',
+        ueserOrgName: '',
         fullDate: '',
         formInline: {
           handleTime: '',//经办日期
@@ -223,9 +236,18 @@
           memo: '',//备注
           dRequisitionDetailList: [{
             proNum: '',//商品编码,
-            barcode: '',//货品条码
-            fastcode: '',//快速码
-            count: '',//调拨数量
+            // barcode: '',//货品条码
+            // fastcode: '',//快速码
+            count: 0,//调拨数量
+            // proName: '',//商品名称
+            // unit:'',//单位
+            // registrationNo: '',//注册证号
+            // batch: '',//批次号
+            // validrtyDate: '',//有效期
+            // outWarehStk: '',//调出库库存
+            // inWaregStk: '',//调入库库存
+            // allStk: '',//公司库存,
+            // price: '',//零售价
           }],
         },
         categoryCode1: [],//类别
@@ -259,9 +281,15 @@
         }]
       }
     },
+    beforeMount() {
+
+    },
     created() {
       this.getType();
       this.getNowDate();
+      this.getWarehList();
+      // this.ueserName = this.$store.state.LoginName;
+      // this.ueserOrgName = this.$store.state.orgName;
     },
     methods: {
       //获取当前时间
@@ -280,6 +308,44 @@
         let s = date.getSeconds();
         s = s < 10 ? ('0' + s) : s;
         that.fullDate = y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+      },
+      //查询仓库列表
+      getWarehList() {
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/warehouse/getWarehouseList',
+          method: 'post',
+          params: {
+            jsonObject: {
+              status: 0
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              // console.info(response.data.data);
+              that.warehList = response.data.data.list;
+            }
+
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
       },
       //查询类别+品牌+品种
       getType() {
@@ -398,40 +464,41 @@
       addTransferOrder(){
         let that = this;
         console.info(that.formInline)
-        that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
-          method: 'post',
-          params: {
-            jsonObject: that.formInline,
-            keyParams: {
-              weChat: true
-            }
-          }
-        })
-          .then(function (response) {
-            if(response.data.code != '1'){
-              that.$message({
-                showClose: true,
-                message: '新增调拨单失败，请检查后重试！',
-                type: 'error'
-              })
-              return false;
-            }else {
-              that.$message({
-                showClose: true,
-                message: '新增成功！',
-                type: 'success'
-              })
-            }
-          })
-          .catch(function (error) {
-            console.info(error);
-            that.$message({
-              showClose: true,
-              message: '请求数据失败，请联系管理员',
-              type: 'error'
-            })
-          })
+        console.info(that.tableData)
+        // that.$axios({
+        //   url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
+        //   method: 'post',
+        //   params: {
+        //     jsonObject: that.formInline,
+        //     keyParams: {
+        //       weChat: true
+        //     }
+        //   }
+        // })
+        //   .then(function (response) {
+        //     if(response.data.code != '1'){
+        //       that.$message({
+        //         showClose: true,
+        //         message: '新增调拨单失败，请检查后重试！',
+        //         type: 'error'
+        //       })
+        //       return false;
+        //     }else {
+        //       that.$message({
+        //         showClose: true,
+        //         message: '新增成功！',
+        //         type: 'success'
+        //       })
+        //     }
+        //   })
+        //   .catch(function (error) {
+        //     console.info(error);
+        //     that.$message({
+        //       showClose: true,
+        //       message: '请求数据失败，请联系管理员',
+        //       type: 'error'
+        //     })
+        //   })
       },
 
       //追加商品

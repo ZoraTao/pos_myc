@@ -8,21 +8,33 @@
             <el-input placeholder="输入商品编码" v-model="formInline.requisitionNo" style="width: 130px"></el-input>
           </el-form-item>
           <el-form-item label="调拨部门：">
-            <el-select v-model="formInline.requisitionOrg" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="formInline.requisitionOrg" filterable placeholder="请选择" style="width: 130px">
+              <el-option
+                v-for="i in requisitionOrg"
+                :key="i.shopId"
+                :label="i.shopName"
+                :value="i.shopId">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="调出仓库：">
-            <el-select v-model="formInline.outWarehId" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="formInline.outWarehId" filterable placeholder="请选择" style="width: 130px">
+              <el-option
+                v-for="i in warehList"
+                :key="i.warehouseId"
+                :label="i.warehouseName"
+                :value="i.warehouseId">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="调入仓库：">
-            <el-select v-model="formInline.inWarehId" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="formInline.inWarehId" filterable placeholder="请选择" style="width: 130px">
+              <el-option
+                v-for="n in warehList"
+                :key="n.warehouseId"
+                :label="n.warehouseName"
+                :value="n.warehouseId">
+              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -40,8 +52,12 @@
           </el-form-item>
           <el-form-item label="来源类型：">
             <el-select v-model="formInline.sourceType" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+              <el-option
+                v-for="i in sourceType"
+                :key="i.code"
+                :label="i.name"
+                :value="i.name">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -56,13 +72,13 @@
     <!--content-->
     <el-row class="mgt10">
       <el-col :span="24" class="pl10">
-        <h2 class="am-ft-16 mgb15">查询结果 (23)</h2>
+        <h2 class="am-ft-16 mgb15">查询结果 ({{counts}})</h2>
       </el-col>
       <!--tab-->
       <el-col :span="24">
         <el-tabs type="border-card" @tab-click="handleClick">
           <el-tab-pane label="调拨待审核" name="0">
-           <pending-review :listData="dRequisitionList" :listCounts="counts"></pending-review>
+            <pending-review :listData="dRequisitionList" :listCounts="counts"></pending-review>
           </el-tab-pane>
           <el-tab-pane label="待调出" name="1">
             <pending-tune-out :listData="dRequisitionList" :listCounts="counts"></pending-tune-out>
@@ -103,8 +119,7 @@
         dRequisitionList: [],//调拨单数据
         requisitionOrg: [],//调拨部门
         sourceType: [],//来源类型
-        outWareh: [],//调出仓库
-        inWareh: [],//调入仓库
+        warehList: [],//仓库列表
         requisitionTimeStart: '',
         requisitionTimeEnd: '',
         formInline: {
@@ -113,7 +128,7 @@
           requisitionOrg: '',//调拨部门Id
           outWarehId: '',//调出仓库Id
           inWarehId: '',//调入仓库Id
-          requisitionTime: ['',''],//调拨日期
+          requisitionTime: ['', ''],//调拨日期
           status: '1'
         },
         nub: 0,//起始条数
@@ -123,21 +138,24 @@
     },
     created() {
       this.getInquireList();
+      this.getRequisitionOrgList();
+      this.getSourceType();
+      this.getWarehList();
     },
     methods: {
       //tab切换
       handleClick(tab, event) {
-        if(tab.name==5){
-          this.getInquireList({ status: '' });
-        }else{
-          this.getInquireList({ status: tab.name });
+        if (tab.name == 5) {
+          this.getInquireList({status: ''});
+        } else {
+          this.getInquireList({status: tab.name});
         }
         // console.info(tab.name)
       },
       //筛选调拨单列表
       onSubmit() {
         let that = this;
-        that.formInline.requisitionTime = [that.requisitionTimeStart,that.requisitionTimeEnd];
+        that.formInline.requisitionTime = [that.requisitionTimeStart, that.requisitionTimeEnd];
         // console.log(that.formInline);
         that.getInquireList();
       },
@@ -166,14 +184,14 @@
           }
         })
           .then(function (response) {
-            if(response.data.code != '1'){
+            if (response.data.code != '1') {
               that.$message({
                 showClose: true,
                 message: '请求数据出问题喽，请重试！',
                 type: 'error'
               })
               return false;
-            }else {
+            } else {
               // console.info(response.data.data);
               that.dRequisitionList = response.data.data.list;
               that.counts = response.data.data.count;
@@ -191,8 +209,120 @@
       },
       //分页
       handleCurrentChange(val) {
-        this.nub = (`${val}`-1) * this.size;
+        this.nub = (`${val}` - 1) * this.size;
         this.getInquireList({nub: this.nub});
+      },
+      //查询调拨部门列表
+      getRequisitionOrgList() {
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/shopBy/getShopByList',
+          method: 'post',
+          params: {
+            jsonObject: {},
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              // console.info(response.data.data);
+              that.requisitionOrg = response.data.data.shopByList;
+            }
+
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //查询仓库列表
+      getWarehList() {
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/warehouse/getWarehouseList',
+          method: 'post',
+          params: {
+            jsonObject: {
+              status: 0
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              // console.info(response.data.data);
+              that.warehList = response.data.data.list;
+            }
+
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //查询来源类型列表
+      getSourceType() {
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList',
+          method: 'post',
+          params: {
+            jsonObject: {
+              type: 13
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              // console.info(response.data.data);
+              that.sourceType = response.data.data.list;
+            }
+
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
       },
     }
   }
