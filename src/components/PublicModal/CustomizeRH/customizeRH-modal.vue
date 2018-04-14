@@ -1,6 +1,6 @@
 <template>
-<div id="customizeRH" class="clearfix modal-content-center">
-    <div class="modal-content-left customizeRHBody">
+<div id="customizeRH" class=" modal-content-center">
+    <div class="customizeRHBody">
         <h5>定做单号：DZ12340001</h5>
         <div class="customizeInputGroup fn-left">
             <label>球镜：</label>
@@ -241,7 +241,6 @@ export default {
     }
   },
   methods:{
-
   },
   computed:{
   },
@@ -250,7 +249,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scope lang="scss">
 .customizeRH{
     .el-table th {
         background: #fff !important;
