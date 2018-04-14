@@ -1,11 +1,6 @@
 <template>
-<<<<<<< HEAD
 <div id="customizeRH" class=" modal-content-center">
     <div class="customizeRHBody">
-=======
-<div id="customizeRH" class="clearfix modal-content-center" >
-    <div class="modal-content-left customizeRHBody">
->>>>>>> 4e9033f69560f330a36c485e2ac8cd8a07ea5c34
         <h5>定做单号：DZ12340001</h5>
         <div class="customizeInputGroup fn-left">
             <label>球镜：</label>
@@ -250,8 +245,6 @@ export default {
     }
   },
   methods:{
-<<<<<<< HEAD
-=======
       computedMoney(){
           let _this = this;
           if(parseFloat(_this.customContent.price)>0){//如果输入了价格
@@ -300,7 +293,6 @@ commitCustom(){
     // },1000)
     
 }
->>>>>>> 4e9033f69560f330a36c485e2ac8cd8a07ea5c34
   },
   computed:{
   },
