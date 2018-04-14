@@ -79,43 +79,43 @@
 
     <!--content-->
     <el-row class="inquiry-row mgt10">
-      <el-col :span="24">
-        <el-form :inline="true" :model="searchForm" class="demo-form-inline am-ft-left">
-          <el-form-item label="编码选择过滤："></el-form-item>
-          <el-form-item label="类别：">
-            <el-select v-model="categoryLevel.category1" filterable clearable placeholder="请选择" style="width: 130px"
-                       @change="selectBrands">
-              <el-option v-for="(i,index) in categoryCode1" :key="i.className" :label="i.className"
-                         :value="i.productCategoryId"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="品牌：">
-            <el-select v-model="categoryLevel.category2" filterable clearable placeholder="请选择" style="width: 130px"
-                       @change="selectVarietys">
-              <el-option v-for="(i,index) in categoryCode2" :key="i.className" :label="i.className"
-                         :value="i.productCategoryId"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="品种：">
-            <el-select v-model="categoryLevel.category3" filterable clearable placeholder="请选择" style="width: 130px">
-              <el-option v-for="(i,index) in categoryCode3" :key="i.className" :label="i.className"
-                         :value="i.productCategoryId"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="度数：" class="input_num">
-            <div class="fn-line-block">
-              <el-input type="number" min="0" v-model="searchForm.degree1" style="width: 60px"></el-input>
-            </div>
-            <div class="fn-line-block am-ft-center am-text-secondary">-</div>
-            <div class="fn-line-block">
-              <el-input type="number" min="0" v-model="searchForm.degree2" style="width: 60px"></el-input>
-            </div>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" plain>过滤</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
+      <!--<el-col :span="24">-->
+        <!--<el-form :inline="true" :model="searchForm" class="demo-form-inline am-ft-left">-->
+          <!--<el-form-item label="编码选择过滤："></el-form-item>-->
+          <!--<el-form-item label="类别：">-->
+            <!--<el-select v-model="categoryLevel.category1" filterable clearable placeholder="请选择" style="width: 130px"-->
+                       <!--@change="selectBrands">-->
+              <!--<el-option v-for="(i,index) in categoryCode1" :key="i.className" :label="i.className"-->
+                         <!--:value="i.productCategoryId"></el-option>-->
+            <!--</el-select>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="品牌：">-->
+            <!--<el-select v-model="categoryLevel.category2" filterable clearable placeholder="请选择" style="width: 130px"-->
+                       <!--@change="selectVarietys">-->
+              <!--<el-option v-for="(i,index) in categoryCode2" :key="i.className" :label="i.className"-->
+                         <!--:value="i.productCategoryId"></el-option>-->
+            <!--</el-select>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="品种：">-->
+            <!--<el-select v-model="categoryLevel.category3" filterable clearable placeholder="请选择" style="width: 130px">-->
+              <!--<el-option v-for="(i,index) in categoryCode3" :key="i.className" :label="i.className"-->
+                         <!--:value="i.productCategoryId"></el-option>-->
+            <!--</el-select>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="度数：" class="input_num">-->
+            <!--<div class="fn-line-block">-->
+              <!--<el-input type="number" min="0" v-model="searchForm.degree1" style="width: 60px"></el-input>-->
+            <!--</div>-->
+            <!--<div class="fn-line-block am-ft-center am-text-secondary">-</div>-->
+            <!--<div class="fn-line-block">-->
+              <!--<el-input type="number" min="0" v-model="searchForm.degree2" style="width: 60px"></el-input>-->
+            <!--</div>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item>-->
+            <!--<el-button type="primary" plain>过滤</el-button>-->
+          <!--</el-form-item>-->
+        <!--</el-form>-->
+      <!--</el-col>-->
       <!--table-->
       <el-col :span="24">
         <el-col :span="24" class="table-box">
@@ -128,9 +128,10 @@
             style="width: 100%">
             <el-table-column
               label="商品编码"
+              prop="d"
               width="120">
               <template slot-scope="scope">
-                <el-input v-model="formInline.dRequisitionDetailList.proNum" size="small"></el-input>
+                <el-input v-model="tableData[scope.$index].proNum" size="small"></el-input>
               </template>
             </el-table-column>
             <el-table-column
@@ -158,7 +159,7 @@
             <el-table-column
               label="调拨数量">
               <template slot-scope="scope" class="input_num">
-                <el-input type="number" v-model="formInline.dRequisitionDetailList.count" size="small"></el-input>
+                <el-input type="number" v-model="tableData[scope.$index].count" size="small"></el-input>
               </template>
             </el-table-column>
             <el-table-column
@@ -397,51 +398,49 @@
       addTransferOrder(){
         let that = this;
         console.info(that.formInline)
-        // that.$axios({
-        //   url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
-        //   method: 'post',
-        //   params: {
-        //     jsonObject: that.formInline,
-        //     keyParams: {
-        //       weChat: true
-        //     }
-        //   }
-        // })
-        //   .then(function (response) {
-        //     if(response.data.code != '1'){
-        //       that.$message({
-        //         showClose: true,
-        //         message: '请求数据出问题喽，请重试！',
-        //         type: 'error'
-        //       })
-        //       return false;
-        //     }else {
-        //       that.$message({
-        //         showClose: true,
-        //         message: '新增成功！',
-        //         type: 'success'
-        //       })
-        //     }
-        //   })
-        //   .catch(function (error) {
-        //     console.info(error);
-        //     that.$message({
-        //       showClose: true,
-        //       message: '请求数据失败，请联系管理员',
-        //       type: 'error'
-        //     })
-        //   })
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
+          method: 'post',
+          params: {
+            jsonObject: that.formInline,
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: '新增调拨单失败，请检查后重试！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              that.$message({
+                showClose: true,
+                message: '新增成功！',
+                type: 'success'
+              })
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
       },
 
       //追加商品
       addOrder(){
         let that = this;
-        that.getNowDate();
-        let proNum = that.formInline.dRequisitionDetailList.proNum;
 
         that.tableData.push({
           proNum: that.searchForm.proNum,
-          count: '',
+          count: that.formInline.dRequisitionDetailList.count,
           a: 'BH00001',
           b: '湿乐光学架6670-6054',
           c: '副',
@@ -454,6 +453,7 @@
           k: '1',
           l: '618.00',
         });
+        that.searchForm.proNum = '';
       }
     }
   }
