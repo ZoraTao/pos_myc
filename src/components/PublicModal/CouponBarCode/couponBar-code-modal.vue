@@ -1,5 +1,5 @@
 <template>
-<div id="CouponBarCode">
+<div id="CouponBarCode" v-if="conponContent!==null">
     <!--body-content-->
     <div class="clearfix">
         <div class="CouponBarContent">
@@ -9,11 +9,11 @@
                     <el-button type="primary">
                         <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_saoyisao.png">
                     </el-button>
-                    <el-input placeholder=""></el-input>
+                    <el-input placeholder="" v-model="searchConponId" @keyup.enter.native="searchConpon(searchConponId)" ></el-input>
                 </div>
                 <div class="CouponBarCard">
-                    <p class="memberInfo"><span><!--张丽丽-->会员</span>有{{conponData.userCouponCount}}张优惠券可用：</p>
-                    <div class="CouponBarItemBox" v-for="item in conponData.canUserCoupon" :key="item.createTime">
+                    <p class="memberInfo"><span><!--张丽丽-->会员</span>有{{conponContent.userCouponCount}}张优惠券可用：</p>
+                    <div class="CouponBarItemBox" v-for="item in conponContent.canUserCoupon" :key="item.createTime">
                         <div class="CouponBarItem blueStatus" :style="{'background-color':item.colorValue,'border-color':item.colorValue}">
                             <div class="cardConstBox">
                                 <div class="cardConst">
@@ -49,11 +49,16 @@ export default {
   name: 'CouponBarCodeModal',
   data () {
     return { 
-
+        searchConponId:'',
+        conponContent:null,
     }
   },
   props:{
       conponData:{
+          type:Object,
+          default:null
+      },
+      memberMessage:{
           type:Object,
           default:null
       }
@@ -77,9 +82,54 @@ export default {
         receive(value){
             console.log(value);
             this.$emit('receiveconpon',value)
-        }
+        },
+        // 查找优惠券
+            searchConpon(id){
+                let _this = this;
+                let memberCardNo=_this.memberMessage.memberCardNo;
+                _this.$axios({
+                    url:'http://myc.qineasy.cn/coupon-api/newCouponMsg/getMyAllCoupon',
+                    method:'post',
+                    params:{
+                        jsonObject:{
+                        memberCardNo:memberCardNo,//会员卡号
+                        // orgScope:'',//适用门店编号
+                        // couponMsgId:'',//优惠券信息Id
+                        couponNo:id,//优惠券编号
+                        // fullAmount:'',//满额条件 0没有门槛
+                        // couponState:'',//卡券状态
+                        // activeTime:'',//当天时间，是否当天可用
+                        // nub:'',//分页起始位
+                        // size:'',//每页条数
+                        },
+                    keyParams: {
+                        weChat: true
+                    }
+                }
+                })
+                .then(function(res){
+                    if(res.data.code == 1){
+                        console.log(res.data.data)
+                        _this.conponContent = res.data.data;
+                    }else{
+                         _this.$message({
+                                showClose: true,
+                                message: '请求数据出问题喽，请重试！',
+                                type: 'error'
+                            })
+                    }
+                    
+                }).catch(function(err){
+                    _this.$message({
+                                showClose: true,
+                                message: '请求数据出问题喽，请重试！',
+                                type: 'error'
+                            })
+                })
+            },
   },
   mounted(){
+      this.conponContent = this.conponData;
     //   console.log(1111,this.conponData)
   }
 }

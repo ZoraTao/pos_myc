@@ -189,7 +189,6 @@ export default {
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].name == data.name) {
           arr[i].isActive = true;
-          // console.log("触发了已有Tab");
           _this.$router.push({
             path: _this.items.link,
             name: _this.items.name,

@@ -37,18 +37,7 @@
         label="含税零售价合计">
       </el-table-column>
     </el-table>
-    <!--分页-->
-    <!--<div class="block mgt10">-->
-      <!--<el-pagination-->
-        <!--class="am-ft-right"-->
-        <!--background-->
-        <!--@current-change="handleCurrentChange"-->
-        <!--:page-size="10"-->
-        <!--layout="total, prev, pager, next"-->
-        <!--:total="totalStocksData.count"-->
-        <!--:current-page.sync="nub">-->
-      <!--</el-pagination>-->
-    <!--</div>-->
+
   </div>
 </template>
 
@@ -62,16 +51,11 @@
     },
     data() {
       return {
-        nub: 0,//起始条数
-        size: 10,//每页显示数据条数
-        counts: 0,//总条数
+
       }
     },
     methods: {
-      //分页
-      handleCurrentChange(val) {
-        this.nub = (`${val}`-1) * this.size;
-      },
+
     }
   }
 </script>

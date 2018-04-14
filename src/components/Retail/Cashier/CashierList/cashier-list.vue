@@ -108,10 +108,11 @@
             </tr>
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
               <td>{{list.itemId}}</td>
-              <td>{{list.itemName||'商品名'}}</td>
+              <td v-if="list.itemId!=='--'">{{list.itemName}}</td>
+              <td v-if="list.itemId=='--'">{{list.itemName}}<span class="customText">定做单号:ZXD9413844433</span></td>
               <td>{{parseInt(list.quantity)}}</td>
-              <td>{{parseFloat(list.price)||'商品原单价'}}</td>
-              <td><strong>{{parseFloat(list.money)||'商品实售单价'}}</strong></td>
+              <td>{{parseFloat(list.listPrice)}}</td>
+              <td><strong>{{parseFloat(list.money)}}</strong></td>
               <td>{{order.shopName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
@@ -795,5 +796,9 @@ export default {
 
 .height30 {
   line-height: 30px;
+}
+.customText{
+  cursor: pointer;
+  color:#00afe4;
 }
 </style>
