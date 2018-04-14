@@ -256,19 +256,10 @@ export default {
               console.log('不是价格')
           }
       },
-      clear(){
-            this.customContent.value1 ='';
-            this.customContent.value2 ='';
-            this.customContent.value3 ='';
-            this.customContent.customMessage = '';
-            this.customContent.price = '';
-            this.customContent.nums = '1';
-            this.customContent.discount= '10';
-            this.customContent.realSale = '';
-      },
 commitCustom(){
 
     let _this = this;
+    console.log(this.customContent)
     for(var key in this.customContent){
       if(this.customContent[key] == '') {
           this.$message({
@@ -282,13 +273,14 @@ commitCustom(){
     let commits=_.clone(this.customContent)
     console.log('子组件',commits)
     this.$emit('commitCustomMessage',commits)
-    // setTimeout(function(){
-    //     _this.clear();
-    // },1000)
+    
     setTimeout(()=>{
         for(var key in this.customContent){
-        this.customContent[key]  = ''
+            this.customContent[key]  = ''
         }
+        this.customContent.nums = '1';
+        this.customContent.discount= '10';
+        this.customContent.status = '定做';
     },1000)
     
 }

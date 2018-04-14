@@ -277,5 +277,8 @@ router.beforeEach((to,from,next)=>{
 // 　　router.app.$options.store.state.user.token
   next();
 });
-
+router.afterEach((to,from)=>{
+  
+  // next();
+})
 export default router

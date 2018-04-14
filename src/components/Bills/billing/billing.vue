@@ -72,20 +72,20 @@
                     <el-table-column
                     prop="skuName"
                     label="建议配镜"
-                    width="400px">
+                    >
                         <template slot-scope="scope">
                             <span>
                               {{scope.row.skuName2||scope.row.skuName}}
-                              <span v-if="scope.row.customMessage">
+                              <span v-if="scope.row.status=='定做'">
                                 <a href="javascript:void(0)" class="readContent">查看详情</a>
-                                {{scope.row.customMessage}}
                               </span>
                             </span>
                         </template>
                     </el-table-column>
                     <el-table-column
                     prop="num"
-                    label="数量">
+                    label="数量"
+                    width="140px">
                         <template slot-scope="scope">
                             <span class="am-ft-bold am-ft-black">
                                 {{scope.row.nums}}
@@ -94,17 +94,18 @@
                     </el-table-column>
                     <el-table-column
                     prop="price"
-                    label="原单价">
+                    label="原单价"
+                    width="140px">
                     </el-table-column>
                     <el-table-column
                     prop="discount"
                     label="折扣"
-                    width="100px">
+                    width="140px">
                         <template slot-scope="scope">
                             <el-input class="" placeholder="" v-model="tableData[scope.$index].discount" @change="changePrice(scope.row,1,scope.$index)"></el-input>
                         </template>
                     </el-table-column>
-                    <el-table-column
+                    <!-- <el-table-column
                     prop=""
                     label="加工费"
                     width="100px">
@@ -119,11 +120,11 @@
                         <template slot-scope="scope">
                             <span class="" placeholder=""  >--</span>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                     <el-table-column
                     prop="realSale"
                     label="实售单价"
-                    width="100px">
+                    width="140px">
                         <template slot-scope="scope">
                             <div class="inputBold  am-ft-black">
                                 <span class="" placeholder="" >{{tableData[scope.$index].realSale}}</span>
@@ -162,7 +163,7 @@
                         <el-button @click="openCouponBarCode">折扣券</el-button>
                     </el-form-item>
                     <el-form-item class="ParamButton">
-                        <el-button @click="openConpon();initSearch()">促销活动</el-button>
+                        <el-button @click="openConpon();">促销活动</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -328,8 +329,18 @@
                     align="left"
                     style="width: 100%;">
                     <el-table-column
-                    prop="keys"
                     :label="value.name">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.keys == 'add'">下加光</span>
+                            <span v-if="scope.row.keys == 'ax'">轴位</span>
+                            <span v-if="scope.row.keys == 'cyl'">柱镜</span>
+                            <span v-if="scope.row.keys == 'dpd'">远瞳距</span>
+                            <span v-if="scope.row.keys == 'hpd'">瞳高</span>
+                            <span v-if="scope.row.keys == 'npd'">近瞳距</span>
+                            <span v-if="scope.row.keys == 'pd'">瞳距</span>
+                            <span v-if="scope.row.keys == 'sph'">球镜</span>
+                            <span v-if="scope.row.keys == 'va'">矫正视力</span>
+                        </template>
                     </el-table-column>
                     <el-table-column
                     prop="lData"
@@ -407,7 +418,7 @@
         :visible.sync="CouponBarCode"
         width="360px"
         center>
-        <CouponBarCodeModal :conponData="conponData" @receiveconpon="receiveconpon"></CouponBarCodeModal>
+        <CouponBarCodeModal :conponData="conponData" :memberMessage="selectMember.memberInfo" @receiveconpon="receiveconpon"></CouponBarCodeModal>
     </el-dialog>
 
     <el-dialog
@@ -961,10 +972,12 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                     }else {
                         title = '商品-定做单：'
                     }
-                    value.skuName =  title;
+                    value.skuName =  'YZW7492634';
+                    value.skuName2 = title+value.customMessage;//显示
+                    value.sku="--";
+                    // value.orderPromotionId='';
                 }
                 
-                console.log(value)
                 var _this= this;
                 let alldis = _this.allDisCount;
                 if(alldis != '' && typeof parseFloat(alldis) == 'number'){
@@ -1001,14 +1014,11 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                 // if(this.conponResponse.couponAmount>0){
                 if((_this.conponResponse.couponAmount>0 || _this.conponResponse.discount >0)){//如果有优惠券
                     // 金额||折扣
-                    debugger
                     console.log(_this.conponResponse)
                     if(_this.conponResponse.couponAmount>0 ){//按固定金额算
-                    console.log('金额')
                         _this.conponDiscountMoney = _this.conponResponse.couponAmount;
                         countSale = countSale - _this.conponResponse.couponAmount;//优惠价 = 无折扣前 - 优惠价↓
                     }else if(_this.conponResponse.discount >0){//按折扣算
-                    console.log('折扣')
                         let conpon = parseFloat(countSale*_this.conponResponse.discount/10).toFixed(2);
                         _this.conponDiscountMoney = (parseFloat(countSale)-conpon).toFixed(2);
                         countSale = conpon;
@@ -1218,6 +1228,7 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                 this.computedPay()
                 // console.log(data)
             },
+            
             //优惠券信息获取
             conpon(){
                 let _this = this;
@@ -1442,12 +1453,13 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                     // return false;
                 }
                 var orderItemsList=[];
+                console.log(this.tableData)
                 for(var item in this.tableData){
                     orderItemsList.push({
                         itemId:this.tableData[item].sku,//商品sku码
                         itemName:this.tableData[item].skuName2,//明细名称
                         proMemo:this.tableData[item].skuName,
-                        quantity:'1',//数量
+                        quantity:this.tableData[item].nums,//数量
                         discountRate:(this.tableData[item].discount).toString(),//折扣比率
                         orderPromotionId:'',//订单营销活动id
                         listPrice:this.tableData[item].price,//原价
@@ -1507,7 +1519,7 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                     couponMoney : coupon,//卡券优惠金额
                     process : this.orderTemp.process,//加工费
                     service : this.orderTemp.service,//服务费
-                    orderItemsList:orderItemsList,
+                    orderItemsList:orderItemsList,//商品列表
                     orderDiscount:alldis//整单折扣
                 }
                 _this.$axios({
@@ -1531,6 +1543,7 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                         })
                         return false;
                     } else {
+                        // debugger
                         _this.$message({
                             showClose: true,
                             message: '开单成功',
@@ -1555,7 +1568,6 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
         mounted(){
             let _this = this;
             _this.timeDefaultShow = allDate.TimetoDateDay();
-            this.initSearch();
         },
         beforeDestory(){
 
