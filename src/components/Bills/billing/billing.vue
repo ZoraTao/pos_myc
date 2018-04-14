@@ -75,7 +75,11 @@
                     width="400px">
                         <template slot-scope="scope">
                             <span>
-                               {{scope.row.skuName2}}
+                              {{scope.row.skuName2||scope.row.skuName}}
+                              <span v-if="scope.row.customMessage">
+                                <a href="javascript:void(0)" class="readContent">查看详情</a>
+                                {{scope.row.customMessage}}
+                              </span>
                             </span>
                         </template>
                     </el-table-column>
@@ -84,7 +88,7 @@
                     label="数量">
                         <template slot-scope="scope">
                             <span class="am-ft-bold am-ft-black">
-                                1
+                                {{scope.row.nums}}
                             </span>
                         </template>
                     </el-table-column>
@@ -375,10 +379,10 @@
         <SelectShopModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:setBuyShop="selectSku" ></SelectShopModal>
     </el-dialog>
     <el-dialog class="customizeRH" title="定做" :visible.sync="customizeRH" width="690px">
-        <CustomizeRHModal></CustomizeRHModal >
-        <div class="packageDetailButtonGroup">
-            <el-button type="primary" @click="commitCustom();customizeRH = false">确!定</el-button>
-        </div>
+        <CustomizeRHModal v-on:commitCustomMessage="commitCustom"></CustomizeRHModal >
+        <!-- <div class="packageDetailButtonGroup">
+            <el-button type="primary"  @click="commitCustom();customizeRH = false">确!定</el-button>
+        </div> -->
     </el-dialog>
     <el-dialog class="endorsement" title="选择促销活动" :visible.sync="cuActions" width="500px">
         <cuActions></cuActions>
@@ -741,7 +745,10 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                 }
             },
             //定做商品
-            commitCustom(){
+            commitCustom(data){
+                console.log('父组件',data);
+                var orgined = data;
+                this.selectSku(orgined,orgined.nums)
             },
             //删除表格td
             delThisRow(){
@@ -777,6 +784,7 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                     _this.publicSelcet.comTypeOptions=response.data.data.shopByList;
                 })  
             },
+            
             //获取公共select options
             getPublicSelect(type,options){
                 if(options==''){
@@ -943,7 +951,20 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                 });  
             },
             //选择商品后进行关闭弹窗计算
-            selectSku(value){
+            selectSku(value,nums){
+                if(value.status == '定做'){
+                    let title=''
+                    if(this.custom =='right'){
+                        title = '右镜片-定做单：'
+                    }else if(this.custom == 'left'){
+                        title = '左镜片-定做单：'
+                    }else {
+                        title = '商品-定做单：'
+                    }
+                    value.skuName =  title;
+                }
+                
+                console.log(value)
                 var _this= this;
                 let alldis = _this.allDisCount;
                 if(alldis != '' && typeof parseFloat(alldis) == 'number'){
@@ -951,6 +972,10 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                 }
                 this.allDisCount = '';
                 this.discountSale = '';
+                 console.log(value)
+                 if(!nums){
+                     value.nums = 1;
+                 }
                 _this.tableData.push(value);
                 _this.showSelectRH = false;
                 _this.customizeRH = false;
@@ -969,7 +994,7 @@ import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
                 for(let i=0;i<_this.tableData.length;i++){//循环计算价格
                     let thisSale =  parseFloat(_this.tableData[i].realSale);
                     countSale = countSale+thisSale
-                    n++;
+                    n+=parseInt(_this.tableData[i].nums);
                 }
                 // debugger
                 this.amountSale = parseFloat(countSale).toFixed(2);//原价合计

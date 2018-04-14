@@ -22,7 +22,7 @@
                     label="分类">
                 </el-table-column>
                 <el-table-column
-                    prop="value"
+                    prop="value" 
                     label="应收金额">
                 </el-table-column>
                 <el-table-column

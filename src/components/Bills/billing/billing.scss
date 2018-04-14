@@ -8,12 +8,18 @@
         background: #eee;
     }
 }
-.inputBold{
-    input{
+
+.inputBold {
+    input {
         font-weight: bold;
         color: #000;
     }
 }
+
+.readContent {
+    color: #2daebf;
+}
+
 .receiptsData {
     text-align: left;
     padding: 12px;
@@ -109,7 +115,7 @@
                     float: left;
                     margin-left: 60px;
                     margin-bottom: 0 !important;
-                    &:first-child{
+                    &:first-child {
                         margin-left: 0;
                     }
                 }
@@ -122,7 +128,6 @@
                     line-height: 28px;
                     float: left;
                 }
-                
             }
         }
         .salesclerkParam {

@@ -1,6 +1,11 @@
 <template>
+<<<<<<< HEAD
 <div id="customizeRH" class=" modal-content-center">
     <div class="customizeRHBody">
+=======
+<div id="customizeRH" class="clearfix modal-content-center" >
+    <div class="modal-content-left customizeRHBody">
+>>>>>>> 4e9033f69560f330a36c485e2ac8cd8a07ea5c34
         <h5>定做单号：DZ12340001</h5>
         <div class="customizeInputGroup fn-left">
             <label>球镜：</label>
@@ -49,22 +54,25 @@
     <div class="customizeRHBody">
         <div class="customizeInputGroup fn-left">
             <label>原单价：</label>
-            <el-input style="width:68px" v-model="customContent.price" placeholder=""></el-input>
+            <el-input style="width:68px" v-model="customContent.price" @input="computedMoney" placeholder=""></el-input>
         </div>                          
         <div class="customizeInputGroup fn-left">
             <label>数量：</label>
-            <el-input style="width:40px" v-model="customContent.num" placeholder=""></el-input>
+            <el-input style="width:40px" v-model="customContent.nums"  @input="computedMoney" placeholder=""></el-input>
         </div>                          
         <div class="customizeInputGroup fn-left">
             <label>折扣：</label>
-            <el-input style="width:40px" v-model="customContent.discount" placeholder=""></el-input>
+            <el-input style="width:40px" v-model="customContent.discount"  @input="computedMoney" placeholder=""></el-input>
         </div>                          
         <div class="customizeInputGroup fn-left">
             <label>实售单价：</label>
-            <el-input style="width:68px" v-model="customContent.money" placeholder=""></el-input>
+            <el-input style="width:68px" v-model="customContent.realSale" disabled=""  placeholder=""></el-input>
         </div>
     </div>
-    
+     <div class="enters">
+            <!-- <el-button type="primary" @click="commitCustom();customizeRH = false">确定</el-button> -->
+            <el-button type="primary" @click="commitCustom()">确定</el-button>
+        </div>
 </div>
 </template>
 
@@ -223,10 +231,11 @@ export default {
             value2:"",
             value3:"",
             customMessage:'',
-            price:'',
-            num:'',
-            discount:'',
-            money:''
+            price:'',//原价
+            nums:'1',//数量
+            discount:'10',//折扣
+            realSale:'',//实售
+            status:'定做'
         },
         data:[
             {
@@ -241,10 +250,65 @@ export default {
     }
   },
   methods:{
+<<<<<<< HEAD
+=======
+      computedMoney(){
+          let _this = this;
+          if(parseFloat(_this.customContent.price)>0){//如果输入了价格
+              if(parseFloat(_this.customContent.nums)>0){//如果输入了数量
+                  if(parseFloat(_this.customContent.discount)>0){//如果输入了折扣
+                        _this.customContent.realSale = (parseFloat(_this.customContent.price)*parseFloat(_this.customContent.nums)*parseFloat(_this.customContent.discount/10)).toFixed(2);
+                  }
+              }
+          }else{
+              console.log('不是价格')
+          }
+      },
+      clear(){
+            this.customContent.value1 ='';
+            this.customContent.value2 ='';
+            this.customContent.value3 ='';
+            this.customContent.customMessage = '';
+            this.customContent.price = '';
+            this.customContent.nums = '1';
+            this.customContent.discount= '10';
+            this.customContent.realSale = '';
+      },
+commitCustom(){
+
+    let _this = this;
+    for(var key in this.customContent){
+      if(this.customContent[key] == '') {
+          this.$message({
+              type:'error',
+              message:'请填写完整',
+              showClose:true
+          })
+          return false
+      }
+    }
+    let commits=this.customContent
+    console.log('子组件',commits)
+    this.$emit('commitCustomMessage',commits)
+    // setTimeout(function(){
+    //     _this.clear();
+    // },1000)
+    // setTimeout(()=>{
+    //     for(var key in this.customContent){
+    //     this.customContent[key]  = ''
+    //     }
+    // },1000)
+    
+}
+>>>>>>> 4e9033f69560f330a36c485e2ac8cd8a07ea5c34
   },
   computed:{
   },
-  mounted(){
+  watch:{
+      
+  },
+  created(){
+    
   }
 }
 </script>
@@ -293,6 +357,15 @@ export default {
                 label{
                     vertical-align: top;
                 }
+            }
+        }
+        .enters{
+            margin-top:40px;
+            width:100%;
+            height:40px;
+            .el-button{
+                margin-right: 40px;
+                float:right;
             }
         }
         .customizeRHFooter{
