@@ -9,7 +9,7 @@
         <el-col :span="24">
           <el-form-item
             label="制单日期：">
-            <span>2017-11-06 11:26:19</span>
+            <span>{{fullDate}}</span>
           </el-form-item>
           <el-form-item
             label="制单人：">
@@ -152,11 +152,6 @@
               label="批次号">
             </el-table-column>
             <el-table-column
-              prop="f"
-              label="制单时间"
-              width="140">
-            </el-table-column>
-            <el-table-column
               prop="g"
               label="有效期">
             </el-table-column>
@@ -165,10 +160,6 @@
               <template slot-scope="scope" class="input_num">
                 <el-input type="number" v-model="formInline.dRequisitionDetailList.count" size="small"></el-input>
               </template>
-            </el-table-column>
-            <el-table-column
-              label="调出库库存"
-              prop="i">
             </el-table-column>
             <el-table-column
               label="调出库库存"
@@ -269,6 +260,7 @@
     },
     created() {
       this.getType();
+      this.getNowDate();
     },
     methods: {
       //获取当前时间
@@ -405,6 +397,40 @@
       addTransferOrder(){
         let that = this;
         console.info(that.formInline)
+        // that.$axios({
+        //   url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
+        //   method: 'post',
+        //   params: {
+        //     jsonObject: that.formInline,
+        //     keyParams: {
+        //       weChat: true
+        //     }
+        //   }
+        // })
+        //   .then(function (response) {
+        //     if(response.data.code != '1'){
+        //       that.$message({
+        //         showClose: true,
+        //         message: '请求数据出问题喽，请重试！',
+        //         type: 'error'
+        //       })
+        //       return false;
+        //     }else {
+        //       that.$message({
+        //         showClose: true,
+        //         message: '新增成功！',
+        //         type: 'success'
+        //       })
+        //     }
+        //   })
+        //   .catch(function (error) {
+        //     console.info(error);
+        //     that.$message({
+        //       showClose: true,
+        //       message: '请求数据失败，请联系管理员',
+        //       type: 'error'
+        //     })
+        //   })
       },
 
       //追加商品
@@ -421,7 +447,6 @@
           c: '副',
           d: ' ',
           e: ' ',
-          f: that.fullDate,
           g: '1',
           h: '1',
           i: '1',
