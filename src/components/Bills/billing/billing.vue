@@ -96,7 +96,8 @@
                     label="原单价"
                     width="140px">
                     <template slot-scope="scope">
-                        {{scope.row.price||'--'}}
+                                <span v-if='tableData[scope.$index].price != "0"' class="" placeholder="" >{{scope.row.price}}</span>
+                                <span v-if='tableData[scope.$index].price == "0"' class="" placeholder="" >--</span>
                     </template>
                     </el-table-column>
                     <el-table-column
@@ -104,7 +105,8 @@
                     label="折扣"
                     width="140px">
                         <template slot-scope="scope">
-                            <el-input class="" placeholder="" v-model="tableData[scope.$index].discount" @change="changePrice(scope.row,1,scope.$index)"></el-input>
+                            
+                            <el-input class="" placeholder="" :disabled="tableData[scope.$index].price == 0 " v-model="tableData[scope.$index].discount" @change="changePrice(scope.row,1,scope.$index)"></el-input>
                         </template>
                     </el-table-column>
                     <!-- <el-table-column
@@ -129,7 +131,8 @@
                     width="140px">
                         <template slot-scope="scope">
                             <div class="inputBold  am-ft-black">
-                                <span class="" placeholder="" >{{tableData[scope.$index].realSale||'--'}}</span>
+                                <span v-if='tableData[scope.$index].realSale == "0"' class="" placeholder="" >--</span>
+                                <span v-if='tableData[scope.$index].realSale != "0"' class="" placeholder="" >{{tableData[scope.$index].realSale||'--'}}</span>
                             </div>
                         </template>
                     </el-table-column>
@@ -665,7 +668,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 },
                 tableData:[],//用户保存商品信息
                 where:'',//左右镜片
-                addShop:true,
+                addShop:false,
                 //以下为控制modal弹框变量,
                 conponData:null,
                 isSubmit: false,
@@ -980,7 +983,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             },
             //选择商品后进行关闭弹窗计算
             selectSku(value,nums){
-                console.log(value)
                 if(value.status == '1'){
                     let title=''
                     if(this.custom =='right'){
@@ -1006,7 +1008,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     value.skuName =  title+value.message;
                     value.skuName2 = title+value.message;//显示
                     value.sku="--";
-                    value.realSale = '';
+                    value.realSale = '0';
                 }
                 
                 var _this= this;
@@ -1021,7 +1023,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                      value.nums = 1;
                  }
                  if(this.allDisCount>0){//添加商品的时候如果有整单折扣
-                    console.log('整单折扣')
                     this.addShop = true
                  }
                 _this.tableData.push(value);
@@ -1047,16 +1048,13 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         countSale = countSale+thisSale
                         n+=parseInt(_this.tableData[i].nums);
                     }
-                console.log(1, countSale)
-                    
                 }
-                console.log(2, countSale)
                 // debugger
                 this.amountSale = parseFloat(countSale).toFixed(2);//原价合计
                 // if(this.conponResponse.amount>0){
                 if((_this.conponResponse.amount>0 || _this.conponResponse.discount >0)){//如果有优惠券
                     // 金额||折扣
-                    console.log(_this.conponResponse)
+                    // console.log(_this.conponResponse)
                     if(_this.conponResponse.amount>0 ){//按固定金额算
                         _this.conponDiscountMoney = _this.conponResponse.amount;
                         countSale = countSale - _this.conponResponse.amount;//优惠价 = 无折扣前 - 优惠价↓
@@ -1066,7 +1064,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         countSale = conpon;
                     }
                 }
-                console.log(3, countSale)
                 if(_this.selectMember.memberInfo!=null){//如果有会员id
                     _this.discountFlag = 0;
                     var difference = (_this.memberShipDisCount*countSale).toFixed(2); //会员价 = 会员价格 * 总价
@@ -1076,13 +1073,12 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 }
                 _this.numCount = n;
                 _this.saleCount = countSale.toFixed(2);//无整单折扣情况下
-                console.log(4,  _this.saleCount)
-                if(this.addShop){
-                    this.discountSale = parseFloat(this.saleCount - (this.allDisCount*this.saleCount)/10).toFixed(2);   
+                if(_this.addShop){
+                    debugger
+                    _this.discountSale = parseFloat(_this.saleCount - (_this.allDisCount*_this.saleCount)/10).toFixed(2);   
                         //最后价格 = 整单折扣前 * 折扣 ↓
-                        this.saleCount = (this.allDisCount/10 * this.saleCount).toFixed(2);
+                        _this.saleCount = (_this.allDisCount/10 * _this.saleCount).toFixed(2);
                 }
-                console.log(5, countSale)
             },
             changePrice(value,type,index){
                 // this.allDisCount = '';
@@ -1538,7 +1534,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         listPrice:this.tableData[item].price,//原价
                         roundFlag:"1",
                         warehouseId:this.tableData[item].warehouseId,
-                        orderReceiptld:this.tableData[item].customId
+                        orderReceiptId:this.tableData[item].customId
                         // price:this.tableData[item].realSale,//实售单价
                     })
                     

@@ -311,10 +311,10 @@ export default {
                 customizeDemand :_this.customContent.customMessage,//定做需求',
                 count:_this.customContent.nums,///'定做数量',
                 customizeOrgName :'毛源昌商城',//users.orgName,//下单公司',
-                customizeOrgId :users.orgId,//下单公司ID',
+                customizeOrgId :'4343',//下单公司ID',
                 customizeShopName : '天一恒泰店',//下单门店',
-                customizeShopId:users.orgId,//下单门店ID',
-                customizePerson :users.trueName,//制单人'
+                customizeShopId:'4232',//下单门店ID',
+                customizePerson :'陈中床',//制单人'
                 // {"customizeDemand":"1111","count":"1","customizeOrgName":"毛源昌商城","customizeOrgId":"11387","customizeShopName":"天一恒泰店","customizeShopId":"11387","customizePerson":"陈中床"}
           },
           success:function(res){

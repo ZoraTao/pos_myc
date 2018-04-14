@@ -49,8 +49,8 @@ export default {
         nums: "",
         message: "",
         status:'2',
-        price:0,
-        realSale:0
+        price:'0',
+        realSale:'0'
       },
       where: [
         {
@@ -69,6 +69,7 @@ export default {
       let _this = this;
       for (var key in _this.shopdata) {
         if (_this.shopdata[key] == "") {
+          console.log(_this.shopdata[key])
           this.$message({
             type: "error",
             message: "请填写完整",
