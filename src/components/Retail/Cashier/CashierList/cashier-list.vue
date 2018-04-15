@@ -33,8 +33,8 @@
             <el-form-item label="订单类型：" prop="orderType">
               <el-select prop="adr.district" v-model="searchForm.orderType" placeholder="请选择"
                          style="width:120px;">
-                <el-option label="普通订单" value="1"></el-option>
-                <el-option label="定做单" value="2"></el-option>
+                <el-option label="普通订单" value="0"></el-option>
+                <el-option label="定做单" value="1"></el-option>
               </el-select>
             </el-form-item>
           </li>
@@ -98,7 +98,7 @@
                   <span class="order_id">{{order.orderId}}</span>
                   <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
                   <!-- <span v-else class="sign_orange">跨店签批</span> -->
-                  <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
+                  <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone != '18754923321' ? order.telphone:''}}</span>
                 </div>
                 <div class=" fn-right">
                   <span class="msg">销售&nbsp;&nbsp;</span>
@@ -136,7 +136,7 @@
                   <el-button type="primary" v-on:click="changePay(order)" >收银</el-button>
                 </div>
                <a href="javascript:;" class="fn-block mgt5">重新开单</a>
-               <a href="javascript:;" class="am-ft-gray9 fn-block">关闭订单</a>
+               <a href="javascript:;" class="am-ft-gray9 fn-block" @click="closeOrder(order)">关闭订单</a>
               </td>
             </tr>
             <div class="gekai"></div>
@@ -180,7 +180,7 @@
                       <span class="order_id">{{order.orderNo}}</span>
                       <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
                       <!-- <span v-else class="sign_orange">跨店签批</span> -->
-                      <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
+                      <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone != '18754923321' ? order.telphone:''}}</span>
                     </div>
                     <div class=" fn-right">
                       <span class="msg">销售：&nbsp;</span>
@@ -319,6 +319,16 @@
         <span>该订单已完成收银，开始打印取货单...</span>
       </div>
     </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="RemoveOrder"
+      width="30%">
+      <span class="closeContent">你确定关闭订单吗</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="danger" @click="closeEnter">确 定</el-button>
+      </span>
+    </el-dialog>
   </section>
 </template>
 
@@ -337,12 +347,14 @@ export default {
         saleTimeStart: "",
         saleTimeEnd: "",
       },
+      RemoveOrder:false,
       nub: 1,
       status:'3',// 当前栏 1收银  2欠还  3全部
       size: 5,
       payData: "", //收银信息
       count: "",
       showCashier: false,
+      closeOrderData:null,
       consoleCashier: false,
       srcNum: "1",
       orderTempList: {},
@@ -379,6 +391,41 @@ export default {
   },
   
   methods: {
+    closeOrder(data){
+      let _this = this;
+      _this.RemoveOrder = true;
+      this.closeOrderData = data;
+    },
+    closeEnter(){
+      this.RemoveOrder = false
+      let _this = this;
+        _this.$myAjax({
+          url:'pos-api/orderTemp/updatePickupStatus',
+          data:{
+            orderId:_this.closeOrderData.orderId,
+            status:'7'
+          },
+          success:function(res){
+              if(res.code == 1){
+                _this.$message({
+                  type:'success',
+                  message:'关闭订单成功',
+                  showClose:true
+                })
+                _this.closeOrderData = ''
+              }else{
+                console.log(res)
+                _this.$message({
+                  type:'error',
+                  message:'关闭订单失败',
+                  showClose:true
+                })
+              }
+          },error:function(err){
+
+          }
+        })
+    },
     //会员搜索
     serachMember(){
       var _this = this;
@@ -409,7 +456,6 @@ export default {
               return false;
             }else {
               let memberId = response.data.data;
-              console.log(memberId)
             }
           })
           .catch(function(error) {
@@ -595,7 +641,11 @@ export default {
   overflow-y: scroll;
   background: #fff;
 }
-
+.closeContent{
+  text-align: center;
+  padding: 40px 0;
+  display: block;
+}
 .cashier_input {
   background: #f8f8f8;
   border: 1px solid #e1e1e1;

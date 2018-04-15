@@ -97,7 +97,7 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :page-size="5"
+            :page-size="15"
             :total="count"
             @current-change="getOrderList"
             :current-page.sync="nub">

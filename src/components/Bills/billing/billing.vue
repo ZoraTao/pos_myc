@@ -105,8 +105,11 @@
                     label="折扣"
                     width="140px">
                         <template slot-scope="scope">
-                            
-                            <el-input class="" placeholder="" :disabled="tableData[scope.$index].price == 0 " v-model="tableData[scope.$index].discount" @change="changePrice(scope.row,1,scope.$index)"></el-input>
+                            <el-input class="" 
+                            placeholder="" 
+                            :disabled="tableData[scope.$index].price == 0 ||tableData[scope.$index].discount == ''" 
+                            v-model="tableData[scope.$index].discount" 
+                            @change="changePrice(scope.row,1,scope.$index)"></el-input>
                         </template>
                     </el-table-column>
                     <!-- <el-table-column
@@ -378,7 +381,7 @@
             <el-button type="primary" @click="isOptometryDialogVisible = false;includeOptometry()">调入</el-button>
         </span>
     </el-dialog>
-    <el-dialog class="selectMember" title="选择会员 (23)" :visible.sync="showSelectMember" width="62.5%">
+    <el-dialog class="selectMember" title="选择会员" :visible.sync="showSelectMember" width="62.5%">
         <SelectMemberModal :selectM="selectMember.selectM" v-on:memberInfo="getMemberInfo"></SelectMemberModal>
     </el-dialog>
     <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="950px">
@@ -415,10 +418,10 @@
         </div>
     </el-dialog>
     <el-dialog class="otherExpense" title="其它费用" :visible.sync="otherExpense" width="700px">
-        <OtherExpenseModal></OtherExpenseModal>
+        <OtherExpenseModal ref="otherExpenseRef" @addCostPay="addCostPayFn"></OtherExpenseModal>
         <div class="packageDetailButtonGroup">        
             <el-button class="fn-right" @click="otherExpense = false">取消</el-button>
-            <el-button class="fn-right" type="primary" @click="otherExpense = false">确定</el-button>
+            <el-button class="fn-right" type="primary" @click="otherExpense = false;otherExpenseFn()">确定</el-button>
         </div>
     </el-dialog>
     <el-dialog
@@ -626,6 +629,11 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     service:'0',
                     singleSupTime:new Date(),
                 },
+                eyesdata:{
+                sph:'',
+                cyl:'',
+                add:'',
+                },
                 optometryId:'',
                 type:'',
                 optometryTime:'',
@@ -738,9 +746,38 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     })                    
                 }
             },
+            //其他费用
+            otherExpenseFn(){
+                this.$refs.otherExpenseRef.addCost();
+            },
+            //其他费用添加到列表
+            addCostPayFn(data){
+                    for(let i=0;i<data.length;i++){
+                        if(data[i].name){
+                            let obj = new Object();
+                            obj.sku = ''
+                            obj.skuName2 = data[i].name+':'
+                            obj.nums = '1';
+                            obj.discount="";
+                            obj.skuName = '';
+                            for(let j = 0; j<data[i].skuName.length; j++){
+                                obj.skuName2 += data[i].skuName[j].name+' '
+                                obj.skuName += data[i].skuName[j].name+' '
+                            }
+                            obj.price = 0;
+                            for(let j = 0; j<data[i].skuName.length; j++){
+                                obj.price+=parseFloat(data[i].skuName[j].displacement)
+                            }
+                            obj.realSale = obj.price
+                            obj.warehouseId = '';
+                            obj.refundId = '';   
+                            obj.status == '3';
+                            this.selectSku(obj)
+                        }
+                    }
+            },
             //自带商品添加
             withShopCommit(data){
-                console.log(data)
                 this.selectSku(data,data.nums);
                 this.withShop = false;
             },
@@ -856,9 +893,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     // return false;
                 }
                 var _this= this;
-                var sph ='';
-                var cyl ='';
-                var add ='';
                 // Object.keys(_this.selectProductSku).forEach(element => {
                 //    _this.selectProductSku[element]
                 // });
@@ -875,9 +909,9 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
                             if(this.optometryData[i].value[0].sph!=''){
-                                sph=this.optometryData[i].value[1].sph;
-                                cyl=this.optometryData[i].value[1].cyl;
-                                add=this.optometryData[i].value[1].add;
+                                this.eyesdata.sph=this.optometryData[i].value[1].sph;
+                                this.eyesdata.cyl=this.optometryData[i].value[1].cyl;
+                                this.eyesdata.add=this.optometryData[i].value[1].add;
                                 break;
                             }
                         }                        
@@ -890,9 +924,9 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
                             if(this.optometryData[i].value[0].sph!=''){
-                                sph=this.optometryData[i].value[0].sph;
-                                cyl=this.optometryData[i].value[0].cyl;
-                                add=this.optometryData[i].value[0].add;
+                                this.eyesdata.sph=this.optometryData[i].value[0].sph;
+                                this.eyesdata.cyl=this.optometryData[i].value[0].cyl;
+                                this.eyesdata.add=this.optometryData[i].value[0].add;
                                 break;
                             }
                         }                        
@@ -904,7 +938,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     this.showSelectShop=true;
                     this.selectProductSku.cylinder=_this.selectProductSku.selectSP;
                 }else if(type==null){
-                    
                     console.log('null')
                 }else{
                     console.log('else')
@@ -914,8 +947,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     method: 'post',
                     params: {
                         jsonObject: {
-                            sphere:sph,
-                            cylinder:cyl,
+                            sphere:this.eyesdata.sph,
+                            cylinder:this.eyesdata.cyl,
                             addLight:'',
                             color:'',
                             colorCode:'',
@@ -944,6 +977,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
 
             },
             rhtWareHouse(value){
+                console.log(value)
                 this.selectProductSku.wareh=value.wareh||"";
                 this.selectProductSku.product=value.product||"";
                 this.selectProductSku.categoryCode=value.categoryCode||"";
@@ -976,6 +1010,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 })                       
             },
             getProductSku(info){
+                console.log('info',info)
                 this.$nextTick(() => {  
                     this.selectProductSku.nub=info.nub;
                     this.selectGlass();
@@ -983,6 +1018,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             },
             //选择商品后进行关闭弹窗计算
             selectSku(value,nums){
+                // console.log(value)
                 if(value.status == '1'){
                     let title=''
                     if(this.custom =='right'){
@@ -1018,7 +1054,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 }
                 // this.allDisCount = '';
                 // this.discountSale = '';
-                 console.log(value)
                  if(!nums){
                      value.nums = 1;
                  }
@@ -1040,14 +1075,15 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
 
                 // }
                 // _this.allDisCount = '';
-                console.log(this.tableData)
+                // console.log(this.tableData)
                 for(let i=0;i<_this.tableData.length;i++){//循环计算价格
                 // debugger
-                    if(_this.tableData[i].status!='2'){
+                console.log(this.tableData[i])
+                    if(_this.tableData[i].status!='2'||_this.tableData[i].status!='3'){
                         let thisSale =  parseFloat(_this.tableData[i].realSale);
                         countSale = countSale+thisSale
-                        n+=parseInt(_this.tableData[i].nums);
                     }
+                        n+=parseInt(_this.tableData[i].nums);
                 }
                 // debugger
                 this.amountSale = parseFloat(countSale).toFixed(2);//原价合计
@@ -1074,7 +1110,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 _this.numCount = n;
                 _this.saleCount = countSale.toFixed(2);//无整单折扣情况下
                 if(_this.addShop){
-                    debugger
                     _this.discountSale = parseFloat(_this.saleCount - (_this.allDisCount*_this.saleCount)/10).toFixed(2);   
                         //最后价格 = 整单折扣前 * 折扣 ↓
                         _this.saleCount = (_this.allDisCount/10 * _this.saleCount).toFixed(2);
@@ -1201,7 +1236,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 })
                 .then(function (response) {
                     if(response.data.code==1&&response.data.data.eyes.length>0){
-                        console.log(response.data.data)
                         _this.showSelectMember=false;
                         _this.isOptometryDialogVisible=true;
                         _this.optometryData=response.data.data.eyes;
@@ -1272,7 +1306,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             //使用优惠券
             receiveconpon(data){
                 this.CouponBarCode = false;
-                console.log(data)
                 if(data.couponModality == '0'){
                     data.amount =  '';
                 }else if(data.couponModality =='1'){
@@ -1509,32 +1542,33 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     _this.$message({
                         showClose: true,
                         message: '会员信息获取失败',
-                            type: 'error'
+                            type: 'warning'
                     })                    
                     // return false;
                 }
                 if(!this.optometryId){
-                    _this.$message({
-                        showClose: true,
-                        message: '验光单信息获取失败',
-                            type: 'error'
-                    })                    
+                    // _this.$message({
+                    //     showClose: true,
+                    //     message: '验光单信息获取失败',
+                    //         type: 'error'
+                    // })                    
                     // return false;
                 }
                 var orderItemsList=[];
                 for(var item in this.tableData){
                     orderItemsList.push({
-                        itemId:this.tableData[item].sku,//商品sku码
+                        itemId:this.tableData[item].itemId,//商品sku码
                         itemName:this.tableData[item].skuName2,//明细名称
                         proMemo:this.tableData[item].skuName,
                         quantity:this.tableData[item].nums,//数量
                         discountRate:this.tableData[item].discount,//折扣比率
                         orderPromotionId:'',//订单营销活动id
                         listPrice:this.tableData[item].price,//原价
-                        roundFlag:"1",
+                        roundFlag:"1",//商品取整
+                        itemNo:this.tableData[item].itemNo,//商品编码
                         warehouseId:this.tableData[item].warehouseId,
-                        orderReceiptId:this.tableData[item].customId,
-                        productId:this.tableData[item].productId
+                        orderReceiptId:this.tableData[item].customId||'',//定做单id
+                        refundId:this.tableData[item].productId,//库存
                         // price:this.tableData[item].realSale,//实售单价
                     })
                     
@@ -1565,6 +1599,13 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 if(!coupon){
                     coupon = '0'
                 }
+                let BorderType = '0'
+                for(var i=0;i<orderItemsList.length;i++){
+                    if(orderItemsList[i].orderReceiptId){
+                            BorderType = '1'
+                    }
+                }
+                console.log(BorderType)
                 var jsonObject =
                 {
                     memberId : memberId,//会员id
@@ -1581,6 +1622,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     moneyProduct:(parseFloat(this.amountSale)).toFixed(2),//原价合计
                     moneyAmount:(parseFloat(this.saleCount)).toFixed(2),//应付
                     moneyPaid:0,//应收
+                    couponNo:this.conponResponse.couponNo,//优惠券卡号核销
                     activityMoney:this.actionSale,//活动优惠金额,
                     discountMoney:this.memberShipDisCountSale,//折扣优惠金额,会员
                     cardDiscount:this.memberShipDisCount,//会员折扣
@@ -1591,8 +1633,10 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     process : this.orderTemp.process,//加工费
                     service : this.orderTemp.service,//服务费
                     orderItemsList:orderItemsList,//商品列表
-                    orderDiscount:alldis//整单折扣
+                    orderDiscount:alldis,//整单折扣
+                    orderType:BorderType
                 }
+                console.log(jsonObject)
                 _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp',
                     method: 'post',

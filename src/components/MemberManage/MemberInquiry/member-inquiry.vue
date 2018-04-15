@@ -201,7 +201,6 @@ c<template>
             :current-page.sync="sreen.nub">
           </el-pagination>
         </div>
-        {{sreen.nub}}
         <!--/多个数据时显示-->
         <!--单个数据时显示：会员资料-->
         <member-detail v-if="false"></member-detail>
@@ -259,7 +258,7 @@ export default {
   },
   store,
   beforeMount: function() {
-    this.getMemberList();
+    // this.getMemberList();
     this.getMemberCount();
   },
   mounted(){
