@@ -43,7 +43,7 @@
         </table>
       </div>
       <div class="fn-left modal-content-right">
-        <el-button v-for="(item,index) in itemData" :key="item.id" @click="addBilling(item,index)">{{item.type}} <i class="el-icon-check mgl10"></i>
+        <el-button v-for="(item,index) in itemData" :key="item.id" @click="addBilling(item,index)">{{item.type}} <i class="mgl10"  v-bind:class="{ 'el-icon-check': item.check }" ></i>
         </el-button>
       </div>
     </div>
@@ -85,6 +85,7 @@
             id: '1',
             type: '现金',
             active: true,
+            check:false,
             name:'cash',
             num:0,
             money:''
@@ -93,6 +94,7 @@
             id: '2',
             type: '会员卡',
             active: true,
+            check:false,
             name:'member',
             num:0,
             money:''
@@ -101,6 +103,7 @@
             id: '3',
             type: '信用卡',
             active: true,
+            check:false,
             name:'credit',
             num:0,
             money:''
@@ -109,6 +112,7 @@
             id: '4',
             type: '支付宝',
             active: true,
+            check:false,
             name:'alipay',
             num:0,
             money:''
@@ -117,6 +121,7 @@
             id: '5',
             type: '微信',
             active: true,
+            check:false,
             name:'weChatPay',
             num:0,
             money:''
@@ -125,6 +130,7 @@
             id: '6',
             type: '银行卡',
             active: true,
+            check:false,
             name:'bank',
             num:0,
             money:''
@@ -132,6 +138,8 @@
           {
             id: '7',
             type: '代价券',
+            active: true,
+            check:false,
             name:'conpon',
             num:0,
             money:''
@@ -139,6 +147,8 @@
           {
             id: '8',
             type: '积分抵现',
+            active: true,
+            check:false,
             name:'integral',
             num:0,
             money:''
@@ -159,8 +169,7 @@
       //添加结算方式
       addBilling(i,index) {
         var that = this;
-        // that.itemSource.forEach(function(element) {
-        //   if(element.id != i.id){
+        i.check = true;
             that.itemSource.push({
               money: i.money,
               id: i.id,
@@ -168,13 +177,23 @@
               name: i.name,
               num:i.num,
             });
-        // };
-      // })
     },
       //删除结算方式
       closeBilling(i,index) {
-        this.itemSource.splice(index,1);
-        this.AmountOfMoney.splice(index,1);
+        let _this = this;
+        _this.itemSource.splice(index,1);
+        _this.AmountOfMoney.splice(index,1);
+        for(var i=0;i<_this.itemData.length;i++){
+            _this.itemData[i].check = false
+        }
+        let arrs = new Set();
+        for(var i=0;i<_this.itemSource.length;i++){
+            arrs.add(_this.itemSource[i].id)
+        }
+        for(let i of arrs ) {
+          console.log(i)
+            _this.itemData[i-1].check = true;
+        }
       },
       computedMoney(){
         let money = 0;
