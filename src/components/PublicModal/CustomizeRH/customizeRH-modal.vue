@@ -2,7 +2,7 @@
 <div id="customizeRH" class=" modal-content-center">
     <div class="customizeRHBody">
         <div class="customizeInputGroup fn-left">
-            <label>球镜：</label>
+            <label>球镜:</label>
                 <el-select v-model="customContent.value1" placeholder="请选择">
                     <el-option
                     v-for="item in options"
@@ -13,7 +13,7 @@
                 </el-select>
         </div>
         <div class="customizeInputGroup fn-left">
-            <label>柱镜：</label>
+            <label>柱镜:</label>
                 <el-select v-model="customContent.value2" placeholder="请选择">
                     <el-option
                     v-for="item in options"
@@ -24,7 +24,7 @@
                 </el-select>
         </div>                            
         <div class="customizeInputGroup fn-left">
-            <label>下加光：</label>
+            <label>下加光:</label>
                 <el-select v-model="customContent.value3" placeholder="请选择">
                     <el-option
                     v-for="item in options"
@@ -37,7 +37,7 @@
     </div>
     <div class="customizeRHBody">
         <div class="customizeInputGroup textareaGroup fn-left">
-            <label>定做需求：</label>
+            <label>定做需求:</label>
             <el-input
             type="textarea"
             :rows="5" 
@@ -47,19 +47,19 @@
     </div>                               
     <div class="customizeRHBody">
         <div class="customizeInputGroup fn-left">
-            <label>原单价：</label>
+            <label>原单价:</label>
             <el-input style="width:68px" v-model="customContent.price" @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
         </div>                          
         <div class="customizeInputGroup fn-left">
-            <label>数量：</label>
+            <label>数量:</label>
             <el-input style="width:40px" v-model="customContent.nums"  @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
         </div>                          
         <div class="customizeInputGroup fn-left">
-            <label>折扣：</label>
+            <label>折扣:</label>
             <el-input style="width:40px" v-model="customContent.discount"  @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
         </div>                          
         <div class="customizeInputGroup fn-left">
-            <label>实售单价：</label>
+            <label>实售单价:</label>
             <el-input style="width:68px" v-model="customContent.realSale" disabled=""  placeholder=""></el-input>
         </div>
     </div>

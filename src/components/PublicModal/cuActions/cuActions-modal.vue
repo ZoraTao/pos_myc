@@ -102,6 +102,7 @@ export default {
 <style scoped lang="scss">
 .cuActions {
   min-height: 200px;
+  background: #fff;
   padding-bottom: 100px;
   overflow: hidden;
   .showList {

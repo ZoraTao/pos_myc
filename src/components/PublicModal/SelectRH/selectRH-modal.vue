@@ -15,6 +15,7 @@
         <div class="clearfix modal-content-top">
             <el-table
                 :data="selectProductSku.productSkuData.list"
+                v-loading="!selectProductSku.productSkuData.list"
                 size="small"
                 align="center"
                 style="width: 100%;margin-bottom:10px">
@@ -88,6 +89,7 @@ export default {
                 warehouseName:'本分公司'
             }            
         ],
+        loading:true,
         value:"0",
         cpSelectProductSku:null,
     }
@@ -120,7 +122,7 @@ export default {
                     }
                 }
             })
-            .then(function (response) {                    
+            .then(function (response) {  
                 that.options=response.data.data.list;
             })  
         }
@@ -128,6 +130,9 @@ export default {
       emitThisValue(){
         this.$emit('rhtWareHouse',{wareh:this.value});
       }
+  },
+  watch:{
+      
   },
   mounted:function(){
   }

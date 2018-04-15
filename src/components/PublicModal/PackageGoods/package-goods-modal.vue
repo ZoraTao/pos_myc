@@ -163,9 +163,11 @@ export default {
       ModelChange:function(){
         if(this.mymodel.length>1){
             this.searchContent=true;
+            this.$emit('showBottom')
             }
         if(this.mymodel.length==0){
             this.searchContent=false;
+            this.$emit('hideBottom')
         }
       }
   }
