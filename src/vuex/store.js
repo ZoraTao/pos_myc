@@ -3,12 +3,12 @@ import Vuex from 'vuex';
 import * as types from './mutation-types'
 import * as actions from './action/action'
 import { cookie } from '../utils/cookie'
-
 Vue.use(Vuex)
 
 //存储数据
 const state = {
-    user: {
+    user: '',
+    // ,{
         // token: '', //用户秘钥token
         // trueName: '', //用户名
         // orgName: '', //公司名
@@ -23,7 +23,7 @@ const state = {
         // headPicpath: '', //头像路径
         // birthday: '', //出生日期
         // email: '', //邮箱
-    },
+    // },,
     bool: false,
 }
 const mutations = {
@@ -32,6 +32,9 @@ const mutations = {
         localStorage.setItem("userData", JSON.stringify(datas));
         // localStorage.setItem('token', datas.token); //存储用户token
         // localStorage.setItem('name', datas.trueName); //存储用户名字
+    },
+    [types.LOGIN_GET](state){
+        state.user = JSON.parse(localStorage.getItem("userData"));
     },
     [types.CLEAR_LOCAL_STORAGE](state) { //退出清除
         state.user = '';

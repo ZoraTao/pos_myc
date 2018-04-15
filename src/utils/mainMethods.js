@@ -7,14 +7,12 @@ Vue.prototype.$myAjax = function (opt) {
     let errorCallback = Object.assign({}, opt).error;
     let type = opt.method || 'post';
     let urlName = 'http://myc.qineasy.cn/';
-    const defaults = {
-      data: Object.assign({}, opt.data, {
+    const defaults = Object.assign({}, opt.data, {
         // access_token: window.localStorage.getItem('access_token') || "",
         // cli_create_time: parseInt(window.localStorage.getItem('cli_create_time')) || "",
         // expires_in: parseInt(window.localStorage.getItem('cli_create_time')) || "",
         // type:'online'
       })
-    };
     this.$axios({
       url: urlName + opt.url,
       method: type,

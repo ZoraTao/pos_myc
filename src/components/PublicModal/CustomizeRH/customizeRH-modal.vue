@@ -300,8 +300,7 @@ export default {
           });
           return false;
       }
-           let users =  JSON.parse(localStorage.getItem("userData"));
-       
+      let users =  JSON.parse(localStorage.getItem("userData"));
       _this.$myAjax({
           url:'pos-api/customize/addCustomize',
           data:{

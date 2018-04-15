@@ -10,3 +10,5 @@ export const SET_BOOL_FALSE ='SET_BOOL_FALSE';
 export const LOGIN_LOCAL_STORAGE = 'LOGIN_LOCAL_STORAGE';
 //退出
 export const CLEAR_LOCAL_STORAGE = 'CLEAR_LOCAL_STORAGE';
+//获取本地缓存
+export const LOGIN_GET = 'LOGIN_GET'
