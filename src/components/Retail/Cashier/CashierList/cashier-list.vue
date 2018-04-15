@@ -108,8 +108,7 @@
             </tr>
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
               <td>{{list.itemId}}</td>
-              <td v-if="list.itemId!=='--'">{{list.itemName}}</td>
-              <td v-if="list.itemId=='--'">{{list.itemName}}<span class="customText"></span></td>
+              <td>{{list.itemName}}<span class="customText" v-if="list.orderReceiptId">定做单号：{{list.orderReceiptId}}</span></td>
               <td>{{parseInt(list.quantity)}}</td>
               <td>{{parseFloat(list.listPrice)}}</td>
               <td><strong>{{parseFloat(list.money)?parseFloat(list.money):'0'}}</strong></td>
@@ -400,7 +399,7 @@ export default {
       this.RemoveOrder = false
       let _this = this;
         _this.$myAjax({
-          url:'pos-api/orderTemp/updatePickupStatus',
+          url:'pos-api/orderTemp/updateOrderTempStatus',
           data:{
             orderId:_this.closeOrderData.orderId,
             status:'7'
