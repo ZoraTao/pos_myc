@@ -154,9 +154,9 @@
               label="商品编码"
               prop="sku"
               width="120">
-              <template slot-scope="scope">
-                <el-input v-model="tableData[scope.$index].proNum" size="small"></el-input>
-              </template>
+              <!--<template slot-scope="scope">-->
+                <!--<el-input v-model="tableData[scope.$index].proNum" size="small"></el-input>-->
+              <!--</template>-->
             </el-table-column>
             <el-table-column
               prop="skuName"
@@ -471,40 +471,41 @@
           that.formInline.inWarehName = that.warehList.find( ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
         }
         that.formInline.dRequisitionDetailList = that.tableData;
-        that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
-          method: 'post',
-          params: {
-            jsonObject: that.formInline,
-            keyParams: {
-              weChat: true
-            }
-          }
-        })
-          .then(function (response) {
-            if(response.data.code != '1'){
-              that.$message({
-                showClose: true,
-                message: '新增调拨单失败，请检查后重试！',
-                type: 'error'
-              })
-              return false;
-            }else {
-              that.$message({
-                showClose: true,
-                message: '新增成功！',
-                type: 'success'
-              })
-            }
-          })
-          .catch(function (error) {
-            console.info(error);
-            that.$message({
-              showClose: true,
-              message: '请求数据失败，请联系管理员',
-              type: 'error'
-            })
-          })
+        console.info(that.formInline)
+        // that.$axios({
+        //   url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
+        //   method: 'post',
+        //   params: {
+        //     jsonObject: that.formInline,
+        //     keyParams: {
+        //       weChat: true
+        //     }
+        //   }
+        // })
+        //   .then(function (response) {
+        //     if(response.data.code != '1'){
+        //       that.$message({
+        //         showClose: true,
+        //         message: '新增调拨单失败，请检查后重试！',
+        //         type: 'error'
+        //       })
+        //       return false;
+        //     }else {
+        //       that.$message({
+        //         showClose: true,
+        //         message: '新增成功！',
+        //         type: 'success'
+        //       })
+        //     }
+        //   })
+        //   .catch(function (error) {
+        //     console.info(error);
+        //     that.$message({
+        //       showClose: true,
+        //       message: '请求数据失败，请联系管理员',
+        //       type: 'error'
+        //     })
+        //   })
       },
       //追加商品
       addOrder(){
@@ -515,7 +516,7 @@
           params: {
             jsonObject: {
               sku: that.searchForm.proNum,
-              warehouse_id: that.formInline.outWarehId
+              warehouseId: that.formInline.outWarehId,
             },
             keyParams: {
               weChat: true
@@ -526,23 +527,30 @@
             if(response.data.code != '1'){
               that.$message({
                 showClose: true,
-                message: '无此商品！',
+                message: '查询数据出问题喽，请检查后重试！',
                 type: 'error'
               })
               return false;
             }else {
-              console.info(response.data.data)
-              that.tableData = response.data.data.list;
+              // console.info(response.data.data)
+              const productData = response.data.data.list;
               const params = {
                   proNum: that.searchForm.proNum,
                   count: that.formInline.dRequisitionDetailList.count,
               };
-              const newParams = Object.assign(that.formInline, params);
-              that.tableData.push(newParams);
+              if(response.data.data.list.length>0){
+                that.tableData.push(productData[0]);
+              }else{
+                that.$message({
+                  showClose: true,
+                  message: '无此商品！',
+                  type: 'error'
+                })
+                return false;
+              }
               that.searchForm.proNum = '';
-              console.info(that.tableData)
+              // console.info(that.tableData)
             }
-
           })
           .catch(function (error) {
             console.info(error);

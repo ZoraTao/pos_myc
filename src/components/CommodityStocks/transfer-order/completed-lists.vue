@@ -86,7 +86,7 @@
         }]
       }
     },
-    props: ['listData','listCounts'],
+    props: ['listData','listCounts', 'mypagination'],
     created() {
 
     },
@@ -94,6 +94,7 @@
       //分页
       handleCurrentChange(val) {
         this.nub = (`${val}`-1) * this.size;
+        this.mypagination(this.nub);
       },
       //查看详情
       goDetail(data) {

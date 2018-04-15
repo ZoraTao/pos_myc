@@ -41,12 +41,12 @@
         <el-col :span="20">
           <el-form-item label="调拨日期：">
             <div class="fn-line-block">
-              <el-date-picker type="date" placeholder="选择日期" v-model="requisitionTimeStart" value-format="yyyy-MM-dd"
+              <el-date-picker type="date" placeholder="选择日期" v-model="formInline.requisitionTimeStart" value-format="yyyy-MM-dd"
                               style="width: 125px;"></el-date-picker>
             </div>
             <div class="fn-line-block am-ft-center am-text-secondary">至</div>
             <div class="fn-line-block">
-              <el-date-picker type="date" placeholder="选择日期" v-model="requisitionTimeEnd" value-format="yyyy-MM-dd"
+              <el-date-picker type="date" placeholder="选择日期" v-model="formInline.requisitionTimeEnd" value-format="yyyy-MM-dd"
                               style="width: 125px;"></el-date-picker>
             </div>
           </el-form-item>
@@ -77,20 +77,20 @@
       <!--tab-->
       <el-col :span="24">
         <el-tabs type="border-card" @tab-click="handleClick">
-          <el-tab-pane label="调拨待审核" name="0">
-            <pending-review :listData="dRequisitionList" :listCounts="30" :mypagination="pagination"></pending-review>
+          <el-tab-pane label="调拨待审核" name="1">
+            <pending-review :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></pending-review>
           </el-tab-pane>
-          <el-tab-pane label="待调出" name="1">
-            <pending-tune-out :listData="dRequisitionList" :listCounts="counts"></pending-tune-out>
+          <el-tab-pane label="待调出" name="2">
+            <pending-tune-out :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></pending-tune-out>
           </el-tab-pane>
           <el-tab-pane label="待调入" name="3">
-            <pending-tune-in :listData="dRequisitionList" :listCounts="counts"></pending-tune-in>
+            <pending-tune-in :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></pending-tune-in>
           </el-tab-pane>
           <el-tab-pane label="已完成" name="4">
-            <completed-lists :listData="dRequisitionList" :listCounts="counts"></completed-lists>
+            <completed-lists :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></completed-lists>
           </el-tab-pane>
           <el-tab-pane label="全部" name="5">
-            <all-lists :listData="dRequisitionList" :listCounts="counts"></all-lists>
+            <all-lists :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></all-lists>
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -120,15 +120,14 @@
         requisitionOrg: [],//调拨部门
         sourceType: [],//来源类型
         warehList: [],//仓库列表
-        requisitionTimeStart: '',
-        requisitionTimeEnd: '',
         formInline: {
           sourceType: '',//来源类型
           requisitionNo: '',//调拨单编号
           requisitionOrg: '',//调拨部门Id
           outWarehId: '',//调出仓库Id
           inWarehId: '',//调入仓库Id
-          requisitionTime: ['', ''],//调拨日期
+          requisitionTimeStart: '',//调拨日期始
+          requisitionTimeEnd: '',//调拨日期止
           status: '1'
         },
         nub: 0,//起始条数
@@ -143,10 +142,11 @@
       this.getWarehList();
     },
     methods: {
-      //tab切换
+      //分页
       pagination(val) {
-        // console.log(val);
+        this.getInquireList({nub:val});
       },
+      //tab切换
       handleClick(tab, event) {
         if (tab.name == 5) {
           this.getInquireList({status: ''});
@@ -157,8 +157,7 @@
       },
       //筛选调拨单列表
       onSubmit() {
-        let that = this;
-        that.formInline.requisitionTime = [that.requisitionTimeStart, that.requisitionTimeEnd];
+        const that = this;
         // console.log(that.formInline);
         that.getInquireList();
       },
@@ -177,7 +176,8 @@
         that.formInline.size = that.size;
         const newParams = Object.assign(that.formInline, params);
         that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/dRequisition/getDRequisitionList',
+          // url: 'http://myc.qineasy.cn/pos-api/dRequisition/getDRequisitionList',
+          url: 'http://10.0.17.225:8080/pos-api/dRequisition/getDRequisitionList',
           method: 'post',
           params: {
             jsonObject: newParams,
