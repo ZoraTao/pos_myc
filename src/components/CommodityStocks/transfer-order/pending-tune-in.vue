@@ -76,12 +76,12 @@
           max-height="360"
           style="width: 100%">
           <el-table-column
-            prop="proNum"
+            prop="sku"
             label="商品编码"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="proName"
+            prop="skuName"
             label="商品名称"
             width="180">
           </el-table-column>
@@ -113,6 +113,8 @@
     component: {},
     data() {
       return {
+        ueserId: '',
+        ueserOrgId: '',
         nub: 0,//起始条数
         size: 10,//每页显示数据条数
         counts: this.listCounts,//总条数
@@ -125,7 +127,9 @@
     },
     props: ['listData','listCounts', 'mypagination'],
     created() {
-
+      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      this.ueserId = ueserInfo.userId;
+      this.ueserOrgId = ueserInfo.orgId;
     },
     methods: {
       //分页
@@ -197,7 +201,9 @@
               requisitionId: that.requisitionId
             },
             keyParams: {
-              weChat: true
+              weChat: true,
+              orgId: that.ueserOrgId,
+              userId: that.ueserId
             }
           }
         })
