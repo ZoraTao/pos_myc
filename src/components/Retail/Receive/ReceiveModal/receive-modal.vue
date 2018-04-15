@@ -5,12 +5,12 @@
             <el-row :gutter="20">
                 <el-col :span="12">
                 <div>
-                    <span class="logistics_text">物流码：</span><input type="text" placeholder="扫码物流袋编码" />
+                    <span class="logistics_text">物流码：</span><input type="text" placeholder="扫码物流袋编码" v-model="data.packageNo"/>
                 </div>
                 </el-col>
                 <el-col :span="12">
                 <div class="am-ft-gray3" >
-                    <span class="am-ft-gray6 am-ft-12">销售单号：</span>LSD000000001
+                    <span class="am-ft-gray6 am-ft-12">销售单号：</span>{{data.orderNo}}
                 </div>
                 </el-col>
             </el-row>
@@ -32,18 +32,18 @@
             <el-row :gutter="20">
                 <el-col :span="8">
                     <div class="am-ft-16 am-ft-gray3 ft_bold ">
-                        <input type="text" class="saomaMsgBt" placeholder="商品实物码" />
+                        <input type="text" class="saomaMsgBt" placeholder="商品实物码" v-model="data.barcode" :disabled="isHasTruePro"/>
                     </div>
                 </el-col>
                 <el-col :span="8">
-                    <el-checkbox><span>无商品实物码</span></el-checkbox>
+                    <el-checkbox v-model="isHasTruePro"><span>无商品实物码</span></el-checkbox>
                 </el-col>                
             </el-row>
         </div>
     </div>
     <div class=" model-bottom">
-        <button type="button" class="footerBtnNo mgr15">取消</button>
-        <button type="button" class="footerBtn mgr15">确认</button>
+        <button type="button" class="footerBtnNo mgr15" @click="chanel">取消</button>
+        <button type="button" class="footerBtn mgr15" @click="postReceive">确认</button>
     </div>
 </div>
 </template>
@@ -52,11 +52,91 @@
 
 export default {
   name: 'ReceiveModal',
+  props:['showReceive','receiveData'],
   data () {
-    return { 
+    return {
+        isHasTruePro:true,
+        cpShowReceive:'',
+        data:{
+            packageNo:'',
+            orderNo:'',
+            barcode:'',
+            productId:'',
+            warehouseId:'',
+        }
     }
   },
   methods:{
+      postReceive(){
+        var _this=this;
+        if(this.isHasTruePro){
+            _this.data.barcode='';
+            _this.data.productId='393231';
+            _this.data.warehouseId='2049';
+        }else{
+            _this.data.productId='';
+            _this.data.warehouseId='';
+            _this.data.barcode='25';
+        }
+        _this.$axios({
+            url: "http://myc.qineasy.cn/pos-api/stockCode/updateStockCode",
+            method: "post",
+            params: {
+                jsonObject: this.data,
+                keyParams: {
+                    weChat: true
+                }
+            }
+        })
+        .then(function(res) {
+            if(res.data.code==1){
+                _this.$message({
+                    showClose: true,
+                    message: res.data.msg,
+                        type: 'success'
+                });    
+                _this.chanel();
+            }else{
+                _this.$message({
+                    showClose: true,
+                    message: res.data.msg,
+                        type: 'error'
+                });                     
+                _this.chanel();
+            }
+            
+        })
+        .catch(function(error) {
+            console.info(error);
+        });          
+      },
+      chanel(){
+          this.cpShowReceive=this.showReceive;
+          this.$emit("hideReceive",!this.cpShowReceive)
+      }
+  },
+  created:function(){
+      var _this=this;
+    Object.keys(this.data).forEach(element => {
+        _this.data[element]='';
+    })
+    
+    _this.data.productId='393231';
+    _this.data.warehouseId='2049';
+
+    this.receiveData.orderItems.forEach(element => {
+        
+    })
+    this.data.orderNo=this.receiveData.orderId;
+    this.data.packageNo='25';
+  },
+  watch:{
+      'showReceive':function(n,o){
+          
+      },
+      'receiveData':function(){
+
+      }
   }
 }
 </script>
@@ -70,7 +150,7 @@ export default {
 }
 .saomaHead {
     height: 46px;
-    line-height: 30px;
+    line-height: 46px;
     width: 100%;
     border-bottom: 1px dashed #E1E1E1;
 }

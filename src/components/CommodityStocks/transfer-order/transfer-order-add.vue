@@ -3,9 +3,9 @@
     <!--top-->
     <el-row class="inquiry-row top-box mgt20">
       <el-col :span="24">
-        <h3 class="titl">调拨单号：R00031612060001</h3>
+        <h3 class="titl">调拨单号：{{requisitionNo}}</h3>
       </el-col>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline am-ft-left">
+      <el-form :inline="true" :model="formInline" ref="formInline" :rules="rules" class="demo-form-inline am-ft-left">
         <el-col :span="24">
           <el-form-item
             label="制单日期：">
@@ -17,11 +17,11 @@
           </el-form-item>
           <el-form-item
             label="调拨部门：">
-            <span>总仓库</span>
+            <span>{{ueserOrgName}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="经办日期：">
+          <el-form-item label="经办日期：" prop="handleTime">
             <el-date-picker
               type="date"
               placeholder="选择日期"
@@ -29,8 +29,8 @@
               value-format="yyyy-MM-dd"
               style="width: 130px;"></el-date-picker>
           </el-form-item>
-          <el-form-item label="调拨人：">
-            <el-select v-model="formInline.requisitionP" placeholder="请选择" style="width: 130px">
+          <el-form-item label="调拨人：" prop="requisitionP">
+            <el-select v-model="formInline.requisitionP" placeholder="请选择" :disabled="isEdit" style="width: 130px">
               <el-option
                 v-for="n in requisitionP"
                 :key="n.userId"
@@ -39,8 +39,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="调出仓库：">
-            <el-select v-model="formInline.outWarehId" filterable placeholder="请选择" style="width: 130px">
+          <el-form-item label="调出仓库：" prop="outWarehId">
+            <el-select v-model="formInline.outWarehId" filterable placeholder="请选择" :disabled="isEdit" style="width: 130px">
               <el-option
                 v-for="n in warehList"
                 :key="n.warehouseId"
@@ -49,7 +49,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="调入仓库：">
+          <el-form-item label="调入仓库：" prop="inWarehId">
             <el-select v-model="formInline.inWarehId" filterable placeholder="请选择" style="width: 130px">
               <el-option
                 v-for="n in warehList"
@@ -59,29 +59,29 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="调拨级别：">
+          <el-form-item label="调拨级别：" prop="level">
             <el-select v-model="formInline.level" placeholder="请选择" style="width: 130px">
               <el-option
                 v-for="n in levelList"
                 :key="n.code"
                 :label="n.name"
-                :value="n.name">
+                :value="n.code">
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="承运类型：">
+          <el-form-item label="承运类型：" prop="carrierType">
             <el-select v-model="formInline.carrierType" placeholder="请选择" style="width: 130px">
               <el-option
                 v-for="n in carrierType"
                 :key="n.code"
                 :label="n.name"
-                :value="n.name">
+                :value="n.code">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="承运人：">
+          <el-form-item label="承运人：" prop="carrierP">
             <el-select v-model="formInline.carrierP" placeholder="请选择" style="width: 130px">
               <el-option
                 v-for="n in carrierP"
@@ -91,7 +91,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="运费：">
+          <el-form-item label="运费：" prop="freight">
             <el-input clearable v-model="formInline.freight" style="width: 120px"></el-input>
           </el-form-item>
           <el-form-item label="备注：">
@@ -221,29 +221,36 @@
             </el-button>
           </el-col>
         </el-col>
-        <el-button class="mgt15" type="primary" @click="addTransferOrder">提交</el-button>
+        <el-button class="mgt15" type="primary" v-if="isEdit === false" @click="addTransferOrder('formInline')">提交</el-button>
+        <el-button class="mgt15" type="primary" v-if="isEdit === true" @click="editTransferOrder('formInline')">确定修改</el-button>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-  import store from '../../../vuex/store'
-
   export default {
     name: "transfer-order-add",
     component: {},
     data() {
       return {
+        detailInfo: {},//调拨单信息
+        detailList: [],//调拨单子商品列表
+        requisitionNo: '--',//调拨单号
+        isEdit: false,
         warehList: [],//仓库列表
         requisitionP: [],//调拨人列表
         carrierP: [],//承运人列表
         carrierType: [],//承运类型列表
         levelList: [],//调拨级别列表
         ueserName: '',
+        ueserId: '',
         ueserOrgName: '',
+        ueserOrgId: '',
         fullDate: '',
         formInline: {
+          requisitionOrgName: '',//调拨部门
+          requisitionOrg: '',//调拨部门id
           handleTime: '',//经办日期
           requisitionP: '',//调拨人
           outWarehId: '',//调出仓库id
@@ -275,11 +282,35 @@
           categoryCode: [],//类别+品牌+品种
           proNum: ''
         },
-        tableData: []
+        tableData: [],
+        rules: {
+          handleTime: [
+            { required: true, message: '请选择经办日期', trigger: 'blur' }
+          ],
+          requisitionP: [
+            { required: true, message: '请选择调拨人', trigger: 'change' }
+          ],
+          outWarehId: [
+            { required: true, message: '请选择调出仓库', trigger: 'change' }
+          ],
+          inWarehId: [
+            { required: true, message: '请选择调入仓库', trigger: 'change' }
+          ],
+          level: [
+            { required: true, message: '请选择调拨级别', trigger: 'change' }
+          ],
+          carrierType: [
+            { required: true, message: '请选择承运类型', trigger: 'change' }
+          ],
+          carrierP: [
+            { required: true, message: '请选择承运人', trigger: 'change' }
+          ],
+          freight: [
+            { required: true, message: '请输入运费', trigger: 'blur' },
+            { min: 1, message: '请输入数字', trigger: 'blur' }
+          ],
+        }
       }
-    },
-    beforeMount() {
-
     },
     created() {
       this.getType();
@@ -289,10 +320,41 @@
       this.getRequisitionP();
       this.getLevelList();
       this.getCarrierType();
-      // this.ueserName = this.$store.state.LoginName;
-      // this.ueserOrgName = this.$store.state.orgName;
+      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      this.ueserName = ueserInfo.trueName;
+      this.ueserId = ueserInfo.userId;
+      this.ueserOrgName = ueserInfo.orgName;
+      this.ueserOrgId = ueserInfo.orgId;
+      this.editOrder();
     },
     methods: {
+      //从详情页进入--修改
+      editOrder() {
+        const that = this;
+        // console.info(that.$route.params);
+        that.detailInfo = that.$route.params.dRequisition;//调拨单信息
+        that.detailList = that.$route.params.detailList;//子商品列表
+        if(that.detailInfo != undefined || that.detailList != undefined){
+          that.isEdit = true;
+          that.requisitionNo = that.detailInfo.requisitionNo;
+          that.tableData = that.detailList;
+          const newFormline = {
+            requisitionP: that.detailInfo.requisitionP,
+            handleTime: that.detailInfo.handleTime,
+            outWarehId: that.detailInfo.outWarehId,
+            inWarehId: that.detailInfo.inWarehId,
+            level: that.detailInfo.level,
+            carrierType: that.detailInfo.carrierType,
+            carrierP: that.detailInfo.carrierP,
+            freight: that.detailInfo.freight,
+            memo: that.detailInfo.memo,
+            dRequisitionDetailList: that.tableData,
+          };
+          that.formInline = Object.assign(that.formInline,newFormline);
+        }
+        console.info(that.formInline);
+      },
+
       //获取当前时间
       getNowDate(){
         const that = this;
@@ -462,7 +524,7 @@
           })
       },
       //新增调拨单
-      addTransferOrder(){
+      addTransferOrder(formName){
         const that = this;
         if (that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId )) {
           that.formInline.outWarehName = that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId).warehouseName;
@@ -470,42 +532,122 @@
         if (that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId )) {
           that.formInline.inWarehName = that.warehList.find( ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
         }
+        that.formInline.requisitionOrgName = that.ueserOrgName;
+        that.formInline.requisitionOrg = that.ueserOrgId;
         that.formInline.dRequisitionDetailList = that.tableData;
+        delete that.formInline.dRequisitionId;
+
         console.info(that.formInline)
-        // that.$axios({
-        //   url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
-        //   method: 'post',
-        //   params: {
-        //     jsonObject: that.formInline,
-        //     keyParams: {
-        //       weChat: true
-        //     }
-        //   }
-        // })
-        //   .then(function (response) {
-        //     if(response.data.code != '1'){
-        //       that.$message({
-        //         showClose: true,
-        //         message: '新增调拨单失败，请检查后重试！',
-        //         type: 'error'
-        //       })
-        //       return false;
-        //     }else {
-        //       that.$message({
-        //         showClose: true,
-        //         message: '新增成功！',
-        //         type: 'success'
-        //       })
-        //     }
-        //   })
-        //   .catch(function (error) {
-        //     console.info(error);
-        //     that.$message({
-        //       showClose: true,
-        //       message: '请求数据失败，请联系管理员',
-        //       type: 'error'
-        //     })
-        //   })
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            that.$axios({
+              url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
+              method: 'post',
+              params: {
+                jsonObject: that.formInline,
+                keyParams: {
+                  weChat: true,
+                  orgId: that.ueserOrgId,
+                  userId: that.userId
+                }
+              }
+            })
+              .then(function (response) {
+                if(response.data.code != '1'){
+                  that.$message({
+                    showClose: true,
+                    message: '新增调拨单失败，请检查后重试！',
+                    type: 'error'
+                  })
+                  return false;
+                }else {
+                  that.$message({
+                    showClose: true,
+                    message: '新增成功！',
+                    type: 'success'
+                  });
+                  that.$refs[formName].resetFields();
+                  that.tableData = [];
+                }
+              })
+              .catch(function (error) {
+                console.info(error);
+                that.$message({
+                  showClose: true,
+                  message: '请求数据失败，请联系管理员',
+                  type: 'error'
+                })
+              })
+          } else {
+            that.$message({
+              showClose: true,
+              message: '请正确输入后重试！',
+              type: 'error'
+            })
+            return false;
+          }
+        });
+      },
+      //修改调拨单
+      editTransferOrder(formName){
+        const that = this;
+        if (that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId )) {
+          that.formInline.inWarehName = that.warehList.find( ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
+        }
+        that.formInline.dRequisitionId = that.detailInfo.requisitionNo;
+        that.formInline.requisitionOrgName = that.ueserOrgName;
+        that.formInline.requisitionOrg = that.ueserOrgId;
+        that.formInline.dRequisitionDetailList = that.tableData;
+
+        // console.info(that.formInline)
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            that.$axios({
+              url: 'http://myc.qineasy.cn/pos-api/dRequisition/updateDRequisition',
+              method: 'post',
+              params: {
+                jsonObject: that.formInline,
+                keyParams: {
+                  weChat: true,
+                  orgId: that.ueserOrgId,
+                  userId: that.userId
+                }
+              }
+            })
+              .then(function (response) {
+                if(response.data.code != '1'){
+                  that.$message({
+                    showClose: true,
+                    message: '修改调拨单失败，请检查后重试！',
+                    type: 'error'
+                  })
+                  return false;
+                }else {
+                  that.$message({
+                    showClose: true,
+                    message: '修改成功！',
+                    type: 'success'
+                  });
+                  that.$router.go(-2);
+                }
+              })
+              .catch(function (error) {
+                console.info(error);
+                that.$message({
+                  showClose: true,
+                  message: '请求数据失败，请联系管理员',
+                  type: 'error'
+                })
+              })
+          } else {
+            that.$message({
+              showClose: true,
+              message: '请正确输入后重试！',
+              type: 'error'
+            })
+            return false;
+          }
+        });
       },
       //追加商品
       addOrder(){

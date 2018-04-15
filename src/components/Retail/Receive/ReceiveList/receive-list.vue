@@ -2,546 +2,178 @@
 <section class=" content_box">
     <div class="am-bg-white cashier_box">
         <ul class="cashier_tab">
-            <li v-for="item in tabs" :key="item.value" :class="{'on':item.isActived}" @click="changeTab(item)">{{item.value}}</li>
-
+            <li v-for="item in tabs" :key="item.value" :class="{'on':item.isActived}" @click="changeTab(item)">
+                {{item.value}}
+            </li>
         </ul>
+            <ul class="clearfix cashier_top">
+                <li class="fn-left">
+                    <span class="member">零售单号&nbsp;:&nbsp;</span>
+                    <input type="text" class="cashier_input"  v-model="searchForm.orderNo"/>
+                </li>
+                <li class="fn-left">
+                    <span class="member">会员&nbsp;:&nbsp;</span>
+                    <input type="text" class="cashier_input"  v-model="searchForm.name"/>
+                </li>
+                <li class="fn-left">
+                    <span class="member">零售时间&nbsp;:&nbsp;</span>
+                    <el-date-picker
+                    style="width:120px"
+                    type="date"
+                    v-model="searchForm.saleTimeStart"
+                    placeholder="选择日期">
+                    </el-date-picker>
+                    <span>-</span>
+                    <el-date-picker
+                    style="width:120px"
+                    type="date"
+                    v-model="searchForm.saleTimeEnd"
+                    placeholder="选择日期">
+                    </el-date-picker>
+                </li>
 
+                <li class="fn-left">
+                    <button class="find_btn" @click="nub=1;getOrderList()">查询</button>
+                </li>
+            </ul>
         <!-- 待发出 -->
-        <div class="content am-bg-white" v-if="srcNum==='1'">
-            <ul class="clearfix cashier_top">
-                <li class="fn-left">
-                    <span class="member">零售单号&nbsp;:&nbsp;</span>
-                    <input type="text" class="cashier_input" />
-                </li>
-                <li class="fn-left">
-                    <span class="member">会员&nbsp;:&nbsp;</span>
-                    <input type="text" class="cashier_input" />
-                </li>
-                <li class="fn-left">
-                    <span class="member">零售时间&nbsp;:&nbsp;</span>
-                    <el-date-picker
-                    style="width:120px"
-                    type="date"
-                    placeholder="选择日期">
-                    </el-date-picker>
-                    <span>-</span>
-                    <el-date-picker
-                    style="width:120px"
-                    type="date"
-                    placeholder="选择日期">
-                    </el-date-picker>
-                </li>
+            <div class="content am-bg-white" v-if="srcNum==='1'||srcNum==='2'">
 
-                <li class="fn-left">
-                    <button class="find_btn">查询</button>
-                </li>
-            </ul>
-            <div class="orders">
-                <table class="orders_table">
-                    <thead>
-                        <tr>
-                            <th width="">商品编码</th>
-                            <th width="">商品名称</th>
-                            <th width="">数量</th>
-                            <th width="">出货仓库</th>
-                            <th width="">订单金额</th>
-                            <th width="">订单状态</th>
-                            <th width="">操作</th>
-                        </tr>
-                    </thead>
+                <div class="orders">
+                    <table class="orders_table">
+                        <thead>
+                            <tr>
+                                <th width="">商品编码</th>
+                                <th width="">商品名称</th>
+                                <th width="">数量</th>
+                                <th width="">出货仓库</th>
+                                <th width="">订单金额</th>
+                                <th width="">订单状态</th>
+                                <th width="">操作</th>
+                            </tr>
+                        </thead>
 
-                    <tbody class="orders_tbody">
-                        <tr class="order_header">
-                            <td colspan="7">
-                                <div class=" fn-left">
-                                    <span class="am-bg-blue icon">定</span>
-                                    <span class="order_id">20170909000000001</span>
-                                    <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
-                                </div>
-                                <div class=" fn-right">
-                                    <span class="msg">销售&nbsp;&nbsp;</span>
-                                    <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
-                                </div>
+                        <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
+                            <tr class="order_header">
+                                <td colspan="7">
+                                    <div class=" fn-left">
+                                        <span class="am-bg-blue icon">定</span>
+                                        <span class="order_id">{{order.orderNo}}</span>
+                                        <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
+                                    </div>
+                                    <div class=" fn-right">
+                                        <span class="msg">销售&nbsp;&nbsp;</span>
+                                        <span class="msg">{{order.salesName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
+                                    </div>
 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                            <td rowspan="5" class="rowspan_td order_price">
-                                <div class="order_price_box">
-                                    <div class="priceAll am-ft-22">1299.00</div>
-                                    <div>商品合计：<strong>1389.00</strong></div>
-                                    <div>卡券：<strong>-20</strong></div>
-                                    <div>折扣：<strong>-50</strong></div>
-                                    <div>活动：<strong>-20</strong></div>
-                                </div>
+                                </td>
+                            </tr>
+                            <tr v-for="(list,index) in order.orderItems" :key="list.name">
+                                <td>{{list.itemId}}</td>
+                                <td>{{list.itemName||'商品名'}}</td>
+                                <td>{{parseInt(list.quantity)}}</td>
+                                <td>{{order.shopName}}</td>
+                                <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
+                                    <div class="order_price_box">
+                                    <div class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}
+                                        <!-- <small v-if="order.roundOffFlag == '0' && typeof parseFloat(list.discountRate) == 'number' && parseFloat(list.discountRate) < 10 ">({{parseFloat(list.discountRate)}}折)</small> -->
+                                    </div>
+                                    <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
+                                    <div>卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                                    <div>折扣：<strong>{{parseFloat(order.discount)>0?parseFloat(order.discount).toFixed(2)+'(会员)':'0.00'}}</strong></div>
+                                    <div>活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                                    </div>
+                                </td>
+                                <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                                    <div class="am-ft-red">
+                                        {{order.statusName}}
+                                    </div>
+                                    <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
+                                </td>
+                                <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                                    <el-button type="primary" v-if="searchForm.status=='51'" @click="showReceiveFn(order)">扫码装袋</el-button>
+                                    <el-button type="primary" v-if="searchForm.status=='53'" @click="sureGetProduct(order)">确认收件</el-button>
+                                </td>
+                            </tr>
+                            <div class="gekai"> </div>
+                        </tbody>
+                    </table>
 
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <div class="am-ft-yellow am-ft-13">订单待发出</div>
-                                <div class="look_d" @click="goDetail('1')">查看详情</div>
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <el-button type="primary" @click="showReceive=true">扫码装袋</el-button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <div class="gekai"> </div>
-                    </tbody>
-                    <tbody class="orders_tbody">
-                        <tr class="order_header">
-                            <td colspan="7">
-                                <div class=" fn-left">
-                                    <span class="am-bg-blue icon">定</span>
-                                    <span class="order_id">20170909000000001</span>
-                                    <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
-                                </div>
-                                <div class=" fn-right">
-                                    <span class="msg">销售&nbsp;&nbsp;</span>
-                                    <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                            <td rowspan="5" class="rowspan_td order_price">
-                                <div class="order_price_box">
-                                    <div class="priceAll am-ft-22">1299.00</div>
-                                    <div>商品合计：<strong>1389.00</strong></div>
-                                    <div>卡券：<strong>-20</strong></div>
-                                    <div>折扣：<strong>-50</strong></div>
-                                    <div>活动：<strong>-20</strong></div>
-                                </div>
-
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <div class="am-ft-yellow am-ft-13">订单待发出</div>
-                                <div class="look_d" @click="goDetail('1')">查看详情</div>
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <el-button type="primary">扫码装袋</el-button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <div class="gekai"> </div>
-                    </tbody>
-
-                </table>
-
+                </div>
             </div>
-        </div>
-
-        <!-- 待收件 -->
-        <div class="content am-bg-white" v-if="srcNum==='2'">
-
-            <ul class="clearfix cashier_top">
-                <li class="fn-left">
-                    <span class="member">零售单号&nbsp;:&nbsp;</span>
-                    <input type="text" class="cashier_input" />
-                </li>
-                <li class="fn-left">
-                    <span class="member">会员&nbsp;:&nbsp;</span>
-                    <input type="text" class="cashier_input" />
-                </li>
-                <li class="fn-left">
-                    <span class="member">零售时间&nbsp;:&nbsp;</span>
-                    <el-date-picker
-                    style="width:120px"
-                    type="date"
-                    placeholder="选择日期">
-                    </el-date-picker>
-                    <span>-</span>
-                    <el-date-picker
-                    style="width:120px"
-                    type="date"
-                    placeholder="选择日期">
-                    </el-date-picker>
-                </li>
-
-                <li class="fn-left">
-                    <button class="find_btn">查询</button>
-                </li>
-            </ul>
-            <div class="orders">
-                <table class="orders_table">
-                    <thead>
-                        <tr>
-                            <th width="">商品编码</th>
-                            <th width="">商品名称</th>
-                            <th width="">数量</th>
-                            <th width="">出货仓库</th>
-                            <th width="">订单金额</th>
-                            <th width="">订单状态</th>
-                            <th width="">操作</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="orders_tbody">
-                        <tr class="order_header">
-                            <td colspan="7">
-                                <div class=" fn-left">
-                                    <span class="am-bg-blue icon">定</span>
-                                    <span class="order_id">20170909000000001</span>
-                                    <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
-                                </div>
-                                <div class=" fn-right">
-                                    <span class="msg">销售&nbsp;&nbsp;</span>
-                                    <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                            <td rowspan="5" class="rowspan_td order_price">
-                                <div class="order_price_box">
-                                    <div class="priceAll am-ft-22">1299.00</div>
-                                    <div>商品合计：<strong>1389.00</strong></div>
-                                    <div>卡券：<strong>-20</strong></div>
-                                    <div>折扣：<strong>-50</strong></div>
-                                    <div>活动：<strong>-20</strong></div>
-                                </div>
-
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <div class="am-ft-yellow am-ft-13">订单待收件</div>
-                                <div class="look_d" @click="goDetail('1')">查看详情</div>
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <el-button type="primary">扫码装袋</el-button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <div class="gekai"> </div>
-                    </tbody>
-                    <tbody class="orders_tbody">
-                        <tr class="order_header">
-                            <td colspan="7">
-                                <div class=" fn-left">
-                                    <span class="am-bg-blue icon">定</span>
-                                    <span class="order_id">20170909000000001</span>
-                                    <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
-                                </div>
-                                <div class=" fn-right">
-                                    <span class="msg">销售&nbsp;&nbsp;</span>
-                                    <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                            <td rowspan="5" class="rowspan_td order_price">
-                                <div class="order_price_box">
-                                    <div class="priceAll am-ft-22">1299.00</div>
-                                    <div>商品合计：<strong>1389.00</strong></div>
-                                    <div>卡券：<strong>-20</strong></div>
-                                    <div>折扣：<strong>-50</strong></div>
-                                    <div>活动：<strong>-20</strong></div>
-                                </div>
-
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <div class="am-ft-yellow am-ft-13">订单待收件</div>
-                                <div class="look_d" @click="goDetail('1')">查看详情</div>
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <el-button type="primary">扫码装袋</el-button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <div class="gekai"> </div>
-                    </tbody>
-
-                </table>
-
+            <div class="content am_bg_white" v-if="srcNum==='3'">
+                <div class="orders">
+                <el-table
+                    :data="orderTempList"
+                    size="small"
+                    align="left"
+                    style="width: 100%;margin-bottom:10px;">
+                    <el-table-column
+                    label="订单号"
+                    width="400">
+                    <template slot-scope="scope">
+                        <!-- <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
+                        <span v-if="scope.row.statusCode=='4'" class="am-bg-orange icon">欠</span>
+                        <span v-if="scope.row.statusCode=='10'" class="am-bg-red icon">退</span>
+                        <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
+                        <span v-if="scope.row.source=='0'" class="sign_blue">本店签批</span>
+                        <span v-else class="sign_orange">跨店签批</span> -->
+                        <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
+                    </template>
+                    </el-table-column>
+                    <el-table-column
+                    prop="name"
+                    label="会员姓名"
+                    width="180">
+                    </el-table-column>
+                    <el-table-column
+                    prop="telphone"
+                    label="会员手机号">
+                    </el-table-column>
+                    <el-table-column
+                    prop="moneyPaid"
+                    label="金额">
+                    <template slot-scope="scope">
+                        <span class="am-ft-bold">{{scope.row.price}}</span>
+                    </template>
+                    </el-table-column>
+                    <el-table-column
+                    prop="orderTime"
+                    label="下单时间">
+                    </el-table-column>
+                    <el-table-column
+                    prop="shopName"
+                    label="销售门店">
+                    </el-table-column>
+                    <el-table-column
+                    prop="statusName"
+                    label="状态">
+                    <template slot-scope="scope">
+                        <span
+                        :class="{'am-ft-aa': scope.row.statusCode==='3'||scope.row.statusCode==='6','am-ft-orange':scope.row.statusCode==='4'||scope.row.statusCode==='5','am-ft-red': scope.row.statusCode==='10'}">{{scope.row.statusName}}</span>
+                    </template>
+                    </el-table-column>
+                    <el-table-column
+                    label="操作">
+                    <template slot-scope="scope">
+                        <span class="am-ft-blue" @click="toOrderDetail(scope.row)">查看详情</span>
+                    </template>
+                    </el-table-column>
+                </el-table>
+                </div>
             </div>
-        </div>
-
-        <!-- 全部 -->
-        <div class="content am-bg-white" v-if="srcNum==='3'">
-            <ul class="clearfix cashier_top">
-                <li class="fn-left">
-                    <span class="member">零售单号&nbsp;:&nbsp;</span>
-                    <input type="text" class="cashier_input" />
-                </li>
-                <li class="fn-left">
-                    <span class="member">会员&nbsp;:&nbsp;</span>
-                    <input type="text" class="cashier_input" />
-                </li>
-                <li class="fn-left">
-                    <span class="member">零售时间&nbsp;:&nbsp;</span>
-                    <el-date-picker
-                    style="width:120px"
-                    type="date"
-                    placeholder="选择日期">
-                    </el-date-picker>
-                    <span>-</span>
-                    <el-date-picker
-                    style="width:120px"
-                    type="date"
-                    placeholder="选择日期">
-                    </el-date-picker>
-                </li>
-
-                <li class="fn-left">
-                    <button class="find_btn">查询</button>
-                </li>
-            </ul>
-            <div class="orders">
-                <table class="orders_table">
-                    <thead>
-                        <tr>
-                            <th width="">商品编码</th>
-                            <th width="">商品名称</th>
-                            <th width="">数量</th>
-                            <th width="">出货仓库</th>
-                            <th width="">订单金额</th>
-                            <th width="">订单状态</th>
-                            <th width="">操作</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="orders_tbody">
-                        <tr class="order_header">
-                            <td colspan="7">
-                                <div class=" fn-left">
-                                    <span class="am-bg-blue icon">定</span>
-                                    <span class="order_id">20170909000000001</span>
-                                    <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
-                                </div>
-                                <div class=" fn-right">
-                                    <span class="msg">销售&nbsp;&nbsp;</span>
-                                    <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                            <td rowspan="5" class="rowspan_td order_price">
-                                <div class="order_price_box">
-                                    <div class="priceAll am-ft-22">1299.00</div>
-                                    <div>商品合计：<strong>1389.00</strong></div>
-                                    <div>卡券：<strong>-20</strong></div>
-                                    <div>折扣：<strong>-50</strong></div>
-                                    <div>活动：<strong>-20</strong></div>
-                                </div>
-
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <div class="am-ft-yellow am-ft-13">订单待发出</div>
-                                <div class="look_d" @click="goDetail('1')">查看详情</div>
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <el-button type="primary">扫码装袋</el-button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <div class="gekai"> </div>
-                    </tbody>
-                    <tbody class="orders_tbody">
-                        <tr class="order_header">
-                            <td colspan="7">
-                                <div class=" fn-left">
-                                    <span class="am-bg-blue icon">定</span>
-                                    <span class="order_id">20170909000000001</span>
-                                    <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
-                                </div>
-                                <div class=" fn-right">
-                                    <span class="msg">销售&nbsp;&nbsp;</span>
-                                    <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                            <td rowspan="5" class="rowspan_td order_price">
-                                <div class="order_price_box">
-                                    <div class="priceAll am-ft-22">1299.00</div>
-                                    <div>商品合计：<strong>1389.00</strong></div>
-                                    <div>卡券：<strong>-20</strong></div>
-                                    <div>折扣：<strong>-50</strong></div>
-                                    <div>活动：<strong>-20</strong></div>
-                                </div>
-
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <div class="am-ft-yellow am-ft-13">订单待收件</div>
-                                <div class="look_d" @click="goDetail('1')">查看详情</div>
-                            </td>
-                            <td rowspan="5" class="rowspan_td">
-                                <el-button type="primary">扫码装袋</el-button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <tr>
-                            <td>BH00003</td>
-                            <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-                            <td>1</td>
-                            <td>天一恒泰店</td>
-                        </tr>
-                        <div class="gekai"> </div>
-                    </tbody>
-
-                </table>
-            </div>
-        </div>
-    </div>
+        <el-pagination
+        class="am-ft-right"
+        background
+        layout="prev, pager, next"
+        :page-size="5"
+        :total="count"
+        @current-change="getOrderList"
+        :current-page.sync="nub">
+        </el-pagination> 
+        </div>    
     <el-dialog title="扫码装袋" :visible.sync="showReceive">
-        <ReceiveModal></ReceiveModal>
+        <ReceiveModal :showReceive="showReceive" :receiveData="receiveData" v-on:hideReceive="hideReceive"></ReceiveModal>
     </el-dialog>
 </section>
 </template>
@@ -553,43 +185,100 @@ export default {
   name: 'ReceiveList',
   data () {
     return {
+        receiveData:null,
+        searchForm: {
+            orderNo: "",
+            name: "",
+            saleTimeStart: "",
+            saleTimeEnd: "",
+            status:""
+        },
+        nub: 1,
+        size: 5,
+        count:0,
         options: [{
           value: '选项1',
           label: '黄金糕'
         }],
         value: '',
         showReceive:false,
-        srcNum:'2',
+        orderTempList: {},
+        srcNum:'1',
         tabs:[{
             'value':'待发出',
             'isActived':true,
-            'srcNum':'1'
+            'srcNum':'1',
+            'status':"51"
         },
         {
             'value':'待收件',
             'isActived':false,
-            'srcNum':'2'
+            'srcNum':'2',
+            'status':"53"
         },
         {
             'value':'全部',
             'isActived':false,
-            'srcNum':'3'
+            'srcNum':'3',
+            'status':""
         }],
-        data : [
-        {
-            'id'    : '20170909000000001',
-            'name'   : '张三',
-            'telephone'    : 15757179646,
-            'price':'860.60',
-            'time': '2017-12-14 12:26:26',
-            'salesStore':  '毛源昌建国北路店',
-            'status': '代收银',
-            "type":"1"
-        }]
+        data : []
     }
   },
   methods:{
+    toOrderDetail(data){
+      let _this = this;
+      _this.$router.push({path:'/cashier/orderDetail',query:{orderId:data.orderId}})
+    },
+    sureGetProduct:function(){
+        var _this=this;
+        _this.$axios({
+            url: "http://myc.qineasy.cn/pos-api/stockCode/list",
+            method: "post",
+            params: {
+              jsonObject: {
+                  packageNo:''
+              },
+              keyParams: {
+                weChat: true
+              }
+            }
+          })
+          .then(function(res) {
+            if(res.data.code==1){
+                _this.$message({
+                    showClose: true,
+                    message: res.data.msg,
+                        type: 'success'
+                });    
+            }else{
+                _this.$message({
+                    showClose: true,
+                    message: res.data.msg,
+                        type: 'error'
+                });                     
+            }
+          })
+          .catch(function(error) {
+            console.info(error);
+          });        
+    },
+    showReceiveFn:function(value){
+        var _this=this;
+        _this.receiveData=value;
+        _this.showReceive=true;
+    },
+    hideReceive(value){
+        this.showReceive=value
+    },
     changeTab:function(item){
+        this.nub=1;
+        this.searchForm.orderNo="";
+        this.searchForm.name="";
+        this.searchForm.saleTimeStart="";
+        this.searchForm.saleTimeEnd="";
+        this.searchForm.status="";
+
         this.srcNum=item.srcNum;
         this.tabs.forEach(function(element){
             element.isActived=false;
@@ -597,10 +286,62 @@ export default {
                 element.isActived=true;
             }
         })
+        this.getOrderList();
     },
     showModalMiddle:function(){
         this.showCashier=true;
+    },
+    //获取列表
+    getOrderList: function() {
+      var _this = this;
+      let status;
+      _this.tabs.forEach(function(element){
+          if(element.isActived==true){
+            _this.searchForm.status = element.status;
+          }
+      })
+      setTimeout(() => {
+        _this.$axios({
+            url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
+            method: "post",
+            params: {
+              jsonObject: {
+                orderNo: _this.searchForm.orderNo,
+                name: _this.searchForm.name,
+                saleTimeStart: _this.searchForm.saleTimeStart,
+                saleTimeEnd: _this.searchForm.saleTimeEnd,
+                status:_this.searchForm.status,
+                nub: _this.nub == 1 ? 0 : (_this.nub - 1) * _this.size,
+                size: _this.size
+              },
+              keyParams: {
+                weChat: true
+              }
+            }
+          })
+          .then(function(res) {
+            // console.info(res.data.data)
+            if(res.data.code == 1){
+              _this.count = res.data.data.count;
+              _this.orderTempList = [];
+              _this.orderTempList = res.data.data.orderTempList;
+            }else{
+               _this.$message({
+                showClose: true,
+                message: '请求数据失败，请联系管理员',
+                type: 'error'
+              })
+            }
+            
+          })
+          .catch(function(error) {
+            console.info(error);
+          });
+      }, 100);
     }
+  },
+  created:function(){
+      this.getOrderList();
   },
   components:{
       ReceiveModal
@@ -610,6 +351,9 @@ export default {
 
 <style scoped lang="scss">
 @import "../../../../reset";
+.content_box{
+    height: calc(100% - 100px);
+}
 .cashier_box {
     width: 100%;
     height: 100%;

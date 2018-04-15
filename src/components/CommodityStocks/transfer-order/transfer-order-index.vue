@@ -76,7 +76,7 @@
       </el-col>
       <!--tab-->
       <el-col :span="24">
-        <el-tabs type="border-card" @tab-click="handleClick">
+        <el-tabs type="border-card"v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="调拨待审核" name="1">
             <pending-review :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></pending-review>
           </el-tab-pane>
@@ -116,6 +116,7 @@
     },
     data() {
       return {
+        activeName: '1',
         dRequisitionList: [],//调拨单数据
         requisitionOrg: [],//调拨部门
         sourceType: [],//来源类型
@@ -171,13 +172,12 @@
       },
       //查询调拨单列表
       getInquireList(params) {
-        var that = this;
+        const that = this;
         that.formInline.nub = that.nub;
         that.formInline.size = that.size;
         const newParams = Object.assign(that.formInline, params);
         that.$axios({
-          // url: 'http://myc.qineasy.cn/pos-api/dRequisition/getDRequisitionList',
-          url: 'http://10.0.17.225:8080/pos-api/dRequisition/getDRequisitionList',
+          url: 'http://myc.qineasy.cn/pos-api/dRequisition/getDRequisitionList',
           method: 'post',
           params: {
             jsonObject: newParams,
@@ -196,7 +196,7 @@
               return false;
             } else {
               // console.info(response.data.data);
-              that.dRequisitionList = response.data.data.list;
+              that.dRequisitionList = response.data.data.dRequisitions;
               that.counts = response.data.data.count;
             }
 
