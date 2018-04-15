@@ -47,7 +47,7 @@
         label="操作">
         <template slot-scope="scope">
           <a href="javascript:;" @click="goDetail(scope.$index,scope.row)">查看详情</a>
-          <a href="javascript:;" class="mgl20" @click="checkOut">立即调出</a>
+          <a href="javascript:;" class="mgl20" @click="checkOut(scope.$index,scope.row)">立即调出</a>
         </template>
       </el-table-column>
     </el-table>
@@ -59,7 +59,7 @@
         @current-change="handleCurrentChange"
         :page-size="10"
         layout="total, prev, pager, next"
-        :total="counts"
+        :total="listCounts"
         :current-page.sync="nub">
       </el-pagination>
     </div>
@@ -68,43 +68,47 @@
     <el-dialog class="comen-dialog" title="立即调出" :visible.sync="openCheckOut" width="870px">
       <div class="dialog-body">
         <div class="dialog-top">
-          <strong class="fn-left"><em>调拨单号：</em>ROV263212126536</strong>
-          <el-button class="fn-right" type="primary" plain>扫描实物码</el-button>
+          <strong class="fn-left"><em>调拨单号：</em>{{requisitionNo}}</strong>
+          <el-button class="fn-right" type="primary" plain :disabled="true">扫描实物码</el-button>
         </div>
         <el-table
-          :data="tableData"
+          :data="proList"
           stripe
           max-height="360"
           style="width: 100%">
           <el-table-column
-            prop="a"
+            prop="proNum"
             label="商品编码"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="b"
+            prop="proName"
             label="商品名称"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="c"
+            prop="count"
             label="调拨数量">
           </el-table-column>
           <el-table-column
-            prop="d"
             label="已扫描数量">
+            <template slot-scope="scope">
+              <p>0</p>
+            </template>
           </el-table-column>
           <el-table-column
             label="实物码">
             <template slot-scope="scope">
-              <el-checkbox v-model="checked"><span>无实物码调拨</span></el-checkbox>
+              <span>无实物码调拨</span>
+              <!--<el-checkbox v-model="checked" v-if="scope.row.barcode==''"><span>无实物码调拨</span></el-checkbox>-->
+              <!--<p v-else>{{scope.row.barcode}}</p>-->
             </template>
           </el-table-column>
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="openCheckOut = false">取 消</el-button>
-        <el-button type="primary">确认调出</el-button>
+        <el-button type="primary" @click="externalRequisition">确认调出</el-button>
       </span>
     </el-dialog>
   </div>
@@ -119,16 +123,9 @@
         nub: 0,//起始条数
         size: 10,//每页显示数据条数
         counts: this.listCounts,//总条数
-        tableData: [{
-          a: '12340002',
-          b: '手工添加',
-          c: '总仓库',
-          d: '总仓库',
-          e: '湖滨店',
-          f: '玉素甫',
-          g: '2017-12-25 16:26:00',
-          h: '待调出'
-        }],
+        proList: [],
+        requisitionId: '',//调拨单id
+        requisitionNo: '',//调拨单号
         openCheckOut: false,
         checked: true
       }
@@ -144,8 +141,8 @@
         this.mypagination(this.nub);
       },
 
-      //查看详情
-      goDetail(data) {
+      //跳转查看详情
+      goDetail(index,data) {
         this.$router.push({
           path: '/commodity/transfer-order-detail',
           name: 'transfer-order-detail',
@@ -153,9 +150,91 @@
         })
       },
       //立即调出弹窗
-      checkOut() {
-        this.openCheckOut = true;
+      checkOut(index,data) {
+        const that = this;
+        that.openCheckOut = true;
+        that.requisitionId = data.requisitionId;
+        that.requisitionNo = data.requisitionNo;
+        that.getDRequisition();
       },
+      //获取子商品信息
+      getDRequisition(){
+        const that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/dRequisition/getDRequisition',
+          method: 'post',
+          params: {
+            jsonObject: {
+              requisitionId: that.requisitionId
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              console.info(response.data.data);
+              that.proList = response.data.data.detailList;
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //确定立即调出
+      externalRequisition(){
+        const that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/dRequisition/externalRequisition',
+          method: 'post',
+          params: {
+            jsonObject: {
+              requisitionId: that.requisitionId
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              that.$message({
+                showClose: true,
+                message: '调出成功！',
+                type: 'success'
+              });
+              that.openCheckOut = false;
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      }
     }
   }
 </script>

@@ -58,7 +58,7 @@
         @current-change="handleCurrentChange"
         :page-size="10"
         layout="total, prev, pager, next"
-        :total="counts"
+        :total="listCounts"
         :current-page.sync="nub">
       </el-pagination>
     </div>
@@ -97,7 +97,7 @@
         this.mypagination(this.nub);
       },
       //查看详情
-      goDetail(data) {
+      goDetail(index,data) {
         this.$router.push({
           path: '/commodity/transfer-order-detail',
           name: 'transfer-order-detail',
