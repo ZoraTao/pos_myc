@@ -78,19 +78,19 @@
       <el-col :span="24">
         <el-tabs type="border-card"v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="调拨待审核" name="1">
-            <pending-review :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></pending-review>
+            <pending-review :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></pending-review>
           </el-tab-pane>
           <el-tab-pane label="待调出" name="2">
-            <pending-tune-out :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></pending-tune-out>
+            <pending-tune-out :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></pending-tune-out>
           </el-tab-pane>
           <el-tab-pane label="待调入" name="3">
-            <pending-tune-in :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></pending-tune-in>
+            <pending-tune-in :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></pending-tune-in>
           </el-tab-pane>
           <el-tab-pane label="已完成" name="4">
-            <completed-lists :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></completed-lists>
+            <completed-lists :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></completed-lists>
           </el-tab-pane>
           <el-tab-pane label="全部" name="5">
-            <all-lists :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination"></all-lists>
+            <all-lists :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></all-lists>
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -195,7 +195,7 @@
               })
               return false;
             } else {
-              console.info(response.data.data);
+              // console.info(response.data.data);
               that.dRequisitionList = response.data.data.dRequisitions;
               that.counts = response.data.data.count;
             }

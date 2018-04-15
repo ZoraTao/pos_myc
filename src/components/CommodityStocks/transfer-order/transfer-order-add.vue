@@ -40,7 +40,8 @@
             </el-select>
           </el-form-item>
           <el-form-item label="调出仓库：" prop="outWarehId">
-            <el-select v-model="formInline.outWarehId" filterable placeholder="请选择" :disabled="isEdit" style="width: 130px">
+            <el-select v-model="formInline.outWarehId" filterable placeholder="请选择" :disabled="isEdit"
+                       style="width: 130px">
               <el-option
                 v-for="n in warehList"
                 :key="n.warehouseId"
@@ -92,7 +93,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="运费：" prop="freight">
-            <el-input clearable v-model="formInline.freight" style="width: 120px"></el-input>
+            <el-input clearable v-model="formInline.freight" min="0" style="width: 120px"></el-input>
           </el-form-item>
           <el-form-item label="备注：">
             <el-input clearable v-model="formInline.memo" style="width: 280px"></el-input>
@@ -104,41 +105,41 @@
     <!--content-->
     <el-row class="inquiry-row mgt10">
       <!--<el-col :span="24">-->
-        <!--<el-form :inline="true" :model="searchForm" class="demo-form-inline am-ft-left">-->
-          <!--<el-form-item label="编码选择过滤："></el-form-item>-->
-          <!--<el-form-item label="类别：">-->
-            <!--<el-select v-model="categoryLevel.category1" filterable clearable placeholder="请选择" style="width: 130px"-->
-                       <!--@change="selectBrands">-->
-              <!--<el-option v-for="(i,index) in categoryCode1" :key="i.className" :label="i.className"-->
-                         <!--:value="i.productCategoryId"></el-option>-->
-            <!--</el-select>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="品牌：">-->
-            <!--<el-select v-model="categoryLevel.category2" filterable clearable placeholder="请选择" style="width: 130px"-->
-                       <!--@change="selectVarietys">-->
-              <!--<el-option v-for="(i,index) in categoryCode2" :key="i.className" :label="i.className"-->
-                         <!--:value="i.productCategoryId"></el-option>-->
-            <!--</el-select>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="品种：">-->
-            <!--<el-select v-model="categoryLevel.category3" filterable clearable placeholder="请选择" style="width: 130px">-->
-              <!--<el-option v-for="(i,index) in categoryCode3" :key="i.className" :label="i.className"-->
-                         <!--:value="i.productCategoryId"></el-option>-->
-            <!--</el-select>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="度数：" class="input_num">-->
-            <!--<div class="fn-line-block">-->
-              <!--<el-input type="number" min="0" v-model="searchForm.degree1" style="width: 60px"></el-input>-->
-            <!--</div>-->
-            <!--<div class="fn-line-block am-ft-center am-text-secondary">-</div>-->
-            <!--<div class="fn-line-block">-->
-              <!--<el-input type="number" min="0" v-model="searchForm.degree2" style="width: 60px"></el-input>-->
-            <!--</div>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item>-->
-            <!--<el-button type="primary" plain>过滤</el-button>-->
-          <!--</el-form-item>-->
-        <!--</el-form>-->
+      <!--<el-form :inline="true" :model="searchForm" class="demo-form-inline am-ft-left">-->
+      <!--<el-form-item label="编码选择过滤："></el-form-item>-->
+      <!--<el-form-item label="类别：">-->
+      <!--<el-select v-model="categoryLevel.category1" filterable clearable placeholder="请选择" style="width: 130px"-->
+      <!--@change="selectBrands">-->
+      <!--<el-option v-for="(i,index) in categoryCode1" :key="i.className" :label="i.className"-->
+      <!--:value="i.productCategoryId"></el-option>-->
+      <!--</el-select>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="品牌：">-->
+      <!--<el-select v-model="categoryLevel.category2" filterable clearable placeholder="请选择" style="width: 130px"-->
+      <!--@change="selectVarietys">-->
+      <!--<el-option v-for="(i,index) in categoryCode2" :key="i.className" :label="i.className"-->
+      <!--:value="i.productCategoryId"></el-option>-->
+      <!--</el-select>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="品种：">-->
+      <!--<el-select v-model="categoryLevel.category3" filterable clearable placeholder="请选择" style="width: 130px">-->
+      <!--<el-option v-for="(i,index) in categoryCode3" :key="i.className" :label="i.className"-->
+      <!--:value="i.productCategoryId"></el-option>-->
+      <!--</el-select>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="度数：" class="input_num">-->
+      <!--<div class="fn-line-block">-->
+      <!--<el-input type="number" min="0" v-model="searchForm.degree1" style="width: 60px"></el-input>-->
+      <!--</div>-->
+      <!--<div class="fn-line-block am-ft-center am-text-secondary">-</div>-->
+      <!--<div class="fn-line-block">-->
+      <!--<el-input type="number" min="0" v-model="searchForm.degree2" style="width: 60px"></el-input>-->
+      <!--</div>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item>-->
+      <!--<el-button type="primary" plain>过滤</el-button>-->
+      <!--</el-form-item>-->
+      <!--</el-form>-->
       <!--</el-col>-->
       <!--table-->
       <el-col :span="24">
@@ -155,7 +156,7 @@
               prop="sku"
               width="120">
               <!--<template slot-scope="scope">-->
-                <!--<el-input v-model="tableData[scope.$index].proNum" size="small"></el-input>-->
+              <!--<el-input v-model="tableData[scope.$index].proNum" size="small"></el-input>-->
               <!--</template>-->
             </el-table-column>
             <el-table-column
@@ -183,7 +184,13 @@
             <el-table-column
               label="调拨数量">
               <template slot-scope="scope" class="input_num">
-                <el-input type="number" v-model="tableData[scope.$index].count" size="small"></el-input>
+                <el-form :inline="true" :rules="rules2" >
+                  <el-form-item
+                    label=""
+                    prop="proCount" >
+                    <el-input type="number" min="1" v-model="tableData[scope.$index].count" size="small" ></el-input>
+                  </el-form-item>
+                </el-form>
               </template>
             </el-table-column>
             <el-table-column
@@ -221,8 +228,10 @@
             </el-button>
           </el-col>
         </el-col>
-        <el-button class="mgt15" type="primary" v-if="isEdit === false" @click="addTransferOrder('formInline')">提交</el-button>
-        <el-button class="mgt15" type="primary" v-if="isEdit === true" @click="editTransferOrder('formInline')">确定修改</el-button>
+        <el-button class="mgt15" type="primary" v-if="isEdit === false" @click="addTransferOrder('formInline')">提交
+        </el-button>
+        <el-button class="mgt15" type="primary" v-if="isEdit === true" @click="editTransferOrder('formInline')">确定修改
+        </el-button>
       </el-col>
     </el-row>
   </div>
@@ -265,7 +274,7 @@
           memo: '',//备注
           dRequisitionDetailList: [{
             proNum: '',//商品编码,
-            count: 0,//调拨数量
+            count: 1,//调拨数量
           }],
         },
         categoryCode1: [],//类别
@@ -279,36 +288,40 @@
         degree1: '',//度数起始
         degree2: '',//度数截止
         searchForm: {
-          degree: ['',''],//度数
+          degree: ['', ''],//度数
           categoryCode: [],//类别+品牌+品种
           proNum: ''
         },
         tableData: [],
         rules: {
           handleTime: [
-            { required: true, message: '请选择经办日期', trigger: 'blur' }
+            {required: true, message: '请选择经办日期', trigger: 'blur'}
           ],
           requisitionP: [
-            { required: true, message: '请选择调拨人', trigger: 'change' }
+            {required: true, message: '请选择调拨人', trigger: 'change'}
           ],
           outWarehId: [
-            { required: true, message: '请选择调出仓库', trigger: 'change' }
+            {required: true, message: '请选择调出仓库', trigger: 'change'}
           ],
           inWarehId: [
-            { required: true, message: '请选择调入仓库', trigger: 'change' }
+            {required: true, message: '请选择调入仓库', trigger: 'change'}
           ],
           level: [
-            { required: true, message: '请选择调拨级别', trigger: 'change' }
+            {required: true, message: '请选择调拨级别', trigger: 'change'}
           ],
           carrierType: [
-            { required: true, message: '请选择承运类型', trigger: 'change' }
+            {required: true, message: '请选择承运类型', trigger: 'change'}
           ],
           carrierP: [
-            { required: true, message: '请选择承运人', trigger: 'change' }
+            {required: true, message: '请选择承运人', trigger: 'change'}
           ],
           freight: [
-            { required: true, message: '请输入运费', trigger: 'blur' },
-            { min: 1, message: '请输入数字', trigger: 'blur' }
+            {required: true, message: '请输入运费', trigger: 'blur'}
+          ],
+        },
+        rules2: {
+          proCount: [
+            // {required: true, message: '请输入大于0的数字', trigger: 'blur'}
           ],
         }
       }
@@ -335,7 +348,7 @@
         // console.info(that.$route.params);
         that.detailInfo = that.$route.params.dRequisition;//调拨单信息
         that.detailList = that.$route.params.detailList;//子商品列表
-        if(that.detailInfo != undefined || that.detailList != undefined){
+        if (that.detailInfo != undefined || that.detailList != undefined) {
           that.isEdit = true;
           that.requisitionNo = that.detailInfo.requisitionNo;
           that.tableData = that.detailList;
@@ -351,13 +364,13 @@
             memo: that.detailInfo.memo,
             dRequisitionDetailList: that.tableData,
           };
-          that.formInline = Object.assign(that.formInline,newFormline);
+          that.formInline = Object.assign(that.formInline, newFormline);
         }
         // console.info(that.formInline);
       },
 
       //获取当前时间
-      getNowDate(){
+      getNowDate() {
         const that = this;
         let date = new Date();
         let y = date.getFullYear();
@@ -525,13 +538,13 @@
           })
       },
       //新增调拨单
-      addTransferOrder(formName){
+      addTransferOrder(formName) {
         const that = this;
-        if (that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId )) {
-          that.formInline.outWarehName = that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId).warehouseName;
+        if (that.warehList.find(ele => ele.warehouseId == that.formInline.outWarehId)) {
+          that.formInline.outWarehName = that.warehList.find(ele => ele.warehouseId == that.formInline.outWarehId).warehouseName;
         }
-        if (that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId )) {
-          that.formInline.inWarehName = that.warehList.find( ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
+        if (that.warehList.find(ele => ele.warehouseId == that.formInline.outWarehId)) {
+          that.formInline.inWarehName = that.warehList.find(ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
         }
         that.formInline.requisitionOrgName = that.ueserOrgName;
         that.formInline.makingP = that.ueserName;
@@ -540,8 +553,9 @@
         delete that.formInline.dRequisitionId;
 
         // console.info(that.formInline)
+        // console.info(that.formInline.dRequisitionDetailList.length)
         this.$refs[formName].validate((valid) => {
-          if (valid) {
+          if (valid && that.formInline.dRequisitionDetailList.length > 0) {
             that.$axios({
               url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
               method: 'post',
@@ -555,14 +569,14 @@
               }
             })
               .then(function (response) {
-                if(response.data.code != '1'){
+                if (response.data.code != '1') {
                   that.$message({
                     showClose: true,
                     message: '新增调拨单失败，请检查后重试！',
                     type: 'error'
                   })
                   return false;
-                }else {
+                } else {
                   that.$message({
                     showClose: true,
                     message: '新增成功！',
@@ -570,6 +584,7 @@
                   });
                   that.$refs[formName].resetFields();
                   that.tableData = [];
+                  that.formInline.memo = '';
                 }
               })
               .catch(function (error) {
@@ -591,10 +606,10 @@
         });
       },
       //修改调拨单
-      editTransferOrder(formName){
+      editTransferOrder(formName) {
         const that = this;
-        if (that.warehList.find( ele => ele.warehouseId == that.formInline.outWarehId )) {
-          that.formInline.inWarehName = that.warehList.find( ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
+        if (that.warehList.find(ele => ele.warehouseId == that.formInline.outWarehId)) {
+          that.formInline.inWarehName = that.warehList.find(ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
         }
         that.formInline.dRequisitionId = that.detailInfo.requisitionNo;
         that.formInline.requisitionOrgName = that.ueserOrgName;
@@ -617,14 +632,14 @@
               }
             })
               .then(function (response) {
-                if(response.data.code != '1'){
+                if (response.data.code != '1') {
                   that.$message({
                     showClose: true,
                     message: '修改调拨单失败，请检查后重试！',
                     type: 'error'
                   })
                   return false;
-                }else {
+                } else {
                   that.$message({
                     showClose: true,
                     message: '修改成功！',
@@ -652,7 +667,7 @@
         });
       },
       //追加商品
-      addOrder(){
+      addOrder() {
         const that = this;
         that.$axios({
           url: 'http://myc.qineasy.cn/pos-api/stock/getStockListBysku',
@@ -668,23 +683,23 @@
           }
         })
           .then(function (response) {
-            if(response.data.code != '1'){
+            if (response.data.code != '1') {
               that.$message({
                 showClose: true,
                 message: '查询数据出问题喽，请检查后重试！',
                 type: 'error'
               })
               return false;
-            }else {
+            } else {
               // console.info(response.data.data)
               const productData = response.data.data.list;
               const params = {
-                  proNum: that.searchForm.proNum,
-                  count: that.formInline.dRequisitionDetailList.count,
+                proNum: that.searchForm.proNum,
+                count: that.formInline.dRequisitionDetailList.count,
               };
-              if(response.data.data.list.length>0){
+              if (response.data.data.list.length > 0) {
                 that.tableData.push(productData[0]);
-              }else{
+              } else {
                 that.$message({
                   showClose: true,
                   message: '无此商品！',
@@ -854,9 +869,9 @@
           })
       },
       //移除商品
-      removeProduct(item){
+      removeProduct(item) {
         const that = this;
-        that.tableData.splice(item,1);
+        that.tableData.splice(item, 1);
       },
     }
   }

@@ -125,7 +125,7 @@
         checked: true
       }
     },
-    props: ['listData','listCounts', 'mypagination'],
+    props: ['listData','listCounts', 'mypagination', 'tabchange'],
     created() {
       const ueserInfo = JSON.parse(localStorage.getItem("userData"));
       this.ueserId = ueserInfo.userId;
