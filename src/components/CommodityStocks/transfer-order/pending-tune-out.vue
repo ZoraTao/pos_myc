@@ -181,7 +181,7 @@
               })
               return false;
             } else {
-              console.info(response.data.data);
+              // console.info(response.data.data);
               that.proList = response.data.data.detailList;
             }
           })

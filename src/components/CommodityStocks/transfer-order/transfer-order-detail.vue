@@ -41,7 +41,7 @@
           max-height="300"
           style="width: 100%">
           <el-table-column
-            prop="proNum"
+            prop="sku"
             label="商品编码"
             width="120">
           </el-table-column>
@@ -143,7 +143,7 @@
               })
               return false;
             } else {
-              // console.info(response.data.data);
+              console.info(response.data.data);
               that.detData = response.data.data;
               that.detailData = response.data.data.dRequisition;
               that.detailList = response.data.data.detailList;
