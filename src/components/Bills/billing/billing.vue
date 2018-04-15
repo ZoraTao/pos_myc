@@ -1557,7 +1557,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 var orderItemsList=[];
                 for(var item in this.tableData){
                     orderItemsList.push({
-                        itemId:this.tableData[item].itemId,//商品sku码
+                        itemId:this.tableData[item].productId,//商品sku码
                         itemName:this.tableData[item].skuName2,//明细名称
                         proMemo:this.tableData[item].skuName,
                         quantity:this.tableData[item].nums,//数量
@@ -1565,7 +1565,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         orderPromotionId:'',//订单营销活动id
                         listPrice:this.tableData[item].price,//原价
                         roundFlag:"1",//商品取整
-                        itemNo:this.tableData[item].itemNo,//商品编码
+                        itemNo:this.tableData[item].sku,//商品编码
                         warehouseId:this.tableData[item].warehouseId,
                         orderReceiptId:this.tableData[item].customId||'',//定做单id
                         refundId:this.tableData[item].productId,//库存
@@ -1637,7 +1637,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     orderDiscount:alldis,//整单折扣
                     orderType:BorderType
                 }
-                console.log(jsonObject)
                 _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp',
                     method: 'post',
@@ -1659,16 +1658,15 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         })
                         return false;
                     } else {
-                        debugger
                         _this.$message({
                             showClose: true,
                             message: '开单成功',
                             type: 'success'
                         });
                         
-                        setTimeout(function(){
-                            location.reload();
-                        },1000)
+                        // setTimeout(function(){
+                        //     location.reload();
+                        // },1000)
                         // if(是门店收银){
                             // let orderId = response.data.data.orderId;//直接开单收银  门店收银
                             // _this.$router.push({path:'/cashier/cashierList',query:{orderId:orderId}})
