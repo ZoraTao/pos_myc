@@ -1569,6 +1569,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         warehouseId:this.tableData[item].warehouseId,
                         orderReceiptId:this.tableData[item].customId||'',//定做单id
                         refundId:this.tableData[item].productId,//库存
+                        productType:this.tableData[item].classId,
                         // price:this.tableData[item].realSale,//实售单价
                     })
                     
@@ -1607,7 +1608,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 }
                 console.log(BorderType)
                 var jsonObject =
-                {
+                {   
                     memberId : memberId,//会员id
                     prescriptionsId  : this.optometryId,//验光单id
                     urgent : (this.orderTemp.urgent).toString(),//是否加急
@@ -1658,6 +1659,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         })
                         return false;
                     } else {
+                        debugger
                         _this.$message({
                             showClose: true,
                             message: '开单成功',
