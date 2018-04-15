@@ -6,11 +6,12 @@
         <el-tab-pane v-for="item in tabs" :key="item.name" :label="item.label" :name="item.name">
             <el-table
                 :data="data.memberList"
+                v-loading="!data.memberList"
                 size="small"
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="memberCardNo"
-                width="110px"
+                width="130px"
                 label="会员卡号">
                 </el-table-column>
                 <el-table-column

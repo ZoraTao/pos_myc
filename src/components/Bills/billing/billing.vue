@@ -410,8 +410,8 @@
         <cuActions></cuActions>
     </el-dialog>
     <el-dialog class="packageGoods" title="选择套餐" :visible.sync="packageGoods" width="800px">
-        <PackageGoodsModal></PackageGoodsModal>
-        <div class="packageDetailButtonGroup">             
+        <PackageGoodsModal @showBottom="showhideBottom=true" @hideBottom="showhideBottom=false"></PackageGoodsModal>
+        <div class="packageDetailButtonGroup" v-show="showhideBottom">             
             <el-checkbox class="fn-left">套餐置换</el-checkbox>
             <el-button @click="packageGoods = false">取 消</el-button>
             <el-button type="primary" @click="packageGoods = false">确定</el-button>
@@ -596,6 +596,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 value: '',
                 //销售人员
                 shopMember:'',
+                showhideBottom:'',//控制套餐底部按钮
                 custom:'',//定做状态
                 customText:'1',
                 selectOptions: '',
@@ -1732,4 +1733,13 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 width: 150px;
             }
         }
+    .el-input__prefix, .el-input__suffix{
+        color:#606266
+    }
+    .el-select .el-input .el-select__caret{
+        color:#606266
+    }
+    .inputBold span{
+        font-weight: bold;
+    }
 </style>

@@ -447,6 +447,10 @@ i,em{
   height: 1px;
   border-bottom: 1px dashed #E1E1E1;
 }
-.el-pagination.is-background .el-pager li:not(.disabled).active {
-    background-color: #009fcf !important;
+.el-pager li{
+    font-weight: 200;
 }
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: #00a2de!important;
+}
+

@@ -45,6 +45,7 @@
         <div class="clearfix modal-content-top">
             <el-table
                 :data="selectProductSku.productSkuData.list"
+                v-loading="!selectProductSku.productSkuData.list"
                 size="small"
                 align="left"
                 style="width: 100%;margin-bottom:10px">

@@ -89,7 +89,7 @@
             </tr>
             </thead>
 
-            <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
+            <tbody class="orders_tbody" v-loading="!orderTempList" v-for="order in orderTempList" :key="order.orderId">
             <tr class="order_header">
               <td colspan="9">
                 <div class="fn-left">

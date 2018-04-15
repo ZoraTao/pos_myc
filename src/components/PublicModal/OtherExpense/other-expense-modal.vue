@@ -30,7 +30,7 @@
                     prop="packagePrice"
                     label="选择">
                     <template slot-scope="scope">
-                        <input type="checkbox" :checked="scope.row.isCheck"  @change="checkPay(scope.row,scope.$index,index)">
+                        <input type="checkbox" :checked="scope.row.isCheck"  @change="checkPay(scope.row,scope.$index,index,$event)">
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -42,7 +42,7 @@
                 </el-table-column>
             </el-table>
             <div class="otherExpenseTotal">
-                <p>合计 :<span>{{amount}}</span></p>
+                <p>合计 :<span>{{amount||'0.00'}}</span></p>
             </div>
         </div>
     </div>
@@ -57,7 +57,8 @@ export default {
     return {
       data: [],
       amount: "", //总金额,
-      init: null
+      init: null,
+      s:true
     };
   },
   methods: {
@@ -75,13 +76,13 @@ export default {
         }
         manyCost.push(message);
       }
-      console.log(_this.init);
       _this.initData();
       _this.$emit("addCostPay", manyCost);
     },
-    checkPay(data, $index, index) {
+    checkPay(data, $index, index,$event) {
       let _this = this;
       let setMoney = null;
+      if(!_this.s) return 
       _this.data[index].list[$index].isCheck = !_this.data[index].list[$index].isCheck;
       if (this.data[index].list[$index].isCheck) {
         _this.data[index].list[$index].displacement =
@@ -93,6 +94,9 @@ export default {
       }
       this.data[index].list.splice($index, 1, setMoney);
       _this.computedMoney();
+    //   setTimeout(function(){
+    //     _this.s = true;
+    //   },20)
     },
     computedMoney() {
       let _this = this;
@@ -124,6 +128,7 @@ export default {
     toCheck(row,event,column){
         let _this = this;
         let rowId = row.id;
+        this.s = false;
         for (let i = 0; i < _this.data.length; i++) {
             for (let j = 0; j < _this.data[i].list.length; j++) {
                 if (_this.data[i].list[j].id == rowId) {
@@ -142,6 +147,10 @@ export default {
                 }
             }
         }
+    //   event.cancelBubble = true;
+    setTimeout(function(){
+        _this.s = true;
+    },50)
         // console.log(row)
     },
     initData(){
