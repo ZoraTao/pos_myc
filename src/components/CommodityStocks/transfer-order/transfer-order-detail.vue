@@ -14,14 +14,14 @@
             <span><em>调拨部门：</em>{{detailData.requisitionOrgName}}</span>
           </p>
         <p>
-          <span><em>经办日期：</em>{{detailData.andleTime}}</span>
+          <span><em>经办日期：</em>{{detailData.handleTime}}</span>
           <span><em>调拨人：</em>{{detailData.requisitionP}}</span>
           <span><em>调出仓库：</em>{{detailData.outWarehName}}</span>
           <span><em>调入仓库：</em>{{detailData.inWarehName}}</span>
           <span><em>调拨级别：</em>{{detailData.level}}</span>
         </p>
         <p>
-          <span><em>承运类型：</em>{{detailData.arrierType}}</span>
+          <span><em>承运类型：</em>{{detailData.carrierType}}</span>
           <span><em>承运人：</em>{{detailData.carrierP}}</span>
           <span><em>运费：</em>{{detailData.freight}}</span>
           <span><em>备注：</em>{{detailData.memo}}</span>
@@ -46,7 +46,7 @@
             width="120">
           </el-table-column>
           <el-table-column
-            prop="proName"
+            prop="skuName"
             label="商品名称"
             width="150">
           </el-table-column>
@@ -143,7 +143,7 @@
               })
               return false;
             } else {
-              console.info(response.data.data);
+              // console.info(response.data.data);
               that.detData = response.data.data;
               that.detailData = response.data.data.dRequisition;
               that.detailList = response.data.data.detailList;

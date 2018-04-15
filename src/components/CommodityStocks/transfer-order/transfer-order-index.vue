@@ -195,7 +195,7 @@
               })
               return false;
             } else {
-              // console.info(response.data.data);
+              console.info(response.data.data);
               that.dRequisitionList = response.data.data.dRequisitions;
               that.counts = response.data.data.count;
             }

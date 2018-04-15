@@ -249,6 +249,7 @@
         ueserOrgId: '',
         fullDate: '',
         formInline: {
+          makingP: '',//制单人
           requisitionOrgName: '',//调拨部门
           requisitionOrg: '',//调拨部门id
           handleTime: '',//经办日期
@@ -352,7 +353,7 @@
           };
           that.formInline = Object.assign(that.formInline,newFormline);
         }
-        console.info(that.formInline);
+        // console.info(that.formInline);
       },
 
       //获取当前时间
@@ -533,11 +534,12 @@
           that.formInline.inWarehName = that.warehList.find( ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
         }
         that.formInline.requisitionOrgName = that.ueserOrgName;
+        that.formInline.makingP = that.ueserName;
         that.formInline.requisitionOrg = that.ueserOrgId;
         that.formInline.dRequisitionDetailList = that.tableData;
         delete that.formInline.dRequisitionId;
 
-        console.info(that.formInline)
+        // console.info(that.formInline)
         this.$refs[formName].validate((valid) => {
           if (valid) {
             that.$axios({
