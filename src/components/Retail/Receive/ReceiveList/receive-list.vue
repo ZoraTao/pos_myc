@@ -202,7 +202,7 @@ export default {
         }],
         value: '',
         showReceive:false,
-        orderTempList: {},
+        orderTempList: [],
         srcNum:'1',
         tabs:[{
             'value':'待发出',
@@ -230,17 +230,19 @@ export default {
       let _this = this;
       _this.$router.push({path:'/cashier/orderDetail',query:{orderId:data.orderId}})
     },
-    sureGetProduct:function(){
+    sureGetProduct:function(value){
         var _this=this;
         _this.$axios({
             url: "http://myc.qineasy.cn/pos-api/stockCode/list",
             method: "post",
             params: {
               jsonObject: {
-                  packageNo:''
+                  orderNo:value.orderId
               },
               keyParams: {
-                weChat: true
+                weChat: true,
+                userId: '8888',
+                orgId: '11387'
               }
             }
           })
@@ -251,6 +253,7 @@ export default {
                     message: res.data.msg,
                         type: 'success'
                 });    
+                _this.getOrderList();
             }else{
                 _this.$message({
                     showClose: true,

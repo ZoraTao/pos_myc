@@ -54,7 +54,7 @@
 
                 </td>
               </tr>
-              <tr v-for="(list,index) in order.orderItems" :key="list.name">
+              <tr v-for="(list,index) in order.orderItems" :key="list.name" :class="{'opacity50':list.status=='6'}">
                 <td>{{list.itemId}}</td>
                 <td>{{list.itemName||'商品名'}}</td>
                 <td></td>
@@ -64,11 +64,17 @@
                 <td></td>
                 <td>{{parseInt(list.quantity)}}</td>
                 <td></td>
-                <td>
+                <td v-if="list.status!='6'">
                   <input class="pickInput" type="number" min="0" value="1" :disabled="!list.isActived" v-model="list.getProNum"/>&nbsp;&nbsp;&nbsp;
                 </td>
-                <td>
+                <td v-else>
+                  <span >{{list.receiveTime}}</span>
+                </td>
+                <td v-if="list.status!='6'">
                   <el-checkbox v-model="list.isActived"></el-checkbox>
+                </td>
+                <td v-else>
+                  <span>已取</span>
                 </td>
                 <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                   <el-button type="primary" @click="getPro(order)">取件</el-button>
@@ -140,15 +146,15 @@
             </el-table>
             </div>
         </div>
-    <el-pagination
-    class="am-ft-right"
-    background
-    layout="prev, pager, next"
-    :page-size="5"
-    :total="count"
-    @current-change="getOrderList"
-    :current-page.sync="nub">
-    </el-pagination> 
+        <el-pagination
+        class="am-ft-right"
+        background
+        layout="prev, pager, next"
+        :page-size="5"
+        :total="count"
+        @current-change="getOrderList"
+        :current-page.sync="nub">
+        </el-pagination> 
     </div>
     <el-dialog custom-class="noheader" title="" :visible.sync="showModal">
         <div class="modal-content print-frame">
@@ -213,42 +219,50 @@ export default {
             orderItemsList:[]
         };
         value.orderItems.forEach(function(element){
-            if(element.isActived){
-                jsonObject.orderItemsList.push({
-                    orderItemId:element.orderItemId,
-                    pickupQuantity:element.getProNum
-                })
+            if(element.status!='6'){
+                if(element.isActived){
+                    jsonObject.orderItemsList.push({
+                        orderItemId:element.orderItemId,
+                        pickupQuantity:element.getProNum
+                    })
+                }else{
+                    jsonObject.orderItemsList.push({
+                        orderItemId:element.orderItemId,
+                        pickupQuantity:'0'
+                    })
+                }
             }
         })
-        console.log(jsonObject)
-        // _this.$axios({
-        //     url: "http://myc.qineasy.cn/pos-api/orderTemp/updatePickupStatus",
-        //     method: "post",
-        //     params: {
-        //       jsonObject: jsonObject,
-        //       keyParams: {
-        //         weChat: true
-        //       }
-        //     }
-        //   })
-        //   .then(function(res) {
-        //     console.info(res.data.data)
-        //     if(res.data.code == 1){
-        //         _this.showModal=true;
-        //         setTimeout(() => {
-        //             _this.showModal=false;
-        //         }, 1000);
-        //     }else{
-        //        _this.$message({
-        //         showClose: true,
-        //         message: '请求数据失败，请联系管理员',
-        //         type: 'error'
-        //       })
-        //     }
-        //   })
-        //   .catch(function(error) {
-        //     console.info(error);
-        //   });        
+        _this.$axios({
+            url: "http://myc.qineasy.cn/pos-api/orderTemp/updatePickupStatus",
+            method: "post",
+            params: {
+              jsonObject: jsonObject,
+              keyParams: {
+                weChat: true,
+                userId: '8888',
+                orgId: '11387'
+              }
+            }
+          })
+          .then(function(res) {
+            if(res.data.code == 1){
+                _this.showModal=true;
+                setTimeout(() => {
+                    _this.showModal=false;
+                    _this.getOrderList();
+                }, 1000);
+            }else{
+               _this.$message({
+                showClose: true,
+                message: '请求数据失败，请联系管理员',
+                type: 'error'
+              })
+            }
+          })
+          .catch(function(error) {
+            console.info(error);
+          });        
     },
     changeTab:function(item){
         this.srcNum=item.srcNum;
@@ -273,8 +287,8 @@ export default {
       })
       setTimeout(() => {
         _this.$axios({
-            // url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
-            url: "http://10.0.17.225/pos-api/orderTemp/getOrderTempList",
+            url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
+            // url: "http://10.0.17.225/pos-api/orderTemp/getOrderTempList",
             method: "post",
             params: {
               jsonObject: {

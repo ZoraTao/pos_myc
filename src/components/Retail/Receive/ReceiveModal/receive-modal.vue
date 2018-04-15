@@ -19,16 +19,16 @@
             <el-row :gutter="20">
                 <el-col :span="8">
                     <div class="am-ft-16 am-ft-gray3 ft_bold " :span="8">
-                        562536256452
+                                    {{shelfData.itemId}}
                     </div>
                 </el-col>
                 <el-col :span="8">
                     <div class="am-ft-14 am-ft-gray3 ft_bold" :span="8">
-                        镜架：LEVIS光学镜架
+                        镜架：{{shelfData.itemName}}
                     </div>
                 </el-col>
             </el-row>
-            <div class="am-ft-12 am-ft-gray5">数量：<span class="am-ft-gray5 ft_bold">1</span></div>
+            <div class="am-ft-12 am-ft-gray5">数量：<span class="am-ft-gray5 ft_bold">{{Number(shelfData.quantity)}}</span></div>
             <el-row :gutter="20">
                 <el-col :span="8">
                     <div class="am-ft-16 am-ft-gray3 ft_bold ">
@@ -62,29 +62,29 @@ export default {
             orderNo:'',
             barcode:'',
             productId:'',
-            warehouseId:'',
+            warehouseId:'', 
+        },
+        shelfData:{
+            itemId:'',
+            itemName:'',
+            quantity:'',
         }
     }
   },
   methods:{
       postReceive(){
         var _this=this;
-        if(this.isHasTruePro){
-            _this.data.barcode='';
-            _this.data.productId='393231';
-            _this.data.warehouseId='2049';
-        }else{
-            _this.data.productId='';
-            _this.data.warehouseId='';
-            _this.data.barcode='25';
-        }
         _this.$axios({
             url: "http://myc.qineasy.cn/pos-api/stockCode/updateStockCode",
             method: "post",
             params: {
-                jsonObject: this.data,
+                jsonObject: {
+                    orderNo:_this.data.orderNo
+                },
                 keyParams: {
-                    weChat: true
+                    weChat: true,
+                    userId: '8888',
+                    orgId: '11387'
                 }
             }
         })
@@ -116,19 +116,21 @@ export default {
       }
   },
   created:function(){
-      var _this=this;
-    Object.keys(this.data).forEach(element => {
-        _this.data[element]='';
-    })
-    
-    _this.data.productId='393231';
-    _this.data.warehouseId='2049';
+        var _this=this;
+        Object.keys(this.data).forEach(element => {
+            _this.data[element]='';
+        })
+        _this.data.orderNo=_this.receiveData.orderId;
 
-    this.receiveData.orderItems.forEach(element => {
-        
-    })
-    this.data.orderNo=this.receiveData.orderId;
-    this.data.packageNo='25';
+        this.receiveData.orderItems.forEach(element => {
+            if(element.productType=='C002'){
+                console.log(element)
+                _this.shelfData.itemId=element.itemId;
+                _this.shelfData.itemName=element.itemName;
+                _this.shelfData.quantity=element.quantity;
+            }
+        })
+        console.log(_this.shelfData)
   },
   watch:{
       'showReceive':function(n,o){
