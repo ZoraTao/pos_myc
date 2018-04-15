@@ -21,17 +21,17 @@
         </a>
         <el-dropdown>
           <span class="el-dropdown-link">
-            {{this.$store.state.user.orgName}}
+            {{showUser.orgName}}
           <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>{{this.$store.state.user.orgName}}1</el-dropdown-item>
-            <el-dropdown-item>{{this.$store.state.user.orgName}}2</el-dropdown-item>
-            <el-dropdown-item>{{this.$store.state.user.orgName}}3</el-dropdown-item>
+            <el-dropdown-item>{{showUser.orgName}}1</el-dropdown-item>
+            <el-dropdown-item>{{showUser.orgName}}2</el-dropdown-item>
+            <el-dropdown-item>{{showUser.orgName}}3</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
           <span>
-            {{this.$store.state.user.trueName}}
+            {{showUser.trueName}}
           </span>
 
 
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import {mapState} from  'vuex'
 import store from '../../vuex/store'
 import { judgeCode } from "../../utils/other";
 
@@ -63,6 +64,7 @@ export default {
     return {
       items: [],
       busData: "",
+      showUser:{},
       toggle: true,
       BeforeShow: [
         {
@@ -77,14 +79,16 @@ export default {
   methods: {
 
   },
-  computed: {
-    
-  },
+  computed:{
+
+  }    
+  ,
 
   beforeMount() {},
-  mounted() {
-    console.log(this.$store.state)
-      this.$store.state.user =  JSON.parse(localStorage.getItem("items"))
+  created() {
+    this.$store.commit('LOGIN_GET');
+   this.showUser = JSON.parse(localStorage.getItem("userData"));
+    
   },
   methods: {
     //退出

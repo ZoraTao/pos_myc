@@ -55,14 +55,14 @@
           label="原单价"
           width="120px">
           <template slot-scope="scope">
-            <strong>{{ parseFloat(scope.row.price)}}</strong>
+            <strong>{{ parseFloat(scope.row.price)||'--'}}</strong>
           </template>
         </el-table-column>
         <el-table-column
           label="实售单价"
           width="120px">
           <template slot-scope="scope">
-            <strong>{{ parseFloat(scope.row.money)}}</strong>
+            <strong>{{ parseFloat(scope.row.money)||'--'}}</strong>
           </template>
         </el-table-column>
         <el-table-column
@@ -79,7 +79,7 @@
           label="订单金额"
           width="260px">
           <template slot-scope="scope">
-            <strong class="am-ft-22 mgb15">{{orderData.ordertemp.moneyAmount}}</strong>
+            <strong class="am-ft-22 mgb15">合计：{{orderData.ordertemp.moneyAmount}}</strong>
             <p class="am-ft-12 am-text-normal" v-show="orderData.ordertemp.couponMoney>0">卡券 :<strong class="am-ft-13">－{{orderData.ordertemp.couponMoney}}</strong></p>
             <p class="am-ft-12 am-text-normal" v-show="orderData.ordertemp.discountMoney>0">折扣 :<strong class="am-ft-13">－{{orderData.ordertemp.discountMoney}}</strong></p>
             <p class="am-ft-12 am-text-normal" v-show="orderData.ordertemp.activityMoney>0">活动 :<strong class="am-ft-13">－{{orderData.ordertemp.activityMoney}}</strong></p>
@@ -87,8 +87,8 @@
         </el-table-column>
       </el-table>
       </div>
-      <h3>验光信息</h3>
-      <div class="optometry" v-cloak>
+      <h3 v-if="orderData.prescription">验光信息</h3>
+      <div class="optometry" v-cloak v-if="orderData.prescription">
         <div class="memberMessage">
           <span>ID : <i>{{orderData.prescription.prescriptions.prescriptionId}}</i></span>
           <span>验光日期 :<i>{{orderData.prescription.prescriptions.prescriptionTime}}</i></span><br>
@@ -215,6 +215,7 @@
           </ul>
         </div>
       </div>
+      
       <h3 v-if="orderData.orderLogList.length!=0">操作流转</h3>
 
       <div class="operation">
@@ -241,7 +242,7 @@
               width="120">
             </el-table-column>
             <el-table-column
-              prop="organizationName"
+              prop="operator"
               label="操作人"
               width="100">
             </el-table-column>
@@ -512,9 +513,11 @@ export default {
             }
           }
         })
-        .then(res => {
+        .then((res) => {
           if (res.data.code == 1) {
-            _this.eyesDate(res.data.data.prescription.eyes);
+            if(res.data.data.prescription){
+              _this.eyesDate(res.data.data.prescription.eyes);
+            }
             _this.orderData = res.data.data;
             
           } else {
@@ -525,13 +528,6 @@ export default {
             });
           }
         })
-        .catch(err => {
-          _this.$message({
-            showClose: true,
-            message: "网络错误，请联系管理员",
-            type: "error"
-          });
-        });
     }
   },
   created() {
