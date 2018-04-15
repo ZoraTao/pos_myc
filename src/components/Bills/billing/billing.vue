@@ -1522,7 +1522,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     // return false;
                 }
                 var orderItemsList=[];
-                console.log(this.tableData)
                 for(var item in this.tableData){
                     orderItemsList.push({
                         itemId:this.tableData[item].sku,//商品sku码
@@ -1534,7 +1533,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         listPrice:this.tableData[item].price,//原价
                         roundFlag:"1",
                         warehouseId:this.tableData[item].warehouseId,
-                        orderReceiptId:this.tableData[item].customId
+                        orderReceiptId:this.tableData[item].customId,
+                        productId:this.tableData[item].productId
                         // price:this.tableData[item].realSale,//实售单价
                     })
                     
@@ -1614,7 +1614,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         })
                         return false;
                     } else {
-                        debugger
                         _this.$message({
                             showClose: true,
                             message: '开单成功',
