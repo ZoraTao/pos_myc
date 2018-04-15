@@ -17,7 +17,8 @@
                         <div class="CouponBarItem blueStatus" :style="{'background-color':item.colorValue,'border-color':item.colorValue}">
                             <div class="cardConstBox">
                                 <div class="cardConst">
-                                    <p><span>¥</span>{{parseFloat(item.couponAmount)}}</p>
+                                    <p v-show="item.couponModality == '0'">{{parseFloat(item.discount)}}折</p>
+                                    <p v-show="item.couponModality == '1'"><span>¥</span>{{parseFloat(item.amount)}}</p>
                                 </div>
                                 <div class="cardInfo">
                                     <div class="cardInfoBox">
@@ -130,6 +131,7 @@ export default {
   },
   mounted(){
       this.conponContent = this.conponData;
+      console.log(this.conponData)
     //   console.log(1111,this.conponData)
   }
 }

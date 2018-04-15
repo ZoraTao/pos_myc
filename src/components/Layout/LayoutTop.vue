@@ -1,7 +1,6 @@
 <template>
 <!------ Header top ------>
   <div class="header-top">
-
     <div class="tab-box">
       <ul>
         <li
@@ -32,7 +31,7 @@
           </el-dropdown-menu>
         </el-dropdown>
           <span>
-            {{this.$store.state.user.LoginName}}
+            {{this.$store.state.user.trueName}}
           </span>
 
 
@@ -57,6 +56,7 @@
 <script>
 import store from '../../vuex/store'
 import { judgeCode } from "../../utils/other";
+
 export default {
   name: "LayoutTop",
   data() {
@@ -75,24 +75,16 @@ export default {
     };
   },
   methods: {
+
   },
   computed: {
-      LoginName(){
-        return this.$store.state.LoginName;
-      }
+    
   },
 
   beforeMount() {},
   mounted() {
-    let _this = this;
-    if(_this.$store.state.user.orgName == '' || _this.$store.state.user.LoginName == ''|| _this.$store.state.user.token ==''){
-      _this.$message({
-                showClose: true,
-                message: '请求数据出问题喽，请重试！',
-                type: 'error'
-            })
-      _this.$router.push({path:'/login'})
-    }
+    console.log(this.$store.state)
+      this.$store.state.user =  JSON.parse(localStorage.getItem("items"))
   },
   methods: {
     //退出

@@ -12,6 +12,7 @@ import store from './vuex/store'
 import VueAreaLinkage from 'vue-area-linkage'
 import VueContextMenu from 'vue-contextmenu'
 import 'vue-contextmenu/style/css/font-awesome.min.css'
+import globaMethods from './utils/mainMethods.js'
 Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false
@@ -33,3 +34,4 @@ new Vue({
   template: '<App/>',
   render: h => h(App)
 })
+
