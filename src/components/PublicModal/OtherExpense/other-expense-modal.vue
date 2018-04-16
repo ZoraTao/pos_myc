@@ -7,7 +7,7 @@
             size="small"
             :span-method="objectSpanMethod"
             v-for="(item,index) in data"
-            :key="item.p.id"
+            :key="item.p.name"
             :data="item.list"
             @row-click="toCheck"
             :show-header="index==0"
@@ -78,8 +78,11 @@ export default {
       }
       _this.initData();
       _this.$emit("addCostPay", manyCost);
+    //   setTimeout(function(){
+    //       _this.deactivated();
+    //   },500);
     },
-    checkPay(data, $index, index,$event) {
+    checkPay(data, $index, index,$event) {//多选框
       let _this = this;
       let setMoney = null;
       if(!_this.s) return 
@@ -94,11 +97,11 @@ export default {
       }
       this.data[index].list.splice($index, 1, setMoney);
       _this.computedMoney();
-    //   setTimeout(function(){
-    //     _this.s = true;
-    //   },20)
     },
-    computedMoney() {
+    deactivated () {//销毁组件
+        this.$destroy()
+    },
+    computedMoney() {//计算价格
       let _this = this;
       let n = 0;
       for (let i = 0; i < _this.data.length; i++) {
@@ -125,14 +128,13 @@ export default {
         }
       }
     },
-    toCheck(row,event,column){
+    toCheck(row,event,column){//多选行
         let _this = this;
         let rowId = row.id;
         this.s = false;
         for (let i = 0; i < _this.data.length; i++) {
             for (let j = 0; j < _this.data[i].list.length; j++) {
                 if (_this.data[i].list[j].id == rowId) {
-                    console.log(_this.data[i].list[j]);
                     _this.data[i].list[j].isCheck = !_this.data[i].list[j].isCheck;
                     if(_this.data[i].list[j].isCheck){
                         _this.data[i].list[j].displacement = _this.data[i].list[j].value;
@@ -147,7 +149,7 @@ export default {
                 }
             }
         }
-    //   event.cancelBubble = true;
+        _this.computedMoney();
     setTimeout(function(){
         _this.s = true;
     },50)
@@ -155,19 +157,17 @@ export default {
     },
     initData(){
         let _this = this;
-        _this.$nextTick(()=>{
             for(var i=0;i<_this.data.length;i++){
                 _this.data.splice(i,1,_this.init[i])
             }
+            _this.data = _this.init 
             // for(let i = 0;i<_this.data.length;i++){
             //     console.log(_this.data[i])
             //     for(let a = 0;a<_this.data[i].list.length;a++){
             //         _this.$set( _this.data[i].list[a], 'isCheck', false)
             //     }
             // }
-        })
         
-        console.log(_this.data)
     },
     requestList() {
       var _this = this;
