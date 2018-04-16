@@ -188,7 +188,7 @@
                   <el-form-item
                     label=""
                     prop="proCount" >
-                    <el-input type="number" min="1" v-model="tableData[scope.$index].count" size="small" ></el-input>
+                    <el-input type="number" min="1" v-model.number="tableData[scope.$index].count" size="small" ></el-input>
                   </el-form-item>
                 </el-form>
               </template>
@@ -321,7 +321,7 @@
         },
         rules2: {
           proCount: [
-            // {required: true, message: '请输入大于0的数字', trigger: 'blur'}
+            {required: true, message: '请输入大于0的数字', trigger: 'blur'}
           ],
         }
       }
