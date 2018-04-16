@@ -33,7 +33,7 @@
         label="制单人">
       </el-table-column>
       <el-table-column
-        prop="create_time"
+        prop="createTime"
         label="制单日期"
         width="140">
       </el-table-column>
