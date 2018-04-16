@@ -1677,7 +1677,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         })
                         return false;
                     } else {
-                debugger
                         _this.$message({
                             showClose: true,
                             message: '开单成功',
