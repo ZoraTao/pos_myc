@@ -945,6 +945,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     this.selectProductSku.selectL='';
                     this.showSelectShop=true;
                     this.selectProductSku.cylinder=_this.selectProductSku.selectSP;
+                    this.eyesdata.sph= ''
+                    this.eyesdata.cyl=''
                 }else if(type==null){
                     // console.log('null')
                 }else{
@@ -1569,6 +1571,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     // return false;
                 }
                 var orderItemsList=[];
+                console.log(this.tableData)
                 for(var item in this.tableData){
                     orderItemsList.push({
                         itemId:this.tableData[item].productId,//商品sku码
@@ -1589,6 +1592,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     })
 
                 }
+                console.log(orderItemsList)
                 if(orderItemsList==''){
                     _this.$message({
                         showClose: true,
@@ -1673,6 +1677,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         })
                         return false;
                     } else {
+                debugger
                         _this.$message({
                             showClose: true,
                             message: '开单成功',
