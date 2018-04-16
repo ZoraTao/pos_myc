@@ -184,11 +184,11 @@
             <el-table-column
               label="调拨数量">
               <template slot-scope="scope" class="input_num">
-                <el-form :inline="true" :rules="rules2" >
+                <el-form :model="tableData[scope.$index]" prop="count" :rules="rules2">
                   <el-form-item
                     label=""
-                    prop="proCount" >
-                    <el-input type="number" min="1" v-model="tableData[scope.$index].count" size="small" ></el-input>
+                    prop="count">
+                    <el-input type="number" min="1" v-model.number="tableData[scope.$index].count" size="small" ></el-input>
                   </el-form-item>
                 </el-form>
               </template>
@@ -220,6 +220,7 @@
           <el-col :span="24">
             <el-input
               class="scan-btn"
+              clearable
               placeholder="商品编码/条形码/快速码"
               v-model="searchForm.proNum"
               @keyup.native.enter="addOrder">
@@ -274,7 +275,7 @@
           memo: '',//备注
           dRequisitionDetailList: [{
             proNum: '',//商品编码,
-            count: 1,//调拨数量
+            count: 0,//调拨数量
           }],
         },
         categoryCode1: [],//类别
@@ -320,10 +321,8 @@
           ],
         },
         rules2: {
-          proCount: [
-            // {required: true, message: '请输入大于0的数字', trigger: 'blur'}
-          ],
-        }
+          count:[{ required: true, message: '调拨数量不能为空且大于0', trigger: 'change', trigger: 'blur' },],
+        },
       }
     },
     created() {
@@ -618,7 +617,7 @@
 
         // console.info(that.formInline)
         this.$refs[formName].validate((valid) => {
-          if (valid) {
+          if (valid && that.formInline.dRequisitionDetailList.length > 0) {
             that.$axios({
               url: 'http://myc.qineasy.cn/pos-api/dRequisition/updateDRequisition',
               method: 'post',
