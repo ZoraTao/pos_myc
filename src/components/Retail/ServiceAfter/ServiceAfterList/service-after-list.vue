@@ -64,7 +64,7 @@
             <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
             <tr class="order_header">
               <td colspan="9">
-                <div class=" img_b" style="position: absolute;top:0;left:0;"><img
+                <div class=" img_b" style="position: absolute;top:0;left:0;" v-show="order.orderType=='1'"><img
                   src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ding_icon.png"/></div>
                 <div class=" fn-left">
                   <span class="order_id mgl30">{{order.orderNo}}</span>
@@ -72,7 +72,7 @@
                 </div>
                 <div class=" fn-right">
                   <span class="msg">销售&nbsp;&nbsp;</span>
-                  <span class="msg">{{order.salesName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
+                  <span class="msg">{{order.userName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
                 </div>
 
               </td>
@@ -171,7 +171,7 @@
       class="am-ft-right"
       background
       layout="prev, pager, next"
-      :page-size="5"
+      :page-size="15"
       :total="count"
       @current-change="getOrderList"
       :current-page.sync="nub">
@@ -195,7 +195,7 @@
         },
         orderTempList: [],
         nub: 1,
-        size: 5,
+        size: 15,
         count: 0,
         showModal: false,
         srcNum: '1',

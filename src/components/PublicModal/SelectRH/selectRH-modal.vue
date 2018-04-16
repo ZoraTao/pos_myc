@@ -62,7 +62,7 @@
             class="am-ft-right"
             background
             layout="prev, pager, next,total"
-            :page-size="5"
+            :page-size="10"
             :total="selectProductSku.productSkuData.count"
             @current-change="getProductSku"
             :current-page.sync="selectProductSku.nub">

@@ -57,13 +57,13 @@
                             <tr class="order_header">
                                 <td colspan="7">
                                     <div class=" fn-left">
-                                        <span class="am-bg-blue icon">定</span>
+                                        <span class="am-bg-blue icon" v-show="order.orderType=='1'">定</span>
                                         <span class="order_id">{{order.orderNo}}</span>
                                         <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
                                     </div>
                                     <div class=" fn-right">
                                         <span class="msg">销售&nbsp;&nbsp;</span>
-                                        <span class="msg">{{order.salesName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
+                                        <span class="msg">{{order.userName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
                                     </div>
 
                                 </td>
@@ -166,7 +166,7 @@
         class="am-ft-right"
         background
         layout="prev, pager, next"
-        :page-size="5"
+        :page-size="15"
         :total="count"
         @current-change="getOrderList"
         :current-page.sync="nub">
@@ -194,7 +194,7 @@ export default {
             status:""
         },
         nub: 1,
-        size: 5,
+        size: 15,
         count:0,
         options: [{
           value: '选项1',
@@ -272,7 +272,8 @@ export default {
         _this.showReceive=true;
     },
     hideReceive(value){
-        this.showReceive=value
+        this.getOrderList();
+        this.showReceive=value;
     },
     changeTab:function(item){
         this.nub=1;

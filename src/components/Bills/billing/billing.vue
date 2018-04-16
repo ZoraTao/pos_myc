@@ -673,7 +673,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     type:'',
                     count: 0,
                     nub: 0,
-                    size: 5
+                    size:10
                 },
                 tableData:[],//用户保存商品信息
                 where:'',//左右镜片
@@ -1665,9 +1665,9 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                             type: 'success'
                         });
                         
-                        // setTimeout(function(){
-                        //     location.reload();
-                        // },1000)
+                        setTimeout(function(){
+                            location.reload();
+                        },1000)
                         // if(是门店收银){
                             // let orderId = response.data.data.orderId;//直接开单收银  门店收银
                             // _this.$router.push({path:'/cashier/cashierList',query:{orderId:orderId}})

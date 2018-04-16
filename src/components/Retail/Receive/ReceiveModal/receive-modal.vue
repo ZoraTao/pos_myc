@@ -113,9 +113,8 @@ export default {
       chanel(){
           this.cpShowReceive=this.showReceive;
           this.$emit("hideReceive",!this.cpShowReceive)
-      }
-  },
-  created:function(){
+      },
+      showShelfData(){
         var _this=this;
         Object.keys(this.data).forEach(element => {
             _this.data[element]='';
@@ -124,17 +123,22 @@ export default {
 
         this.receiveData.orderItems.forEach(element => {
             if(element.productType=='C002'){
-                console.log(element)
                 _this.shelfData.itemId=element.itemId;
                 _this.shelfData.itemName=element.itemName;
                 _this.shelfData.quantity=element.quantity;
             }
-        })
-        console.log(_this.shelfData)
+        })   
+      }
+  },
+  created:function(){
+      this.showShelfData();
   },
   watch:{
       'showReceive':function(n,o){
-          
+        this.shelfData.itemId='';
+        this.shelfData.itemName='';
+        this.shelfData.quantity='';       
+        this.showShelfData();
       },
       'receiveData':function(){
 

@@ -2,7 +2,7 @@
 <section class=" content_box">
     <div class="am-bg-white cashier_box">
         <ul class="cashier_tab">
-            <li v-for="item in tabs" :key="item.value" :class="{'on':item.isActived}" @click="changeTab(item)">{{item.value}}</li>
+            <li v-for="item in tabs" :key="item.value" :class="{'on':item.checked}" @click="changeTab(item)">{{item.value}}</li>
         </ul>
         <ul class="clearfix cashier_top">
             <li class="fn-left">
@@ -43,13 +43,13 @@
               <tr class="order_header">
                 <td colspan="12">
                   <div class=" fn-left">
-                    <span class="am-bg-blue icon">定</span>
+                    <span class="am-bg-blue icon"  v-show="order.orderType=='1'">定</span>
                     <span class="order_id">{{order.orderNo}}</span>
                     <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
                   </div>
                   <div class=" fn-right">
                     <span class="msg">销售&nbsp;&nbsp;</span>
-                    <span class="msg">{{order.salesName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
+                    <span class="msg">{{order.userName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
                   </div>
 
                 </td>
@@ -65,19 +65,19 @@
                 <td>{{parseInt(list.quantity)}}</td>
                 <td></td>
                 <td v-if="list.status!='6'">
-                  <input class="pickInput" type="number" min="0" value="1" :disabled="!list.isActived" v-model="list.getProNum"/>&nbsp;&nbsp;&nbsp;
+                  <input class="pickInput" type="number" min="0" value="1" :disabled="!list.checked" v-model="list.getProNum"/>&nbsp;&nbsp;&nbsp;
                 </td>
                 <td v-else>
                   <span >{{list.receiveTime}}</span>
                 </td>
                 <td v-if="list.status!='6'">
-                  <el-checkbox v-model="list.isActived"></el-checkbox>
+                  <el-checkbox v-model="list.checked" @change="allChecked(order,list)"></el-checkbox>
                 </td>
                 <td v-else>
                   <span>已取</span>
                 </td>
                 <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                  <el-button type="primary" @click="getPro(order)">取件</el-button>
+                  <el-button type="primary" @click="getPro(order,list)">取件</el-button>
                 </td>
               </tr>
               <div class="gekai"> </div>
@@ -150,7 +150,7 @@
         class="am-ft-right"
         background
         layout="prev, pager, next"
-        :page-size="5"
+        :page-size="15"
         :total="count"
         @current-change="getOrderList"
         :current-page.sync="nub">
@@ -173,7 +173,7 @@ export default {
     return {
         showModal:false,
         nub: 1,
-        size: 5,
+        size: 15,
         count:0,
         searchForm: {
             orderNo: "",
@@ -184,13 +184,13 @@ export default {
         srcNum:'1',
         tabs:[{
             'value':'取件',
-            'isActived':true,
+            'checked':true,
             'srcNum':'1',
             'status':"57"
         },
         {
             'value':'全部',
-            'isActived':false,
+            'checked':false,
             'srcNum':'2',
             'status':""
         }],
@@ -208,6 +208,20 @@ export default {
     }
   },
   methods:{
+    allChecked(order,list){
+        if(order.isFirst!=false){
+            order.orderItems.forEach(function(element){
+                element.getProNum=element.quantity
+                if(element.checked!=list.checked){
+                    element.checked=true;
+                }
+            })
+        order.isFirst=false;
+        }else{
+            console.log(list)
+            console.log(list.checked)
+        }
+    },
     toOrderDetail(data){
       let _this = this;
       _this.$router.push({path:'/cashier/orderDetail',query:{orderId:data.orderId}})
@@ -220,7 +234,7 @@ export default {
         };
         value.orderItems.forEach(function(element){
             if(element.status!='6'){
-                if(element.isActived){
+                if(element.checked){
                     jsonObject.orderItemsList.push({
                         orderItemId:element.orderItemId,
                         pickupQuantity:element.getProNum
@@ -267,9 +281,9 @@ export default {
     changeTab:function(item){
         this.srcNum=item.srcNum;
         this.tabs.forEach(function(element){
-            element.isActived=false;
+            element.checked=false;
             if(element==item){
-                element.isActived=true;
+                element.checked=true;
             }
         })
     },
@@ -281,14 +295,13 @@ export default {
       var _this = this;
       let status;
       _this.tabs.forEach(function(element){
-          if(element.isActived==true){
+          if(element.checked==true){
             _this.searchForm.status = element.status;
           }
       })
       setTimeout(() => {
         _this.$axios({
             url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
-            // url: "http://10.0.17.225/pos-api/orderTemp/getOrderTempList",
             method: "post",
             params: {
               jsonObject: {
@@ -307,6 +320,11 @@ export default {
             if(res.data.code == 1){
               _this.count = res.data.data.count;
               _this.orderTempList = [];
+              res.data.data.orderTempList.forEach(function(element){
+                  element.orderItems.forEach(function(ele){
+                      ele.checked=false
+                  })
+              })
               _this.orderTempList = res.data.data.orderTempList;
             }else{
                _this.$message({

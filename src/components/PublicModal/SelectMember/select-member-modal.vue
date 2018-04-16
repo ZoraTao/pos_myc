@@ -52,7 +52,7 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :page-size="5"
+            :page-size="10"
             :total="Number(data.count)"
             @current-change="getList"
             :current-page.sync="nub">
