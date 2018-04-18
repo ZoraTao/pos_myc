@@ -81,14 +81,14 @@ export default {
   },
   computed:{
 
-  }    
+  }
   ,
 
   beforeMount() {},
   created() {
     this.$store.commit('LOGIN_GET');
    this.showUser = JSON.parse(localStorage.getItem("userData"));
-    
+
   },
   methods: {
     //退出

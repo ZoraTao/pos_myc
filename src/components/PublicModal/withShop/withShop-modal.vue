@@ -61,25 +61,36 @@ export default {
           value: "镜架",
           name: "2"
         }
-      ]
+      ],
+      rules:{
+        eyes:[
+          {required:true,message:'请选择种类',trigger:'change'}
+        ],
+        title:[
+          {required:true,message:'请填写备注',trigger:'change'}
+        ],
+        nums:[
+          {required:true,message:'请填写数量',trigger:'change'}
+        ]
+      }
     };
   },
   methods: {
     commitShopMessage() {
       let _this = this;
-      for (var key in _this.shopdata) {
-        if (_this.shopdata[key] == "") {
-          console.log(_this.shopdata[key])
-          this.$message({
-            type: "error",
-            message: "请填写完整",
-            showClose: true
-          });
-          return false;
-        }
-      }
+      // for (var key in _this.shopdata) {
+      //   if (_this.shopdata[key] == "") {
+      //     console.log(_this.shopdata[key])
+      //     this.$message({
+      //       type: "error",
+      //       message: "请填写完整",
+      //       showClose: true
+      //     });
+      //     return false;
+      //   }
+      // }
       let commitMessage = _.clone(_this.shopdata);
-      console.log(commitMessage)
+      // console.log(commitMessage)
       _this.$emit('commitMessage',commitMessage);
       setTimeout(() => {
         for (var key in _this.shopdata) {
@@ -87,6 +98,7 @@ export default {
         }
         _this.shopdata.lens = "left";
         _this.shopdata.status = "2";
+        _this.shopdata.price = "0";
       }, 1000);
     }
   },

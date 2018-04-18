@@ -28,7 +28,7 @@
               <el-input v-model="searchForm.name" placeholder="请输入" :change="serachMember(searchForm.name)"  style="min-width: 80px"></el-input>
             </el-form-item>
           </li>
-          
+
           <li class="fn-left">
             <el-form-item label="订单类型：" prop="orderType">
               <el-select prop="adr.district" v-model="searchForm.orderType" placeholder="请选择"
@@ -43,7 +43,7 @@
               label="零售时间："
               prop="birthday">
               <div class="fn-line-block">
-                <el-date-picker 
+                <el-date-picker
                     :picker-options="pickerOptions0"
                     type="date"
                     value-format="yyyy-MM-dd HH:mm:ss"
@@ -53,7 +53,7 @@
               </div>
               <div class="fn-line-block am-ft-center">-</div>
               <div class="fn-line-block">
-                <el-date-picker 
+                <el-date-picker
                     :picker-options="pickerOptions0"
                     :default-value="defaultValue"
                     type="date"
@@ -109,16 +109,20 @@
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
               <td>{{list.itemId}}</td>
               <td>{{list.itemName}}<span class="customText" v-if="list.orderReceiptId">定做单号：{{list.orderReceiptId}}</span></td>
-              <td>{{parseInt(list.quantity)}}</td>
+              <td>{{parseInt(list.quantity)||'--'}}</td>
               <td>{{parseFloat(list.listPrice)}}</td>
-              <td><strong>{{parseFloat(list.money)?parseFloat(list.money):'0'}}</strong></td>
+              <td>
+                <strong  v-if="!order.extraMoney">{{parseFloat(list.money)?parseFloat(list.money):'0'}}</strong>
+                <strong v-if="order.extraMoney">{{parseFloat(list.listPrice)}}</strong>
+              </td>
               <td>{{order.shopName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
-                  <div class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}
+                  <div  class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
                   <!-- <small v-if="order.roundOffFlag == '0' && typeof parseFloat(list.discountRate) == 'number' && parseFloat(list.discountRate) < 10 ">({{parseFloat(list.discountRate)}}折)</small> -->
+                  <div>商品合计：
+                    <strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong>
                   </div>
-                  <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
                   <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
                   <div v-show="order.discountMoney>0">折扣：<strong>{{order.discountMoney}}</strong></div>
                   <div v-show="parseFloat(order.activityMoney)!=0">活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
@@ -129,8 +133,7 @@
                 <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-orange priceAll am-ft-22 mgb10">{{(parseFloat(order.moneyAmount)-parseFloat(order.moneyPaid)).toFixed(2)}}
-                </div>
+                <div class="am-ft-orange priceAll am-ft-22 mgb10">{{(parseFloat(order.moneyAmount)-parseFloat(order.moneyPaid)).toFixed(2)}} </div>
                 <div class="button">
                   <el-button type="primary" v-on:click="changePay(order)" >收银</el-button>
                 </div>
@@ -190,16 +193,19 @@
                 <tr   v-for="(list,index) in order.orderItems" :key="list.name">
                   <td>{{list.itemId}}</td>
                   <td>{{list.itemName||'商品名'}}</td>
-                  <td>{{parseInt(list.quantity)}}</td>
-                  <td>{{parseFloat(list.price)||'商品原单价'}}</td>
-                  <td><strong>{{parseFloat(list.money)}}</strong></td>
+                  <td>{{parseInt(list.quantity)||'--'}}}</td>
+                  <td>{{parseFloat(list.price)}}</td>
+                  <td>
+                    <strong>{{parseFloat(list.money)||parseFloat(order.extraMoney)||'0'}}</strong>
+                  </td>
                   <td>{{order.shopName}}</td>
                   <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                     <div class="order_price_box">
-                      <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}
+                      <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
                         <!-- <small v-if="order.roundOffFlag == '0' && typeof parseFloat(list.discountRate) == 'number' && parseFloat(list.discountRate) < 10 ">({{parseFloat(list.discountRate)}}折)</small> -->
-                      </div>
-                      <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
+                      <div>商品合计：
+                        <strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong>
+                        </div>
                       <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
                   <div v-show="order.discountMoney>0">折扣：<strong>{{order.discountMoney}}</strong></div>
                   <div v-show="parseFloat(order.activityMoney)!=0">活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
@@ -324,7 +330,7 @@
       width="30%">
       <span class="closeContent">你确定关闭订单吗</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="RemoveOrder = false">取 消</el-button>
         <el-button type="danger" @click="closeEnter">确 定</el-button>
       </span>
     </el-dialog>
@@ -388,7 +394,7 @@ export default {
   created() {
     this.getOrderList(3);
   },
-  
+
   methods: {
     closeOrder(data){
       let _this = this;
@@ -412,6 +418,7 @@ export default {
                   showClose:true
                 })
                 _this.closeOrderData = ''
+                this.getOrderList(_this.status);
               }else{
                 console.log(res)
                 _this.$message({
@@ -429,7 +436,7 @@ export default {
     serachMember(){
       var _this = this;
       var jsonObject={};
-      
+
       setTimeout(function(){
         _this.$axios({
             url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
@@ -489,8 +496,8 @@ export default {
       if (value == 5){
         _this.orderTempList = [];
         _this.count = 0;
-        return 
-      } 
+        return
+      }
       if (value == 3 || value == 4) {
         status = value;
         value == 3 ?_this.status = 3 : _this.status = 4;
@@ -500,7 +507,7 @@ export default {
         _this.searchForm.saleTimeStart = '';
         _this.searchForm.saleTimeEnd = '';
       }
-      
+
       setTimeout(() => {
         _this.$axios({
             url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
@@ -534,7 +541,7 @@ export default {
                 type: 'error'
               })
             }
-            
+
           })
           .catch(function(error) {
             console.info(error);
@@ -576,7 +583,7 @@ export default {
             console.info(error);
           });
       }, 100);
-          
+
     }
   },
   mounted(){
