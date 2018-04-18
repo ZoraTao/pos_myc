@@ -1,8 +1,8 @@
 <template>
   <div>
-      <el-form :model="shopdata" label-width="500px" class="shopFrom">
+      <el-form :model="shopdata" label-width="500px" class="shopFrom" :rules="rules">
         <el-row>
-          <el-col :span="2" :offset="2">镜片：</el-col>
+          <el-col :span="2" :offset="2">商品：</el-col>
            <el-col :span="8" >
              <el-select size="mini" v-model="shopdata.where" placeholder="请选择">
               <el-option
@@ -14,21 +14,21 @@
             </el-select>
            </el-col>
            <el-col :span="8" :offset="2">
-               <el-radio v-model="shopdata.lens" label="left">左眼</el-radio>
-                <el-radio v-model="shopdata.lens" label="right">右眼</el-radio>
+               <el-radio v-model="shopdata.lens" label="left" :disabled="shopdata.where == 2">左眼</el-radio>
+                <el-radio v-model="shopdata.lens" label="right" :disabled="shopdata.where == 2">右眼</el-radio>
            </el-col>
         </el-row>
         <el-row class="Shopbottom">
           <el-col :span="2" :offset="2">数量：</el-col>
           <el-col :span="4">
-            <el-input v-model="shopdata.nums"></el-input>
+            <el-input v-model="shopdata.nums" prop="nums"></el-input>
           </el-col>
           <el-col :span="2" :offset="2">备注：</el-col>
           <el-col :span="10">
             <el-input size="medium" class="messageInput" v-model="shopdata.message" placeholder="请输入备注" :clearable="true"></el-input>
           </el-col>
         </el-row>
-        <el-row class="commitShopMessage"> 
+        <el-row class="commitShopMessage">
           <el-col :span="4" :offset="19">
             <el-button type="primary" @click="commitShopMessage"> 确定</el-button>
           </el-col>
@@ -44,8 +44,8 @@ export default {
   data() {
     return {
       shopdata: {
-        where: "",
-        lens: "left",
+        where: "1",
+        lens: "",
         nums: "",
         message: "",
         status:'2',
@@ -89,15 +89,19 @@ export default {
       //     return false;
       //   }
       // }
+      if(_this.shopdata.where  = '2'){
+        _this.shopdata.lens = ''
+      }
       let commitMessage = _.clone(_this.shopdata);
-      // console.log(commitMessage)
+      console.log(commitMessage)
       _this.$emit('commitMessage',commitMessage);
       setTimeout(() => {
         for (var key in _this.shopdata) {
           _this.shopdata[key] = "";
         }
-        _this.shopdata.lens = "left";
+        _this.shopdata.lens = "";
         _this.shopdata.status = "2";
+        _this.shopdata.where = "1";
         _this.shopdata.price = "0";
       }, 1000);
     }

@@ -8,6 +8,7 @@
                 :data="data.memberList"
                 v-loading="!data.memberList"
                 size="small"
+                @row-dblclick="selectThisa"
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="memberCardNo"
@@ -28,6 +29,10 @@
                 prop="sex"
                 width="60px"
                 label="性别">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.sex == 'F'">女</span>
+                    <span v-if="scope.row.sex == 'M'">男</span>
+                </template>
                 </el-table-column>
                 <el-table-column
                 prop="age"
@@ -47,7 +52,7 @@
                         </span>
                     </template>
                 </el-table-column>
-            </el-table> 
+            </el-table>
             <el-pagination
             class="am-ft-right"
             background
@@ -69,7 +74,7 @@ export default {
   name: 'SelectMemberModal',
   props:['selectM'],
   data () {
-    return { 
+    return {
         tabs : [
             {
             name: '1',
@@ -116,12 +121,17 @@ export default {
                             type: 'error'
                     })
                 }
-            })    
-        },0)          
+            })
+        },0)
       },
       selectThis(value){
         if(value){
             this.$emit('memberInfo',value);
+        }
+      },
+      selectThisa(row,event){
+        if(row){
+            this.$emit('memberInfo',row);
         }
       }
   },
@@ -132,7 +142,9 @@ export default {
 </script>
 
 <style lang="scss">
-
+.el-tabs {
+    min-height:210px;
+}
 #selectMember{
     .el-dialog__body {
         padding: 10px 0;
@@ -167,7 +179,7 @@ export default {
         padding: 8.5px 8px;
     }
     tr:nth-of-type(even){
-      background: rgba(246,246,246,0.50);  
-    }  
+      background: rgba(246,246,246,0.50);
+    }
 }
 </style>

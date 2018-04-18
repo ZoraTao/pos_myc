@@ -31,14 +31,14 @@
             </div>
             <div class="salesclerkParam">
                 <el-form ref="form">
-                    <el-form-item label="右镜片 :" class="ParamInput">
-                        <el-input class="" placeholder="" @input="setWhere('left');" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1);"></el-input>
-                        <el-button @click="type='0';selectGlass(1);setWhere('left');">···</el-button>
-                        <el-button @click="showTitle('right');customizeRH=true">定做</el-button>
-                    </el-form-item>
                     <el-form-item label="左镜片 :" class="ParamInput">
                         <el-input class="" placeholder="" @input="setWhere('right');" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2);"></el-input>
                         <el-button @click="type='0';selectGlass(2);setWhere('right');">···</el-button>
+                        <el-button @click="showTitle('right');customizeRH=true">定做</el-button>
+                    </el-form-item>
+                    <el-form-item label="右镜片 :" class="ParamInput">
+                        <el-input class="" placeholder="" @input="setWhere('left');" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1);"></el-input>
+                        <el-button @click="type='0';selectGlass(1);setWhere('left');">···</el-button>
                         <el-button @click="showTitle('right');customizeRH=true">定做</el-button>
                     </el-form-item>
                     <el-form-item label="商品 :" class="ParamInput">
@@ -109,7 +109,7 @@
                             placeholder=""
                             :disabled="tableData[scope.$index].price == 0 ||tableData[scope.$index].discount == ''"
                             v-model="tableData[scope.$index].discount"
-                            @change="changePrice(scope.row,1,scope.$index)"></el-input>
+                            @change="changePrice(scope.row,1,scope.$index);"></el-input>
                         </template>
                     </el-table-column>
                     <!-- <el-table-column
@@ -944,14 +944,17 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     this.selectProductSku.selectR='';
                     this.selectProductSku.selectL='';
                     this.showSelectShop=true;
+                    console.log(1,_this.selectProductSku.selectSP)
                     this.selectProductSku.cylinder=_this.selectProductSku.selectSP;
                     this.eyesdata.sph= ''
                     this.eyesdata.cyl=''
+                    console.log(2,this.eyesdata.cyl)
                 }else if(type==null){
                     // console.log('null')
                 }else{
                     // console.log('else')
                 }
+
                 _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/productSku/list',
                     method: 'post',
@@ -992,6 +995,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 this.selectProductSku.product=value.product||"";
                 this.selectProductSku.categoryCode=value.categoryCode||"";
                 var _this = this;
+                console.log(3,this.selectProductSku.cylinder)
+                console.log(4,this.selectProductSku.product)
                 _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/productSku/list',
                     method: 'post',
@@ -1077,7 +1082,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 _this.computedPay();
             },
             //计算价格区域
-            computedPay(){
+            computedPay(alldiscount){
                 let _this = this;
                 let countSale = 0;
                 let n = 0;
@@ -1127,10 +1132,12 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 _this.numCount = n;
                 _this.saleCount = Math.round(parseFloat(countSale)*100)/100;//无整单折扣情况下
 
-                if(_this.addShop){
-                    _this.discountSale = parseFloat(_this.saleCount - (_this.allDisCount*_this.saleCount)/10).toFixed(2);
+                if(_this.addShop||alldiscount=='alldiscount'){
+                    if(_this.allDisCount >0){
+                         _this.discountSale = parseFloat(_this.saleCount - (_this.allDisCount*_this.saleCount)/10).toFixed(2);
                         //最后价格 = 整单折扣前 * 折扣 ↓
                         _this.saleCount = (_this.allDisCount/10 * _this.saleCount).toFixed(2);
+                    }
                 }
             },
             changePrice(value,type,index){
@@ -1142,7 +1149,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     value.realSale=parseFloat(value.price/value.discount*10).toFixed(2);
                 }
                  this.tableData.splice(index,1,value);
-                this.computedPay();
+                this.computedPay('alldiscount');
             },
             confirmAllDiscount(value){
                 if(value){
@@ -1191,6 +1198,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 })
                 .then(function (response) {
                     if(response.data.code=='1'){
+                        // console.log(response.data.data.list)
                         that.optometryList=response.data.data.list;
                     }else{
                         that.$message({
@@ -1380,11 +1388,13 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
 
             //获取新增验光单信息
             getNewoptometry(value){
+                console.log(value)
                 this.showNewOptometry=false;
                 this.submitNewOptometry=false;
                 this.optometryData=value.eyes;
                 this.optometryId=value.prescriptions.prescriptionId;
                 this.optometryTime=value.prescriptions.prescriptionTime;
+                // console.log(this.optometryId, this.optometryTime)
                 this.includeOptometry();
             },
             //录入验光单信息

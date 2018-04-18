@@ -7,7 +7,7 @@
       </div>
       <span class="dingText">定</span>
       </div>
-      
+
       <div class="orderTitle" >
           <span>零售单号：{{orderData.ordertemp.orderNo}}</span> <i v-show="orderData.ordertemp.status" v-html="returnStatus(orderData.ordertemp.status)"></i>
       </div>
@@ -27,7 +27,7 @@
     <div class="orderShoppingDetail">
       <h3>商品信息</h3>
       <div class="table-box" v-cloak >
-        <el-table 
+        <el-table
         :data="orderData.orderItemsList"
         :row-class-name="tableRowClassName"
         :span-method="objectSpanMethod"
@@ -55,7 +55,7 @@
           label="原单价"
           width="120px">
           <template slot-scope="scope">
-            <strong>{{ parseFloat(scope.row.price)||'--'}}</strong>
+            <strong>{{ parseFloat(scope.row.listPrice)||'--'}}</strong>
           </template>
         </el-table-column>
         <el-table-column
@@ -95,7 +95,7 @@
           <span>手机号 : <i>{{orderData.prescription.prescriptions.mobile}}</i></span>
           <span>姓名 : <i>{{orderData.prescription.prescriptions.customerName}}</i></span>
           <span>会员卡号 : <i>{{orderData.prescription.member.memberCardNo}}</i></span>
-          <span>性别 : <i>{{orderData.prescription.prescriptions.sex}}</i></span>
+          <span>性别 : <i>{{orderData.prescription.prescriptions.sex == 'F'?'女':'男'}}</i></span>
           <span>出生年月 : <i>{{orderData.prescription.member.birthday}}</i></span>
         </div>
         <div class="optometryTable">
@@ -114,7 +114,7 @@
                 <li class="w90">ADD</li>
               </ul>
               <ul>
-                <li class="fn-left  msg_left">远用</li>
+                <li class="fn-left  msg_left" v-if="far[0].sph">远用</li>
                 <li class="fn-left glass_table_770">
                   <table>
                     <tr class="border_bottom">
@@ -142,7 +142,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list" >
+            <li class="clearfix combination_table_list" v-if="near[0].sph">
               <ul>
                 <li class="fn-left msg_left">近用</li>
                 <li class="fn-left glass_table_770">
@@ -171,7 +171,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list">
+            <li class="clearfix combination_table_list" v-if="contact[0].sph">
               <ul>
                 <li class="fn-left msg_left">隐形</li>
                 <li class="fn-left glass_table_770">
@@ -194,7 +194,7 @@
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list">
+            <li class="clearfix combination_table_list" v-if="asymptotic[0].sph">
               <ul>
                 <li class="fn-left  msg_left">渐进</li>
                 <li class="fn-left glass_table_770">
@@ -215,7 +215,7 @@
           </ul>
         </div>
       </div>
-      
+
       <h3 v-if="orderData.orderLogList.length!=0">操作流转</h3>
 
       <div class="operation">
@@ -270,7 +270,7 @@
               </span>
             </div>
             <div class="divBorder" ></div>
-            <el-table 
+            <el-table
               :data="tableData"
               :show-header = false
               :span-method="objectSpanMethodOperation"
@@ -318,7 +318,7 @@
               </span>
             </div>
             <div class="divBorder" ></div>
-            <el-table 
+            <el-table
               :data="tableData"
               :show-header = false
               align="left"
@@ -341,7 +341,7 @@
             </el-table>
       </div>
     </div>
-  </section>      
+  </section>
   </div>
 </template>
 
@@ -399,7 +399,7 @@ export default {
           time: "2018-04-11 13:02:53"
         }
       ],
-      
+
       tableData: [
         {
           money: "1200.00",
@@ -446,41 +446,41 @@ export default {
         case '-1':
           return '挂单';
         case '0':
-          return '初始状态'; 
+          return '初始状态';
         case '1':
-          return '审核中'; 
+          return '审核中';
         case '2':
-          return '审核完成'; 
+          return '审核完成';
         case '3':
-          return '记账';   
+          return '记账';
         case '3':
-          return '记账';   
+          return '记账';
         case '4':
-          return '部分付款'; 
+          return '部分付款';
         case '5':
-          return '已付款';   
+          return '已付款';
         case '6':
-          return '已完成'; 
+          return '已完成';
         case '7':
-          return '已关闭';  
+          return '已关闭';
         case '8':
-          return '已冲红'; 
+          return '已冲红';
         case '9':
-          return '已删除';   
+          return '已删除';
         case '10':
-          return '退货';   
+          return '退货';
         case '51':
-          return '待发单'; 
+          return '待发单';
         case '52':
-          return '待发料';   
+          return '待发料';
         case '53':
           return '待装配';
         case '54':
-          return '待检验';   
+          return '待检验';
         case '55':
           return '待配送';
         case '56':
-          return '待收单';   
+          return '待收单';
         case '57':
           return '待取件';
           break;
@@ -565,7 +565,7 @@ export default {
               _this.eyesDate(res.data.data.prescription.eyes);
             }
             _this.orderData = res.data.data;
-            
+
           } else {
             _this.$message({
               showClose: true,
@@ -578,13 +578,13 @@ export default {
   },
   created() {
     let _this = this;
-    this.$nextTick(() => { 
+    this.$nextTick(() => {
       if (_this.$route.query.orderId) {
         let routerQueryofOrderId = _this.$route.query.orderId;
         _this.orderDetail(routerQueryofOrderId);
       }
      })
-    
+
   },
   components: {}
 };
@@ -714,7 +714,7 @@ export default {
       border: none;
       /* height: 400px; */
     }
-    
+
     .glass_table_head {
       width: 870px;
       height: 30px;
@@ -779,7 +779,7 @@ export default {
           letter-spacing: 0;
         }
       }
-      
+
     }
     .message{
         padding-bottom: 50px;
@@ -793,7 +793,7 @@ export default {
         color: #777777;
         letter-spacing: 0;
       }
-      
+
     }
     .divBorder {
           height: 1px;

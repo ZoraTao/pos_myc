@@ -1,6 +1,6 @@
 <template>
 <div class="selectMember" id="selectRH">
-    <div nz-form-item class="w150 mgb10">                    
+    <div nz-form-item class="w150 mgb10">
         <el-select style="width:120px" clearable v-model="value" placeholder="请选择" @change="emitThisValue()">
             <el-option
             v-for="item in options"
@@ -15,9 +15,10 @@
         <div class="clearfix modal-content-top">
             <el-table
                 :data="selectProductSku.productSkuData.list"
-                v-loading="!selectProductSku.productSkuData.list"
+                v-loading="!selectProductSku.productSkuData.list || selectProductSku.productSkuData.list == []"
                 size="small"
                 align="center"
+                @row-dblclick="selectThisa"
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="sku"
@@ -57,7 +58,7 @@
                         </span>
                     </template>
                 </el-table-column>
-            </el-table> 
+            </el-table>
             <el-pagination
             class="am-ft-right"
             background
@@ -78,7 +79,7 @@ export default {
   name: 'selectRHModal',
   props:['selectProductSku'],
   data () {
-    return { 
+    return {
         options: [
             {
                 warehouseId:'0',
@@ -87,14 +88,14 @@ export default {
             {
                 warehouseId:'1',
                 warehouseName:'本分公司'
-            }            
+            }
         ],
         loading:true,
         value:"0",
         cpSelectProductSku:null,
     }
   },
-  methods:{  
+  methods:{
       getProductSku(){
         this.cpSelectProductSku=this.selectProductSku;
         this.$emit('getProductSku', this.cpSelectProductSku);
@@ -106,6 +107,12 @@ export default {
         console.log(value)
         this.$emit('selectSku',value);
       },
+      selectThisa(row,event){
+        row.discount = 10;
+        // value.skuName = '';
+        row.realSale=row.price;
+        this.$emit('selectSku',row);
+      },
       getWareHouseList(){
         var that = this;
         if(that.options==''){
@@ -113,7 +120,7 @@ export default {
                 url: 'http://myc.qineasy.cn/pos-api/warehouse/getWarehouseList',
                 method: 'post',
                 params: {
-                    jsonObject: {           
+                    jsonObject: {
                     },
                     keyParams: {
                         weChat: true,
@@ -122,9 +129,9 @@ export default {
                     }
                 }
             })
-            .then(function (response) {  
+            .then(function (response) {
                 that.options=response.data.data.list;
-            })  
+            })
         }
       },
       emitThisValue(){
@@ -132,15 +139,19 @@ export default {
       }
   },
   watch:{
-      
+
   },
   mounted:function(){
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
+
 .selectRH{
+    .el-table{
+        min-height:441px;
+    }
     .el-dialog__body {
         padding: 15px;
     }

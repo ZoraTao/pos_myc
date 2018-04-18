@@ -22,9 +22,53 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
-        </div>                            
+        </div>
         <div class="customizeInputGroup fn-left">
             <label>下加光:</label>
+                <el-select v-model="customContent.value3" placeholder="请选择">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup fn-left">
+            <label>品牌:</label>
+                <el-select v-model="customContent.value3" placeholder="请选择">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup fn-left">
+            <label>品种:</label>
+                <el-select v-model="customContent.value3" placeholder="请选择">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup fn-left">
+            <label>规格:</label>
+                <el-select v-model="customContent.value3" placeholder="请选择">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup fn-left">
+            <label>型号:</label>
                 <el-select v-model="customContent.value3" placeholder="请选择">
                     <el-option
                     v-for="item in options"
@@ -40,24 +84,24 @@
             <label>定做需求:</label>
             <el-input
             type="textarea"
-            :rows="5" 
+            :rows="5"
             v-model="customContent.customMessage"
             placeholder="请输入内容"></el-input>
-        </div>                               
-    </div>                               
+        </div>
+    </div>
     <div class="customizeRHBody">
         <div class="customizeInputGroup fn-left">
             <label>原单价:</label>
             <el-input style="width:68px" v-model="customContent.price" @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
-        </div>                          
+        </div>
         <div class="customizeInputGroup fn-left">
             <label>数量:</label>
             <el-input style="width:40px" v-model="customContent.nums"  @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
-        </div>                          
+        </div>
         <div class="customizeInputGroup fn-left">
             <label>折扣:</label>
             <el-input style="width:40px" v-model="customContent.discount"  @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
-        </div>                          
+        </div>
         <div class="customizeInputGroup fn-left">
             <label>实售单价:</label>
             <el-input style="width:68px" v-model="customContent.realSale" disabled=""  placeholder=""></el-input>
@@ -347,7 +391,7 @@ export default {
               console.log(err)
           }
       })
-      
+
     }
   },
   computed: {},

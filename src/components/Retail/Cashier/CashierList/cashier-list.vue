@@ -25,7 +25,7 @@
                 :trigger-on-focus="false"
                 @select="handleSelect"
               ></el-autocomplete> 输入建议 -->
-              <el-input v-model="searchForm.name" placeholder="请输入" :change="serachMember(searchForm.name)"  style="min-width: 80px"></el-input>
+              <el-input v-model="searchForm.name" placeholder="请输入" @keyup.enter.native="serachMember(searchForm.name)"  style="min-width: 80px"></el-input>
             </el-form-item>
           </li>
 
@@ -113,7 +113,7 @@
               <td>{{parseFloat(list.listPrice)}}</td>
               <td>
                 <strong  v-if="!order.extraMoney">{{parseFloat(list.money)?parseFloat(list.money):'0'}}</strong>
-                <strong v-if="order.extraMoney">{{parseFloat(list.listPrice)}}</strong>
+                <strong v-if="order.extraMoney">{{parseFloat(list.money)}}</strong>
               </td>
               <td>{{order.shopName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
@@ -123,9 +123,9 @@
                   <div>商品合计：
                     <strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong>
                   </div>
-                  <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
-                  <div v-show="order.discountMoney>0">折扣：<strong>{{order.discountMoney}}</strong></div>
-                  <div v-show="parseFloat(order.activityMoney)!=0">活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>-{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-show="order.discountMoney>0">折扣：<strong>-{{order.discountMoney}}</strong></div>
+                  <div v-show="parseFloat(order.activityMoney)>0">活动：-<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
