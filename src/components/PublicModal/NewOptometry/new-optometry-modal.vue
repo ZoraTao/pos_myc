@@ -72,7 +72,7 @@
                                     <el-form-item prop="sph">
                                       <el-input v-model="item.cyl"></el-input>
                                     </el-form-item>
-                                  </el-form>                                  
+                                  </el-form>
                                 </td>
                                 <td class="w90"><el-input v-model="item.ax"></el-input></td>
                                 <td class="w90"><el-input v-model="item.va"></el-input></td>
@@ -105,7 +105,7 @@
                                     <el-form-item prop="sph">
                                       <el-input v-model="item.cyl"></el-input>
                                     </el-form-item>
-                                  </el-form>                                  
+                                  </el-form>
                                 </td>
                                 <td class="w90"><el-input v-model="item.ax"></el-input></td>
                                 <td class="w90"><el-input v-model="item.va"></el-input></td>
@@ -116,7 +116,7 @@
                         </table>
                     </li>
                 </ul>
-            </li>           
+            </li>
             <li class="clearfix combination_table_list" v-if="prescription.isContact">
                 <ul>
                     <li class="fn-left  msg_left">隐形</li>
@@ -136,7 +136,7 @@
                                     <el-form-item prop="sph">
                                       <el-input v-model="item.cyl"></el-input>
                                     </el-form-item>
-                                  </el-form>                                  
+                                  </el-form>
                                 </td>
                                 <td class="w90"><el-input v-model="item.ax"></el-input></td>
                                 <td class="w90"><el-input v-model="item.va"></el-input></td>
@@ -144,7 +144,7 @@
                         </table>
                     </li>
                 </ul>
-            </li>         
+            </li>
             <li class="clearfix combination_table_list" :class="{'mgl450':!prescription.isContact}" v-if="prescription.isGradually">
                 <ul>
                     <li class="fn-left  msg_left">渐进</li>
@@ -157,18 +157,18 @@
                                     <el-form-item prop="npd">
                                       <el-input v-model="item.npd"></el-input>
                                     </el-form-item>
-                                  </el-form>                                  
+                                  </el-form>
                                 </td>
-                            </tr>     
+                            </tr>
                         </table>
                     </li>
                 </ul>
-            </li>        
+            </li>
         </ul>
 
         <div class="newOptometryOptician">
                 <label>检查数据：</label>
-        </div>            
+        </div>
         <ul class="glass_combination_table">
             <li class="clearfix combination_table_list">
                 <ul>
@@ -179,10 +179,10 @@
                         </div>
                         <div class="labelInput">
                             <label class="w10">L</label><el-input style="width:80px" v-model="prescriptions.originalL"></el-input>
-                        </div>   
+                        </div>
                         <div class="labelInput">
                             <label class="w10">瞳距</label><el-input style="width:80px" v-model="prescriptions.originalPd"></el-input>
-                        </div>                            
+                        </div>
                     </li>
                 </ul>
             </li>
@@ -195,16 +195,16 @@
                         </div>
                         <div class="labelInput">
                             <label>角膜：</label><el-input style="width:80px" v-model="health.k2"></el-input>
-                        </div>   
+                        </div>
                         <div class="labelInput">
                             <label>结膜：</label><el-input style="width:80px" v-model="health.k3"></el-input>
-                        </div>      
+                        </div>
                         <div class="labelInput">
                             <label>泪液：</label><el-input style="width:80px" v-model="health.k4"></el-input>
-                        </div>    
+                        </div>
                         <div class="labelInput">
                             <label>其他：</label><el-input style="width:80px" v-model="health.k5"></el-input>
-                        </div>                            
+                        </div>
                     </li>
                 </ul>
             </li>
@@ -278,14 +278,14 @@
                         </div>
                         <div class="labelInput mgl30">
                             <label>立体视：</label><el-input v-model="prescriptions.stereopsis"></el-input>
-                        </div>   
+                        </div>
                         <div class="labelInput mgl30">
                             <label>NAR/PRA：</label><el-input v-model="prescriptions.narpra"></el-input>
-                        </div>                            
+                        </div>
                     </li>
                 </ul>
             </li>
-        </ul>    
+        </ul>
         <ul class="optometryMemo">
             <li class="fn-left ft_bold mgr10">验光备注：</li>
             <li class="fn-left glass_table_770">
@@ -295,7 +295,7 @@
                 :rows="2"
                 placeholder="请输入内容"></el-input>
             </li>
-        </ul>           
+        </ul>
         <ul class="optometryMemo">
             <li class="fn-left glass_table_770">
                 <div class="labelInput lineHeightAuto">
@@ -319,7 +319,7 @@
                         :value="item.trueName">
                         </el-option>
                     </el-select>
-                </div>   
+                </div>
                 <div class="labelInput lineHeightAuto mgl30">
                     <label class="mgr10" >验光日期 :</label>
                     <el-date-picker
@@ -331,9 +331,9 @@
                     :picker-options="pickerOptions0"
                     placeholder="选择日期">
                     </el-date-picker>
-                </div>                           
+                </div>
             </li>
-        </ul>   
+        </ul>
     </div>
 </div>
 </template>
@@ -374,8 +374,8 @@ export default {
           disabledDate(time) {
             return time.getTime() > Date.now() - 8.64e6
           }
-        }, 
-      
+        },
+
       defaultValue:allDate.TimeToDay(),
       distanceData: [
         {
@@ -518,7 +518,7 @@ export default {
     };
   },
   methods: {
-    
+
     getPrivateSelect(type,options){
       var that = this;
       that.$axios({
@@ -528,7 +528,7 @@ export default {
               jsonObject: {
                  "orgId":"",
                  "userType":"9"
-                  //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）                 
+                  //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
               },
               keyParams: {
                   weChat: true,
@@ -537,9 +537,9 @@ export default {
               }
           }
       })
-      .then(function (response) {                    
+      .then(function (response) {
           that.options=response.data.data.list;
-      })  
+      })
     },
     getPublicSelect(type,options) {
       var that = this;
@@ -550,8 +550,8 @@ export default {
               jsonObject: {
                   pid:'',
                   id:'',
-                  type: type    
-                  //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）                 
+                  type: type
+                  //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
               },
               keyParams: {
                   weChat: true,
@@ -560,9 +560,9 @@ export default {
               }
           }
       })
-      .then(function (response) {                    
+      .then(function (response) {
           that.options=response.data.data.list;
-      })   
+      })
     },
     searchUser() {
       var that = this;
@@ -618,7 +618,7 @@ export default {
                   return false;
                 }
               });
-          });       
+          });
           return flag;
         }
     },
@@ -645,7 +645,7 @@ export default {
             showClose: true,
             message: '请填写配镜处方！',
             type: 'error'
-        })              
+        })
         return false;
       }
       var memberId;
@@ -714,14 +714,14 @@ export default {
                   showClose: true,
                   message: '新增成功！',
                   type: 'success'
-              })      
+              })
             }else{
               console.log(response)
               that.$message({
                   showClose: true,
                   message: '新增失败，请联系管理人员！',
                   type: 'error'
-              })                    
+              })
             }
           });
       }, 100);
@@ -765,7 +765,7 @@ export default {
       display: inline-block;
       width: 100%;
       height: 40px;
-      line-height: 40px;      
+      line-height: 40px;
     }
   }
   .mgl450{

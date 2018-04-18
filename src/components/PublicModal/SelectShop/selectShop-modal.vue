@@ -1,8 +1,8 @@
 <template>
 <div class="selectMember" id="selectRH">
     <el-form ref="form">
-        <el-form-item label="商品 : ">            
-            <el-input style="width:90px" class="" placeholder="" v-model="shopIdName"/>                 
+        <el-form-item label="商品 : ">
+            <el-input style="width:90px" class="" placeholder="" v-model="shopIdName"/>
             <el-select style="width:90px" v-model="value" placeholder="请选择">
                 <el-option
                 v-for="item in options"
@@ -10,7 +10,7 @@
                 :label="item.warehouseName"
                 :value="item.warehouseId">
                 </el-option>
-            </el-select>                    
+            </el-select>
             <el-select style="width:90px" v-model="typeValue" placeholder="请选择" @change="selectBrands(2)">
                 <el-option
                 v-for="item in typeOptions"
@@ -18,7 +18,7 @@
                 :label="item.className"
                 :value="item.productCategoryId">
                 </el-option>
-            </el-select>           
+            </el-select>
             <el-select style="width:90px" v-model="brandsValue" placeholder="请选择" @change="selectBrands(3)">
                 <el-option
                 v-for="item in brandsOptions"
@@ -26,7 +26,7 @@
                 :label="item.className"
                 :value="item.productCategoryId">
                 </el-option>
-            </el-select>           
+            </el-select>
             <el-select style="width:90px" v-model="varietysValue" placeholder="请选择">
                 <el-option
                 v-for="item in varietysOptions"
@@ -48,6 +48,7 @@
                 v-loading="!selectProductSku.productSkuData.list"
                 size="small"
                 align="left"
+                @row-dblclick="selectBuya"
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="sku"
@@ -61,7 +62,7 @@
                 </el-table-column>
                 <el-table-column
                 prop="warehouseName"
-                width="70px"
+                width="90px"
                 label="出货仓库">
                 </el-table-column>
                 <el-table-column
@@ -87,7 +88,7 @@
                         </span>
                     </template>
                 </el-table-column>
-            </el-table> 
+            </el-table>
             <el-pagination
             class="am-ft-right"
             background
@@ -108,7 +109,7 @@ export default {
   name: 'selectShopModal',
   props:['selectProductSku'],
   data () {
-    return { 
+    return {
         options: [
             {
                 warehouseId:'0',
@@ -117,7 +118,7 @@ export default {
             {
                 warehouseId:'1',
                 warehouseName:'本分公司'
-            }            
+            }
         ],
         value:"0",
         cpSelectProductSku:null,
@@ -137,6 +138,11 @@ export default {
           value.realSale = value.price;
           this.$emit('setBuyShop',value)
       },
+      selectBuya(row,event){
+          row.discount = 10;
+          row.realSale = row.price;
+          this.$emit('setBuyShop',row)
+      },
       getProductSku(){
         this.cpSelectProductSku=this.selectProductSku;
           this.cpSelectProductSku.type = '';
@@ -150,7 +156,7 @@ export default {
                 url: 'http://myc.qineasy.cn/pos-api/warehouse/getWarehouseList',
                 method: 'post',
                 params: {
-                    jsonObject: {   
+                    jsonObject: {
                     },
                     keyParams: {
                         weChat: true,
@@ -159,7 +165,7 @@ export default {
                     }
                 }
             })
-            .then(function (response) {   
+            .then(function (response) {
                 if(response.code == 1){
                     _this.options=response.data.data.list;
                 }else{
@@ -168,8 +174,8 @@ export default {
                         message: '会员信息获取失败',
                         type: 'error'
                     })
-                }               
-            })  
+                }
+            })
         }
       },
       emitThisValue(){
@@ -214,7 +220,7 @@ export default {
                 params: {
                     jsonObject: {
                         productCategoryId: id
-                        // warehouseId:_this.value        
+                        // warehouseId:_this.value
                     },
                     keyParams: {
                         weChat: true
@@ -253,7 +259,7 @@ export default {
               message: '请求数据失败，请联系管理员',
               type: 'error'
             })
-          })          
+          })
       }
     },
     created: function () {
@@ -273,8 +279,12 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
+
 .selectShop{
+    .el-table{
+        min-height:441px;
+    }
     .el-dialog__body {
         padding: 15px;
     }

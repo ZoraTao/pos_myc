@@ -31,20 +31,20 @@
             </div>
             <div class="salesclerkParam">
                 <el-form ref="form">
-                    <el-form-item label="右镜片 :" class="ParamInput">
-                        <el-input class="" placeholder="" @input="setWhere('left');" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1);"></el-input>
-                        <el-button @click="type='0';selectGlass(1);setWhere('left');">···</el-button>
-                        <el-button @click="showTitle('right');customizeRH=true">定做</el-button>
-                    </el-form-item>
                     <el-form-item label="左镜片 :" class="ParamInput">
                         <el-input class="" placeholder="" @input="setWhere('right');" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2);"></el-input>
                         <el-button @click="type='0';selectGlass(2);setWhere('right');">···</el-button>
-                        <el-button @click="showTitle('right');customizeRH=true">定做</el-button>
+                        <el-button @click="showTitle('right')">定做</el-button>
+                    </el-form-item>
+                    <el-form-item label="右镜片 :" class="ParamInput">
+                        <el-input class="" placeholder="" @input="setWhere('left');" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1);"></el-input>
+                        <el-button @click="type='0';selectGlass(1);setWhere('left');">···</el-button>
+                        <el-button @click="showTitle('right')">定做</el-button>
                     </el-form-item>
                     <el-form-item label="商品 :" class="ParamInput">
                         <el-input class="" placeholder="" v-model="selectProductSku.selectSP" @keyup.enter.native="type='';selectGlass(3);"></el-input>
                         <el-button @click="type='';selectGlass(3);">···</el-button>
-                        <el-button @click="showTitle('shop');customizeRH=true">定做</el-button>
+                        <el-button @click="showTitle('shop')">定做</el-button>
                     </el-form-item>
                     <el-form-item class="ParamInput ParamButton">
                         <el-button @click="packageGoods=true">套餐商品</el-button>
@@ -109,7 +109,7 @@
                             placeholder=""
                             :disabled="tableData[scope.$index].price == 0 ||tableData[scope.$index].discount == ''"
                             v-model="tableData[scope.$index].discount"
-                            @change="changePrice(scope.row,1,scope.$index)"></el-input>
+                            @change="changePrice(scope.row,1,scope.$index);"></el-input>
                         </template>
                     </el-table-column>
                     <!-- <el-table-column
@@ -200,17 +200,19 @@
                 <el-form-item>
                     <el-checkbox v-model="orderTemp.urgent">是否加急单</el-checkbox>
                 </el-form-item>
-                <el-form-item label="取镜时间 :">
+                <el-form-item label="取镜时间 :" >
                     <el-date-picker
                     v-model="orderTemp.glassesTime"
                     value-format="yyyy-MM-dd"
                     align="left"
+                    :default-value="defaultTimes"
                     type="date"
+                    style="width:130px"
                     placeholder="选择日期">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="取镜方式 :">
-                    <el-select size="mini" v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
+                    <el-select size="mini" class="shopexpress"  v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
                         <el-option
                         v-for="item in selectOptions"
                         :key="item.id"
@@ -219,7 +221,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="取镜公司 :">
+                <el-form-item label="取镜公司 :" v-show="publicSelcet.glassesTypeModel=='门店自取'">
                     <el-select size="mini" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()" @change="sameComType">
                         <el-option
                         v-for="item in publicSelcet.comTypeOptions"
@@ -229,10 +231,20 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="取镜地点 :">
+                <el-form-item label="取镜地点 :"  v-show="publicSelcet.glassesTypeModel=='门店自取'">
                     <p style="width:100px;">{{orderTemp.glassesAddress||'--'}}</p>
                 </el-form-item>
-                <div style="overflow:hidden;width:800px;">
+                <div>
+                    <el-form-item label="收件人：" v-show="publicSelcet.glassesTypeModel=='快递'">
+                        <el-input class="express"  v-model="express.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号：" v-show="publicSelcet.glassesTypeModel=='快递'">
+                        <el-input class="express" v-model="express.telphone"></el-input>
+                    </el-form-item>
+                    <el-form-item  label="收件地址：" v-show="publicSelcet.glassesTypeModel=='快递'">
+                        <el-input class="expressAddress"  v-model="express.address"></el-input>
+                    </el-form-item>
+                </div>
                     <el-form-item>
                         <el-input class="" v-model="orderTemp.saleMemo" placeholder="销售备注"></el-input>
                     </el-form-item>
@@ -244,7 +256,6 @@
                         <el-input size="mini" v-model="publicSelcet.specialMemo" placeholder="特殊备注" @visible-change="getPublicSelect(4,publicSelcet.specialMemoOptions)">
                         </el-input>
                     </el-form-item>
-                </div>
 
             </el-form>
         </div>
@@ -400,11 +411,11 @@
     <el-dialog class="selectRH" :title="selectProductSku.title" :visible.sync="showSelectRH" width="870px">
         <SelectRHModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:selectSku="selectSku" ></SelectRHModal>
     </el-dialog>
-    <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="700px">
+    <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="750px">
         <SelectShopModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:setBuyShop="selectSku" ></SelectShopModal>
     </el-dialog>
     <el-dialog class="customizeRH" :title="customText" :visible.sync="customizeRH" width="690px">
-        <CustomizeRHModal  v-on:commitCustomMessage="commitCustom"></CustomizeRHModal >
+        <CustomizeRHModal  :custom="custom"  v-on:commitCustomMessage="commitCustom"></CustomizeRHModal >
         <!-- <div class="packageDetailButtonGroup">
             <el-button type="primary"  @click="commitCustom();customizeRH = false">确!定</el-button>
         </div> -->
@@ -447,7 +458,7 @@
         <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">确定要挂起本订单吗？</h4>
         <span>会员姓名：张丽丽</span>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="pendingOrders=false">取消</el-button>
+            <el-button @click="pendingOrders=false"></el-button>
             <el-button type="primary" @click="pendingOrders = false">确定</el-button>
         </span>
     </el-dialog>
@@ -611,7 +622,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         name:'',
                         id:''
                     }],
-                    glassesTypeModel:'到店自取',
+                    glassesTypeModel:'门店自取',
                     comTypeOptions:[],
                     comTypeModel:null,
                     processMemoOptions:[],
@@ -642,6 +653,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 add:'',
                 },
                 optometryId:'',
+                defaultTimes:new Date(),
                 type:'',
                 optometryTime:'',
                 submitNewOptometry:false,//控制 提交验光单子组件传值
@@ -667,6 +679,11 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 actionCost:{},//促销活动信息
                 conponResponse:{},
                 timeDefaultShow:'',//当前日期默认值
+                express:{//快递方式
+                    name:'',//收件人
+                    telphone:'',//手机号
+                    address:'',//收件地址
+                },
                 selectProductSku:{
                     selectR:'',
                     selectL:'',
@@ -948,6 +965,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     this.selectProductSku.product=this.selectProductSku.selectSP;
                     this.eyesdata.sph= ''
                     this.eyesdata.cyl=''
+                    console.log(2,this.eyesdata.cyl)
                 }else if(type==null){
                     // console.log('null')
                 }else{
@@ -955,7 +973,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 }
                     console.log(this.selectProductSku)
                 setTimeout(() => {
-                    
+
                     _this.$axios({
                         url: 'http://myc.qineasy.cn/pos-api/productSku/list',
                         method: 'post',
@@ -1018,10 +1036,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                                 weChat: true,
                                 userId: '8888',
                                 orgId: '11387'
-                            }
-                        }
-                    })
-                    .then(function (response) {
+                            }}
+                    }).then(function (response) {
                         _this.selectProductSku.productSkuData=response.data.data;
                     })
                 }, 0);
@@ -1084,7 +1100,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 _this.computedPay();
             },
             //计算价格区域
-            computedPay(){
+            computedPay(alldiscount){
                 let _this = this;
                 let countSale = 0;
                 let n = 0;
@@ -1134,10 +1150,12 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 _this.numCount = n;
                 _this.saleCount = Math.round(parseFloat(countSale)*100)/100;//无整单折扣情况下
 
-                if(_this.addShop){
-                    _this.discountSale = parseFloat(_this.saleCount - (_this.allDisCount*_this.saleCount)/10).toFixed(2);
+                if(_this.addShop||alldiscount=='alldiscount'){
+                    if(_this.allDisCount >0){
+                         _this.discountSale = parseFloat(_this.saleCount - (_this.allDisCount*_this.saleCount)/10).toFixed(2);
                         //最后价格 = 整单折扣前 * 折扣 ↓
                         _this.saleCount = (_this.allDisCount/10 * _this.saleCount).toFixed(2);
+                    }
                 }
             },
             changePrice(value,type,index){
@@ -1149,7 +1167,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     value.realSale=parseFloat(value.price/value.discount*10).toFixed(2);
                 }
                  this.tableData.splice(index,1,value);
-                this.computedPay();
+                this.computedPay('alldiscount');
             },
             confirmAllDiscount(value){
                 if(value){
@@ -1198,6 +1216,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 })
                 .then(function (response) {
                     if(response.data.code=='1'){
+                        // console.log(response.data.data.list)
                         that.optometryList=response.data.data.list;
                     }else{
                         that.$message({
@@ -1387,11 +1406,13 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
 
             //获取新增验光单信息
             getNewoptometry(value){
+                console.log(value)
                 this.showNewOptometry=false;
                 this.submitNewOptometry=false;
                 this.optometryData=value.eyes;
                 this.optometryId=value.prescriptions.prescriptionId;
                 this.optometryTime=value.prescriptions.prescriptionTime;
+                // console.log(this.optometryId, this.optometryTime)
                 this.includeOptometry();
             },
             //录入验光单信息
@@ -1515,7 +1536,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             },
             showTitle(value){
                 let _this = this;
-                _this.$nextTick(()=>{
                     if(value== 'left'){
                         _this.custom='left';
                         _this.customText = '定做-左镜片'
@@ -1526,7 +1546,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         _this.custom='shop';
                         _this.customText = '定做-商品'
                     }
-                })
+               _this.customizeRH=true;
 
             },
             //新增验光单后获取用户信息录入到页面
@@ -1632,6 +1652,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                             BorderType = '1'
                     }
                 }
+                this.orderTemp.glassesTime = allDate.TimetoDateDay(Date.parse(this.orderTemp.glassesTime));
+
                 var jsonObject =
                 {
                     memberId : memberId,//会员id
@@ -1705,14 +1727,11 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
 
         },
         mounted(){
-            let _this = this;
-            _this.timeDefaultShow = allDate.TimetoDateDay();
         },
         beforeDestory(){
 
         },
         created(){
-
         },
         mounted(){
             this.users =  JSON.parse(localStorage.getItem("userData"));
@@ -1764,4 +1783,25 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
     .inputBold span{
         font-weight: bold;
     }
+    .shopexpress{
+        width: 95px;
+    }
+    .express{
+        width: 80px;
+    }
+    .orderType .el-form-item .el-form-item__content input{
+        max-width: 300px !important;
+    }
+    .expressAddress{
+        width: 110px;
+    }
+   .orderType {
+       .el-form{
+           .el-date-editor{
+               .el-input__inner{
+                   color:red;
+               }
+           }
+       }
+   }
 </style>

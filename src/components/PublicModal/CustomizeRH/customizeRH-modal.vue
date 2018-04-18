@@ -22,10 +22,54 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
-        </div>                            
+        </div>
         <div class="customizeInputGroup fn-left">
             <label>下加光:</label>
                 <el-select v-model="customContent.value3" placeholder="请选择">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup  fn-left shops">
+            <label>品牌:</label>
+                <el-select v-model="customContent.brand" placeholder="请选择">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup fn-left shops">
+            <label>品种:</label>
+                <el-select v-model="customContent.variety" placeholder="请选择">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup fn-left shops"  v-show="custom =='shop'">
+            <label>规格:</label>
+                <el-select v-model="customContent.specification" placeholder="请选择">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup fn-left shops" v-show="custom == 'shop'">
+            <label>型号:</label>
+                <el-select v-model="customContent.model" placeholder="请选择">
                     <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -40,24 +84,24 @@
             <label>定做需求:</label>
             <el-input
             type="textarea"
-            :rows="5" 
+            :rows="5"
             v-model="customContent.customMessage"
             placeholder="请输入内容"></el-input>
-        </div>                               
-    </div>                               
+        </div>
+    </div>
     <div class="customizeRHBody">
         <div class="customizeInputGroup fn-left">
             <label>原单价:</label>
             <el-input style="width:68px" v-model="customContent.price" @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
-        </div>                          
+        </div>
         <div class="customizeInputGroup fn-left">
             <label>数量:</label>
-            <el-input style="width:40px" v-model="customContent.nums"  @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
-        </div>                          
+            <el-input style="width:68px" v-model="customContent.nums"  @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
+        </div>
         <div class="customizeInputGroup fn-left">
             <label>折扣:</label>
-            <el-input style="width:40px" v-model="customContent.discount"  @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
-        </div>                          
+            <el-input style="width:68px" v-model="customContent.discount"  @input="computedMoney" @keyup.enter.native="commitCustom" placeholder=""></el-input>
+        </div>
         <div class="customizeInputGroup fn-left">
             <label>实售单价:</label>
             <el-input style="width:68px" v-model="customContent.realSale" disabled=""  placeholder=""></el-input>
@@ -78,6 +122,7 @@
 import _ from "lodash";
 export default {
   name: "CustomizeRHModal",
+ 
   data() {
     return {
       options: [
@@ -247,9 +292,13 @@ export default {
         }
       ],
       customContent: {
-        value1: "",
-        value2: "",
-        value3: "",
+        value1: "",//球镜
+        value2: "",//柱镜
+        value3: "",//下加光
+        specification:'',//规格
+        brand:'',//品牌
+        variety:'',//品种
+        model:'',//型号
         customMessage: "",
         price: "", //原价
         nums: "1", //数量
@@ -268,6 +317,12 @@ export default {
         }
       ]
     };
+  },
+   props:{
+    custom:{
+      type:String,
+      default:null
+    }
   },
   methods: {
     computedMoney() {
@@ -347,7 +402,7 @@ export default {
               console.log(err)
           }
       })
-      
+
     }
   },
   computed: {},
@@ -381,7 +436,7 @@ export default {
         color: #666666;
         margin-left: 10px;
         label {
-          width: 60px;
+          min-width: 50px;
           text-align: right;
           display: inline-block;
           margin-right: 10px;
@@ -391,8 +446,11 @@ export default {
           width: 100px;
         }
         .el-textarea {
-          width: calc(100% - 180px);
+          width: calc(100% - 155px);
         }
+      }
+      .shops{
+        margin-top:15px;
       }
       .textareaGroup {
         width: 100%;

@@ -277,7 +277,21 @@ const router = new Router({
 // router.afterEach((to, from) => {
 //     console.log(store.state)
 // })
-
+// 重新刷新页面拦截器
+// const reloadInterceptor = (to, from) =>{
+//     if(from.name == 'cashierList' && to.name == 'orderDetail'){
+//         let isRefresh = sessionStorage.getItem('isRefresh');
+//         console.log('isRefresh:'+isRefresh);
+//         if(isRefresh == '0'){
+//             sessionStorage.setItem('isRefresh',null)
+//             window.location.reload();
+//         }else {
+//             sessionStorage.setItem('isRefresh',0)
+//         }
+//     }else if(from.name == 'cashierList' && to.name =='orderDetail'){
+//         sessionStorage.setItem('isRefresh',0)
+//     }
+// }
 export default router
 // router.beforeEach((transition) => {
 //   if (transition.to.auth) {
