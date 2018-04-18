@@ -680,7 +680,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     categoryCode:'',
                     type:'',
                     count: 0,
-                    nub: 0,
+                    nub: 1,
                     size:10
                 },
                 tableData:[],//用户保存商品信息
@@ -908,6 +908,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 this.selectProductSku.wareh='';
                 this.selectProductSku.cylinder='';
                 this.selectProductSku.productSkuData='';
+                this.selectProductSku.product="";
                 if(type&&type==1){
                     this.selectProductSku.selectSP='';
                     this.showSelectRH=true;
@@ -944,7 +945,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     this.selectProductSku.selectR='';
                     this.selectProductSku.selectL='';
                     this.showSelectShop=true;
-                    this.selectProductSku.cylinder=_this.selectProductSku.selectSP;
+                    this.selectProductSku.product=this.selectProductSku.selectSP;
                     this.eyesdata.sph= ''
                     this.eyesdata.cyl=''
                 }else if(type==null){
@@ -952,38 +953,42 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 }else{
                     // console.log('else')
                 }
-                _this.$axios({
-                    url: 'http://myc.qineasy.cn/pos-api/productSku/list',
-                    method: 'post',
-                    params: {
-                        jsonObject: {
-                            sphere:this.eyesdata.sph,
-                            cylinder:this.eyesdata.cyl,
-                            addLight:'',
-                            color:'',
-                            colorCode:'',
-                            categoryCode:'',
-                            product:'',
-                            type:_this.type,
-                            wareh:_this.selectProductSku.wareh,
-                            nub: (_this.selectProductSku.nub==0?0:(_this.selectProductSku.nub-1)*_this.selectProductSku.size),
-                            size: _this.selectProductSku.size
-                        },
-                        keyParams: {
-                            weChat: true,
-                            userId: '8888',
-                            orgId: '11387'
+                    console.log(this.selectProductSku)
+                setTimeout(() => {
+                    
+                    _this.$axios({
+                        url: 'http://myc.qineasy.cn/pos-api/productSku/list',
+                        method: 'post',
+                        params: {
+                            jsonObject: {
+                                sphere:_this.eyesdata.sph,
+                                cylinder:_this.eyesdata.cyl,
+                                addLight:'',
+                                color:'',
+                                colorCode:'',
+                                categoryCode:'',
+                                product:_this.selectProductSku.product,
+                                type:_this.type,
+                                wareh:_this.selectProductSku.wareh,
+                                nub: (_this.selectProductSku.nub==1?0:(_this.selectProductSku.nub-1)*_this.selectProductSku.size),
+                                size: _this.selectProductSku.size
+                            },
+                            keyParams: {
+                                weChat: true,
+                                userId: '8888',
+                                orgId: '11387'
+                            }
                         }
-                    }
-                })
-                .then(function (response) {
-                    _this.selectProductSku.productSkuData=response.data.data;
-                    let list = _this.selectProductSku.productSkuData.list;
-                    for(var i = 0;i<list.length;i++){
-                        list[i].skuName2 = where+list[i].skuName;
-                    }
+                    })
+                    .then(function (response) {
+                        _this.selectProductSku.productSkuData=response.data.data;
+                        let list = _this.selectProductSku.productSkuData.list;
+                        for(var i = 0;i<list.length;i++){
+                            list[i].skuName2 = where+list[i].skuName;
+                        }
 
-                })
+                    })
+                }, 0);
 
             },
             rhtWareHouse(value){
@@ -992,35 +997,37 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 this.selectProductSku.product=value.product||"";
                 this.selectProductSku.categoryCode=value.categoryCode||"";
                 var _this = this;
-                _this.$axios({
-                    url: 'http://myc.qineasy.cn/pos-api/productSku/list',
-                    method: 'post',
-                    params: {
-                        jsonObject: {
-                            sphere:'',
-                            cylinder:this.selectProductSku.cylinder,
-                            addLight:'',
-                            color:'',
-                            colorCode:'',
-                            categoryCode:this.selectProductSku.categoryCode,
-                            product:this.selectProductSku.product,
-                            wareh:this.selectProductSku.wareh,
-                            nub: (this.selectProductSku.nub==0?0:(this.selectProductSku.nub-1)*this.selectProductSku.size),
-                            size: this.selectProductSku.size
-                        },
-                        keyParams: {
-                            weChat: true,
-                            userId: '8888',
-                            orgId: '11387'
+                setTimeout(() => {
+                    _this.$axios({
+                        url: 'http://myc.qineasy.cn/pos-api/productSku/list',
+                        method: 'post',
+                        params: {
+                            jsonObject: {
+                                sphere:'',
+                                cylinder:_this.selectProductSku.cylinder,
+                                addLight:'',
+                                color:'',
+                                colorCode:'',
+                                categoryCode:_this.selectProductSku.categoryCode,
+                                product:_this.selectProductSku.product,
+                                wareh:_this.selectProductSku.wareh,
+                                nub: (_this.selectProductSku.nub==1?0:(_this.selectProductSku.nub-1)*_this.selectProductSku.size),
+                                size: _this.selectProductSku.size
+                            },
+                            keyParams: {
+                                weChat: true,
+                                userId: '8888',
+                                orgId: '11387'
+                            }
                         }
-                    }
-                })
-                .then(function (response) {
-                    _this.selectProductSku.productSkuData=response.data.data;
-                })
+                    })
+                    .then(function (response) {
+                        _this.selectProductSku.productSkuData=response.data.data;
+                    })
+                }, 0);
             },
             getProductSku(info){
-                // console.log('info',info)
+                console.log('info',info)
                 this.$nextTick(() => {
                     this.selectProductSku.nub=info.nub;
                     this.selectGlass();

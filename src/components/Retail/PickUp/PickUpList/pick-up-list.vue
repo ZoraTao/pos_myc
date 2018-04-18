@@ -118,11 +118,12 @@
                 prop="moneyPaid"
                 label="金额">
                 <template slot-scope="scope">
-                    <span class="am-ft-bold">{{scope.row.price}}</span>
+                    <span class="am-ft-bold">{{scope.row.moneyAmount}}</span>
                 </template>
                 </el-table-column>
                 <el-table-column
                 prop="orderTime"
+                width="160"
                 label="下单时间">
                 </el-table-column>
                 <el-table-column
@@ -192,7 +193,7 @@ export default {
             'value':'全部',
             'checked':false,
             'srcNum':'2',
-            'status':""
+            'status':"6,57"
         }],
         data : [
         {
@@ -286,6 +287,7 @@ export default {
                 element.checked=true;
             }
         })
+        this.getOrderList();
     },
     showModalMiddle:function(){
         this.showCashier=true;

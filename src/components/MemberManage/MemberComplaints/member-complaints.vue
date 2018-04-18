@@ -35,7 +35,7 @@
         </div>
 
         <div class="fn-right ">
-            <button class="add_btn bg_white_col_blue">
+            <button class="add_btn bg_white_col_blue" @click="isShowNewComplaints=true">
                 + 新增投诉
             </button>
         </div>
@@ -252,7 +252,6 @@ import ComplainsBillModal from '../../PublicModal/ComplaintsBill/complains-bill-
     border: 1px solid #00AFE4;
     border-radius: 4px;
 }
-
 .optometry_input {
     background: #F8F8F8;
     border: 1px solid #E1E1E1;

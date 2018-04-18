@@ -156,7 +156,7 @@
             </li>
             <li class="fn-left">
                 <div class="labelInput w100">
-                    <label class="mgr10">验光来源：</label>
+                    <label class="mgr10">投诉说明：</label>
                     <el-input
                         type="textarea"
                         :rows="2"
@@ -289,8 +289,8 @@ label {
         }
     }
     .optometryMemo{
-        padding: 0 15px;
-        background: #eee;
+        padding: 5px 15px;
+        background: #f8f8f8;
         overflow: hidden;
         padding-top: 14px;
         li{
@@ -320,6 +320,10 @@ label {
     }
 }   
 .grayTable{
+    .el-table__body-wrapper{
+        max-height: 120px;
+        overflow-y: auto;
+    }
     .el-table--small td, .el-table--small th{
         padding: 4px 0;
     }

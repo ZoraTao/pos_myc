@@ -18,14 +18,14 @@
                 <li class="fn-left">
                     <span class="member">零售时间&nbsp;:&nbsp;</span>
                     <el-date-picker
-                    style="width:120px"
+                    style="width:130px"
                     type="date"
                     v-model="searchForm.saleTimeStart"
                     placeholder="选择日期">
                     </el-date-picker>
                     <span>-</span>
                     <el-date-picker
-                    style="width:120px"
+                    style="width:130px"
                     type="date"
                     v-model="searchForm.saleTimeEnd"
                     placeholder="选择日期">
@@ -43,8 +43,8 @@
                     <table class="orders_table">
                         <thead>
                             <tr>
-                                <th width="">商品编码</th>
-                                <th width="">商品名称</th>
+                                <th width="230px">商品编码</th>
+                                <th width="400px">商品名称</th>
                                 <th width="">数量</th>
                                 <th width="">出货仓库</th>
                                 <th width="">订单金额</th>
@@ -80,7 +80,7 @@
                                     </div>
                                     <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
                                     <div>卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
-                                    <div>折扣：<strong>{{parseFloat(order.discount)>0?parseFloat(order.discount).toFixed(2)+'(会员)':'0.00'}}</strong></div>
+                                    <div>折扣：<strong>{{parseFloat(order.discountMoney)>0?parseFloat(order.discountMoney).toFixed(2)+'(会员)':'0.00'}}</strong></div>
                                     <div>活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
                                     </div>
                                 </td>
@@ -134,11 +134,12 @@
                     prop="moneyPaid"
                     label="金额">
                     <template slot-scope="scope">
-                        <span class="am-ft-bold">{{scope.row.price}}</span>
+                        <span class="am-ft-bold">{{scope.row.moneyAmount}}</span>
                     </template>
                     </el-table-column>
                     <el-table-column
                     prop="orderTime"
+                    width="160"
                     label="下单时间">
                     </el-table-column>
                     <el-table-column
@@ -220,7 +221,7 @@ export default {
             'value':'全部',
             'isActived':false,
             'srcNum':'3',
-            'status':""
+            'status':"51,52,53,54,55,56"
         }],
         data : []
     }
