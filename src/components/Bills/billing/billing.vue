@@ -34,17 +34,17 @@
                     <el-form-item label="左镜片 :" class="ParamInput">
                         <el-input class="" placeholder="" @input="setWhere('right');" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2);"></el-input>
                         <el-button @click="type='0';selectGlass(2);setWhere('right');">···</el-button>
-                        <el-button @click="showTitle('right');customizeRH=true">定做</el-button>
+                        <el-button @click="showTitle('right')">定做</el-button>
                     </el-form-item>
                     <el-form-item label="右镜片 :" class="ParamInput">
                         <el-input class="" placeholder="" @input="setWhere('left');" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1);"></el-input>
                         <el-button @click="type='0';selectGlass(1);setWhere('left');">···</el-button>
-                        <el-button @click="showTitle('right');customizeRH=true">定做</el-button>
+                        <el-button @click="showTitle('right')">定做</el-button>
                     </el-form-item>
                     <el-form-item label="商品 :" class="ParamInput">
                         <el-input class="" placeholder="" v-model="selectProductSku.selectSP" @keyup.enter.native="type='';selectGlass(3);"></el-input>
                         <el-button @click="type='';selectGlass(3);">···</el-button>
-                        <el-button @click="showTitle('shop');customizeRH=true">定做</el-button>
+                        <el-button @click="showTitle('shop')">定做</el-button>
                     </el-form-item>
                     <el-form-item class="ParamInput ParamButton">
                         <el-button @click="packageGoods=true">套餐商品</el-button>
@@ -200,7 +200,7 @@
                 <el-form-item>
                     <el-checkbox v-model="orderTemp.urgent">是否加急单</el-checkbox>
                 </el-form-item>
-                <el-form-item label="取镜时间 :">
+                <el-form-item label="取镜时间 :" >
                     <el-date-picker
                     v-model="orderTemp.glassesTime"
                     value-format="yyyy-MM-dd"
@@ -415,7 +415,7 @@
         <SelectShopModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:setBuyShop="selectSku" ></SelectShopModal>
     </el-dialog>
     <el-dialog class="customizeRH" :title="customText" :visible.sync="customizeRH" width="690px">
-        <CustomizeRHModal  v-on:commitCustomMessage="commitCustom"></CustomizeRHModal >
+        <CustomizeRHModal  :custom="custom"  v-on:commitCustomMessage="commitCustom"></CustomizeRHModal >
         <!-- <div class="packageDetailButtonGroup">
             <el-button type="primary"  @click="commitCustom();customizeRH = false">确!定</el-button>
         </div> -->
@@ -458,7 +458,7 @@
         <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">确定要挂起本订单吗？</h4>
         <span>会员姓名：张丽丽</span>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="pendingOrders=false">取消</el-button>
+            <el-button @click="pendingOrders=false"></el-button>
             <el-button type="primary" @click="pendingOrders = false">确定</el-button>
         </span>
     </el-dialog>
@@ -1535,7 +1535,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             },
             showTitle(value){
                 let _this = this;
-                _this.$nextTick(()=>{
                     if(value== 'left'){
                         _this.custom='left';
                         _this.customText = '定做-左镜片'
@@ -1546,7 +1545,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         _this.custom='shop';
                         _this.customText = '定做-商品'
                     }
-                })
+               _this.customizeRH=true;
 
             },
             //新增验光单后获取用户信息录入到页面
@@ -1795,4 +1794,13 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
     .expressAddress{
         width: 110px;
     }
+   .orderType {
+       .el-form{
+           .el-date-editor{
+               .el-input__inner{
+                   color:red;
+               }
+           }
+       }
+   }
 </style>
