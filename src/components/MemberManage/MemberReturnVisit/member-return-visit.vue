@@ -56,50 +56,49 @@
                 align="left"
                 style="width: 100%;margin-bottom:10px;">
                 <el-table-column
-                prop="complaintsDay"
-                label="投诉日期">
-                </el-table-column>
-                <el-table-column
-                prop="memberName"
+                prop="a"
                 label="会员姓名">
                 </el-table-column>
                 <el-table-column
-                prop="telephone"
+                prop="b"
                 label="手机号">
                 </el-table-column>
                 <el-table-column
-                prop="sex"
+                prop="c"
                 label="性别">
                 </el-table-column>
+              <el-table-column
+                prop="d"
+                label="年龄">
+              </el-table-column>
                 <el-table-column
-                prop="complaintsTypes"
-                label="投诉类别">
+                prop="e"
+                label="零售单号">
                 </el-table-column>
                 <el-table-column
-                prop="complaintsMemo"
-                label="投诉说明"
-                width="300">
+                prop="f"
+                label="应回访类型">
                 </el-table-column>
                 <el-table-column
-                prop="complaintsType"
-                label="投诉类型">
+                prop="g"
+                label="应回访方式">
                 </el-table-column>
                 <el-table-column
-                prop="retailNum"
-                label="关联零售单号">
+                prop="h"
+                label="应回访日期">
                 </el-table-column>
                 <el-table-column
-                prop="waiter"
-                label="接待人员">
-                </el-table-column>
-                <el-table-column
-                prop="type"
                 label="状态">
+                  <template slot-scope="scope">
+                    <span class="am-ft-orange">{{scope.row.i}}</span>
+                    <span class="am-ft-gray9" v-if="scope.row.i=='已回访'">{{scope.row.i}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column
                 label="操作">
                     <template slot-scope="scope">
-                        <span class="am-ft-blue"><a>查看详情</a></span>
+                        <span class="am-ft-blue"><a href="javascript:;">查看</a></span>
+                        <span class="am-ft-blue mgl20"><a href="javascript:;">回访登记</a></span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -107,7 +106,7 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="1000">
+            :total="10">
             </el-pagination>
         </div>
     </div>
@@ -125,18 +124,7 @@
                   label: '黄金糕'
                 }],
                 value:"",
-                data : [{
-                  complaintsDay : '2017-12-07',
-                  memberName : '张三',
-                  telephone : 15757179646,
-                  sex : '男',
-                  complaintsTypes: '产品质量',
-                  complaintsMemo: '投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容',
-                  complaintsType: '上门投诉',
-                  retailNum: 'R0326632321',
-                  waiter: '玉素甫·哈斯',
-                  type:'未处理'
-                }]
+                data : []
             };
         },
         components:{
@@ -144,16 +132,15 @@
         created: function() {
             for (var i = 0; i < 10; i++) {
               this.data.push({
-                complaintsDay : '2017-12-07',
-                memberName : '张三',
-                telephone : 15757179646,
-                sex : '男',
-                complaintsTypes: '产品质量',
-                complaintsMemo: '投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容',
-                complaintsType: '上门投诉',
-                retailNum: 'R0326632321',
-                waiter: '玉素甫·哈斯',
-                type:'未处理'
+                a : '张三',
+                b : '15757179646',
+                c : '男',
+                d: '25',
+                e: 'R0326632321',
+                f: '生日回访',
+                g: '电话回访',
+                h: '2018-01-01',
+                i: '待回访'
               });
             }
         }
