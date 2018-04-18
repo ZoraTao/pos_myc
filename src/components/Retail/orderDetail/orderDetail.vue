@@ -452,9 +452,7 @@ export default {
         case '2':
           return '审核完成';
         case '3':
-          return '记账';
-        case '3':
-          return '记账';
+          return '待付款';
         case '4':
           return '部分付款';
         case '5':

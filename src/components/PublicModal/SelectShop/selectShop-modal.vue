@@ -62,7 +62,7 @@
                 </el-table-column>
                 <el-table-column
                 prop="warehouseName"
-                width="70px"
+                width="90px"
                 label="出货仓库">
                 </el-table-column>
                 <el-table-column

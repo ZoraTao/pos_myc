@@ -9,6 +9,22 @@
             :value="item.warehouseId">
             </el-option>
         </el-select>
+         <el-select style="width:120px" clearable v-model="brand" placeholder="全部品牌" @change="emitThisValue()">
+            <el-option
+            v-for="item in options"
+            :key="item.warehouseId"
+            :label="item.warehouseName"
+            :value="item.warehouseId">
+            </el-option>
+        </el-select>
+         <el-select style="width:120px" clearable v-model="Varieties" placeholder="全部品种" @change="emitThisValue()">
+            <el-option
+            v-for="item in options"
+            :key="item.warehouseId"
+            :label="item.warehouseName"
+            :value="item.warehouseId">
+            </el-option>
+        </el-select>
     </div>
     <div class="">
         <!--body-top-->
@@ -92,6 +108,8 @@ export default {
         ],
         loading:true,
         value:"0",
+        brand:'',//品牌
+        Varieties:'',//品种
         cpSelectProductSku:null,
     }
   },
@@ -147,7 +165,9 @@ export default {
 </script>
 
 <style lang="scss" scope>
-
+.w150{
+    overflow: hidden;
+}
 .selectRH{
     .el-table{
         min-height:441px;
@@ -163,8 +183,13 @@ export default {
     }
     #selectRH{
         .w150{
-            width: 150px;
+            // width: 150px;
+        }
+        .el-select{
+            margin-right: 20px;
         }
     }
+
+
 }
 </style>

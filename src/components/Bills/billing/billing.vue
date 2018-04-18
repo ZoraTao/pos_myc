@@ -205,12 +205,14 @@
                     v-model="orderTemp.glassesTime"
                     value-format="yyyy-MM-dd"
                     align="left"
+                    :default-value="defaultTimes"
                     type="date"
+                    style="width:130px"
                     placeholder="选择日期">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="取镜方式 :">
-                    <el-select size="mini" v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
+                    <el-select size="mini" class="shopexpress"  v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
                         <el-option
                         v-for="item in selectOptions"
                         :key="item.id"
@@ -219,7 +221,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="取镜公司 :">
+                <el-form-item label="取镜公司 :" v-show="publicSelcet.glassesTypeModel=='门店自取'">
                     <el-select size="mini" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()" @change="sameComType">
                         <el-option
                         v-for="item in publicSelcet.comTypeOptions"
@@ -229,10 +231,20 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="取镜地点 :">
+                <el-form-item label="取镜地点 :"  v-show="publicSelcet.glassesTypeModel=='门店自取'">
                     <p style="width:100px;">{{orderTemp.glassesAddress||'--'}}</p>
                 </el-form-item>
-                <div style="overflow:hidden;width:800px;">
+                <div>
+                    <el-form-item label="收件人：" v-show="publicSelcet.glassesTypeModel=='快递'">
+                        <el-input class="express"  v-model="express.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号：" v-show="publicSelcet.glassesTypeModel=='快递'">
+                        <el-input class="express" v-model="express.telphone"></el-input>
+                    </el-form-item>
+                    <el-form-item  label="收件地址：" v-show="publicSelcet.glassesTypeModel=='快递'">
+                        <el-input class="expressAddress"  v-model="express.address"></el-input>
+                    </el-form-item>
+                </div>
                     <el-form-item>
                         <el-input class="" v-model="orderTemp.saleMemo" placeholder="销售备注"></el-input>
                     </el-form-item>
@@ -244,7 +256,6 @@
                         <el-input size="mini" v-model="publicSelcet.specialMemo" placeholder="特殊备注" @visible-change="getPublicSelect(4,publicSelcet.specialMemoOptions)">
                         </el-input>
                     </el-form-item>
-                </div>
 
             </el-form>
         </div>
@@ -400,7 +411,7 @@
     <el-dialog class="selectRH" :title="selectProductSku.title" :visible.sync="showSelectRH" width="870px">
         <SelectRHModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:selectSku="selectSku" ></SelectRHModal>
     </el-dialog>
-    <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="700px">
+    <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="750px">
         <SelectShopModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:setBuyShop="selectSku" ></SelectShopModal>
     </el-dialog>
     <el-dialog class="customizeRH" :title="customText" :visible.sync="customizeRH" width="690px">
@@ -611,7 +622,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         name:'',
                         id:''
                     }],
-                    glassesTypeModel:'到店自取',
+                    glassesTypeModel:'门店自取',
                     comTypeOptions:[],
                     comTypeModel:null,
                     processMemoOptions:[],
@@ -642,6 +653,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 add:'',
                 },
                 optometryId:'',
+                defaultTimes:new Date(),
                 type:'',
                 optometryTime:'',
                 submitNewOptometry:false,//控制 提交验光单子组件传值
@@ -667,6 +679,11 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 actionCost:{},//促销活动信息
                 conponResponse:{},
                 timeDefaultShow:'',//当前日期默认值
+                express:{//快递方式
+                    name:'',//收件人
+                    telphone:'',//手机号
+                    address:'',//收件地址
+                },
                 selectProductSku:{
                     selectR:'',
                     selectL:'',
@@ -1635,6 +1652,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                             BorderType = '1'
                     }
                 }
+                this.orderTemp.glassesTime = allDate.TimetoDateDay(Date.parse(this.orderTemp.glassesTime));
+
                 var jsonObject =
                 {
                     memberId : memberId,//会员id
@@ -1708,14 +1727,11 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
 
         },
         mounted(){
-            let _this = this;
-            _this.timeDefaultShow = allDate.TimetoDateDay();
         },
         beforeDestory(){
 
         },
         created(){
-
         },
         mounted(){
             this.users =  JSON.parse(localStorage.getItem("userData"));
@@ -1766,5 +1782,17 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
     }
     .inputBold span{
         font-weight: bold;
+    }
+    .shopexpress{
+        width: 95px;
+    }
+    .express{
+        width: 80px;
+    }
+    .orderType .el-form-item .el-form-item__content input{
+        max-width: 300px !important;
+    }
+    .expressAddress{
+        width: 110px;
     }
 </style>
