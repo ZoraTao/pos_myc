@@ -188,6 +188,9 @@
                   <el-form-item
                     label=""
                     prop="count">
+=======
+                    prop="proCount" >
+>>>>>>> Seven/0415dev-4
                     <el-input type="number" min="1" v-model.number="tableData[scope.$index].count" size="small" ></el-input>
                   </el-form-item>
                 </el-form>
@@ -321,7 +324,7 @@
           ],
         },
         rules2: {
-          count:[{ required: true, message: '调拨数量不能为空且大于0', trigger: 'change', trigger: 'blur' },],
+          count:[{ required: true, message: '不能为空且大于0',trigger: 'blur' },],
         },
       }
     },
@@ -539,22 +542,22 @@
       //新增调拨单
       addTransferOrder(formName) {
         const that = this;
-        if (that.warehList.find(ele => ele.warehouseId == that.formInline.outWarehId)) {
-          that.formInline.outWarehName = that.warehList.find(ele => ele.warehouseId == that.formInline.outWarehId).warehouseName;
-        }
-        if (that.warehList.find(ele => ele.warehouseId == that.formInline.outWarehId)) {
-          that.formInline.inWarehName = that.warehList.find(ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
-        }
-        that.formInline.requisitionOrgName = that.ueserOrgName;
-        that.formInline.makingP = that.ueserName;
-        that.formInline.requisitionOrg = that.ueserOrgId;
-        that.formInline.dRequisitionDetailList = that.tableData;
-        delete that.formInline.dRequisitionId;
-
-        // console.info(that.formInline)
-        // console.info(that.formInline.dRequisitionDetailList.length)
         this.$refs[formName].validate((valid) => {
           if (valid && that.formInline.dRequisitionDetailList.length > 0) {
+            if (that.warehList.find(ele => ele.warehouseId == that.formInline.outWarehId)) {
+              that.formInline.outWarehName = that.warehList.find(ele => ele.warehouseId == that.formInline.outWarehId).warehouseName;
+            }
+            if (that.warehList.find(ele => ele.warehouseId == that.formInline.outWarehId)) {
+              that.formInline.inWarehName = that.warehList.find(ele => ele.warehouseId == that.formInline.inWarehId).warehouseName;
+            }
+            that.formInline.requisitionOrgName = that.ueserOrgName;
+            that.formInline.makingP = that.ueserName;
+            that.formInline.requisitionOrg = that.ueserOrgId;
+            that.formInline.dRequisitionDetailList = that.tableData;
+            delete that.formInline.dRequisitionId;
+            // console.info(that.formInline)
+            // console.info(that.formInline.dRequisitionDetailList.length)
+
             that.$axios({
               url: 'http://myc.qineasy.cn/pos-api/dRequisition/addDRequisition',
               method: 'post',

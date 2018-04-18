@@ -120,8 +120,8 @@
       //查看详情
       goDetail(index,data) {
         this.$router.push({
-          path: '/commodity/transfer-order-edit',
-          name: 'transfer-order-edit',
+          path: '/commodity/transfer-order-detail',
+          name: 'transfer-order-detail',
           params: data
         })
       }

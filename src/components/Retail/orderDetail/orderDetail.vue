@@ -9,7 +9,7 @@
       </div>
       
       <div class="orderTitle" >
-          <span>零售单号：{{orderData.ordertemp.orderNo}}</span> <i v-show="false">已完成</i>
+          <span>零售单号：{{orderData.ordertemp.orderNo}}</span> <i v-show="orderData.ordertemp.status" v-html="returnStatus(orderData.ordertemp.status)"></i>
       </div>
       <div class="orderMemberdDetail">
           <div>
@@ -441,7 +441,53 @@ export default {
     };
   },
   methods: {
-    
+    returnStatus(status){
+      switch (status) {
+        case '-1':
+          return '挂单';
+        case '0':
+          return '初始状态'; 
+        case '1':
+          return '审核中'; 
+        case '2':
+          return '审核完成'; 
+        case '3':
+          return '记账';   
+        case '3':
+          return '记账';   
+        case '4':
+          return '部分付款'; 
+        case '5':
+          return '已付款';   
+        case '6':
+          return '已完成'; 
+        case '7':
+          return '已关闭';  
+        case '8':
+          return '已冲红'; 
+        case '9':
+          return '已删除';   
+        case '10':
+          return '退货';   
+        case '51':
+          return '待发单'; 
+        case '52':
+          return '待发料';   
+        case '53':
+          return '待装配';
+        case '54':
+          return '待检验';   
+        case '55':
+          return '待配送';
+        case '56':
+          return '待收单';   
+        case '57':
+          return '待取件';
+          break;
+        default:
+          break;
+      }
+    },
     eyesDate(data) {
       let _this = this;
       for (var i = 0; i < data.length; i++) {
