@@ -188,9 +188,6 @@
                   <el-form-item
                     label=""
                     prop="count">
-=======
-                    prop="proCount" >
->>>>>>> Seven/0415dev-4
                     <el-input type="number" min="1" v-model.number="tableData[scope.$index].count" size="small" ></el-input>
                   </el-form-item>
                 </el-form>
