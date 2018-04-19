@@ -29,15 +29,11 @@
         </div>
 
         <div class="fn-left mgt4 mgl30">
-            <button class="col_blue_bg_white find_btn">
-                查询
-            </button>
+          <el-button type="primary" plain>查询</el-button>
         </div>
 
         <div class="fn-right ">
-            <button class="add_btn bg_white_col_blue" @click="isShowNewComplaints=true">
-                + 新增投诉
-            </button>
+          <el-button type="primary" @click="isShowNewComplaints=true"> + 新增投诉</el-button>
         </div>
 
     </div>
@@ -61,51 +57,53 @@
                 align="left"
                 style="width: 100%;margin-bottom:10px;">
                 <el-table-column
-                prop="complaintsDay"
+                prop="a"
                 label="投诉日期"
                 width="180">
                 </el-table-column>
                 <el-table-column
-                prop="memberName"
+                prop="b"
                 label="会员姓名"
                 width="180">
                 </el-table-column>
                 <el-table-column
-                prop="telephone"
+                prop="c"
                 label="手机号">
                 </el-table-column>
                 <el-table-column
-                prop="sex"
+                prop="d"
                 label="性别">
                 </el-table-column>
                 <el-table-column
-                prop="complaintsTypes"
+                prop="e"
                 label="投诉类别">
                 </el-table-column>
                 <el-table-column
-                prop="complaintsMemo"
+                prop="f"
                 label="投诉说明">
                 </el-table-column>
                 <el-table-column
-                prop="complaintsType"
+                prop="g"
                 label="投诉类型">
                 </el-table-column>
                 <el-table-column
-                prop="retailNum"
+                prop="h"
                 label="关联零售单号">
                 </el-table-column>
                 <el-table-column
-                prop="waiter"
+                prop="i"
                 label="接待人员">
                 </el-table-column>
                 <el-table-column
-                prop="type"
                 label="状态">
+                  <template slot-scope="scope">
+                    <span class="am-ft-red">{{scope.row.j}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column
                 label="操作">
                     <template slot-scope="scope">
-                        <span class="am-ft-blue"><a>查看详情</a></span>
+                        <span class="am-ft-blue"><a href="javascript:;" @click="isShow = true">查看</a></span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -113,32 +111,35 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :total="1000">
+            :total="10">
             </el-pagination>
         </div>
     </div>
+  <!--新增投诉-->
     <el-dialog
       title="提示"
       :visible.sync="isShowNewComplaints"
       width="900px">
-      <newComplaintsModal></newComplaintsModal>      
+      <newComplaintsModal></newComplaintsModal>
       <div class="packageDetailButtonGroup">
             <el-button @click="isShowNewComplaints = false">取 消</el-button>
             <el-button type="primary" @click="isShowNewComplaints = false">保 存</el-button>
         </div>
     </el-dialog>
+  <!--新增投诉-->
+  <!--投诉单详情-->
     <el-dialog
       title="提示"
       class="ComplainsBill"
       :visible.sync="isShow"
       width="900px">
-      <ComplainsBillModal></ComplainsBillModal>      
+      <ComplainsBillModal></ComplainsBillModal>
       <div class="packageDetailButtonGroup">
             <el-button @click="isShow = false">取 消</el-button>
             <el-button type="primary" @click="isShow = false">保 存</el-button>
         </div>
     </el-dialog>
-
+  <!--投诉单详情-->
 </div>
 </template>
 
@@ -152,24 +153,13 @@ import ComplainsBillModal from '../../PublicModal/ComplaintsBill/complains-bill-
                 showDiv:"2",
                 searchModel:"",
                 isShowNewComplaints:false,
-                isShow:true,
+                isShow:false,
                 options:[{
                   value: '选项1',
                   label: '黄金糕'
                 }],
                 value:"",
-                data : [{
-                  complaintsDay : '2017-12-07',
-                  memberName : '张三',
-                  telephone : 15757179646,
-                  sex : '男',
-                  complaintsTypes: '产品质量',
-                  complaintsMemo: '投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容',
-                  complaintsType: '上门投诉',
-                  retailNum: 'R0326632321',
-                  waiter: '玉素甫·哈斯',
-                  type:'未处理'
-                }]
+                data : []
             };
         },
         components:{
@@ -179,16 +169,16 @@ import ComplainsBillModal from '../../PublicModal/ComplaintsBill/complains-bill-
         created: function() {
             for (var i = 0; i < 10; i++) {
               this.data.push({
-                complaintsDay : '2017-12-07',
-                memberName : '张三',
-                telephone : 15757179646,
-                sex : '男',
-                complaintsTypes: '产品质量',
-                complaintsMemo: '投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容',
-                complaintsType: '上门投诉',
-                retailNum: 'R0326632321',
-                waiter: '玉素甫·哈斯',
-                type:'未处理'
+                a : '2017-12-07',
+                b : '张三',
+                c : '15757179646',
+                d : '男',
+                e : '产品质量',
+                f: '投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容投诉内容',
+                g: '上门投诉',
+                h: 'R0326632321',
+                i: '三藏',
+                j: '未处理',
               });
             }
         }
