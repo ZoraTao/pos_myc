@@ -1,7 +1,7 @@
 c<template>
   <div class="content-out-wrapper">
     <!------part1 top------>
-    <el-row class="inquiry-row">
+    <el-row class="inquiry-row" v-if="memberCount">
       <el-col :span="4">
         <div class="inquiry-item">
           <span>昨日新增会员数</span>
@@ -406,8 +406,10 @@ export default {
         })
         .then(function(response) {
           // console.info(response.data.data)
-          that.memberCount = response.data.data;
-          that.cardNumList = response.data.data.cardNumList;
+          if(response.data.code == 1){
+            that.memberCount = response.data.data;
+            that.cardNumList = response.data.data.cardNumList;
+          }
         })
         .catch(function(error) {
           console.info(error);
