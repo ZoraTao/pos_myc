@@ -50,29 +50,12 @@
         <h5>公告</h5>
       </div>
       <div class="hcBottom">
-          <div class="hcGgItem">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/logo1.png" class="fn-left"/>
+          <div class="hcGgItem" v-for="(i,index) in news">
+            <img v-if="index==0" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/logo1.png" class="fn-left"/>
             <div class="fn-left">
-              <p>毛源昌眼镜门店销售管理系统全面升级</p>
-              <span>2017-12-08 09:09:12</span>
-            </div>
-          </div>
-          <div class="hcGgItem">
-            <div class="fn-left">
-              <p>毛源昌眼镜门店销售管理系统全面升级</p>
-              <span>2017-12-08 09:09:12</span>
-            </div>
-          </div>
-          <div class="hcGgItem">
-            <div class="fn-left">
-              <p>毛源昌眼镜门店销售管理系统全面升级</p>
-              <span>2017-12-08 09:09:12</span>
-            </div>
-          </div>
-          <div class="hcGgItem">
-            <div class="fn-left">
-              <p>毛源昌眼镜门店销售管理系统全面升级</p>
-              <span>2017-12-08 09:09:12</span>
+              <p @click="detailPanel(i,index)">{{i.a}}</p>
+              <p class="news-detail" v-if="i.d">{{i.c}}</p>
+              <span>{{i.b}}</span>
             </div>
           </div>
       </div>
@@ -138,6 +121,7 @@ export default {
       dialogAptitudeDue: false,
       todoInfo: {},
       orgId: '',
+      news: [],
     }
   },
   components: {
@@ -145,6 +129,14 @@ export default {
   },
   created(){
     this.getTodoItems();
+    for(let i=0;i<10;i++){
+      this.news.push({
+        a: '毛源昌眼镜门店销售管理系统全面升级',
+        b: '2017-12-07 09:09:12',
+        c: '毛源昌眼镜门店销售管理系统，全面升级全面打造新全新系统。',
+        d: false
+      })
+    }
   },
   methods:{
     goBills(type){
@@ -185,7 +177,7 @@ export default {
             })
             return false;
           } else {
-            console.info(response.data.data);
+            // console.info(response.data.data);
             that.todoInfo = response.data.data.todo;
           }
         })
@@ -197,6 +189,10 @@ export default {
             type: 'error'
           })
         })
+    },
+    //消息详情面板
+    detailPanel(val,index){
+      val.d = !val.d;
     }
   }
 }
@@ -253,10 +249,16 @@ export default {
                     text-align: left;
                     line-height: 28px;
                     overflow: hidden;
+                  cursor: pointer;
                     p {
                         font-size: 16px;
                         color: #333333;
                         letter-spacing: -0.69px;
+                    }
+                    p.news-detail{
+                      font-weight: normal;
+                      font-size: 12px;
+                      color: #555555;
                     }
                     span {
                         font-size: 12px;
