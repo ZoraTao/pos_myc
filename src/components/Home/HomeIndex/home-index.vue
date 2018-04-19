@@ -192,7 +192,7 @@ export default {
     },
     //消息详情面板
     detailPanel(val,index){
-      val.d = !val.d;
+      val.d = ! val.d;
     }
   }
 }
