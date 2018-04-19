@@ -12,7 +12,7 @@
         <ul class="clearfix cashier_top">
           <li class="fn-left">
             <el-form-item label="零售单号：" prop="orderNum">
-              <el-input v-model="searchForm.orderNo" placeholder="请输入零售单号" style="min-width: 100px"></el-input>
+              <el-input v-model="searchForm.orderNo" placeholder="请输入零售单号" style="min-width: 100px" @keyup.enter.native="getOrderList(status)"/>
             </el-form-item>
           </li>
           <li class="fn-left">
@@ -25,7 +25,7 @@
                 :trigger-on-focus="false"
                 @select="handleSelect"
               ></el-autocomplete> 输入建议 -->
-              <el-input v-model="searchForm.name" placeholder="请输入" :change="serachMember(searchForm.name)"  style="min-width: 80px"></el-input>
+              <el-input v-model="searchForm.name" placeholder="请输入" @keyup.enter.native="getOrderList(status)"  style="min-width: 80px"></el-input>
             </el-form-item>
           </li>
 
@@ -65,7 +65,7 @@
             </el-form-item>
           </li>
           <li class="fn-left">
-            <el-button type="primary" plain class="find_btn" @click="getOrderList()">查询</el-button>
+            <el-button type="primary" plain class="find_btn" @click="getOrderList(status)">查询</el-button>
           </li>
         </ul>
         </el-form>
@@ -113,7 +113,7 @@
               <td>{{parseFloat(list.listPrice)}}</td>
               <td>
                 <strong  v-if="!order.extraMoney">{{parseFloat(list.money)?parseFloat(list.money):'0'}}</strong>
-                <strong v-if="order.extraMoney">{{parseFloat(list.listPrice)}}</strong>
+                <strong v-if="order.extraMoney">{{parseFloat(list.money)}}</strong>
               </td>
               <td>{{order.shopName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
@@ -123,9 +123,9 @@
                   <div>商品合计：
                     <strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong>
                   </div>
-                  <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
-                  <div v-show="order.discountMoney>0">折扣：<strong>{{order.discountMoney}}</strong></div>
-                  <div v-show="parseFloat(order.activityMoney)!=0">活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>-{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-show="order.discountMoney>0">折扣：<strong>-{{order.discountMoney}}</strong></div>
+                  <div v-show="parseFloat(order.activityMoney)>0">活动：-<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
@@ -418,7 +418,7 @@ export default {
                   showClose:true
                 })
                 _this.closeOrderData = ''
-                this.getOrderList(_this.status);
+                _this.getOrderList(_this.status);
               }else{
                 console.log(res)
                 _this.$message({
@@ -434,40 +434,7 @@ export default {
     },
     //会员搜索
     serachMember(){
-      var _this = this;
-      var jsonObject={};
 
-      setTimeout(function(){
-        _this.$axios({
-            url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
-            method: "post",
-            params: {
-              jsonObject: {
-                seachCode:_this.searchForm.name,
-                nub: _this.nub == 1 ? 0 : (_this.nub - 1) * _this.size,
-                size: _this.size,
-              },
-              keyParams: {
-                weChat: true
-              }
-            }
-          })
-          .then(function(response) {
-            if(response.data.code != '1'){
-              _this.$message({
-                showClose: true,
-                message: '请求数据出问题喽，请重试！',
-                type: 'error'
-              })
-              return false;
-            }else {
-              let memberId = response.data.data;
-            }
-          })
-          .catch(function(error) {
-            console.info(error);
-          });
-      },0)
     },
     changeTab: function(item) {
       this.srcNum = item.srcNum;
@@ -515,7 +482,7 @@ export default {
             params: {
               jsonObject: {
                 orderNo: _this.searchForm.orderNo,
-                name: _this.searchForm.name,
+                searchCode: _this.searchForm.name,
                 orderType: _this.searchForm.orderType,
                 saleTimeStart: _this.searchForm.saleTimeStart,
                 saleTimeEnd: _this.searchForm.saleTimeEnd,

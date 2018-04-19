@@ -11,35 +11,35 @@
       </div>
       <div class="hcBottom">
         <div class="hcNumItem" >
-          <h3>120</h3>
+          <h3>{{todoInfo.toPickup}}</h3>
           <p>待取件(单)</p>
         </div>
         <div class="hcNumItem">
-          <h3>120</h3>
+          <h3>{{todoInfo.todayPickup}}</h3>
           <p>今日待取件(单)</p>
         </div>
         <div class="hcNumItem" v-on:click="goBills(1)">
-          <h3 class="am-ft-red">6</h3>
+          <h3 class="am-ft-red">{{todoInfo.outPickup}}</h3>
           <p>超期单据(单)</p>
         </div>
         <div class="hcNumItem" v-on:click="goBills(2)">
-          <h3>12</h3>
+          <h3>{{todoInfo.expiringLens}}</h3>
           <p>即将到期隐形镜(盒)</p>
         </div>
         <div class="hcNumItem">
-          <h3>9</h3>
+          <h3>{{todoInfo.notSaleLens}}</h3>
           <p>将到期不可售隐形镜(盒)</p>
         </div>
         <div class="hcNumItem">
-          <h3>21</h3>
+          <h3>{{todoInfo.toCustomer}}</h3>
           <p>待回访客户(个)</p>
         </div>
         <div class="hcNumItem" v-on:click="goBills(3)">
-          <h3>9</h3>
+          <h3>{{todoInfo.prescriptionPlans}}</h3>
           <p>验光预约(人)</p>
         </div>
         <div class="hcNumItem" @click="dialogAptitudeDue = true">
-          <h3>120</h3>
+          <h3>{{todoInfo.expirQualified}}</h3>
           <p>资质即将到期</p>
         </div>
       </div>
@@ -136,10 +136,15 @@ export default {
   data () {
     return {
       dialogAptitudeDue: false,
+      todoInfo: {},
+      orgId: '',
     }
   },
   components: {
     AptitudeDue
+  },
+  created(){
+    this.getTodoItems();
   },
   methods:{
     goBills(type){
@@ -154,6 +159,44 @@ export default {
           this.$router.push('/bills/optometryAppointmentBill')
         break;
       }
+    },
+    //待办事项
+    getTodoItems(){
+      const that = this;
+      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      this.orgId = ueserInfo.orgId;
+      that.$axios({
+        url: 'http://myc.qineasy.cn/pos-api/toDo/getToDoDetail',
+        method: 'post',
+        params: {
+          jsonObject: {},
+          keyParams: {
+            weChat: true,
+            orgId: that.orgId
+          }
+        }
+      })
+        .then(function (response) {
+          if (response.data.code != '1') {
+            that.$message({
+              showClose: true,
+              message: '请求数据出问题喽，请重试！',
+              type: 'error'
+            })
+            return false;
+          } else {
+            console.info(response.data.data);
+            that.todoInfo = response.data.data.todo;
+          }
+        })
+        .catch(function (error) {
+          console.info(error);
+          that.$message({
+            showClose: true,
+            message: '请求数据失败，请联系管理员',
+            type: 'error'
+          })
+        })
     }
   }
 }
@@ -266,10 +309,12 @@ export default {
             width: 33%;
             float: left;
             height: 60px;
+          cursor: pointer;
             h3 {
                 font-size: 32px;
                 color: #00A2DE;
                 font-weight: 500;
+                min-height: 48px;
             }
             p {
                 font-size: 13px;

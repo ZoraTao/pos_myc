@@ -26,7 +26,7 @@
                 </div>
                 <div class="cmInfoItem">
                     <label>投诉说明：</label>
-                    <p>该会员态度强硬，需要尽快处理，有处理结果后马上打电话告知</p>
+                    <p><b class="am-ft-black">该会员态度强硬，需要尽快处理，有处理结果后马上打电话告知</b></p>
                 </div>
                 <div class="cmInfoItem fn-right">
                     <label>接待人员：</label>
@@ -34,6 +34,7 @@
                 </div>
             </div>
         </div>
+        <h5 class="complainsNum">零售单号：LSD000000001</h5>
         <div class="grayTable">
             <el-table
                 :data="data"
@@ -41,22 +42,27 @@
                 style="width: 100%">
                 <el-table-column
                     prop="memberCard"
+                    align="left"
                     label="商品名称"
                     width="500">
                 </el-table-column>
                 <el-table-column
                     prop="memberName"
+                    align="center"
                     label="数量">
                 </el-table-column>
                 <el-table-column
+                    align="center"
                     prop="phone"
                     label="原单价">
                 </el-table-column>
                 <el-table-column
+                    align="center"
                     prop="age"
                     label="折扣">
                 </el-table-column>
                 <el-table-column
+                    align="center"
                     prop="sex"
                     label="实售单价">
                 </el-table-column>
@@ -72,16 +78,19 @@
                 style="width: 100%">
                 <el-table-column
                     prop="memberCard"
+                    align="left"
                     label="投诉类别"
                     width="120">
                 </el-table-column>
                 <el-table-column
                     prop="memberName"
+                    align="center"
                     label="负责人"
                     width="120">
                 </el-table-column>
                 <el-table-column
                     prop="phone"
+                    align="center"
                     label="原因"
                     width="120">
                 </el-table-column>
@@ -98,24 +107,24 @@
         </div>
         <ul class="optometryMemo">
             <li class="fn-left">
-                <div class="labelInput mgl30">
-                    <label class="mgr10">处理人员 :</label>
-                    <el-select style="width:120px" v-model="value" placeholder="请选择">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>   
-                <div class="labelInput mgl30">
-                    <label class="mgr10">处理日期 :</label>
-                    <el-date-picker
-                    type="date"
-                    placeholder="选择日期">
-                    </el-date-picker>
-                </div>                           
+                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                    <el-form-item class="labelInput mgb0" label="处理人员：" prop="name">
+                        <el-select style="width:120px" v-model="value" placeholder="请选择">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                        <el-form-item class="labelInput mgb0" label="处理日期：">
+                        <el-date-picker
+                        type="date"
+                        placeholder="选择日期">
+                        </el-date-picker>
+                    </el-form-item>                    
+                </el-form>
             </li>
         </ul>   
     </div>
@@ -177,6 +186,10 @@ export default {
 <style lang="scss">
 @import "../../../reset";
 .ComplainsBill{
+    .complainsNum{    
+        margin-left: 12px;
+        margin-bottom: 5px;
+    }
     .w100{
         width: 100%;
     }
@@ -276,8 +289,10 @@ export default {
         }
     }   
     .grayTable{
-        max-height: 120px;
-        overflow-y: scroll;
+        .el-table__body-wrapper{
+            max-height: 120px;
+            overflow-y: auto;
+        }
         .el-table--small td, .el-table--small th{
             padding: 4px 0;
         }
@@ -285,9 +300,15 @@ export default {
             border-top: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
             background: #EFEFEF !important;
+            &:first-child{
+                padding-left: 30px;
+            }
         }
         .el-table--small td{
             background: #F8F8F8 !important;
+            &:first-child{
+                padding-left: 30px;
+            }
         }
     }
     .whiteTable{
@@ -323,6 +344,7 @@ export default {
             color: #666666;
             margin: 0 10px;
             font-weight: 400;
+            text-align: left;
         }
         .ctBox{
             overflow: hidden;
@@ -360,6 +382,9 @@ export default {
                     }
                 }
             }
+        }
+        .labelInput{
+            height: auto;
         }
     }
 

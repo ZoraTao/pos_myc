@@ -26,14 +26,14 @@
         <li class="fn-left">
           <span class="member">零售时间&nbsp;:&nbsp;</span>
           <el-date-picker
-            style="width:120px"
+            style="width:130px"
             type="date"
             v-model="searchForm.saleTimeStart"
             placeholder="选择日期">
           </el-date-picker>
           <span>-</span>
           <el-date-picker
-            style="width:120px"
+            style="width:130px"
             type="date"
             v-model="searchForm.saleTimeEnd"
             placeholder="选择日期">
@@ -50,8 +50,8 @@
           <table class="orders_table">
             <thead>
             <tr>
-              <th width="">商品编码</th>
-              <th width="">商品名称</th>
+              <th width="230px">商品编码</th>
+              <th width="400px">商品名称</th>
               <th width="">数量</th>
               <th width="">原单价</th>
               <th width="">实售单价</th>
@@ -139,11 +139,12 @@
             prop="moneyPaid"
             label="金额">
             <template slot-scope="scope">
-                <span class="am-ft-bold">{{scope.row.price}}</span>
+                <span class="am-ft-bold">{{scope.row.moneyAmount}}</span>
             </template>
             </el-table-column>
             <el-table-column
             prop="orderTime"
+            width="160"
             label="下单时间">
             </el-table-column>
             <el-table-column
@@ -215,7 +216,7 @@
           'value': '全部',
           'isActived': false,
           'srcNum': '3',
-          'status':""
+          'status':"6,10"
         }],
         data: [
           {

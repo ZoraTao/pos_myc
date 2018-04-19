@@ -1,7 +1,6 @@
 <template>
   <div class="flexH100">
-
-    <div class="optometry_content" style="min-height:500px;">
+    <div class="optometry_content" style="min-height:500px;" v-if="userInfo">
       <!--验光单一条数据详情-->
       <div class="list_one">
         <ul class="optometry_head">
@@ -35,6 +34,7 @@
                 <li class="w90">DPD</li>
                 <li class="w90">NPD</li>
                 <li class="w90">HPD</li>
+                <li class="w90">PD</li>
                 <li class="w90">ADD</li>
               </ul>
               <ul>
@@ -49,6 +49,7 @@
                       <td class="w90">{{data3[1].va}}</td>
                       <td class="w90">{{data3[1].dpd}}</td>
                       <td class="w90">{{data3[1].npd}}</td>
+                      <td class="w90">{{data3[1].pd}}</td>
                       <td class="w90">{{data3[1].hpd}}</td>
                       <td class="w90 border_left" rowspan="2">{{data3[1].add}}</td>
                     </tr>
@@ -60,6 +61,7 @@
                       <td class="w90">{{data3[0].va}}</td>
                       <td class="w90">{{data3[0].dpd}}</td>
                       <td class="w90">{{data3[0].npd}}</td>
+                      <td class="w90">{{data3[0].pd}}</td>
                       <td class="w90">{{data3[0].hpd}}</td>
                     </tr>
                   </table>
@@ -385,12 +387,12 @@
   }
 
   .glass_combination_table {
-    width: 870px;
+    width: 940px;
     /* height: 400px; */
   }
 
   .glass_table_head {
-    width: 870px;
+    width: 940px;
     height: 30px;
     line-height: 30px;
     font-weight: bold;
@@ -401,7 +403,7 @@
   }
 
   .glass_table_770 {
-    width: 770px;
+    width: 860px;
   }
 
   .glass_table_head li {
