@@ -9,22 +9,24 @@
             :value="item.warehouseId">
             </el-option>
         </el-select>
-         <el-select style="width:120px" clearable v-model="brand" placeholder="全部品牌" @change="emitThisValue()">
+         <el-select style="width:120px" clearable v-model="brand" placeholder="全部品牌" @change="changesSelect(2)">
             <el-option
-            v-for="item in options"
-            :key="item.warehouseId"
-            :label="item.warehouseName"
-            :value="item.warehouseId">
+            v-for="item in brands"
+            :key="item.productCategoryId"
+            :label="item.className"
+            :value="item.productCategoryId">
             </el-option>
         </el-select>
-         <el-select style="width:120px" clearable v-model="Varieties" placeholder="全部品种" @change="emitThisValue()">
+         <el-select style="width:120px" clearable v-model="Varieties" placeholder="全部品种"  @change="changesSelect(3)">
             <el-option
-            v-for="item in options"
-            :key="item.warehouseId"
-            :label="item.warehouseName"
-            :value="item.warehouseId">
+            v-for="item in Varietiess"
+            :key="item.productCategoryId"
+            :label="item.className"
+            :value="item.productCategoryId">
             </el-option>
         </el-select>
+
+        <el-button type="plain" @click="emitThisValue">查询</el-button>
     </div>
     <div class="">
         <!--body-top-->
@@ -38,11 +40,11 @@
                 style="width: 100%;margin-bottom:10px">
                 <el-table-column
                 prop="sku"
-                width="130px"
+                width="160px"
                 label="商品编码">
                 </el-table-column>
                 <el-table-column
-                width="200px"
+                width="250px"
                 prop="skuName"
                 label="商品名称">
                 </el-table-column>
@@ -108,6 +110,8 @@ export default {
         ],
         loading:true,
         value:"0",
+        brands:null,
+        Varietiess:null,
         brand:'',//品牌
         Varieties:'',//品种
         cpSelectProductSku:null,
@@ -131,6 +135,59 @@ export default {
         row.realSale=row.price;
         this.$emit('selectSku',row);
       },
+      changesSelect(type){
+            let _this = this;
+            let id = '';
+            console.log(this.brand)
+            switch ((type).toString()) {
+            case '2':
+                    id=this.brand;
+                    _this.Varietiess=[];
+                    _this.Varieties='';
+                  break;
+
+          }
+           _this.$axios({
+                url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
+                method: 'post',
+                params: {
+                    jsonObject: {
+                        productCategoryId: id
+                        // warehouseId:_this.value
+                    },
+                    keyParams: {
+                        weChat: true
+                    }
+                }
+            })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              _this.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+                switch ((type).toString()) {
+                    case '2':
+                        _this.Varietiess=response.data.data.productCategoryList;
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            _this.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
       getWareHouseList(){
         var that = this;
         if(that.options==''){
@@ -152,14 +209,39 @@ export default {
             })
         }
       },
+      //全部品牌接口获取
+      initBrand(){
+          let _this = this;
+          _this.$myAjax({
+              url:'pos-api/productCategory/list',
+              data:{
+                  productCategoryId:"C001"
+              },success:function(res){
+                  if(res.code == 1){
+                    _this.brands = res.data.productCategoryList
+                  }
+              },error:function(err){
+                  _this.$message({
+                      type:'error',
+                      message:'数据获取失败',
+                      showClose:true
+                  })
+              }
+          })
+      },
       emitThisValue(){
-        this.$emit('rhtWareHouse',{wareh:this.value});
+          let arr = [];
+          arr.push('C001',this.brand,this.Varieties)
+        this.$emit('rhtWareHouse',{
+            categoryCode:arr,
+            wareh:this.value});
       }
   },
   watch:{
 
   },
   mounted:function(){
+          this.initBrand();
   }
 }
 </script>

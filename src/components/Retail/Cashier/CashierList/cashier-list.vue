@@ -107,7 +107,7 @@
               </td>
             </tr>
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
-              <td>{{list.itemId}}</td>
+              <td>{{list.itemNo||'--'}}</td>
               <td>{{list.itemName}}<span class="customText" v-if="list.orderReceiptId">定做单号：{{list.orderReceiptId}}</span></td>
               <td>{{parseInt(list.quantity)||'--'}}</td>
               <td>{{parseFloat(list.listPrice)}}</td>
@@ -191,7 +191,7 @@
                   </td>
                 </tr>
                 <tr   v-for="(list,index) in order.orderItems" :key="list.name">
-                  <td>{{list.itemId}}</td>
+                  <td>{{list.itemNo||'--'}}</td>
                   <td>{{list.itemName||'商品名'}}</td>
                   <td>{{parseInt(list.quantity)||'--'}}}</td>
                   <td>{{parseFloat(list.price)}}</td>
@@ -250,7 +250,7 @@
             style="width: 100%;margin-bottom:10px;">
             <el-table-column
               label="订单号"
-              width="400">
+              width="200">
               <template slot-scope="scope">
                 <!-- <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
                 <span v-if="scope.row.statusCode=='4'" class="am-bg-orange icon">欠</span>
@@ -279,7 +279,8 @@
             </el-table-column>
             <el-table-column
               prop="orderTime"
-              label="下单时间">
+              label="下单时间"
+              width="200px">
             </el-table-column>
             <el-table-column
               prop="shopName"
@@ -290,7 +291,7 @@
               label="状态">
               <template slot-scope="scope">
                 <span
-                  :class="{'am-ft-aa': scope.row.statusCode==='3'||scope.row.statusCode==='6','am-ft-orange':scope.row.statusCode==='4'||scope.row.statusCode==='5','am-ft-red': scope.row.statusCode==='10'}">{{scope.row.statusName}}</span>
+                  :class="{'am-ft-aa': scope.row.statusCode==='3'||scope.row.statusCode==='6','am-ft-orange':scope.row.statusCode==='4'||scope.row.statusCode==='5','am-ft-red': scope.row.statusCode==='10'}">{{scope.row.statusName=='记账'?'待付款':scope.row.statusName}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -306,7 +307,7 @@
             layout="prev, pager, next"
             :page-size="5"
             :total="Number(count)"
-            @current-change="getOrderList('5')"
+            @current-change="getOrderList(5,true)"
             :current-page.sync="nub">
           </el-pagination>
         </div>
@@ -354,13 +355,14 @@ export default {
       },
       RemoveOrder:false,
       nub: 1,
-      status:'3',// 当前栏 1收银  2欠还  3全部
+      status:'3',// 当前栏 3收银  4欠还  5全部
       size: 5,
       payData: "", //收银信息
       count: "",
       showCashier: false,
       closeOrderData:null,
       consoleCashier: false,
+      initAllSearch:false,
       srcNum: "1",
       orderTempList: {},
       tabs: [
@@ -457,22 +459,33 @@ export default {
     //开启弹窗
     openDialog() {},
     //获取列表
-    getOrderList(value) {
+    getOrderList(value,bool) {
       var _this = this;
       let status = _this.status;
       if (value == 5){
-        _this.orderTempList = [];
-        _this.count = 0;
-        return
+        if(!_this.initAllSearch){
+          _this.orderTempList = [];
+          _this.count = 0;
+          _this.initAllSearch =  true;
+          return
+        }
+        if(!bool){
+          _this.orderTempList = [];
+          _this.count = 0;
+        }
       }
       if (value == 3 || value == 4) {
         status = value;
+        _this.orderTempList = [];
+        _this.count = 0;
         value == 3 ?_this.status = 3 : _this.status = 4;
-        _this.searchForm.orderNo = '';
-        _this.searchForm.name = '';
-        _this.searchForm.orderType = '';
-        _this.searchForm.saleTimeStart = '';
-        _this.searchForm.saleTimeEnd = '';
+        if(bool){
+          _this.searchForm.orderNo = '';
+          _this.searchForm.name = '';
+          _this.searchForm.orderType = '';
+          _this.searchForm.saleTimeStart = '';
+          _this.searchForm.saleTimeEnd = '';
+        }
       }
 
       setTimeout(() => {

@@ -709,6 +709,7 @@ export default {
           })
           .then(function(response) {
             if (response.data.code == 1) {
+              jsonObject.prescriptions.prescriptionId = response.data.data.id;
               that.$emit("getNewoptometry", jsonObject);
               that.$message({
                   showClose: true,

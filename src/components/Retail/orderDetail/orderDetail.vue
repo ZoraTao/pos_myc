@@ -36,7 +36,7 @@
         border
         style="width: 100%;">
         <el-table-column
-          prop="itemId"
+          prop="itemNo"
           label="商品编码"
           width="120px">
         </el-table-column>
