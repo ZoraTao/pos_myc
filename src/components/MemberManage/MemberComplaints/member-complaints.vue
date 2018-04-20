@@ -122,8 +122,8 @@
       width="900px">
       <newComplaintsModal></newComplaintsModal>
       <div class="packageDetailButtonGroup">
-            <el-button @click="isShowNewComplaints = false">取 消</el-button>
-            <el-button type="primary" @click="isShowNewComplaints = false">保 存</el-button>
+            <el-button @click="isShowNewComplaints = false">取消</el-button>
+            <el-button type="primary" @click="isShowNewComplaints = false">保存</el-button>
         </div>
     </el-dialog>
   <!--新增投诉-->
@@ -135,8 +135,10 @@
       width="900px">
       <ComplainsBillModal></ComplainsBillModal>
       <div class="packageDetailButtonGroup">
-            <el-button @click="isShow = false">取 消</el-button>
-            <el-button type="primary" @click="isShow = false">保 存</el-button>
+            <el-button @click="isShow = false">取消</el-button>
+            <el-button type="primary" @click="isShow = false">确定</el-button>
+        <!--已完成-->
+            <!--<el-button type="primary">修改处理意见</el-button>-->
         </div>
     </el-dialog>
   <!--投诉单详情-->

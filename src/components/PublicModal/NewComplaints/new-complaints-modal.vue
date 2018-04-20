@@ -4,7 +4,7 @@
         <div class="newOptometryPhone">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
                 <el-form-item label="投诉人手机号:" prop="name">
-                    <el-input v-model="ruleForm.name"></el-input>
+                    <el-input v-model="ruleForm.name" style="width: 120px;"></el-input>
                 </el-form-item>
                 <el-form-item label="零售单号:" class="fn-right">
                     <el-select v-model="value" placeholder="请选择">
@@ -49,49 +49,47 @@
        <div class="complaintsType">
            <h5>请选择顾客的投诉类别</h5>
            <div class="ctBox">
-               <div class="ctLeft">
-                   <div class="ctGroup">
-                       <p>服务投诉</p>
-                   </div>
-                   <div class="ctGroup">
-                       <p>质量问题</p>
-                   </div>
-               </div>
                <div class="ctRight">
+                   <div class="ctLeft ctGroup">
+                     <p>服务投诉</p>
+                   </div>
+                 <div class="fn-left">
                    <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
+                     <el-button type="default" plain>本店环境</el-button>
                    </div>
                    <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
+                     <el-button type="default" plain>接待人员</el-button>
                    </div>
                    <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
+                       <el-button type="default" plain>验光人员</el-button>
                    </div>
                    <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
+                       <el-button type="default" plain>收银人员</el-button>
                    </div>
                    <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
+                       <el-button type="default" plain>佩戴人员</el-button>
                    </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
-                   <div class="ctGroup">
-                       <div class="ctButton">本店环境</div>
-                   </div>
+                 </div>
                </div>
+             <div class="ctRight">
+               <div class="ctLeft ctGroup">
+                 <p>质量问题</p>
+               </div>
+               <div class="fn-left">
+                 <div class="ctGroup">
+                   <el-button type="default" plain>顾客问题</el-button>
+                 </div>
+                 <div class="ctGroup">
+                   <el-button type="default" plain>装配问题</el-button>
+                 </div>
+                 <div class="ctGroup">
+                   <el-button type="default" plain>验光问题</el-button>
+                 </div>
+                 <div class="ctGroup">
+                   <el-button type="default" plain>产品质量</el-button>
+                 </div>
+               </div>
+             </div>
            </div>
        </div>
         <div class="whiteTable">
@@ -100,32 +98,33 @@
                 size="small"
                 style="width: 100%">
                 <el-table-column
-                    prop="memberCard"
-                    label="商品名称"
-                    width="500">
+                    prop="a"
+                    label="投诉类别">
                 </el-table-column>
                 <el-table-column
-                    prop="memberName"
-                    label="数量">
+                    prop="b"
+                    label="负责人">
                 </el-table-column>
                 <el-table-column
-                    prop="phone"
-                    label="原单价">
+                    prop="c"
+                    label="原因">
                 </el-table-column>
                 <el-table-column
-                    prop="age"
-                    label="折扣">
+                    prop="d"
+                    label="处理意见">
                 </el-table-column>
-                <el-table-column
-                    prop="sex"
-                    label="实售单价">
-                </el-table-column>
+              <el-table-column
+                prop=""
+                label=""
+              width="30%">
+              </el-table-column>
             </el-table>
         </div>
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="60px">
         <ul class="optometryMemo">
             <li class="fn-left">
                 <div class="labelInput">
-                    <label class="mgr10">验光来源：</label>
+                    <label class="mgr10">接待人员：</label>
                     <el-select style="width:120px" v-model="value" placeholder="请选择">
                         <el-option
                         v-for="item in options"
@@ -136,23 +135,16 @@
                     </el-select>
                 </div>
                 <div class="labelInput mgl30">
-                    <label class="mgr10">验光师：</label>
-                    <el-select style="width:120px" v-model="value" placeholder="请选择">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>   
-                <div class="labelInput mgl30">
-                    <label class="mgr10">验光日期 :</label>
-                    <el-date-picker
-                    type="date"
-                    placeholder="选择日期">
-                    </el-date-picker>
-                </div>                           
+                    <label class="mgr10">投诉日期 :</label>
+                  <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date" style="width: 127px;"></el-date-picker>
+                </div>
+              <div class="labelInput mgl30">
+                <label class="mgr10">投诉类型：</label>
+                <el-select v-model="ruleForm.options" placeholder="请选择">
+                  <el-option label="0" value="0"></el-option>
+                  <el-option label="1" value="1"></el-option>
+                </el-select>
+              </div>
             </li>
             <li class="fn-left">
                 <div class="labelInput w100">
@@ -160,11 +152,12 @@
                     <el-input
                         type="textarea"
                         :rows="2"
-                        placeholder="请输入内容">
+                        v-model="ruleForm.memo">
                     </el-input>
                 </div>
             </li>
-        </ul>   
+        </ul>
+      </el-form>
     </div>
 </div>
 </template>
@@ -174,11 +167,14 @@
 export default {
   name: 'NewComplaintsModal',
   data () {
-    return { 
+    return {
         options: [],
         value: '',
         ruleForm: {
           name: '',
+          date: '',
+          options: [],
+          memo: '',
         },
         rules: {
           name: [
@@ -196,24 +192,7 @@ export default {
             }
         ],
         activeName: '1',
-        data:[
-            // {
-            //     memberCard:'0012345',
-            //     memberName:'张三',
-            //     phone:'15383465790',
-            //     sex:'男',
-            //     age:'12',
-            //     time:'2017-10-12 12:34:55'
-            // },
-            // {
-            //     memberCard:'0012345',
-            //     memberName:'张三',
-            //     phone:'15383465790',
-            //     sex:'男',
-            //     age:'12',
-            //     time:'2017-10-12 12:34:55'
-            // }
-        ]
+        data:[]
     }
   },
   methods:{
@@ -289,10 +268,9 @@ label {
         }
     }
     .optometryMemo{
-        padding: 5px 15px;
+        padding: 14px 15px 10px;
         background: #f8f8f8;
         overflow: hidden;
-        padding-top: 14px;
         li{
             width: 100%;
         }
@@ -303,7 +281,7 @@ label {
         }
     }
     .labelInput{
-        float: left;    
+        float: left;
         line-height: 32px;
         label{
             min-width: 50px;
@@ -315,10 +293,10 @@ label {
         }
         .el-input{
             width: 110px;;
-            padding:0; 
+            padding:0;
         }
     }
-}   
+}
 .grayTable{
     .el-table__body-wrapper{
         max-height: 120px;
@@ -380,14 +358,6 @@ label {
                 float: left;
                 margin-right: 10px;
                 margin-bottom: 10px;
-                .ctButton{
-                    width: 120px;
-                    height: 30px;
-                    line-height: 30px;
-                    background: #FFFFFF;
-                    border: 1px solid #E1E1E1;
-                    border-radius: 4px;
-                }
             }
         }
     }
@@ -401,7 +371,7 @@ label {
     overflow: auto;
 }
 
-.packageDetailButtonGroup{ 
+.packageDetailButtonGroup{
     padding:20px 10px;
     background: #EEEEEE;
     text-align: right;
@@ -409,7 +379,7 @@ label {
         border-radius: 4px;
         width: 90px;
         &:first-child{
-            
+
         }
         &:last-child{
             background: #00AFE4;
