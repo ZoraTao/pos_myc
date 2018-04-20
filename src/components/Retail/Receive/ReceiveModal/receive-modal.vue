@@ -19,7 +19,7 @@
             <el-row :gutter="20">
                 <el-col :span="8">
                     <div class="am-ft-16 am-ft-gray3 ft_bold " :span="8">
-                                    {{shelfData.itemId}}
+                                    {{shelfData.itemNo}}
                     </div>
                 </el-col>
                 <el-col :span="8">
@@ -124,6 +124,7 @@ export default {
         this.receiveData.orderItems.forEach(element => {
             if(element.productType=='C002'){
                 _this.shelfData.itemId=element.itemId;
+                _this.shelfData.itemNo=element.itemNo;
                 _this.shelfData.itemName=element.itemName;
                 _this.shelfData.quantity=element.quantity;
             }
@@ -135,6 +136,7 @@ export default {
   },
   watch:{
       'showReceive':function(n,o){
+        this.shelfData.itemNo='';
         this.shelfData.itemId='';
         this.shelfData.itemName='';
         this.shelfData.quantity='';       

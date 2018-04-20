@@ -59,11 +59,12 @@
               <th width="">取件时间</th>
               <th width="">订单金额</th>
               <th width="">订单状态</th>
+              <th width="">操作</th>
             </tr>
             </thead>
             <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
             <tr class="order_header">
-              <td colspan="9">
+              <td colspan="10">
                 <div class=" img_b" style="position: absolute;top:0;left:0;" v-show="order.orderType=='1'"><img
                   src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ding_icon.png"/></div>
                 <div class=" fn-left">
@@ -78,7 +79,7 @@
               </td>
             </tr>
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
-              <td>{{list.itemId}}</td>
+              <td>{{list.itemNo}}</td>
               <td>{{list.itemName||'商品名'}}</td>
               <td>{{parseInt(list.quantity)}}</td>
               <td>{{parseFloat(list.price)||'商品原单价'}}</td>
@@ -96,8 +97,14 @@
 
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-gray9">完成</div>
+                <div class="am-ft-gray9"  v-if="srcNum==='1'">已完成</div>
+                <div class="am-ft-gray9"  v-if="srcNum==='2'">退货</div>
                 <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
+              </td>
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                <div class="look_d am-ft-gray9">换货</div>
+                <div class="look_d am-ft-gray9">申请退货</div>
+                <div class="look_d am-ft-gray9">补打销售单</div>
               </td>
 
             </tr>
@@ -417,6 +424,10 @@
     position: relative;
   }
 
+  .orders_table tr td:nth-child(1) {
+    text-align: left;
+  }
+
   .orders_table tr td:nth-child(2) {
     text-align: left;
   }
@@ -491,7 +502,9 @@
   .look_d {
     cursor: pointer;
   }
-
+  .look_d:hover{
+    color: #00AFE4 !important;
+  }
   .sign_orange {
     border: 1px solid #FF6600;
     border-radius: 0 10px 10px 0;

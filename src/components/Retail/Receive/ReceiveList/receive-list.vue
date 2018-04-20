@@ -69,7 +69,7 @@
                                 </td>
                             </tr>
                             <tr v-for="(list,index) in order.orderItems" :key="list.name">
-                                <td>{{list.itemId}}</td>
+                                <td>{{list.itemNo}}</td>
                                 <td>{{list.itemName||'商品名'}}</td>
                                 <td>{{parseInt(list.quantity)}}</td>
                                 <td>{{order.shopName}}</td>
@@ -463,6 +463,9 @@ export default {
     letter-spacing: 0;
 }
 
+.orders_table tr td:nth-child(1) {
+    text-align: left;
+}
 .orders_table tr td:nth-child(2) {
     text-align: left;
 }
