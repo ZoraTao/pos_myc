@@ -35,6 +35,7 @@
             </div>
         </div>
         <h5 class="complainsNum">零售单号：LSD000000001</h5>
+      <!--商品信息-->
         <div class="grayTable">
             <el-table
                 :data="data"
@@ -68,7 +69,11 @@
                 </el-table-column>
             </el-table>
         </div>
-        <div class="whiteTable">
+      <!--投诉信息-->
+      <div class="complaintsType">
+        <h5>投诉信息：</h5>
+        <div class="grayTable">
+          <template>
             <el-table
                 :data="data2"
                 size="small"
@@ -76,33 +81,39 @@
                 <el-table-column
                     prop="a"
                     align="left"
-                    label="投诉类别"
+                    label="投诉大类"
                     width="120">
                 </el-table-column>
                 <el-table-column
                     prop="b"
                     align="center"
-                    label="负责人"
+                    label="投诉小类"
                     width="120">
                 </el-table-column>
                 <el-table-column
                     prop="c"
                     align="center"
-                    label="原因"
+                    label="负责人"
                     width="120">
                 </el-table-column>
+              <el-table-column
+                prop="d"
+                align="left"
+                label="原因"
+                width="100">
+              </el-table-column>
                 <el-table-column
-                    prop="d"
                     align="center"
-                    label="处理意见"
-                    width="450">
+                    label="处理意见">
                     <template slot-scope="scope">
                         <!--<p>修改前处理意见处理意见处理意见处理意见处理意见</p>-->
-                        <el-input class="w100" v-model="scope.row.age" placeholder="请输入内容"></el-input>
+                        <el-input class="w100" v-model="scope.row.e" placeholder="请输入内容"></el-input>
                     </template>
                 </el-table-column>
             </el-table>
+          </template>
         </div>
+      </div>
         <ul class="optometryMemo">
             <li class="fn-left">
                 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -177,7 +188,7 @@ export default {
           a: '验光人员',
           b: '王大锤',
           c: '验光问题',
-          d: '',
+          d: '123',
         }
       ]
     }
@@ -303,7 +314,7 @@ export default {
         .el-table--small th{
             border-top: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
-            background: #EFEFEF !important;
+            background: transparent !important;
             &:first-child{
                 padding-left: 30px;
             }
@@ -343,11 +354,18 @@ export default {
         }
     }
     .complaintsType{
+      margin: 10px 20px;
+      .grayTable {
+        border: 1px solid #ddd;
+        margin-left: 0 !important;
+        tr th {
+          background-color: transparent !important;
+        }
+      }
         h5{
             font-size: 12px;
             color: #666666;
-            margin: 0 10px;
-            font-weight: 400;
+            margin: 10px 0;
             text-align: left;
         }
         .ctBox{

@@ -76,7 +76,7 @@
       </el-col>
       <!--tab-->
       <el-col :span="24">
-        <el-tabs type="border-card"v-model="activeName" @tab-click="handleClick">
+        <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="调拨待审核" name="1">
             <pending-review :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></pending-review>
           </el-tab-pane>
