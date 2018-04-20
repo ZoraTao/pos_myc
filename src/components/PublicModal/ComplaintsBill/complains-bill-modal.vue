@@ -68,9 +68,6 @@
                 </el-table-column>
             </el-table>
         </div>
-       <div class="complaintsType">
-           <h5>请填写对应投诉的处理意见</h5>
-       </div>
         <div class="whiteTable">
             <el-table
                 :data="data2"
