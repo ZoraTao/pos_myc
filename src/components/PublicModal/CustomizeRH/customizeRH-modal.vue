@@ -1,39 +1,7 @@
 <template>
 <div id="customizeRH" class=" modal-content-center">
     <div class="customizeRHBody">
-        <div class="customizeInputGroup fn-left">
-            <label>球镜:</label>
-                <el-select v-model="customContent.value1" placeholder="请选择">
-                    <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-        </div>
-        <div class="customizeInputGroup fn-left">
-            <label>柱镜:</label>
-                <el-select v-model="customContent.value2" placeholder="请选择">
-                    <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-        </div>
-        <div class="customizeInputGroup fn-left">
-            <label>下加光:</label>
-                <el-select v-model="customContent.value3" placeholder="请选择">
-                    <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-        </div>
+      <div style="overflow:hidden">
         <div class="customizeInputGroup  fn-left shops">
             <label>品牌:</label>
                 <el-select v-model="customContent.brand" placeholder="请选择">
@@ -57,7 +25,7 @@
                 </el-select>
         </div>
         <div class="customizeInputGroup fn-left shops"  v-show="custom =='shop'">
-            <label>规格:</label>
+            <label>规格型号:</label>
                 <el-select v-model="customContent.specification" placeholder="请选择">
                     <el-option
                     v-for="item in options"
@@ -67,9 +35,32 @@
                     </el-option>
                 </el-select>
         </div>
-        <div class="customizeInputGroup fn-left shops" v-show="custom == 'shop'">
-            <label>型号:</label>
-                <el-select v-model="customContent.model" placeholder="请选择">
+      </div>
+        <div class="customizeInputGroup fn-left shops">
+            <label>球镜:</label>
+                <el-select v-model="customContent.value1" placeholder="请选择">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup fn-left shops">
+            <label>柱镜:</label>
+                <el-select v-model="customContent.value2" placeholder="请选择">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup fn-left shops">
+            <label>下加光:</label>
+                <el-select v-model="customContent.value3" placeholder="请选择">
                     <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -122,7 +113,6 @@
 import _ from "lodash";
 export default {
   name: "CustomizeRHModal",
- 
   data() {
     return {
       options: [
@@ -298,7 +288,6 @@ export default {
         specification:'',//规格
         brand:'',//品牌
         variety:'',//品种
-        model:'',//型号
         customMessage: "",
         price: "", //原价
         nums: "1", //数量
@@ -306,16 +295,12 @@ export default {
         realSale: "", //实售
         status: "1"
       },
-      data: [
-        {
-          shopid: "0012345",
-          shopname: "毛源昌1.551非球面防辐射远+1.50",
-          storehouse: "总仓库",
-          inventory: "24",
-          allocation: "20",
-          price: "230.00"
-        }
-      ]
+      sphArray:null,
+      cylArray:null,
+      addArray:null,
+      specificationArray:null,
+      varietyArray:null,
+      brandArray:null,
     };
   },
    props:{
@@ -344,17 +329,37 @@ export default {
         console.log("不是价格");
       }
     },
+    initSelect(){
+      _this.$myAjax({
+          url:'pos-api/customize/addCustomize',
+          data:{},
+          success:function(res){
+           if(res.code ==1){
+            _this.sphArray = res.data.sph;
+            _this.cylArray = res.data.cyl;
+            _this.addArray = res.data.add;
+            _this.specificationArray = res.data.model;
+            _this.brandArray = res.data.brandId;
+            _this.varietyArray = res.data.sortId;
+           }
+          },
+          error:function(err){
+
+          }
+      })
+    },
     commitCustom() {
       let _this = this;
       console.log(this.customContent);
-      if (this.customContent.value1 =='') {
+      if (this.customContent.value1 ==''||this.customContent.price==''||typeof parseFloat(this.customContent.price) != 'number') {
            this.$message({
             type: "error",
-            message: "请填写完整",
+            message: "请填写规范",
             showClose: true
           });
           return false;
       }
+      customContent.price = parseFloat(this.customContent.price);
       let users =  JSON.parse(localStorage.getItem("userData"));
       _this.$myAjax({
           url:'pos-api/customize/addCustomize',
@@ -372,7 +377,6 @@ export default {
                 // {"customizeDemand":"1111","count":"1","customizeOrgName":"毛源昌商城","customizeOrgId":"11387","customizeShopName":"天一恒泰店","customizeShopId":"11387","customizePerson":"陈中床"}
           },
           success:function(res){
-              console.log(res.code)
               if(res.code == 1){
                   _this.customContent.customId = res.data.customizeNo;
                     let commits = _.clone(_this.customContent);

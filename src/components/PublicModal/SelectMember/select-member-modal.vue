@@ -100,7 +100,7 @@ export default {
                 method: 'post',
                 params: {
                     jsonObject: {
-                        seachCode:that.selectM,
+                        orderBy:'2',
                         nub: that.nub==1?0:(that.nub-1)*that.size,
                         size: that.size
                     },
@@ -142,9 +142,6 @@ export default {
 </script>
 
 <style lang="scss">
-.el-tabs {
-    min-height:210px;
-}
 #selectMember{
     .el-dialog__body {
         padding: 10px 0;
@@ -167,6 +164,9 @@ export default {
     }
     .el-table th {
         background: #fff !important;
+    }
+    .el-table__body{
+        min-height:170px;
     }
     th{
         background: #fff;

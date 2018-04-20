@@ -57,7 +57,7 @@
                 </el-table-column>
                 <el-table-column
                 prop="skuName"
-                width="180px"
+                width="260px"
                 label="商品名称">
                 </el-table-column>
                 <el-table-column
@@ -283,7 +283,7 @@ export default {
 
 .selectShop{
     .el-table{
-        min-height:441px;
+        min-height:340px;
     }
     .el-dialog__body {
         padding: 15px;

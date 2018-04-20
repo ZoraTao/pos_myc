@@ -1,6 +1,8 @@
 <template>
   <div >
   <section class="content_box"  v-if="orderData!=null">
+      <router-link class="back" tag="div" to='/cashier/cashierList'>返回</router-link>
+
     <div class="orderHeader">
       <div  v-if="orderData.ordertemp.orderType == 1" style="float:left;">
         <div class="ding">
@@ -41,8 +43,11 @@
           width="120px">
         </el-table-column>
         <el-table-column
-          prop="itemName"
           label="商品名称">
+          <template slot-scope="scope">
+              {{scope.row.itemName}}定做单号:{{scope.row.orderReceiptId}}
+
+          </template>
         </el-table-column>
         <el-table-column
           label="数量"
@@ -111,10 +116,11 @@
                 <li class="w90">DPD</li>
                 <li class="w90">NPD</li>
                 <li class="w90">HPD</li>
+                <li class="w90">PD</li>
                 <li class="w90">ADD</li>
               </ul>
-              <ul>
-                <li class="fn-left  msg_left" v-if="far[0].sph">远用</li>
+              <ul v-if="far[0].sph">
+                <li class="fn-left  msg_left" >远用</li>
                 <li class="fn-left glass_table_770">
                   <table>
                     <tr class="border_bottom">
@@ -126,7 +132,8 @@
                       <td class="w90">{{far[0].dpd}}</td>
                       <td class="w90">{{far[0].npd}}</td>
                       <td class="w90">{{far[0].hpd}}</td>
-                      <td class="w90 border_left" rowspan="2">11</td>
+                      <td class="w90">{{far[0].pd}}</td>
+                      <td class="w90 border_left" rowspan="2">{{far[0].add}}</td>
                     </tr>
                     <tr class="dis_bg">
                       <td class="w50">L</td>
@@ -137,6 +144,7 @@
                       <td class="w90">{{far[1].dpd}}</td>
                       <td class="w90">{{far[1].npd}}</td>
                       <td class="w90">{{far[1].hpd}}</td>
+                      <td class="w90">{{far[1].pd}}</td>
                     </tr>
                   </table>
                 </li>
@@ -360,45 +368,7 @@ export default {
       skiascopy: [], // 检影
       asymptotic: [], // 渐近
       contact: [], // 隐形
-      tableData2: [
-        {
-          nameNo: "BH00001",
-          name: "左镜片：毛源昌1.55非球面防辐射远+1.50",
-          num: 1,
-          price: "2300.00",
-          money: "134.00",
-          address: "店面的的的",
-          time: "2018-04-11 13:02:53"
-        },
-        {
-          nameNo: "BH00001",
-          name:
-            "左镜片：毛源昌1.55非球面防辐射远+1.50左镜片：毛源昌1.55非球面防辐射远+1.50左镜片：毛源昌1.55非球面防辐射远+1.50",
-          num: 1,
-          price: "2300.00",
-          money: "134.00",
-          address: "店面的的的",
-          time: "2018-04-11 13:02:53"
-        },
-        {
-          nameNo: "BH00001",
-          name: "左镜片：毛源昌1.55非球面防辐射远+1.50",
-          num: 1,
-          price: "2300.00",
-          money: "134.00",
-          address: "店面的的的",
-          time: "2018-04-11 13:02:53"
-        },
-        {
-          nameNo: "BH00001",
-          name: "左镜片：毛源昌1.55非球面防辐射远+1.50",
-          num: 1,
-          price: "2300.00",
-          money: "134.00",
-          address: "店面的的的",
-          time: "2018-04-11 13:02:53"
-        }
-      ],
+      tableData2: [],
 
       tableData: [
         {
@@ -505,10 +475,10 @@ export default {
       }
     },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (columnIndex === 7 || columnIndex === 8 || columnIndex === 9) {
-        if (rowIndex % this.tableData2.length === 0) {
+      if (columnIndex === 7 ) {
+        if (rowIndex % this.orderData.orderItemsList.length === 0) {
           return {
-            rowspan: this.tableData2.length,
+            rowspan: this.orderData.orderItemsList.length,
             colspan: 1
           };
         } else {
@@ -605,6 +575,7 @@ export default {
       border-bottom: 20px solid transparent;
       border-right: 20px solid transparent;
     }
+
     .dingText{
         position: absolute;
         top:0px;
@@ -681,6 +652,7 @@ export default {
         }
       }
     }
+
     .optometry {
       padding-left: 27px;
       .memberMessage {
@@ -703,12 +675,15 @@ export default {
     }
 
     .optometryTable {
-      width: 852px;
+      width: 940px;
       margin-top: 15px;
       border-top: 2px dashed #d8d8d8;
     }
     .glass_combination_table {
-      width: 870px;
+      .glass_table_head{
+        width: 940px;
+      }
+      width: 940px;
       border: none;
       /* height: 400px; */
     }
@@ -725,7 +700,7 @@ export default {
     }
 
     .glass_table_770 {
-      width: 770px;
+      width: 860px;
     }
 
     .glass_table_head li {
@@ -746,8 +721,9 @@ export default {
     }
 
     .glass_table_770 table {
-      // border: 1px solid #d2d2d2;
+      border: 1px solid #d2d2d2;
     }
+
     .msg_left {
       width: 80px !important;
       height: 82px;
@@ -824,6 +800,16 @@ export default {
 [v-cloak] {
   display: none;
 }
+.back{
+  width: 100%;
+  background: #fff;
+  font-size: 14px;
+  padding-left: 5px;
+  padding-bottom: 10px;
+  color:#00AAAA;
+  cursor: pointer;
+  text-decoration: underline;
+}
 .el-table .warning-row {
   background: rgba(246, 246, 246, 0.5);
 }
@@ -844,6 +830,8 @@ export default {
 }
 .el-table .el-table__row {
   overflow: hidden;
+  height: 34px;
+  min-height:34px;
   clear: both;
   border-top: 1px solid #000 !important;
 }
