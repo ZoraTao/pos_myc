@@ -1,0 +1,185 @@
+<template>
+<div id="selectMember">
+<!--body-top-->
+<div class="clearfix modal-content-top">
+    <el-tabs type="border-card" v-model="activeName">
+        <el-tab-pane v-for="item in tabs" :key="item.name" :label="item.label" :name="item.name">
+            <el-table
+                :data="data.memberList"
+                v-loading="!data.memberList||data.memberList == 'undefined'"
+                size="small"
+                @row-dblclick="selectThisa"
+                style="width: 100%;margin-bottom:10px">
+                <el-table-column
+                prop="memberCardNo"
+                width="130px"
+                label="会员卡号">
+                </el-table-column>
+                <el-table-column
+                width="100px"
+                prop="name"
+                label="会员姓名">
+                </el-table-column>
+                <el-table-column
+                width="120px"
+                prop="telphone"
+                label="手机号">
+                </el-table-column>
+                <el-table-column
+                prop="sex"
+                width="60px"
+                label="性别">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.sex == 'F'">女</span>
+                    <span v-if="scope.row.sex == 'M'">男</span>
+                </template>
+                </el-table-column>
+                <el-table-column
+                prop="age"
+                width="60px"
+                label="年龄">
+                </el-table-column>
+                <el-table-column
+                prop="lastPrescriptionTime"
+                width="210px"
+                label="最近验光时间">
+                </el-table-column>
+                <el-table-column
+                label="操作">
+                    <template slot-scope="scope">
+                        <span class="am-ft-blue" @click="selectThis(scope.row)">
+                            选择
+                        </span>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination
+            class="am-ft-right"
+            background
+            layout="prev, pager, next"
+            :page-size="10"
+            :total="Number(data.count)"
+            @current-change="getList"
+            :current-page.sync="nub">
+            </el-pagination>
+        </el-tab-pane>
+    </el-tabs>
+    </div>
+</div>
+</template>
+
+<script>
+
+export default {
+  name: 'SelectMemberModal',
+  props:['selectM'],
+  data () {
+    return {
+        tabs : [
+            {
+            name: '1',
+            label:'搜索结果'
+            },
+            {
+            name: '2',
+            label:'最近验光会员'
+            }
+        ],
+        activeName: '1',
+        nub:1,
+        size:5,
+        data:''
+    }
+  },
+  methods:{
+      getList(){
+        var that=this;
+        setTimeout(() => {
+            that.$axios({
+                url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
+                method: 'post',
+                params: {
+                    jsonObject: {
+                        seachCode:that.selectM,
+                        nub: that.nub==1?0:(that.nub-1)*that.size,
+                        size: that.size
+                    },
+                    keyParams: {
+                        weChat: true,
+                        userId: '8888',
+                        orgId: '11387'
+                    }
+                }
+            })
+            .then(function (response) {
+                if(response.data.code==1){
+                    that.data=response.data.data;
+                }else{
+                    that.$message({
+                        showClose: true,
+                        message: '会员信息获取失败',
+                            type: 'error'
+                    })
+                }
+            })
+        },0)
+      },
+      selectThis(value){
+        if(value){
+            this.$emit('memberInfo',value);
+        }
+      },
+      selectThisa(row,event){
+        if(row){
+            this.$emit('memberInfo',row);
+        }
+      }
+  },
+    created:function(){
+        this.getList();
+    }
+}
+</script>
+
+<style lang="scss">
+.el-tabs {
+    min-height:210px;
+}
+#selectMember{
+    .el-dialog__body {
+        padding: 10px 0;
+        padding-bottom: 0;
+        background: #efefef;
+    }
+    .el-tabs--border-card{
+        border:none !important;
+    }
+    .el-tabs--border-card>.el-tabs__header {
+        background-color: #efefef;
+        padding-left: 10px;
+    }
+    .el-tabs__item{
+        font-size: 12px;
+    }
+    .el-tabs__item.is-active{
+        color: #00AFE4 !important;
+        background: #fff !important;
+    }
+    .el-table th {
+        background: #fff !important;
+    }
+    th{
+        background: #fff;
+        padding: 7px 8px !important;
+        border-bottom: 1px solid #DDDDDD;
+        font-weight: bold;
+        color: #555;
+    }
+    td{
+        padding: 8.5px 8px;
+    }
+    tr:nth-of-type(even){
+      background: rgba(246,246,246,0.50);
+    }
+}
+</style>
