@@ -6,7 +6,7 @@
         <el-tab-pane v-for="item in tabs" :key="item.name" :label="item.label" :name="item.name">
             <el-table
                 :data="data.memberList"
-                v-loading="!data.memberList"
+                v-loading="!data.memberList||data.memberList == 'undefined'"
                 size="small"
                 @row-dblclick="selectThisa"
                 style="width: 100%;margin-bottom:10px">
@@ -41,7 +41,7 @@
                 </el-table-column>
                 <el-table-column
                 prop="lastPrescriptionTime"
-                width="220px"
+                width="210px"
                 label="最近验光时间">
                 </el-table-column>
                 <el-table-column

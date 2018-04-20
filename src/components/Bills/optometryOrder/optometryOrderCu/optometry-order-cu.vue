@@ -387,7 +387,7 @@
   }
 
   .glass_combination_table {
-    width: 940px;
+    width: 1000px;
     /* height: 400px; */
   }
 
