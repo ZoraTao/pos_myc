@@ -12,8 +12,8 @@
                     <el-input placeholder="" v-model="searchConponId" @keyup.enter.native="searchConpon(searchConponId)" ></el-input>
                 </div>
                 <div class="CouponBarCard">
-                    <p class="memberInfo"><span><!--张丽丽-->会员</span>有{{conponContent.userCouponCount}}张优惠券可用：</p>
-                    <div class="CouponBarItemBox" v-for="item in conponContent.canUserCoupon" :key="item.createTime">
+                    <p class="memberInfo"><span>会员</span>有{{conponContent.userCouponCount}}张优惠券可用：</p>
+                    <div class="CouponBarItemBox" v-for="item in conponContent.canUserCoupon" :key="item.couponNo">
                         <div class="CouponBarItem blueStatus" :style="{'background-color':item.colorValue,'border-color':item.colorValue}">
                             <div class="cardConstBox">
                                 <div class="cardConst">
@@ -32,10 +32,10 @@
                                 <p>{{item.activeTime.substring(0,16)}} 至 {{item.lapsedTime.substring(0,16)}}</p>
                             </div>
                             <div class="whiteBox"></div>
-                        </div>    
+                        </div>
                         <div class="userThisCard">
                             <span @click="receive(item)">使用</span>
-                        </div>                                    
+                        </div>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,7 @@
 export default {
   name: 'CouponBarCodeModal',
   data () {
-    return { 
+    return {
         searchConponId:'',
         conponContent:null,
     }
@@ -119,7 +119,7 @@ export default {
                                 type: 'error'
                             })
                     }
-                    
+
                 }).catch(function(err){
                     _this.$message({
                                 showClose: true,
@@ -143,7 +143,7 @@ export default {
         background: #fff;
     }
     .el-dialog__header .el-dialog__headerbtn i {
-        color: #909399; 
+        color: #909399;
     }
     .el-dialog__body {
         padding: 0 10px !important;
@@ -238,7 +238,7 @@ export default {
                                     float: left;
                                     line-height: 20px;
                                     border-left: 1px solid #FFFFFF40;
-                                    
+
                                     .cardInfoBox{
                                         text-align: left;
                                         margin-left: 5px;
@@ -278,7 +278,7 @@ export default {
                                     font-size: 12px;
                                     color: #FFFFFF;
                                 }
-                                
+
                             }
                         }
                         .greenStatus{

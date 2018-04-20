@@ -66,7 +66,7 @@ const router = new Router({
                     path: 'billing',
                     name: 'billing',
                     component: resolve => require(['../components/Bills/billing/billing.vue'], resolve),
-                    meta: { keepAlive: true }
+                    // meta: { keepAlive: true }
                 }, {
                     path: 'timeoutBill',
                     name: 'timeoutBill',
@@ -91,7 +91,7 @@ const router = new Router({
                     path: 'optometryOrderList',
                     name: 'optometryOrderList',
                     component: resolve => require(['../components/Bills/optometryOrder/optometryOrderList/optometry-order-list.vue'], resolve),
-                    meta:{keepAlive:true}
+                    // meta:{keepAlive:true}
                 },
                 {
                     path: 'optometryOrderCu/:data',
@@ -108,7 +108,7 @@ const router = new Router({
                     path: 'cashierList',
                     name: 'cashierList',
                     component: resolve => require(['../components/Retail/Cashier/CashierList/cashier-list.vue'], resolve),
-                    meta:{keepAlive:true}
+                    // meta:{keepAlive:true}
                 },
                 {
                     path: 'cashierCu',

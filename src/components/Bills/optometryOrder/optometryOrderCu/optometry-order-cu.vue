@@ -2,6 +2,7 @@
   <div class="flexH100">
     <div class="optometry_content" style="min-height:500px;" v-if="userInfo">
       <!--验光单一条数据详情-->
+      <router-link class="back" tag="div" to='/bills/optometryOrderList'>返回</router-link>
       <div class="list_one">
         <ul class="optometry_head">
           <li class="ft_bold am-ft-20 am-ft-gray3 fn-left" v-if="memberDet !='detail'">验光单</li>
@@ -51,7 +52,7 @@
                       <td class="w90">{{data3[1].npd}}</td>
                       <td class="w90">{{data3[1].pd}}</td>
                       <td class="w90">{{data3[1].hpd}}</td>
-                      <td class="w90 border_left" rowspan="2">{{data3[1].add}}</td>
+                      <td class="w90 border_left" rowspan="2">{{data3[0].add}}</td>
                     </tr>
                     <tr class="dis_bg">
                       <td class="w50">L</td>

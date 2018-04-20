@@ -252,7 +252,7 @@ export default {
 }
 .selectRH{
     .el-table{
-        min-height:441px;
+        min-height:340px;
     }
     .el-dialog__body {
         padding: 15px;
