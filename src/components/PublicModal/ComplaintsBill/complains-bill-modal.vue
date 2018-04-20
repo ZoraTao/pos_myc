@@ -17,12 +17,12 @@
                     <p>浙江省杭州市西湖区文二西路111111号</p>
                 </div>
                 <div class="cmInfoItem fn-right">
-                    <label>投诉类型：</label>
-                    <p>上门投诉</p>
-                </div>
-                <div class="cmInfoItem fn-right">
                     <label>投诉日期 :</label>
                     <p>20171206</p>
+                </div>
+                <div class="cmInfoItem fn-right">
+                  <label>投诉类型 :</label>
+                  <p>上门投诉</p>
                 </div>
                 <div class="cmInfoItem">
                     <label>投诉说明：</label>
@@ -41,29 +41,29 @@
                 size="small"
                 style="width: 100%">
                 <el-table-column
-                    prop="memberCard"
+                    prop="a"
                     align="left"
                     label="商品名称"
                     width="500">
                 </el-table-column>
                 <el-table-column
-                    prop="memberName"
+                    prop="b"
                     align="center"
                     label="数量">
                 </el-table-column>
                 <el-table-column
                     align="center"
-                    prop="phone"
+                    prop="c"
                     label="原单价">
                 </el-table-column>
                 <el-table-column
                     align="center"
-                    prop="age"
+                    prop="d"
                     label="折扣">
                 </el-table-column>
                 <el-table-column
                     align="center"
-                    prop="sex"
+                    prop="e"
                     label="实售单价">
                 </el-table-column>
             </el-table>
@@ -73,33 +73,34 @@
        </div>
         <div class="whiteTable">
             <el-table
-                :data="data"
+                :data="data2"
                 size="small"
                 style="width: 100%">
                 <el-table-column
-                    prop="memberCard"
+                    prop="a"
                     align="left"
                     label="投诉类别"
                     width="120">
                 </el-table-column>
                 <el-table-column
-                    prop="memberName"
+                    prop="b"
                     align="center"
                     label="负责人"
                     width="120">
                 </el-table-column>
                 <el-table-column
-                    prop="phone"
+                    prop="c"
                     align="center"
                     label="原因"
                     width="120">
                 </el-table-column>
                 <el-table-column
-                    prop="age"
+                    prop="d"
                     align="center"
                     label="处理意见"
                     width="450">
                     <template slot-scope="scope">
+                        <!--<p>修改前处理意见处理意见处理意见处理意见处理意见</p>-->
                         <el-input class="w100" v-model="scope.row.age" placeholder="请输入内容"></el-input>
                     </template>
                 </el-table-column>
@@ -123,10 +124,10 @@
                         type="date"
                         placeholder="选择日期">
                         </el-date-picker>
-                    </el-form-item>                    
+                    </el-form-item>
                 </el-form>
             </li>
-        </ul>   
+        </ul>
     </div>
 </div>
 </template>
@@ -136,7 +137,7 @@
 export default {
   name: 'ComplainsBillModal',
   data () {
-    return { 
+    return {
         options: [],
         value: '',
         ruleForm: {
@@ -160,22 +161,28 @@ export default {
         activeName: '1',
         data:[
             {
-                memberCard:'0012345',
-                memberName:'张三',
-                phone:'15383465790',
-                sex:'男',
-                age:'12',
-                time:'2017-10-12 12:34:55'
+                a: '右镜片：毛源昌1.55非球面防辐射远+1.50',
+                b: '1',
+                c: '134.00',
+                d: '10.0',
+                e:'134.00',
             },
             {
-                memberCard:'0012345',
-                memberName:'张三',
-                phone:'15383465790',
-                sex:'男',
-                age:'12',
-                time:'2017-10-12 12:34:55'
+              a: '左镜片：定做 DZ12340001 - 柱镜0.5  球镜0.5  下加光0.3',
+              b: '1',
+              c: '134.00',
+              d: '10.0',
+              e:'134.00',
             }
-        ]
+        ],
+      data2: [
+        {
+          a: '验光人员',
+          b: '王大锤',
+          c: '验光问题',
+          d: '',
+        }
+      ]
     }
   },
   methods:{
@@ -186,7 +193,7 @@ export default {
 <style lang="scss">
 @import "../../../reset";
 .ComplainsBill{
-    .complainsNum{    
+    .complainsNum{
         margin-left: 12px;
         margin-bottom: 5px;
     }
@@ -287,7 +294,7 @@ export default {
                 margin-top: 2px;
             }
         }
-    }   
+    }
     .grayTable{
         .el-table__body-wrapper{
             max-height: 120px;
@@ -323,7 +330,7 @@ export default {
         }
     }
     .labelInput{
-        float: left;    
+        float: left;
         line-height: 32px;
         label{
             min-width: 50px;
@@ -335,7 +342,7 @@ export default {
         }
         .el-input{
             width: 110px;;
-            padding:0; 
+            padding:0;
         }
     }
     .complaintsType{
@@ -396,7 +403,7 @@ export default {
         overflow: auto;
     }
 
-    .packageDetailButtonGroup{ 
+    .packageDetailButtonGroup{
         padding:20px 10px;
         background: #EEEEEE;
         text-align: right;
@@ -404,7 +411,7 @@ export default {
             border-radius: 4px;
             width: 90px;
             &:first-child{
-                
+
             }
             &:last-child{
                 background: #00AFE4;
