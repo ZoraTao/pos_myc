@@ -2,36 +2,48 @@
 <div id="customizeRH" class=" modal-content-center">
     <div class="customizeRHBody">
       <div style="overflow:hidden">
-        <div class="customizeInputGroup  fn-left shops">
-            <label>品牌:</label>
-                <el-select v-model="customContent.brand" placeholder="请选择">
+        <div class="customizeInputGroup fn-left shops">
+            <label>类别:</label>
+                <el-select v-model="customContent.class"  placeholder="请选择" @change="initSelect(2)">
                     <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in classArray"
+                    :key="item.classCodes"
+                    :label="item.className"
+                    :value="item.productCategoryId">
                     </el-option>
                 </el-select>
         </div>
         <div class="customizeInputGroup fn-left shops">
             <label>品种:</label>
-                <el-select v-model="customContent.variety" placeholder="请选择">
+                <el-select v-model="customContent.variety" placeholder="请选择" @change="initSelect(3)">
                     <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in varietyArray"
+                    :key="item.classCodes"
+                    :label="item.className"
+                    :value="item.productCategoryId">
+                    </el-option>
+                </el-select>
+        </div>
+        <div class="customizeInputGroup  fn-left shops">
+            <label>品牌:</label>
+                <el-select v-model="customContent.brand" placeholder="请选择" 
+                @change="initSelect(4)">
+                    <el-option
+                    v-for="item in brandArray"
+                    :key="item.classCodes"
+                    :label="item.className"
+                    :value="item.productCategoryId">
                     </el-option>
                 </el-select>
         </div>
         <div class="customizeInputGroup fn-left shops"  v-show="custom =='shop'">
             <label>规格型号:</label>
-                <el-select v-model="customContent.specification" placeholder="请选择">
+                <el-select v-model="customContent.specification" placeholder="请选择" >
                     <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in specificationArray"
+                    :key="item.classCodes"
+                    :label="item.className"
+                    :value="item.productCategoryId">
                     </el-option>
                 </el-select>
         </div>
@@ -115,172 +127,7 @@ export default {
   name: "CustomizeRHModal",
   data() {
     return {
-      options: [
-        {
-          value: "-10.00",
-          label: "-10.00"
-        },
-        {
-          value: "-9.75",
-          label: "-9.75"
-        },
-        {
-          value: "-9.50",
-          label: "-9.50"
-        },
-        {
-          value: "-9.25",
-          label: "-9.25"
-        },
-        {
-          value: "-9.00",
-          label: "-9.00"
-        },
-        {
-          value: "-8.75",
-          label: "-8.75"
-        },
-        {
-          value: "-8.50",
-          label: "-8.50"
-        },
-        {
-          value: "-8.25",
-          label: "-8.25"
-        },
-        {
-          value: "-8.00",
-          label: "-8.00"
-        },
-        {
-          value: "-7.75",
-          label: "-7.75"
-        },
-        {
-          value: "-7.50",
-          label: "-7.50"
-        },
-        {
-          value: "-7.25",
-          label: "-7.25"
-        },
-        {
-          value: "-7.00",
-          label: "-7.00"
-        },
-        {
-          value: "-6.75",
-          label: "-6.75"
-        },
-        {
-          value: "-6.50",
-          label: "-6.50"
-        },
-        {
-          value: "-6.25",
-          label: "-6.25"
-        },
-        {
-          value: "-6.00",
-          label: "-6.00"
-        },
-        {
-          value: "-5.75",
-          label: "-5.75"
-        },
-        {
-          value: "-5.50",
-          label: "-5.50"
-        },
-        {
-          value: "-5.25",
-          label: "-5.25"
-        },
-        {
-          value: "-5.00",
-          label: "-5.00"
-        },
-        {
-          value: "-4.75",
-          label: "-4.75"
-        },
-        {
-          value: "-4.50",
-          label: "-4.50"
-        },
-        {
-          value: "-4.25",
-          label: "-4.25"
-        },
-        {
-          value: "-4.00",
-          label: "-4.00"
-        },
-        {
-          value: "-3.75",
-          label: "-3.75"
-        },
-        {
-          value: "-3.50",
-          label: "-3.50"
-        },
-        {
-          value: "-3.25",
-          label: "-3.25"
-        },
-        {
-          value: "-3.00",
-          label: "-3.00"
-        },
-        {
-          value: "-2.75",
-          label: "-2.75"
-        },
-        {
-          value: "-2.50",
-          label: "-2.50"
-        },
-        {
-          value: "-2.25",
-          label: "-2.25"
-        },
-        {
-          value: "-2.00",
-          label: "-2.00"
-        },
-        {
-          value: "-1.75",
-          label: "-1.75"
-        },
-        {
-          value: "-1.50",
-          label: "-1.50"
-        },
-        {
-          value: "-1.25",
-          label: "-1.25"
-        },
-        {
-          value: "-1.00",
-          label: "-1.00"
-        },
-        {
-          value: "-0.75",
-          label: "-0.75"
-        },
-        {
-          value: "-0.50",
-          label: "-0.50"
-        },
-        {
-          value: "-0.25",
-          label: "-0.25"
-        },
-        {
-          value: "-0.00",
-          label: "-0.00"
-        }
-      ],
+      options:[],
       customContent: {
         value1: "",//球镜
         value2: "",//柱镜
@@ -288,6 +135,7 @@ export default {
         specification:'',//规格
         brand:'',//品牌
         variety:'',//品种
+        class:'',//类别
         customMessage: "",
         price: "", //原价
         nums: "1", //数量
@@ -298,9 +146,10 @@ export default {
       sphArray:null,
       cylArray:null,
       addArray:null,
-      specificationArray:null,
-      varietyArray:null,
-      brandArray:null,
+      classArray:null,//大类
+      varietyArray:null,//品种
+      brandArray:null,//品牌
+      specificationArray:null,//规格
     };
   },
    props:{
@@ -310,7 +159,94 @@ export default {
     }
   },
   methods: {
-    computedMoney() {
+    initSelect(type){
+            var _this = this;
+          var id = '';
+          switch ((type).toString()) {
+            case '1'://类别默认
+                    _this.varietyArray=[];
+                    _this.brandArray=[];
+                    _this.specificationArray=[];
+                    _this.customContent.class='';
+                    _this.customContent.variety='';
+                    _this.customContent.brand='';
+                    _this.customContent.specification='';
+                  break;
+            case '2'://选择类别后加载品种
+                    id=_this.customContent.class;
+                    _this.brandArray=[];
+                    _this.varietyArray=[];
+                    _this.specificationArray=[];
+                    _this.customContent.variety='';
+                    _this.customContent.brand='';
+                    _this.customContent.specification='';
+                  break;
+            case '3'://选择品种后加载品牌
+                    id=_this.customContent.variety;
+                    _this.brandArray=[];
+                    _this.specificationArray=[];
+                    _this.customContent.brand='';
+                    _this.customContent.specification='';
+                  break;
+            case '4'://选择品牌加载规格
+                     id=_this.customContent.brand;
+                    _this.specificationArray=[];
+                    _this.customContent.specification='';
+                  break;
+              default:
+                  break;
+          }
+            _this.$axios({
+                url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
+                method: 'post',
+                params: {
+                    jsonObject: {
+                        productCategoryId: id
+                    },
+                    keyParams: {
+                        weChat: true
+                    }
+                }
+            })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              _this.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+                switch ((type).toString()) {
+                    case '1':
+                        _this.classArray=response.data.data.productCategoryList;
+                        break;
+                    case '2':
+                        _this.varietyArray=response.data.data.productCategoryList;
+                        console.log(_this.varietyArray)
+                        break;
+                    case '3':
+                        _this.brandArray=response.data.data.productCategoryList;
+                        break;
+                    case '4':
+                        _this.specificationArray=response.data.data.productCategoryList;
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            _this.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+       computedMoney() {
       let _this = this;
       if (parseFloat(_this.customContent.price) > 0) {
         //如果输入了价格
@@ -328,25 +264,6 @@ export default {
       } else {
         console.log("不是价格");
       }
-    },
-    initSelect(){
-      _this.$myAjax({
-          url:'pos-api/customize/addCustomize',
-          data:{},
-          success:function(res){
-           if(res.code ==1){
-            _this.sphArray = res.data.sph;
-            _this.cylArray = res.data.cyl;
-            _this.addArray = res.data.add;
-            _this.specificationArray = res.data.model;
-            _this.brandArray = res.data.brandId;
-            _this.varietyArray = res.data.sortId;
-           }
-          },
-          error:function(err){
-
-          }
-      })
     },
     commitCustom() {
       let _this = this;
@@ -370,10 +287,17 @@ export default {
                 customizeDemand :_this.customContent.customMessage,//定做需求',
                 count:_this.customContent.nums,///'定做数量',
                 customizeOrgName :'毛源昌商城',//users.orgName,//下单公司',
-                customizeOrgId :'4343',//下单公司ID',
+                customizeOrgId :'11387',//下单公司ID',
                 customizeShopName : '天一恒泰店',//下单门店',
-                customizeShopId:'4232',//下单门店ID',
+                customizeShopId:'11387',//下单门店ID',
                 customizePerson :'陈中床',//制单人'
+                sph:_this.customContent.value1,
+                cyl:_this.customContent.value2,
+                add:_this.customContent.value3,
+                brandId:_this.customContent.brand,
+                sortId:_this.customContent.variety,
+                model:_this.customContent.specification,
+                sortBaseId:_this.customContent.class,
                 // {"customizeDemand":"1111","count":"1","customizeOrgName":"毛源昌商城","customizeOrgId":"11387","customizeShopName":"天一恒泰店","customizeShopId":"11387","customizePerson":"陈中床"}
           },
           success:function(res){
@@ -411,7 +335,19 @@ export default {
   },
   computed: {},
   watch: {},
-  created() {}
+  created() {
+    let opt = [];
+    let num = -10;
+    while (num<=10)
+    {
+      let obj = new Object();
+      obj.value = num.toFixed(2);
+      obj.label = num.toFixed(2);
+      opt.push(obj);
+      num+=0.25;
+    }
+    this.options = opt;
+  }
 };
 </script>
 

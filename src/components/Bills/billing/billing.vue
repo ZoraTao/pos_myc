@@ -1654,7 +1654,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                _this.customizeRH=true;
                _this.$nextTick(()=>{
                    console.log(_this.$refs.customs)
-                   _this.$refs.customs.initSelect();
+                   _this.$refs.customs.initSelect(1);
                })
 
             },
