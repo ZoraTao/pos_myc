@@ -332,7 +332,9 @@ export default {
     initSelect(){
       _this.$myAjax({
           url:'pos-api/customize/addCustomize',
-          data:{},
+          data:{
+
+          },
           success:function(res){
            if(res.code ==1){
             _this.sphArray = res.data.sph;

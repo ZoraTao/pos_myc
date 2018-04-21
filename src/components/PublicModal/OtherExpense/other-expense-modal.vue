@@ -37,7 +37,7 @@
                     prop="displacement"
                     label="实收金额">
                     <template slot-scope="scope">
-                        <el-input @click="" v-model="scope.row.displacement" placeholder="" @change="computedMoney"></el-input>
+                        <el-input  v-model="scope.row.displacement" placeholder="" @change="computedMoney"></el-input>
                     </template>
                 </el-table-column>
             </el-table>
@@ -134,7 +134,7 @@ export default {
         if(event.target.className == 'el-input__inner'){
           return
         }
-        this.s = false;
+        _this.s = false;
         for (let i = 0; i < _this.data.length; i++) {
             for (let j = 0; j < _this.data[i].list.length; j++) {
                 if (_this.data[i].list[j].id == rowId) {
