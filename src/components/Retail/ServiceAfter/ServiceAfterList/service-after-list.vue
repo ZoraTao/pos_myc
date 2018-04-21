@@ -413,6 +413,7 @@
     padding: 0 2px;
     line-height: 40px;
     border-bottom: 10px solid #fff;
+    white-space: nowrap;
   }
 
   .orders_table tr td {

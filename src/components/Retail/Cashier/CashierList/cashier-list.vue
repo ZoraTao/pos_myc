@@ -2,7 +2,7 @@
   <section class=" content_box">
     <div class="am_bg_white cashier_box">
       <ul class="cashier_tab">
-        <li v-for="item of tabs" :key="item.value" :class="{'on':item.isActived}" v-on:click="changeTab(item);getOrderList(item.status)">
+        <li v-for="item of tabs" :key="item.value" :class="{'on':item.isActived}" v-on:click="changeTab(item);getOrderList(item.status,true)">
           {{item.value}}
         </li>
       </ul>
@@ -123,9 +123,9 @@
                   <div>商品合计：
                     <strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong>
                   </div>
-                  <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>-{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-show="order.couponMoney>0">卡券：<strong>-{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
                   <div v-show="order.discountMoney>0">折扣：<strong>-{{order.discountMoney}}</strong></div>
-                  <div v-show="parseFloat(order.activityMoney)>0">活动：-<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
+                  <div v-show="order.activityMoney>0">活动：-<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
                 </div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
@@ -193,7 +193,7 @@
                 <tr   v-for="(list,index) in order.orderItems" :key="list.name">
                   <td>{{list.itemNo||'--'}}</td>
                   <td>{{list.itemName||'商品名'}}</td>
-                  <td>{{parseInt(list.quantity)||'--'}}}</td>
+                  <td>{{parseInt(list.quantity)||'--'}}</td>
                   <td>{{parseFloat(list.price)}}</td>
                   <td>
                     <strong>{{parseFloat(list.money)||parseFloat(order.extraMoney)||'0'}}</strong>
@@ -206,9 +206,9 @@
                       <div>商品合计：
                         <strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong>
                         </div>
-                      <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                      <div v-show="order.couponMoney>0">卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
                   <div v-show="order.discountMoney>0">折扣：<strong>{{order.discountMoney}}</strong></div>
-                  <div v-show="parseFloat(order.activityMoney)!=0">活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-show="order.activityMoney>0">活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
                       <div class=" am-ft-16">已收:<strong>{{parseFloat(order.moneyPaid)>0?parseFloat(order.moneyPaid).toFixed(2):'0.00'}}</strong></div>
                     </div>
                   </td>
@@ -235,6 +235,82 @@
             :page-size="5"
             :total="Number(count)"
             @current-change="getOrderList(4)"
+            :current-page.sync="nub">
+          </el-pagination>
+        </div>
+      </div>
+      <!-- 关闭 -->
+      <div class="content am_bg_white" v-if="srcNum==='4'">
+        <div class="orders">
+          <table class="orders_table">
+            <thead>
+            <tr>
+              <th width="">商品编码</th>
+              <th width="">商品名称</th>
+              <th width="">数量</th>
+              <th width="">原单价</th>
+              <th width="">实售单价</th>
+              <th width="">出货仓库</th>
+              <th width="">订单金额</th>
+              <th width="">订单状态</th>
+            </tr>
+            </thead>
+
+            <tbody class="orders_tbody" v-loading="!orderTempList" v-for="order in orderTempList" :key="order.orderId">
+            <tr class="order_header">
+              <td colspan="9">
+                <div class="fn-left">
+                  <!-- <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
+                  <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span> -->
+                  <span class="order_id">{{order.orderId}}</span>
+                  <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
+                  <!-- <span v-else class="sign_orange">跨店签批</span> -->
+                  <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
+                </div>
+                <div class=" fn-right">
+                  <span class="msg">销售&nbsp;&nbsp;</span>
+                  <span class="msg">{{order.salesName}}&nbsp;&nbsp;&nbsp;{{order.orderTime}}</span>
+                </div>
+              </td>
+            </tr>
+            <tr v-for="(list,index) in order.orderItems" :key="list.name">
+              <td>{{list.itemNo||'--'}}</td>
+              <td>{{list.itemName}}<span class="customText" v-if="list.orderReceiptId">定做单号：{{list.orderReceiptId}}</span></td>
+              <td>{{parseInt(list.quantity)||'--'}}</td>
+              <td>{{parseFloat(list.listPrice)}}</td>
+              <td>
+                <strong  v-if="!order.extraMoney">{{parseFloat(list.money)?parseFloat(list.money):'0'}}</strong>
+                <strong v-if="order.extraMoney">{{parseFloat(list.money)}}</strong>
+              </td>
+              <td>{{order.shopName}}</td>
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
+                <div class="order_price_box">
+                  <div  class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
+                  <!-- <small v-if="order.roundOffFlag == '0' && typeof parseFloat(list.discountRate) == 'number' && parseFloat(list.discountRate) < 10 ">({{parseFloat(list.discountRate)}}折)</small> -->
+                  <div>商品合计：
+                    <strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong>
+                  </div>
+                  <div v-show="order.couponMoney>0">卡券：<strong>-{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-show="order.discountMoney>0">折扣：<strong>-{{order.discountMoney}}</strong></div>
+                  <div v-show="order.activityMoney>0">活动：-<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
+                </div>
+              </td>
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                <div class="am-ft-orange">{{order.statusName}}</div>
+                <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
+              </td>
+
+            </tr>
+            <div class="gekai"></div>
+            </tbody>
+          </table>
+          <el-pagination
+            class="am-ft-right"
+            background
+            layout="prev, pager, next"
+            :page-size="5"
+            :total="Number(count)"
+            @current-change="getOrderList(7)"
             :current-page.sync="nub">
           </el-pagination>
         </div>
@@ -284,7 +360,8 @@
             </el-table-column>
             <el-table-column
               prop="shopName"
-              label="销售门店">
+              label="销售门店"
+              width="150px">
             </el-table-column>
             <el-table-column
               prop="statusName"
@@ -307,7 +384,7 @@
             layout="prev, pager, next"
             :page-size="5"
             :total="Number(count)"
-            @current-change="getOrderList(5,true)"
+            @current-change="getOrderList(tabs[3].status,true)"
             :current-page.sync="nub">
           </el-pagination>
         </div>
@@ -364,7 +441,7 @@ export default {
       consoleCashier: false,
       initAllSearch:false,
       srcNum: "1",
-      orderTempList: {},
+      orderTempList: [],
       tabs: [
         {
           value: "收银",
@@ -379,11 +456,18 @@ export default {
           status: "4"
         },
         {
+          value: "关闭",
+          isActived: false,
+          srcNum: "4",
+          status: "7"
+        },
+        {
           value: "全部",
           isActived: false,
           srcNum: "3",
-          status: "5"
-        }
+          status: "'3','4','5','7'"
+        },
+
       ],
       pickerOptions0: {
         disabledDate(time) {
@@ -461,8 +545,9 @@ export default {
     //获取列表
     getOrderList(value,bool) {
       var _this = this;
+      _this.status = value;
       let status = _this.status;
-      if (value == 5){
+      if (value == "'3','4','5','7'"){
         if(!_this.initAllSearch){
           _this.orderTempList = [];
           _this.count = 0;
@@ -476,8 +561,6 @@ export default {
       }
       if (value == 3 || value == 4) {
         status = value;
-        _this.orderTempList = [];
-        _this.count = 0;
         value == 3 ?_this.status = 3 : _this.status = 4;
         if(bool){
           _this.searchForm.orderNo = '';
@@ -487,7 +570,6 @@ export default {
           _this.searchForm.saleTimeEnd = '';
         }
       }
-
       setTimeout(() => {
         _this.$axios({
             url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
@@ -512,7 +594,6 @@ export default {
             // console.info(res.data.data)
             if(res.data.code == 1){
               _this.count = res.data.data.count;
-              _this.orderTempList = [];
               _this.orderTempList = res.data.data.orderTempList;
             }else{
                _this.$message({

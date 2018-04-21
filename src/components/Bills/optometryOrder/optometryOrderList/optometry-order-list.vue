@@ -15,7 +15,7 @@
                 :label="item.label"
                 :value="item.value">
                 </el-option>
-            </el-select>         
+            </el-select>
         </div>
 
         <div class="fn-left mgt4 mgl30" @click="getOrderList">
@@ -101,7 +101,7 @@
             :total="count"
             @current-change="getOrderList"
             :current-page.sync="nub">
-            </el-pagination>            
+            </el-pagination>
         </div>
         <!--验光单一条数据详情-->
         <optometryOrderCu :memberDet="memberDet" :memberInfo="detailData" :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
@@ -140,7 +140,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 count: 0,
                 nub: 1,
                 size: 15,
-                
+
             };
         },
         components:{
@@ -191,7 +191,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                             that.getMemberDetail(response.data.data.list[0].prescriptionId);
                         }else if(response.data.data.list.length==0){
                             that.listData=response.data.data.list;
-                            that.count=response.data.data.count;                            
+                            that.count=response.data.data.count;
                             that.noSearchText="未查询到验光单"
                         }
                     })
@@ -229,10 +229,10 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                         });
                     }
                 })
-            },              
+            },
             getNewoptometry(){
-                this.showNewOptometry=false;      
-                this.getOrderList();        
+                this.showNewOptometry=false;
+                this.getOrderList();
             }
         }
     };
