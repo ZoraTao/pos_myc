@@ -2,7 +2,7 @@
 <div class="selectMember" id="selectRH">
     <el-form ref="form">
         <el-form-item label="商品 : ">
-            <el-input style="width:90px" class="" placeholder="" v-model="shopIdName"/>
+            <el-input style="width:90px" class="" placeholder="" v-model="shopIdName" @keyup.native.enter="emitThisValue()"/>
             <el-select style="width:90px" v-model="value" placeholder="请选择">
                 <el-option
                 v-for="item in options"
@@ -146,7 +146,6 @@ export default {
       getProductSku(){
         this.cpSelectProductSku=this.selectProductSku;
           this.cpSelectProductSku.type = '';
-          console.log(this.cpSelectProductSku)
         this.$emit('getProductSku', this.cpSelectProductSku);
       },
       getWareHouseList(){//查询仓库列表
@@ -180,12 +179,16 @@ export default {
       },
       emitThisValue(){
             var arr = [] ;
+            console.log(this.shopIdName)
             arr.push(this.typeValue,this.brandsValue,this.varietysValue)
-            this.$emit('rhtWareHouse',{
-                product:this.shopIdName,
-                categoryCode:arr,
-                wareh:this.value
-            });
+            this.$nextTick(()=>{
+                this.$emit('rhtWareHouse',{
+                    product:this.shopIdName,
+                    categoryCode:arr,
+                    wareh:this.value
+                });
+            })
+
       },
       selectBrands(type){
             var _this = this;
@@ -195,7 +198,7 @@ export default {
                     _this.typeOptions=[];
                     _this.brandsOptions=[];
                     _this.varietysOptions=[];
-                    _this.typeValue='';
+                    _this.typeValue='C002';
                     _this.brandsValue='';
                     _this.varietysValue='';
                   break;
@@ -272,7 +275,8 @@ export default {
         _this.varietysValue='';
         // console.log(_this.selectProductSku)
         _this.shopIdName=_this.selectProductSku.selectSP
-        this.selectBrands(1)
+        this.selectBrands(1);
+        this.selectBrands(2);
     },
     watch:{
     }

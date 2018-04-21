@@ -382,7 +382,7 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :page-size="5"
+            :page-size="15"
             :total="Number(count)"
             @current-change="getOrderList(tabs[3].status,true)"
             :current-page.sync="nub">
@@ -465,7 +465,7 @@ export default {
           value: "全部",
           isActived: false,
           srcNum: "3",
-          status: "'3','4','5','7'"
+          status: "'3','4','51','7'"
         },
 
       ],
@@ -547,21 +547,23 @@ export default {
       var _this = this;
       _this.status = value;
       let status = _this.status;
-      if (value == "'3','4','5','7'"){
+      if (value == "'3','4','51','7'"){
         if(!_this.initAllSearch){
           _this.orderTempList = [];
           _this.count = 0;
           _this.initAllSearch =  true;
           return
         }
+        _this.size = 15;
         if(!bool){
           _this.orderTempList = [];
           _this.count = 0;
         }
       }
-      if (value == 3 || value == 4) {
+      if (value == 3 || value == 4 || value == 7) {
         status = value;
-        value == 3 ?_this.status = 3 : _this.status = 4;
+        value == 3 ?_this.status = 3 : (value == 7 ? _this.status =7:_this.status = 4);
+        _this.size = 5;
         if(bool){
           _this.searchForm.orderNo = '';
           _this.searchForm.name = '';

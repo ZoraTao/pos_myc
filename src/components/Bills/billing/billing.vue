@@ -32,17 +32,17 @@
             <div class="salesclerkParam">
                 <el-form ref="form">
                     <el-form-item label="左镜片 :" class="ParamInput">
-                        <el-input class="" placeholder="" @input="setWhere('left');" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2,selectProductSku.selectL);"></el-input>
+                        <el-input class="" placeholder="" @input="setWhere('left');" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2,selectProductSku.selectL,true);"></el-input>
                         <el-button @click="type='0';selectGlass(2);setWhere('left');">···</el-button>
                         <el-button @click="showTitle('right')">定做</el-button>
                     </el-form-item>
                     <el-form-item label="右镜片 :" class="ParamInput">
-                        <el-input class="" placeholder="" @input="setWhere('right');" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1,selectProductSku.selectR);"></el-input>
+                        <el-input class="" placeholder="" @input="setWhere('right');" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1,selectProductSku.selectR,true);"></el-input>
                         <el-button @click="type='0';selectGlass(1);setWhere('right');">···</el-button>
                         <el-button @click="showTitle('right')">定做</el-button>
                     </el-form-item>
                     <el-form-item label="商品 :" class="ParamInput">
-                        <el-input class="" placeholder="" @input="setWhere('shop');" v-model="selectProductSku.selectSP" @keyup.enter.native="type='';selectGlass(3,selectProductSku.selectSP);"></el-input>
+                        <el-input class="" placeholder="" @input="setWhere('shop');" v-model="selectProductSku.selectSP" @keyup.enter.native="type='';selectGlass(3,selectProductSku.selectSP,true);"></el-input>
                         <el-button @click="type='';selectGlass(3);setWhere('shop');">···</el-button>
                         <el-button @click="showTitle('shop')">定做</el-button>
                     </el-form-item>
@@ -267,7 +267,8 @@
                 <el-button type="primary" @click="reprint=true">补打</el-button>
                 <el-button type="primary">预览</el-button>
                 <el-button type="primary" @click="hangOrder" >取单</el-button>
-                <el-badge :value="3" class="item">
+                <!-- <el-badge :value="3" class="item"> -->
+                <el-badge  class="item">
                     <el-button type="primary" @click="endorsement=true">签批</el-button>
                 </el-badge>
             </div>
@@ -682,6 +683,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     telphone:'',//手机号
                     address:'',//收件地址
                 },
+                searchStr:'',// 镜片查询参数
                 selectProductSku:{
                     selectR:'',
                     selectL:'',
@@ -911,7 +913,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 })
             },
             //选择镜片 商品
-            selectGlass(type,degress){
+            selectGlass(type,degress,bool){
                 if(this.optometryData==null){
                     this.$message({
                         showClose: true,
@@ -933,7 +935,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     this.selectProductSku.selectSP='';
                     this.showSelectRH=true;
                     this.selectProductSku.title="选择右镜片";
-                    this.selectProductSku.cylinder=_this.selectProductSku.selectR;
+                    // this.selectProductSku.cylinder=_this.selectProductSku.selectR;柱镜==度数model干嘛
                     // var where = '右镜片：'
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
@@ -948,7 +950,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 }else if(type==2){
                     this.showSelectRH=true;
                     this.selectProductSku.title="选择左镜片"
-                    this.selectProductSku.cylinder=_this.selectProductSku.selectL;
+                    // this.selectProductSku.cylinder=_this.selectProductSku.selectL;
                     // var where = '左镜片：'
                     for(var i=0;i<this.optometryData.length;i++){
                         if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
@@ -973,6 +975,16 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 }else{
                     // console.log('else')
                 }
+                if(degress && bool){
+                    _this.searchStr = degress
+                }
+                console.log(_this.eyesdata.cyl)
+                let code = null;
+                if(_this.where == 'shop'){
+                    code = ['C002','','']
+                }else{
+                    code = ['C001','','']
+                }
                 setTimeout(() => {
                     _this.$axios({
                         url: 'http://myc.qineasy.cn/pos-api/productSku/list',
@@ -984,8 +996,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                                 addLight:'',
                                 color:'',
                                 colorCode:'',
-                                categoryCode:'',
-                                product:degress,
+                                categoryCode:code,
+                                product:_this.searchStr,
                                 type:_this.type,
                                 wareh:_this.selectProductSku.wareh,
                                 nub: (_this.selectProductSku.nub==1?0:(_this.selectProductSku.nub-1)*_this.selectProductSku.size),
@@ -1010,12 +1022,17 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 }, 0);
 
             },
+            //商品镜片列表点击查询
             rhtWareHouse(value){
                 // console.log(value)
                 this.selectProductSku.wareh=value.wareh||"";
                 this.selectProductSku.product=value.product||"";
                 this.selectProductSku.categoryCode=value.categoryCode||"";
                 var _this = this;
+                console.log(value)
+                if(value.product){
+                    _this.searchStr = value.product;
+                }
                 setTimeout(() => {
                     _this.$axios({
                         url: 'http://myc.qineasy.cn/pos-api/productSku/list',
@@ -1024,11 +1041,12 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                             jsonObject: {
                                 sphere:'',
                                 cylinder:_this.selectProductSku.cylinder,
+                                type:_this.type,
                                 addLight:'',
                                 color:'',
                                 colorCode:'',
                                 categoryCode:_this.selectProductSku.categoryCode,
-                                product:_this.selectProductSku.product,
+                                product:_this.searchStr||_this.selectProductSku.product,
                                 wareh:_this.selectProductSku.wareh,
                                 nub: (_this.selectProductSku.nub==1?0:(_this.selectProductSku.nub-1)*_this.selectProductSku.size),
                                 size: _this.selectProductSku.size
