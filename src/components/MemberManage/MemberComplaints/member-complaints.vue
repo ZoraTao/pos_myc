@@ -21,11 +21,11 @@
         </div>
         <div class="fn-left mgt4">
             <span class="member">零售单号：</span>
-            <el-input style="width:120px" class="" v-model="searchModel" placeholder="请输入"></el-input>
+            <el-input clearable style="width:120px" class="" v-model="searchModel" placeholder="请输入"></el-input>
         </div>
         <div class="fn-left mgt4">
             <span class="member">会员:</span>
-            <el-input style="width:120px" class="" v-model="searchModel" placeholder="卡号/姓名/手机号"></el-input>
+            <el-input clearable style="width:120px" class="" v-model="searchModel" placeholder="卡号/姓名/手机号"></el-input>
         </div>
 
         <div class="fn-left mgt4 mgl30">
@@ -39,7 +39,7 @@
     </div>
     <div class="optometry_content optometry_content">
         <!--查询之前-->
-        <div v-show="searchModel==''">
+        <div v-show="false">
             <ul class="find_before">
                 <li class="optometry_qs_img">
                     <img src="http://myc-oms.oss-cn-hangzhou.aliyuncs.com/img%2Foptometry_qs.png" />
@@ -49,9 +49,9 @@
                 </li>
             </ul>
         </div>
-        <!--验光列表-->
-        <div v-show="showDiv==='2'&&searchModel!=''&&searchModel!='neikami'">
-            <el-table
+        <!--列表-->
+        <div>
+          <el-table
                 :data="data"
                 size="small"
                 align="left"
@@ -107,14 +107,22 @@
                     </template>
                 </el-table-column>
             </el-table>
+          <!--分页-->
+          <div class="block mgt10">
             <el-pagination
-            class="am-ft-right"
-            background
-            layout="prev, pager, next"
-            :total="10">
+              class="am-ft-right"
+              background
+              @current-change="handleCurrentChange"
+              :page-size="10"
+              layout="total, prev, pager, next"
+              :total="10"
+              :current-page.sync="nub">
             </el-pagination>
+          </div>
         </div>
+      <!--/列表-->
     </div>
+
   <!--新增投诉-->
     <el-dialog
       title="提示"
@@ -152,7 +160,6 @@ import ComplainsBillModal from '../../PublicModal/ComplaintsBill/complains-bill-
         name: "member-complaints",
         data() {
             return {
-                showDiv:"2",
                 searchModel:"",
                 isShowNewComplaints:false,
                 isShow:false,
@@ -161,7 +168,10 @@ import ComplainsBillModal from '../../PublicModal/ComplaintsBill/complains-bill-
                   label: '黄金糕'
                 }],
                 value:"",
-                data : []
+                data : [],
+              nub: 0,//起始条数
+              size: 10,//每页显示数据条数
+              counts: 0,//总条数
             };
         },
         components:{
@@ -183,7 +193,14 @@ import ComplainsBillModal from '../../PublicModal/ComplaintsBill/complains-bill-
                 j: '未处理',
               });
             }
-        }
+        },
+      methods:{
+        //分页
+        handleCurrentChange(val) {
+          this.nub = (`${val}`-1) * this.size;
+          // this.getMemberList();
+        },
+      }
     };
 </script>
 
