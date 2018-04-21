@@ -26,7 +26,7 @@
         </div>
         <div class="customizeInputGroup  fn-left shops">
             <label>品牌:</label>
-                <el-select v-model="customContent.brand" placeholder="请选择" 
+                <el-select v-model="customContent.brand" placeholder="请选择"
                 @change="initSelect(4)">
                     <el-option
                     v-for="item in brandArray"

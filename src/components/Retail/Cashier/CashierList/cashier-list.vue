@@ -137,8 +137,8 @@
                 <div class="button">
                   <el-button type="primary" v-on:click="changePay(order)" >收银</el-button>
                 </div>
-               <a href="javascript:;" class="fn-block mgt5">重新开单</a>
-               <a href="javascript:;" class="am-ft-gray9 fn-block" @click="closeOrder(order)">关闭订单</a>
+               <a href="javascript:;" class="fn-block mgt5" @click="againOrder(false)">重新开单</a>
+               <a href="javascript:;" class="am-ft-gray9 fn-block" @click="closeOrder(order,false)">关闭订单</a>
               </td>
             </tr>
             <div class="gekai"></div>
@@ -405,11 +405,21 @@
     <el-dialog
       title="提示"
       :visible.sync="RemoveOrder"
-      width="30%">
+      width="300px">
       <span class="closeContent">你确定关闭订单吗</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="RemoveOrder = false">取 消</el-button>
-        <el-button type="danger" @click="closeEnter">确 定</el-button>
+        <el-button type="danger" @click="closeOrder('1',true)">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="againOrderBool"
+      width="300px">
+      <span class="closeContent">你确定重新开单吗</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="againOrderBool = false">取 消</el-button>
+        <el-button type="danger" @click="againOrder(true)">确 定</el-button>
       </span>
     </el-dialog>
   </section>
@@ -441,6 +451,7 @@ export default {
       consoleCashier: false,
       initAllSearch:false,
       srcNum: "1",
+      againOrderBool:false,
       orderTempList: [],
       tabs: [
         {
@@ -482,14 +493,20 @@ export default {
   },
 
   methods: {
-    closeOrder(data){
-      let _this = this;
+    againOrder(bool){
+      if(!bool){
+        this.againOrderBool = true;
+      }else{
+        this.againOrderBool = false;
+      }
+    },
+    closeOrder(data,bool){
+        let _this = this;
+      if(!bool){
       _this.RemoveOrder = true;
       this.closeOrderData = data;
-    },
-    closeEnter(){
-      this.RemoveOrder = false
-      let _this = this;
+      }else{
+        this.RemoveOrder = false
         _this.$myAjax({
           url:'pos-api/orderTemp/updateOrderTempStatus',
           data:{
@@ -517,6 +534,7 @@ export default {
 
           }
         })
+      }
     },
     //会员搜索
     serachMember(){

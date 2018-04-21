@@ -780,8 +780,9 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             },
             //其他费用
             otherExpenseFn(){
+                let _this = this;
                _this.$nextTick(()=>{
-                this.$refs.otherExpenseRef.addCost();
+                _this.$refs.otherExpenseRef.addCost();
                });
             },
             //其他费用添加到列表
@@ -978,9 +979,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 if(degress && bool){
                     _this.searchStr = degress
                 }
-                console.log(_this.eyesdata.cyl)
                 let code = null;
-                if(_this.where == 'shop'){
+                if(_this.type == ''){
                     code = ['C002','','']
                 }else{
                     code = ['C001','','']
@@ -1520,7 +1520,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         _this.$myAjax({
                             url: 'member-api/member/getMemberListByBoYang',
                             data: {
-                                    seachCode:data.telphone,
+                                    memberId:data.memberId,
                                     size:5,
                                     nub:0
                             },
@@ -1573,7 +1573,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     _this.tableData[i].productId = data.orderItems[i].itemId;
                     _this.tableData[i].sku = data.orderItems[i].itemNo;
                     _this.tableData[i].customId = data.orderItems[i].orderReceiptId;
-                    _this.tableData[i].productId = data.orderItems[i].refundId;
+                    _this.tableData[i].refundId = data.orderItems[i].refundId;
                     _this.tableData[i].classId = data.orderItems[i].productType;
                     _this.tableData[i].status = data.orderItems[i].productMold;
                     if(data.orderItems[i].productMold == '1'){
@@ -1721,7 +1721,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         itemNo:this.tableData[item].sku,//商品编码
                         warehouseId:this.tableData[item].warehouseId,//仓库id
                         orderReceiptId:this.tableData[item].customId||'',//定做单id
-                        refundId:this.tableData[item].productId,//库存
+                        refundId:this.tableData[item].refundId,//库存
                         productType:this.tableData[item].classId,
                         productMold:this.tableData[item].status||'0',//商品类型，前端自定义
                         // price:this.tableData[item].realSale,//实售单价
@@ -1793,7 +1793,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     orderDiscount:types == '-1'?'':alldis,//整单折扣
                     orderType:BorderType,
                     extraMoney:_this.extraMoney,//其他费用
-                    status:types //挂单
+                    status:types=="-1"?'-1':'' //挂单
                 }
                 _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp',
@@ -1809,7 +1809,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 })
                 .then(function (response) {
                     if (response.data.code != '1') {
-
                         _this.$message({
                             showClose: true,
                             message: '请求数据出问题喽，请重试！',
@@ -1824,6 +1823,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                                 type: 'success'
                             });
                         }else{
+                            debugger
                             _this.$message({
                                 showClose: true,
                                 message: '开单成功',
