@@ -2,35 +2,35 @@
 <div id="customizeRH" class=" modal-content-center">
     <div class="customizeRHBody">
       <div style="overflow:hidden">
-        <div class="customizeInputGroup fn-left shops"  v-show="custom =='shop'">
+        <div class="customizeInputGroup fn-left shops" v-show="custom == 'shop'">
             <label>类别:</label>
                 <el-select v-model="customContent.class"  placeholder="请选择" @change="initSelect(2)">
                     <el-option
                     v-for="item in classArray"
-                    :key="item.classCodes"
+                    :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
                     </el-option>
                 </el-select>
         </div>
         <div class="customizeInputGroup fn-left shops">
-            <label>品种:</label>
+            <label>品牌:</label>
                 <el-select v-model="customContent.variety" placeholder="请选择" @change="initSelect(3)">
                     <el-option
                     v-for="item in varietyArray"
-                    :key="item.classCodes"
+                    :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
                     </el-option>
                 </el-select>
         </div>
         <div class="customizeInputGroup  fn-left shops">
-            <label>品牌:</label>
+            <label>品种:</label>
                 <el-select v-model="customContent.brand" placeholder="请选择"
                 @change="initSelect(4)">
                     <el-option
                     v-for="item in brandArray"
-                    :key="item.classCodes"
+                    :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
                     </el-option>
@@ -41,7 +41,7 @@
                 <el-select v-model="customContent.specification" placeholder="请选择" >
                     <el-option
                     v-for="item in specificationArray"
-                    :key="item.classCodes"
+                    :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
                     </el-option>
@@ -177,7 +177,7 @@ export default {
                     _this.customContent.specification='';
                   break;
             case '2'://选择类别后加载品种
-                    id=_this.customContent.class;
+                    id=_this.customContent.class||"C001";
                     _this.brandArray=[];
                     _this.varietyArray=[];
                     _this.specificationArray=[];
@@ -224,9 +224,6 @@ export default {
                 switch ((type).toString()) {
                     case '1':
                         _this.classArray=response.data.data.productCategoryList;
-                        if(_this.custom != 'shop'){
-                          _this.initSelect(2);
-                        }
                         break;
                     case '2':
                         _this.varietyArray=response.data.data.productCategoryList;
@@ -402,7 +399,7 @@ export default {
           font-weight: 400;
         }
         .el-select {
-          width: 100px;
+          width: 116px;
         }
         .el-textarea {
           width: calc(100% - 155px);

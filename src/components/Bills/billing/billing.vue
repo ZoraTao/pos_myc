@@ -1583,11 +1583,11 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     _this.tableData[i].refundId = data.orderItems[i].refundId;
                     _this.tableData[i].classId = data.orderItems[i].productType;
                     _this.tableData[i].status = data.orderItems[i].productMold;
-                    if(data.orderItems[i].productMold == '1'){
-
-                    }else if(data.orderItems[i].productMold == '2'){
+                    if(data.orderItems[i].productMold == '1'){//定做
+                        
+                    }else if(data.orderItems[i].productMold == '2'){//自带
                         _this.tableData[i].discount='';
-                    }else if(data.orderItems[i].productMold == '3'){
+                    }else if(data.orderItems[i].productMold == '3'){//其他
                         _this.tableData[i].discount='';
                     }
                 }
@@ -1648,21 +1648,26 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             //定做商品title
             showTitle(value){
                 let _this = this;
+               _this.customizeRH=true;
                     if(value== 'left'){
                         _this.custom='left';
                         _this.customText = '定做-左镜片'
+                         _this.$nextTick(()=>{
+                            _this.$refs.customs.initSelect(2);
+                        })
                     }else if(value=='right'){
                         _this.custom='right';
-                        _this.customText = '定做-右镜片'
+                        _this.customText = '定做-右镜片';
+                        _this.$nextTick(()=>{
+                            _this.$refs.customs.initSelect(2);
+                        })
                     }else if(value == 'shop'){
                         _this.custom='shop';
-                        _this.customText = '定做-商品'
+                        _this.customText = '定做-商品';
+                        _this.$nextTick(()=>{
+                            _this.$refs.customs.initSelect(1);
+                        })
                     }
-               _this.customizeRH=true;
-               _this.$nextTick(()=>{
-                   console.log(_this.$refs.customs)
-                   _this.$refs.customs.initSelect(1);
-               })
 
             },
             //新增验光单后获取用户信息录入到页面
