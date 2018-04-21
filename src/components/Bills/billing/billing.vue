@@ -1104,7 +1104,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     value.realSale = '0';
                 }
                 if(!value.status){
-                    console.log('status',value.status)
+                    // console.log('status',value.status)
                     this.where == 'shop'?value.skuName2=value.skuName: (this.where=='left'?value.skuName2='左'+value.skuName:value.skuName2='右'+value.skuName)
                 }
                 console.log('value',value)
@@ -1581,14 +1581,30 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     _this.tableData[i].sku = data.orderItems[i].itemNo;
                     _this.tableData[i].customId = data.orderItems[i].orderReceiptId;
                     _this.tableData[i].refundId = data.orderItems[i].refundId;
+                    _this.tableData[i].listPrice = (data.orderItems[i].listPrice).toString();
                     _this.tableData[i].classId = data.orderItems[i].productType;
                     _this.tableData[i].status = data.orderItems[i].productMold;
                     if(data.orderItems[i].productMold == '1'){//定做
-                        
+                        delete _this.tableData[i].itemId;
+                        delete _this.tableData[i].productType;
+                        delete _this.tableData[i].refundId;
+                        delete _this.tableData[i].warehouseId;
                     }else if(data.orderItems[i].productMold == '2'){//自带
                         _this.tableData[i].discount='';
+                        delete _this.tableData[i].itemId;
+                        delete _this.tableData[i].discountRate;
+                        delete _this.tableData[i].warehouseId;
+                        delete _this.tableData[i].refundId;
+                        delete _this.tableData[i].productType;
                     }else if(data.orderItems[i].productMold == '3'){//其他
                         _this.tableData[i].discount='';
+                        delete _this.tableData[i].itemId;
+                        delete _this.tableData[i].discountRate;
+                        delete _this.tableData[i].itemNo;
+                        delete _this.tableData[i].warehouseId;
+                        delete _this.tableData[i].refundId;
+                        delete _this.tableData[i].productType;
+                        delete _this.tableData[i].quantity;
                     }
                 }
                 console.log('取单、重新开单商品列表',_this.tableData)
@@ -1733,7 +1749,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         itemNo:this.tableData[item].sku,//商品编码
                         warehouseId:this.tableData[item].warehouseId,//仓库id
                         orderReceiptId:this.tableData[item].customId||'',//定做单id
-                        refundId:this.tableData[item].refundId,//库存
+                        refundId:this.tableData[item].allotQuantity,//库存
+                        stockQuantity:this.tableData[item].quantity,//总库存
                         productType:this.tableData[item].classId,
                         productMold:this.tableData[item].status||'0',//商品类型，前端自定义
                         // price:this.tableData[item].realSale,//实售单价
@@ -1763,7 +1780,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 if(alldis  == ''){
                     alldis = "10";
                 }
-                let coupon = this.conponResponse.amount;//卡券优惠金额
+                let coupon = this.conponDiscountMoney;//卡券优惠金额
                 if(!coupon){
                     coupon = '0'
                 }
@@ -1886,7 +1903,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
         }
     };
 </script>
-
 <style lang="scss">
     @import "../../../reset";
     @import "billing";
