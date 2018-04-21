@@ -137,7 +137,7 @@
                 <div class="button">
                   <el-button type="primary" v-on:click="changePay(order)" >收银</el-button>
                 </div>
-               <a href="javascript:;" class="fn-block mgt5" @click="againOrder(false)">重新开单</a>
+               <a href="javascript:;" class="fn-block mgt5" @click="againOrder(false,order)">重新开单</a>
                <a href="javascript:;" class="am-ft-gray9 fn-block" @click="closeOrder(order,false)">关闭订单</a>
               </td>
             </tr>
@@ -405,7 +405,7 @@
     <el-dialog
       title="提示"
       :visible.sync="RemoveOrder"
-      width="300px">
+      width="500px">
       <span class="closeContent">你确定关闭订单吗</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="RemoveOrder = false">取 消</el-button>
@@ -415,8 +415,8 @@
     <el-dialog
       title="提示"
       :visible.sync="againOrderBool"
-      width="300px">
-      <span class="closeContent">你确定重新开单吗</span>
+      width="500px">
+      <span class="closeContent">你确定重新开单吗(重新开单后，原有优惠折扣将失效，确认此订单将删除)</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="againOrderBool = false">取 消</el-button>
         <el-button type="danger" @click="againOrder(true)">确 定</el-button>
@@ -442,6 +442,7 @@ export default {
       },
       RemoveOrder:false,
       nub: 1,
+      againOrderData:null,
       status:'3',// 当前栏 3收银  4欠还  5全部
       size: 5,
       payData: "", //收银信息
@@ -493,11 +494,18 @@ export default {
   },
 
   methods: {
-    againOrder(bool){
+    againOrder(bool,data){
+      let _this = this;
       if(!bool){
-        this.againOrderBool = true;
+        _this.againOrderBool = true;
+        _this.againOrderData = data;
       }else{
-        this.againOrderBool = false;
+        _this.againOrderBool = false;
+        // console.log(_this.againOrderData)
+        // _this.$bus.emit('againOrder',_this.againOrderData);
+        _this.$router.push({
+          name:'billing'
+        ,params:{datas:_this.againOrderData}})
       }
     },
     closeOrder(data,bool){
@@ -674,6 +682,9 @@ export default {
       _this.searchOrder(routerQuery)
     }
   },
+  beforeDestroy () {
+    // this.$bus.off('againOrder')
+},
   components: {
     CashierModal
   },

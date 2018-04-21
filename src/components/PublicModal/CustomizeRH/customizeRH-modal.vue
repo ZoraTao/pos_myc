@@ -2,7 +2,7 @@
 <div id="customizeRH" class=" modal-content-center">
     <div class="customizeRHBody">
       <div style="overflow:hidden">
-        <div class="customizeInputGroup fn-left shops">
+        <div class="customizeInputGroup fn-left shops"  v-show="custom =='shop'">
             <label>类别:</label>
                 <el-select v-model="customContent.class"  placeholder="请选择" @change="initSelect(2)">
                     <el-option
@@ -167,7 +167,11 @@ export default {
                     _this.varietyArray=[];
                     _this.brandArray=[];
                     _this.specificationArray=[];
-                    _this.customContent.class='';
+                    if(_this.custom =='left'||_this.custom == 'right'){
+                        _this.customContent.class='';
+                    }else{
+                        _this.customContent.class='';
+                    }
                     _this.customContent.variety='';
                     _this.customContent.brand='';
                     _this.customContent.specification='';
@@ -220,10 +224,12 @@ export default {
                 switch ((type).toString()) {
                     case '1':
                         _this.classArray=response.data.data.productCategoryList;
+                        if(_this.custom != 'shop'){
+                          _this.initSelect(2);
+                        }
                         break;
                     case '2':
                         _this.varietyArray=response.data.data.productCategoryList;
-                        console.log(_this.varietyArray)
                         break;
                     case '3':
                         _this.brandArray=response.data.data.productCategoryList;
@@ -267,16 +273,24 @@ export default {
     },
     commitCustom() {
       let _this = this;
-      console.log(this.customContent);
-      if (this.customContent.value1 ==''||this.customContent.price==''||typeof parseFloat(this.customContent.price) != 'number') {
-           this.$message({
+      console.log(_this.customContent);
+      if (_this.customContent.value1 ==''||_this.customContent.price==''||typeof parseFloat(_this.customContent.price) != 'number') {
+           _this.$message({
             type: "error",
             message: "请填写规范",
             showClose: true
           });
           return false;
       }
-      customContent.price = parseFloat(this.customContent.price);
+      let where = ''
+      if(_this.custom != 'shop'){
+        if(_this.custom == 'right'){
+          where = 'R'
+        }else if(_this.custom == 'left'){
+          where = 'L'
+        }
+      }
+      _this.customContent.price = parseFloat(_this.customContent.price);
       let users =  JSON.parse(localStorage.getItem("userData"));
       _this.$myAjax({
           url:'pos-api/customize/addCustomize',
@@ -291,13 +305,18 @@ export default {
                 customizeShopName : '天一恒泰店',//下单门店',
                 customizeShopId:'11387',//下单门店ID',
                 customizePerson :'陈中床',//制单人'
-                sph:_this.customContent.value1,
-                cyl:_this.customContent.value2,
-                add:_this.customContent.value3,
-                brandId:_this.customContent.brand,
-                sortId:_this.customContent.variety,
-                model:_this.customContent.specification,
-                sortBaseId:_this.customContent.class,
+                sph:_this.customContent.value1,//球镜
+                cyl:_this.customContent.value2,//柱镜
+                add:_this.customContent.value3,//下架光
+                brandId:_this.customContent.brand,//品牌
+                sortId:_this.customContent.variety,//品种
+                model:_this.customContent.specification,//规格型号
+                sortBaseId:_this.customContent.class,//类别
+                yPrice:_this.customContent.price,//原价
+                sPrice:_this.customContent.realSale,//实售
+                discount:_this.customContent.discount,//折扣
+                count:_this.customContent.nums,//数量
+                choose:where,//左右镜
                 // {"customizeDemand":"1111","count":"1","customizeOrgName":"毛源昌商城","customizeOrgId":"11387","customizeShopName":"天一恒泰店","customizeShopId":"11387","customizePerson":"陈中床"}
           },
           success:function(res){

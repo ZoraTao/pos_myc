@@ -76,7 +76,11 @@
                             <span>
                               {{scope.row.skuName2||scope.row.skuName}}
                               <span v-if="scope.row.status=='1'">
-                                 定做单号：<span class="readContent">{{scope.row.customId}}</span> 定做需求:{{scope.row.customMessage}}
+                                 定做单号：<span class="readContent">{{scope.row.customId}}</span>
+                                 定做需求:{{scope.row.customMessage}}
+                                 <span v-show="scope.row.value1">球镜：{{scope.row.value1}}</span>
+                                 <span v-show="scope.row.value2">柱镜：{{scope.row.value2}}</span>
+                                 <span v-show="scope.row.value3">下架光：{{scope.row.value3}}</span>
                                 <!-- <a href="javascript:void(0)" class="readContent">查看详情</a> -->
                               </span>
                             </span>
@@ -1445,7 +1449,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             //录入验光单信息
             includeOptometry(){
                 var _this=this;
-                console.log(_this.optometryData)
+                console.log('录入验光单信息',_this.optometryData)
                 if(_this.optometryData!=null){
                     var tableArr=[];
                     _this.optometryData.forEach(element => {
@@ -1513,53 +1517,56 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             },
             //取单操作
             openOrder(data){
-                console.log(data)
+                // console.log(data)
                 let _this = this;
                 _this.showGetBill = false;
-                setTimeout(() => {
-                        _this.$myAjax({
-                            url: 'member-api/member/getMemberListByBoYang',
-                            data: {
-                                    memberId:data.memberId,
-                                    size:5,
-                                    nub:0
-                            },
-                            success:function(res){
-                                if(res.code==1){
-                                    _this.getMemberInfo(res.data.memberList[0],true)
+                if(data.memberId != '0'){
+                        setTimeout(() => {
+                            _this.$myAjax({
+                                url: 'member-api/member/getMemberListByBoYang',
+                                data: {
+                                        memberId:data.memberId,
+                                        size:5,
+                                        nub:0
+                                },
+                                success:function(res){
+                                    if(res.code==1){
+                                        _this.getMemberInfo(res.data.memberList[0],true)
 
-                                }else{
+                                    }else{
+                                        _this.$message({
+                                            showClose: true,
+                                            message: '会员信息获取失败',
+                                                type: 'error'
+                                        })
+                                    }
+                                }
+                            });
+                            _this.$myAjax({//验光单信息获取
+                                url:'pos-api/prescriptions/getPrescriptions',
+                                data:{
+                                    prescriptionId:data.prescriptionsId
+                                },
+                                success:function(res){
+                                        if(res.code != 1 &&res.data.eyes.length == 0) {return false}
+                                        _this.optometryData=res.data.eyes;
+                                        _this.optometryId=res.data.prescriptions.prescriptionId;
+                                        _this.optometryTime=res.data.prescriptions.prescriptionTime;
+                                        _this.getOptometryRecordList(data.memberId);
+                                        _this.includeOptometry();
+                                },
+                                error:function(err){
+                                    console.log(err)
                                     _this.$message({
                                         showClose: true,
-                                        message: '会员信息获取失败',
+                                        message: err.msg,
                                             type: 'error'
                                     })
                                 }
-                            }
-                        });
-                        _this.$myAjax({//验光单信息获取
-                            url:'pos-api/prescriptions/getPrescriptions',
-                            data:{
-                                prescriptionId:data.prescriptionsId
-                            },
-                            success:function(res){
-                                    if(res.code != 1 &&res.data.eyes.length == 0) {return false}
-                                    _this.optometryData=res.data.eyes;
-                                    _this.optometryId=res.data.prescriptions.prescriptionId;
-                                    _this.optometryTime=res.data.prescriptions.prescriptionTime;
-                                    _this.getOptometryRecordList(data.memberId);
-                                    _this.includeOptometry();
-                            },
-                            error:function(err){
-                                console.log(err)
-                                _this.$message({
-                                    showClose: true,
-                                    message: err.msg,
-                                        type: 'error'
-                                })
-                            }
-                        })
-                }, 0);
+                            })
+                    }, 0);
+                }
+
                 _this.tableData = data.orderItems;
                 for(let i = 0 ; i<data.orderItems.length;i++){
                     //备注，取镜方式，操作人
@@ -1584,7 +1591,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         _this.tableData[i].discount='';
                     }
                 }
-                console.log(_this.tableData)
+                console.log('取单、重新开单商品列表',_this.tableData)
                 _this.computedPay();
             },
             //添加会员 子组件返回事件 提交表单信息，data为从子组件取到的数据
@@ -1860,7 +1867,12 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
         created(){
         },
         mounted(){
-            this.users =  JSON.parse(localStorage.getItem("userData"));
+            let _this = this;
+            _this.users =  JSON.parse(localStorage.getItem("userData"));
+            if(_this.$route.params.datas){
+                console.log('重新开单参数',_this.$route.params.datas);
+                _this.openOrder(_this.$route.params.datas)
+            }
         },
         watch:{
             // tableData(newValue,oldValue){
