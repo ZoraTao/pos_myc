@@ -4,49 +4,49 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
         <!--top-->
         <div class="newOptometryPhone">
-          <el-form-item label="投诉人联系手机号:" prop="name">
-            <el-input v-model="ruleForm.name" style="width: 120px;"></el-input>
+          <el-form-item label="投诉人联系手机号:" prop="complaintTelphone">
+            <el-input v-model="ruleForm.complaintTelphone" style="width: 120px;"></el-input>
           </el-form-item>
           <el-form-item label="零售单号:" prop="name" class="fn-right">
-            <el-select v-model="value" placeholder="请选择">
+            <el-select v-model="ruleForm.orderId" placeholder="请选择" @change="getOderPro">
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="item in telList"
+                :key="item.orderId"
+                :label="item.orderId"
+                :value="item.orderId">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item class="fn-right" label="会员手机号:" prop="name">
-            <el-input v-model="ruleForm.name" style="width: 120px;"></el-input>
+          <el-form-item class="fn-right" label="会员手机号:" prop="telphone">
+            <el-input v-model="ruleForm.telphone" style="width: 120px;" @change="getOderList"></el-input>
           </el-form-item>
         </div>
         <!--商品信息-->
         <div class="grayTable">
           <el-table
-            :data="data"
+            :data="proList"
             size="small"
             height="136"
             style="width: 100%">
             <el-table-column
-              prop="memberCard"
+              prop="itemName"
               label="商品名称"
-              width="500">
+              width="300">
             </el-table-column>
             <el-table-column
-              prop="memberName"
+              prop="quantity"
               label="数量">
             </el-table-column>
             <el-table-column
-              prop="phone"
+              prop="listPrice"
               label="原单价">
             </el-table-column>
             <el-table-column
-              prop="age"
+              prop="discountRate"
               label="折扣">
             </el-table-column>
             <el-table-column
-              prop="sex"
+              prop="price"
               label="实售单价">
             </el-table-column>
           </el-table>
@@ -64,7 +64,7 @@
                   label="投诉大类"
                   align="left">
                   <template slot-scope="scope">
-                    <el-select v-model="ruleForm.name" placeholder="请选择" style="width: 100px;">
+                    <el-select v-model="tableData[scope.$index].category" placeholder="请选择" style="width: 100px;">
                       <el-option label="服务投诉" value="1"></el-option>
                       <el-option label="质量投诉" value="2"></el-option>
                     </el-select>
@@ -73,7 +73,7 @@
                 <el-table-column
                   label="投诉小类">
                   <template slot-scope="scope">
-                    <el-select v-model="ruleForm.name" placeholder="请选择" style="width: 100px;">
+                    <el-select v-model="tableData[scope.$index].subCategory" placeholder="请选择" style="width: 100px;">
                       <el-option label="本店环境" value="1"></el-option>
                       <el-option label="佩戴人员" value="2"></el-option>
                     </el-select>
@@ -82,16 +82,20 @@
                 <el-table-column
                   label="负责人">
                   <template slot-scope="scope">
-                    <el-select v-model="ruleForm.name" placeholder="请选择" style="width: 100px;">
-                      <el-option label="王大锤" value="1"></el-option>
-                      <el-option label="三藏" value="2"></el-option>
+                    <el-select v-model="tableData[scope.$index].liableNameId" filterable placeholder="请选择" style="width: 110px;">
+                      <el-option
+                        v-for="item in memberList"
+                        :key="item.userId"
+                        :label="item.userName"
+                        :value="item.userId">
+                      </el-option>
                     </el-select>
                   </template>
                 </el-table-column>
                 <el-table-column
                   label="原因">
                   <template slot-scope="scope">
-                    <el-select v-model="ruleForm.name" placeholder="请选择" style="width: 100px;">
+                    <el-select v-model="tableData[scope.$index].reason" placeholder="请选择" style="width: 100px;">
                       <el-option label="原因内容1" value="1"></el-option>
                       <el-option label="原因内容2" value="2"></el-option>
                     </el-select>
@@ -101,7 +105,7 @@
                   label="处理意见"
                   width="280">
                   <template slot-scope="scope">
-                    <el-input v-model="ruleForm.name" placeholder="请输入" style="width: 100%;"></el-input>
+                    <el-input v-model="tableData[scope.$index].opinion" placeholder="请输入" style="width: 100%;"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -112,30 +116,30 @@
                 </el-table-column>
               </el-table>
             </template>
-            <el-button type="primary" plain class="mgt10 mgb10 mgl10">+ 增行</el-button>
+            <el-button type="primary" plain class="mgt10 mgb10 mgl10" @click="addRow()">+ 增行</el-button>
           </div>
         </div>
         <ul class="optometryMemo">
           <li class="fn-left">
             <div class="labelInput">
               <label class="mgr10">接待人员：</label>
-              <el-select style="width:120px" v-model="value" placeholder="请选择">
+              <el-select style="width:120px" filterable v-model="ruleForm.deskClerkId" placeholder="请选择">
                 <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  v-for="item in memberList"
+                  :key="item.userId"
+                  :label="item.userName"
+                  :value="item.userId">
                 </el-option>
               </el-select>
             </div>
             <div class="labelInput mgl30">
               <label class="mgr10">投诉日期 :</label>
-              <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date"
+              <el-date-picker type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="ruleForm.complaintTime"
                               style="width: 127px;"></el-date-picker>
             </div>
             <div class="labelInput mgl30">
               <label class="mgr10">投诉类型：</label>
-              <el-select v-model="ruleForm.options" placeholder="请选择">
+              <el-select v-model="ruleForm.type" placeholder="请选择">
                 <el-option label="0" value="0"></el-option>
                 <el-option label="1" value="1"></el-option>
               </el-select>
@@ -154,6 +158,10 @@
         </ul>
       </el-form>
     </div>
+    <div class="packageDetailButtonGroup">
+      <el-button @click="cancelDialog">取消</el-button>
+      <el-button type="primary" @click="addComplain('ruleForm')">保存</el-button>
+    </div>
   </div>
 </template>
 
@@ -163,43 +171,246 @@
     name: 'NewComplaintsModal',
     data() {
       return {
-        options: [],
-        value: '',
+        orgId: '',
+        userId: '',
+        telList: [],//零售单
+        memberList: [],//接待人员
+        dialogStatus: false,
         ruleForm: {
-          name: '',
-          date: '',
-          options: [],
-          memo: '',
+          complaintTelphone: '',//投诉人手机号
+          telphone: '',//会员手机号
+          orderId: '',//零售单号
+          deskClerkId: '',//接待人员id
+          complaintTime: '',//投诉日期
+          type: '',//投诉类型
+          memo: '',//投诉说明
+          complaintCategory: [
+            {
+              category: '',//投诉大类
+              subCategory: '',//投诉小类
+              liableNameId: '',//负责人id
+              reason: '',//原因
+              opinion: '',//处理意见
+            }
+          ],
         },
         rules: {
-          name: [
-            {required: true, message: '请输入', trigger: 'blur'}
+          complaintTelphone: [
+            {required: true, message: '请输入正确手机号', trigger: 'blur'}
+          ],
+          telphone: [
+            {required: true, message: '请输入正确手机号', trigger: 'blur'}
           ]
         },
-        tabs: [
-          {
-            name: '1',
-            label: '搜索结果'
-          },
-          {
-            name: '2',
-            label: '最近验光会员'
-          }
-        ],
-        activeName: '1',
-        data: [],
-        tableData: [
-          {},
-          {}
-        ],
+        proList: [],//商品列表
+        tableData: [{}],//投诉信息
       }
     },
+    props:[''],
+    created(){
+      this.getReceptList();
+    },
     methods: {
+      //回访信息--增行
+      addRow() {
+        const that = this;
+        const len = that.tableData.length;
+        that.$set(that.tableData,len,{
+          category: '',//投诉大类
+          subCategory: '',//投诉小类
+          liableNameId: '',//负责人id
+          reason: '',//原因
+          opinion: '',//处理意见
+        })
+      },
       //删除回访信息
       deleteRow(index, rows) {
         rows.splice(index, 1);
-      }
-    }
+      },
+      //根据会员手机号查询零售单号
+      getOderList(){
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/member-api/member/getMemberListByTel',
+          method: 'post',
+          params: {
+            jsonObject: {
+              telphone: that.ruleForm.telphone
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              that.telList = response.data.data.list;
+              if(that.telList.length > 0){
+                that.ruleForm.orderId = that.telList[0].orderId;
+                that.getOderPro();
+              }
+              // console.info(that.telList)
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //根据单号查商品信息
+      getOderPro(){
+        var that = this;
+        // console.info(that.ruleForm.orderId)
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/orderItems/getOrderItemsList',
+          method: 'post',
+          params: {
+            jsonObject: {
+              orderId: that.ruleForm.orderId
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              that.proList = response.data.data.orderItemsList;
+              // console.info(response.data.data)
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //新增投诉
+      addComplain(formName){
+        const that = this;
+        const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+        that.orgId = ueserInfo.orgId;
+        that.userId = ueserInfo.userId;
+        that.ruleForm.complaintCategory = that.tableData;
+        that.$refs[formName].validate((valid) => {
+          if (valid) {
+            // console.info(that.ruleForm)
+            that.$axios({
+              url: 'http://myc.qineasy.cn/member-api/memberComplaint/addMemberComplaint',
+              method: 'post',
+              params: {
+                jsonObject: that.ruleForm,
+                keyParams: {
+                  weChat: true,
+                   orgId: that.orgId,
+                   userId: that.userId
+                }
+              }
+            })
+              .then(function (response) {
+                if(response.data.code != '1'){
+                  that.$message({
+                    showClose: true,
+                    message: '请求数据出问题喽，请重试！',
+                    type: 'error'
+                  })
+                  return false;
+                }else {
+                  // console.info(response.data.data)
+                  that.$message({
+                    showClose: true,
+                    message: '新增成功！',
+                    type: 'success'
+                  });
+                  that.dialogStatus = false;
+                  that.$emit('dialogNewComp',that.dialogStatus)
+                  that.$refs[formName].resetFields();
+                }
+              })
+              .catch(function (error) {
+                console.info(error);
+                that.$message({
+                  showClose: true,
+                  message: '请求数据失败，请联系管理员',
+                  type: 'error'
+                })
+              })
+          }else {
+            that.$message({
+              showClose: true,
+              message: '请完整填写信息！',
+              type: 'error'
+            })
+            return false;
+          }
+        })
+      },
+      //关闭弹窗
+      cancelDialog(){
+        const that = this;
+        that.dialogStatus = false;
+        that.$emit('dialogNewComp',that.dialogStatus)
+      },
+      //获取负责人、接待人员列表
+      getReceptList(){
+        const that = this;
+        const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+        that.orgId = ueserInfo.orgId;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/cas-api/user/getUsersByOrgId',
+          method: 'post',
+          params: {
+            jsonObject: {},
+            keyParams: {
+              weChat: true,
+              orgId: that.orgId
+            }
+          }
+        })
+          .then(function (response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              // console.info(response.data.data)
+              that.memberList = response.data.data.userList;
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+    },
   }
 </script>
 
@@ -251,7 +462,7 @@
           float: left;
           margin-right: 20px;
           .el-input {
-            width: 100px;
+            min-width: 100px;
           }
         }
       }

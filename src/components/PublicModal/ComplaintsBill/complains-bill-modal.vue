@@ -137,6 +137,12 @@
             </li>
         </ul>
     </div>
+  <div class="packageDetailButtonGroup">
+    <el-button @click="cancelDialog">取消</el-button>
+    <el-button type="primary" @click="cancelDialog">确定</el-button>
+    <!--已完成-->
+    <!--<el-button type="primary">修改处理意见</el-button>-->
+  </div>
 </div>
 </template>
 
@@ -146,6 +152,8 @@ export default {
   name: 'ComplainsBillModal',
   data () {
     return {
+        dialogStatus: false,
+
         options: [],
         value: '',
         ruleForm: {
@@ -194,6 +202,12 @@ export default {
     }
   },
   methods:{
+    //关闭弹窗
+    cancelDialog(){
+      const that = this;
+      that.dialogStatus = false;
+      that.$emit('dialogdetComp',that.dialogStatus)
+    },
   }
 }
 </script>
