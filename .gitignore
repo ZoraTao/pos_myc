@@ -5,6 +5,7 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/config/index
 /test/unit/coverage/
 /test/e2e/reports/
 selenium-debug.log
@@ -17,3 +18,4 @@ selenium-debug.log
 *.njsproj
 *.sln
 config/index.js
+/config/index.js
