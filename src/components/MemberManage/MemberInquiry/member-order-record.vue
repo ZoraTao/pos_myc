@@ -1,34 +1,35 @@
 <template>
-  <div class="order-record">
-    <div class="order-record-item" v-for="list in orderList">
+  <div class="order-record" v-if="datas!=null">
+    <div class="order-record-item" v-for="list in datas" :key="list.names">
+      {{datas.orderItems}}
       <div class="item-top">
-          <strong class="fn-left order-num">{{list.a}}</strong>
-          <span class="fn-left">会员：<strong class="mgr8">张三</strong>15346756523</span>
-          <span class="fn-right">销售：<em class="mgr8">王二</em>2017-12-22 22:10:09</span>
+          <strong class="fn-left order-num">{{list.orderNo}}</strong>
+          <span class="fn-left">会员：<strong class="mgr8">{{list.name}}</strong>{{list.telphone}}</span>
+          <span class="fn-right">销售：<em class="mgr8">{{list.saleId}}</em>{{list.orderTime}}</span>
       </div>
       <el-table
-        :data="tableData6"
+        :data="list.orderItems"
         :span-method="objectSpanMethod"
         border
         align="left"
         size="small"
         style="width: 100%;">
         <el-table-column
-          prop="a"
+          prop="itemNo"
           label="商品编码">
         </el-table-column>
         <el-table-column
-          prop="b"
+          prop="itemName"
           label="商品名称"
           width="280px">
         </el-table-column>
         <el-table-column
-          prop="c"
+          prop="quantity"
           label="数量"
           width="60px">
         </el-table-column>
         <el-table-column
-          prop="d"
+          prop="listPrice"
           label="原单价"
           width="80px">
         </el-table-column>
@@ -36,40 +37,45 @@
           label="实售单价"
           width="80px">
           <template slot-scope="scope">
-            <strong>{{ scope.row.e }}</strong>
+            <strong>{{ scope.row.money }}</strong>
           </template>
         </el-table-column>
         <el-table-column
-          prop="f"
           label="出货仓库">
+          <template slot-scope="scope">
+            <strong>天一恒泰店</strong>
+          </template>
         </el-table-column>
         <!--订单状态：待收银-->
         <el-table-column
-          prop="g"
           label="取件">
+          <template slot-scope="scope">
+            <strong>未取件</strong>
+          </template>
         </el-table-column>
         <!--/订单状态：待收银-->
         <!--订单状态：已完成-->
         <el-table-column
-          v-if="false"
-          prop="h"
           label="取件时间">
+          <template slot-scope="scope">
+              {{list.glassesTime}}
+          </template>
         </el-table-column>
         <!--/订单状态：已完成-->
         <el-table-column
           label="订单金额"
           width="120px">
           <template slot-scope="scope">
-            <strong class="am-ft-22 mgb15">1299.00</strong>
-            <p class="am-ft-12 am-text-normal">卡券 :<strong class="am-ft-13">－20</strong></p>
-            <p class="am-ft-12 am-text-normal">折扣 :<strong class="am-ft-13">－50</strong></p>
-            <p class="am-ft-12 am-text-normal">活动 :<strong class="am-ft-13">－20</strong></p>
+            <strong class="am-ft-22 mgb15">应付:{{list.moneyAmount}}</strong>
+            <p class="am-ft-12 am-text-normal" v-show="list.couponMoney>0">卡券 :<strong class="am-ft-13">{{list.couponMoney}}</strong></p>
+            <p class="am-ft-12 am-text-normal" v-show="list.discountMoney>0">折扣 :<strong class="am-ft-13">{{list.discountMoney}}</strong></p>
+            <p class="am-ft-12 am-text-normal" v-show="list.activityMoney>0">活动 :<strong class="am-ft-13">{{list.activityMoney}}</strong></p>
           </template>
         </el-table-column>
         <el-table-column
         align="center">
           <template slot-scope="scope">
-            <p class="am-ft-red">待收银</p>
+            <p class="am-ft-red">{{list.statusName=='记账'?'待付款':list.statusName}}</p>
             <!--订单状态：已完成-->
             <p v-if="false" class="am-text-placeholder">已完成</p>
             <!--/订单状态：已完成-->
@@ -97,72 +103,22 @@ export default {
   name: "member-order-record",
   data() {
     return {
-      orderList: [
-        {
-          a: "20170909000000001",
-          b: "待收银",
-          tableData: []
-        },
-        {
-          a: "20170909000000002",
-          b: "已完成",
-          tableData: []
-        }
-      ],
-      tableData6: [
-        {
-          id: "",
-          a: "562536256452",
-          b: "右镜片：毛源昌1.55非球面防辐射远+1.50",
-          c: "1",
-          d: "230.00",
-          e: "134.00",
-          f: "天一恒泰店",
-          g: "未取件",
-          h: "2017-10-22 13:23:45"
-        },
-        {
-          id: "",
-          a: "562536256452",
-          b: "右镜片：毛源昌1.55非球面防辐射远+1.50",
-          c: "1",
-          d: "230.00",
-          e: "134.00",
-          f: "天一恒泰店",
-          g: "未取件",
-          h: "2017-10-22 13:23:45"
-        },
-        {
-          id: "",
-          a: "562536256452",
-          b: "右镜片：毛源昌1.55非球面防辐射远+1.50",
-          c: "1",
-          d: "230.00",
-          e: "134.00",
-          f: "天一恒泰店",
-          g: "未取件",
-          h: "2017-10-22 13:23:45"
-        },
-        {
-          id: "",
-          a: "562536256452",
-          b: "右镜片：毛源昌1.55非球面防辐射远+1.50",
-          c: "1",
-          d: "230.00",
-          e: "134.00",
-          f: "天一恒泰店",
-          g: "未取件",
-          h: "2017-10-22 13:23:45"
-        }
-      ]
+      datas:null,
     };
+  },
+  props:{
+    orderTempList:{
+      type:Array,
+      default:null
+    }
   },
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (columnIndex === 7 || columnIndex === 8 || columnIndex === 9) {
-        if (rowIndex % this.tableData6.length === 0) {
+      let _this = this;
+      if (columnIndex === 8 || columnIndex === 9 || columnIndex === 10) {
+        if (rowIndex  === 0) {
           return {
-            rowspan: this.tableData6.length,
+            rowspan: 20,
             colspan: 1
           };
         } else {
@@ -173,6 +129,10 @@ export default {
         }
       }
     }
+  },
+  created(){
+    this.datas = this.orderTempList;
+      console.log(this.datas)
   }
 };
 </script>

@@ -137,8 +137,8 @@
                 <div class="button">
                   <el-button type="primary" v-on:click="changePay(order)" >收银</el-button>
                 </div>
-               <a href="javascript:;" class="fn-block mgt5">重新开单</a>
-               <a href="javascript:;" class="am-ft-gray9 fn-block" @click="closeOrder(order)">关闭订单</a>
+               <a href="javascript:;" class="fn-block mgt5" @click="againOrder(false,order)">重新开单</a>
+               <a href="javascript:;" class="am-ft-gray9 fn-block" @click="closeOrder(order,false)">关闭订单</a>
               </td>
             </tr>
             <div class="gekai"></div>
@@ -382,7 +382,7 @@
             class="am-ft-right"
             background
             layout="prev, pager, next"
-            :page-size="5"
+            :page-size="15"
             :total="Number(count)"
             @current-change="getOrderList(tabs[3].status,true)"
             :current-page.sync="nub">
@@ -405,11 +405,21 @@
     <el-dialog
       title="提示"
       :visible.sync="RemoveOrder"
-      width="30%">
+      width="500px">
       <span class="closeContent">你确定关闭订单吗</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="RemoveOrder = false">取 消</el-button>
-        <el-button type="danger" @click="closeEnter">确 定</el-button>
+        <el-button type="danger" @click="closeOrder('1',true)">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="againOrderBool"
+      width="500px">
+      <span class="closeContent">你确定重新开单吗(重新开单后，原有优惠折扣将失效，确认此订单将删除)</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="againOrderBool = false">取 消</el-button>
+        <el-button type="danger" @click="againOrder(true)">确 定</el-button>
       </span>
     </el-dialog>
   </section>
@@ -432,6 +442,7 @@ export default {
       },
       RemoveOrder:false,
       nub: 1,
+      againOrderData:null,
       status:'3',// 当前栏 3收银  4欠还  5全部
       size: 5,
       payData: "", //收银信息
@@ -441,6 +452,7 @@ export default {
       consoleCashier: false,
       initAllSearch:false,
       srcNum: "1",
+      againOrderBool:false,
       orderTempList: [],
       tabs: [
         {
@@ -465,7 +477,7 @@ export default {
           value: "全部",
           isActived: false,
           srcNum: "3",
-          status: "'3','4','5','7'"
+          status: "'3','4','51','7'"
         },
 
       ],
@@ -482,14 +494,27 @@ export default {
   },
 
   methods: {
-    closeOrder(data){
+    againOrder(bool,data){
       let _this = this;
+      if(!bool){
+        _this.againOrderBool = true;
+        _this.againOrderData = data;
+      }else{
+        _this.againOrderBool = false;
+        // console.log(_this.againOrderData)
+        // _this.$bus.emit('againOrder',_this.againOrderData);
+        _this.$router.push({
+          name:'billing'
+        ,params:{datas:_this.againOrderData}})
+      }
+    },
+    closeOrder(data,bool){
+        let _this = this;
+      if(!bool){
       _this.RemoveOrder = true;
       this.closeOrderData = data;
-    },
-    closeEnter(){
-      this.RemoveOrder = false
-      let _this = this;
+      }else{
+        this.RemoveOrder = false
         _this.$myAjax({
           url:'pos-api/orderTemp/updateOrderTempStatus',
           data:{
@@ -517,6 +542,7 @@ export default {
 
           }
         })
+      }
     },
     //会员搜索
     serachMember(){
@@ -547,21 +573,23 @@ export default {
       var _this = this;
       _this.status = value;
       let status = _this.status;
-      if (value == "'3','4','5','7'"){
+      if (value == "'3','4','51','7'"){
         if(!_this.initAllSearch){
           _this.orderTempList = [];
           _this.count = 0;
           _this.initAllSearch =  true;
           return
         }
+        _this.size = 15;
         if(!bool){
           _this.orderTempList = [];
           _this.count = 0;
         }
       }
-      if (value == 3 || value == 4) {
+      if (value == 3 || value == 4 || value == 7) {
         status = value;
-        value == 3 ?_this.status = 3 : _this.status = 4;
+        value == 3 ?_this.status = 3 : (value == 7 ? _this.status =7:_this.status = 4);
+        _this.size = 5;
         if(bool){
           _this.searchForm.orderNo = '';
           _this.searchForm.name = '';
@@ -654,6 +682,9 @@ export default {
       _this.searchOrder(routerQuery)
     }
   },
+  beforeDestroy () {
+    // this.$bus.off('againOrder')
+},
   components: {
     CashierModal
   },

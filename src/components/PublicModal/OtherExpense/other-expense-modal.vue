@@ -23,7 +23,7 @@
                     label="分类">
                 </el-table-column>
                 <el-table-column
-                    prop="value" 
+                    prop="value"
                     label="应收金额">
                 </el-table-column>
                 <el-table-column
@@ -37,7 +37,7 @@
                     prop="displacement"
                     label="实收金额">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.displacement" placeholder="" @change="computedMoney"></el-input>
+                        <el-input  v-model="scope.row.displacement" placeholder="" @change="computedMoney"></el-input>
                     </template>
                 </el-table-column>
             </el-table>
@@ -85,7 +85,7 @@ export default {
     checkPay(data, $index, index,$event) {//多选框
       let _this = this;
       let setMoney = null;
-      if(!_this.s) return 
+      if(!_this.s) return
       _this.data[index].list[$index].isCheck = !_this.data[index].list[$index].isCheck;
       if (this.data[index].list[$index].isCheck) {
         _this.data[index].list[$index].displacement =
@@ -131,7 +131,10 @@ export default {
     toCheck(row,event,column){//多选行
         let _this = this;
         let rowId = row.id;
-        this.s = false;
+        if(event.target.className == 'el-input__inner'){
+          return
+        }
+        _this.s = false;
         for (let i = 0; i < _this.data.length; i++) {
             for (let j = 0; j < _this.data[i].list.length; j++) {
                 if (_this.data[i].list[j].id == rowId) {
@@ -145,7 +148,7 @@ export default {
                         let other = _this.data[i].list[j];
                         _this.data[i].list.splice([j],1,other)
                     }
-                    
+
                 }
             }
         }
@@ -160,14 +163,14 @@ export default {
             for(var i=0;i<_this.data.length;i++){
                 _this.data.splice(i,1,_this.init[i])
             }
-            _this.data = _this.init 
+            _this.data = _this.init
             // for(let i = 0;i<_this.data.length;i++){
             //     console.log(_this.data[i])
             //     for(let a = 0;a<_this.data[i].list.length;a++){
             //         _this.$set( _this.data[i].list[a], 'isCheck', false)
             //     }
             // }
-        
+
     },
     requestList() {
       var _this = this;
@@ -202,7 +205,7 @@ export default {
     }
   },
   watch:{
-      
+
   },
   mounted: function() {
     this.requestList();
