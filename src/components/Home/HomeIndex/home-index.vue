@@ -280,6 +280,22 @@ export default {
         float: left;
         background: #fff;
         height: 350px;
+        overflow-y: auto;
+        &::-webkit-scrollbar{
+          width: 8px;
+          height: 6px;
+        }
+        &::-webkit-scrollbar-track{
+          background: #d4d2d2;
+          border-radius: 4px;
+        }
+        &::-webkit-scrollbar-thumb{
+          background: #999999;
+          border-radius: 4px;
+        }
+        &::-webkit-scrollbar-corner{
+          background: #E6E6E6;
+        }
     }
     .homeMid {
         width: 43.5%;
@@ -289,6 +305,21 @@ export default {
         height: 350px;
         .hcBottom {
             padding-top: 0;
+            &::-webkit-scrollbar{
+              width: 8px;
+              height: 6px;
+            }
+            &::-webkit-scrollbar-track{
+              background: #d4d2d2;
+              border-radius: 4px;
+            }
+            &::-webkit-scrollbar-thumb{
+              background: #999999;
+              border-radius: 4px;
+            }
+            &::-webkit-scrollbar-corner{
+              background: #E6E6E6;
+            }
             .hcGgItem {
                 height: 77px;
                 box-sizing: border-box;
