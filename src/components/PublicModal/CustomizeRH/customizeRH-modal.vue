@@ -11,7 +11,6 @@
                     :label="item.className"
                     :value="item.productCategoryId">
                     <span style="float: left" @click="aler('classid',item.className)" >{{ item.className }}</span>
-                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.productCategoryId }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -24,7 +23,6 @@
                     :label="item.className"
                     :value="item.productCategoryId">
                     <span style="float: left" @click="aler('varietyid',item.className)" >{{ item.className }}</span>
-                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.productCategoryId }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -38,7 +36,6 @@
                     :label="item.className"
                     :value="item.productCategoryId">
                     <span style="float: left" @click="aler('brandid',item.className)" >{{ item.className }}</span>
-                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.productCategoryId }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -51,7 +48,6 @@
                     :label="item.className"
                     :value="item.productCategoryId">
                     <span style="float: left" @click="aler('specificationid',item.className)" >{{ item.className }}</span>
-                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.productCategoryId }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -310,7 +306,6 @@ export default {
           where = 'L'
         }
       }
-      console.log($('#classid'))
       _this.customContent.price = parseFloat(_this.customContent.price);
       let users =  JSON.parse(localStorage.getItem("userData"));
       _this.$myAjax({

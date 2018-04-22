@@ -148,7 +148,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
             NewOptometryModal
         },
         created: function() {
-            console.log(this.memberDet)
+            // console.log(this.memberDet)
             if(this.memberDet=='detail'){
                 this.memberInfo=this.memberInfos.telphone;
                 const isFirst = true;

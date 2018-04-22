@@ -185,7 +185,7 @@ c<template>
             width="150">
             <template slot-scope="scope">
               <a href="javascript:;" @click="checkDetail(scope.row)" type="text" size="small">查看</a>
-              <a href="javascript:;" type="text" size="small" class="mgl10">编辑</a>
+              <a href="javascript:;" @click="memberModify(scope.row)" type="text" size="small" class="mgl10">编辑</a>
             </template>
           </el-table-column>
         </el-table>
@@ -218,11 +218,19 @@ c<template>
         <el-button type="primary" @click="memberAddSubmit">确定</el-button>
       </div>
     </el-dialog>
+    <el-dialog class="addMember" title="会员编辑" :visible.sync="memberModifys" width="800px">
+      <MemberModify :submit="isModify" :modifyMessage="modifyMessage" :listenToChild="memberModifySubmit"></MemberModify>
+      <div class="packageDetailButtonGroup">
+        <el-button @click="memberModifys = false">取消</el-button>
+        <el-button type="primary" @click="memberModifySubmit">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import MemberDetail from "./member-detail.vue";
+import MemberModify from "./member-modify.vue";
 import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
 import reg from "../../../utils/Reg";
 import {removeAllSpace} from '../../../utils/other'
@@ -231,13 +239,16 @@ export default {
   name: "member-inquiry",
   components: {
     MemberDetail,
-    AddMember
+    AddMember,
+    MemberModify
   },
   data() {
     return {
       counts: 0,//总条数
       isSubmit: false,
       addMember: false,
+      memberModifys:false,
+      isModify:false,
       searchStr: "",
       normalsearch: true,
       moresearch: false,
@@ -251,6 +262,7 @@ export default {
         nub: 1,
         size: 10
       },
+      modifyMessage:null,
       memberList: [], //会员列表
       memberCount: [], //会员汇总数量
       cardNumList: [] //会员卡汇总数量
@@ -266,6 +278,14 @@ export default {
   computed:{
   },
   methods: {
+    memberModify(data){
+      let _this = this;
+      _this.memberModifys = true
+      _this.modifyMessage = data;
+    },
+    memberModifySubmit(){
+      this.memberModifys = false;
+    },
     //查询会员列表
     getMemberList(type) {
       var that = this;

@@ -1,6 +1,6 @@
 <template>
   <div class="order-record" v-if="datas!=null">
-    <div class="order-record-item" v-for="list in datas" :key="list.names">
+    <div class="order-record-item" v-for="(list,index) in datas" :key="list.names">
       {{datas.orderItems}}
       <div class="item-top">
           <strong class="fn-left order-num">{{list.orderNo}}</strong>
@@ -66,7 +66,7 @@
           label="订单金额"
           width="120px">
           <template slot-scope="scope">
-            <strong class="am-ft-22 mgb15">应付:{{list.moneyAmount}}</strong>
+            <strong class="am-ft-22 mgb15">{{list.moneyAmount}}</strong>
             <p class="am-ft-12 am-text-normal" v-show="list.couponMoney>0">卡券 :<strong class="am-ft-13">{{list.couponMoney}}</strong></p>
             <p class="am-ft-12 am-text-normal" v-show="list.discountMoney>0">折扣 :<strong class="am-ft-13">{{list.discountMoney}}</strong></p>
             <p class="am-ft-12 am-text-normal" v-show="list.activityMoney>0">活动 :<strong class="am-ft-13">{{list.activityMoney}}</strong></p>
@@ -79,32 +79,44 @@
             <!--订单状态：已完成-->
             <p v-if="false" class="am-text-placeholder">已完成</p>
             <!--/订单状态：已完成-->
-            <p><a href="javascript:;" class="am-text-normal">查看详情</a></p>
+            <p><a href="javascript:;" class="am-text-normal" @click="toOrderDetail(datas[index].orderNo)">查看详情</a></p>
           </template>
         </el-table-column>
         <!--订单状态：待收银-->
         <el-table-column
+        v-if="datas[index].status == '3'||datas[index].status == '4'"
           label="操作"
           align="center">
           <template slot-scope="scope">
-            <strong class="am-ft-yellow am-ft-22">1299.00</strong>
-            <el-button class="mgt15" type="primary" size="small">收银</el-button>
+            <strong class="am-ft-yellow am-ft-22"> {{list.moneyAmount}}</strong>
+            <el-button class="mgt15" type="primary" size="small" @click="changePay(datas[index])">收银</el-button>
           </template>
         </el-table-column>
         <!--/订单状态：待收银-->
       </el-table>
+      <el-dialog title="收银" :visible.sync="showCashier">
+      <CashierModal :datas="payData"  @closePayMoney="resetPage"></CashierModal>
+    </el-dialog>
     </div>
     <!--/订单列表-->
   </div>
 </template>
 
 <script>
+import CashierModal from '../../Retail/Cashier/CashierModal/cashier-modal.vue'
 export default {
   name: "member-order-record",
   data() {
     return {
       datas:null,
+      nub:1,
+      showCashier:false,
+      payData:'',//收银信息
     };
+  },
+
+  components:{
+CashierModal
   },
   props:{
     orderTempList:{
@@ -113,6 +125,20 @@ export default {
     }
   },
   methods: {
+    resetPage(){
+      // 重置列表
+      this.showCashier=false;
+      // this.getOrderList(this.status)
+    },
+    changePay(data) {
+      this.payData = data;
+      this.showCashier = true;
+    },
+    toOrderDetail(data){
+       let _this = this;
+      console.log(data)
+      _this.$router.push({path:'/cashier/orderDetail',query:{orderId:data}})
+    },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       let _this = this;
       if (columnIndex === 8 || columnIndex === 9 || columnIndex === 10) {

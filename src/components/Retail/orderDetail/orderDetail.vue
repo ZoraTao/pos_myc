@@ -1,8 +1,7 @@
 <template>
   <div >
   <section class="content_box"  v-if="orderData!=null">
-      <router-link class="back" tag="div" to='/cashier/cashierList'>返回</router-link>
-
+  <div class="back" @click="goback" >返回</div>
     <div class="orderHeader">
       <div  v-if="orderData.ordertemp.orderType == 1" style="float:left;">
         <div class="ding">
@@ -542,6 +541,9 @@ export default {
             });
           }
         })
+    },
+    goback(){
+      this.$router.go(-1)
     }
   },
   created() {
