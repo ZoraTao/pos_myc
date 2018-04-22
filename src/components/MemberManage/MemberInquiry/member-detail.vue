@@ -29,8 +29,8 @@
       <el-tab-pane label="验光记录">
         <member-optometry-record :memberBaseInfo="memberInfo"></member-optometry-record>
       </el-tab-pane>
-      <el-tab-pane label="订单记录(1)">
-        <member-order-record></member-order-record>
+      <el-tab-pane :label="'订单记录('+orderTempList.length+')'" v-if="orderTempList!=null">
+        <member-order-record :orderTempList="orderTempList"></member-order-record>
       </el-tab-pane>
       <el-tab-pane label="投诉记录">
         <member-complaints-record></member-complaints-record>
@@ -67,11 +67,39 @@
     name: "member-detail",
     data() {
       return {
-        memberInfo: {}
+        memberInfo: {},
+        orderTempList:null,
+      }
+    },
+    methods:{
+      initMemberOrder(){//根据手机号查订单
+        let _this = this ;
+        // _this.$myAjax({
+        //   url:'member-api/member/getMemberListByTel',
+        //   data:{
+        //     telphone:_this.memberInfo.telphone
+        //   }, success:function(res){
+        //     console.log(res)
+        //   },error:function(err){
+        //     console.log(log)
+        //   }
+        // })
+        _this.$myAjax({
+          url:'pos-api/orderTemp/getOrderTempList',
+          data:{
+            searchCode:_this.memberInfo.telphone
+          }, success:function(res){
+            console.log(res)
+            _this.orderTempList = res.data.orderTempList;
+          },error:function(err){
+            console.log(log)
+          }
+        })
       }
     },
     created: function () {
       this.memberInfo = this.$route.params.data;
+      this.initMemberOrder();
     }
   }
 </script>

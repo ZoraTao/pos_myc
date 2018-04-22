@@ -53,9 +53,10 @@
           <div class="hcGgItem" v-for="(i,index) in news">
             <img v-if="index==0" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/logo1.png" class="fn-left"/>
             <div class="fn-left">
-              <p @click="detailPanel(i,index)">{{i.a}}</p>
-              <p class="news-detail" v-if="i.d">{{i.c}}</p>
-              <span>{{i.b}}</span>
+              <p @click="detailPanel(i,index)">{{i.title}}</p>
+              <!--<p class="news-detail" v-if="openPanel">{{i.announceDescription}}</p>-->
+              <p class="news-detail" ref="open">{{i.announceDescription}}</p>
+              <span>{{i.createTime}}</span>
             </div>
           </div>
       </div>
@@ -66,40 +67,14 @@
         <h5>促销活动</h5>
       </div>
       <div class="hcBottom">
-          <div class="hcCxItem">
+          <div class="hcCxItem" v-for="(n,index) in promotionList">
             <div class="hcCxLeft">
-              <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_manjian.png">
+              <img v-if="n.salesType='1'" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_manjian.png" />
+              <img v-if="n.salesType='2'" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_te.png">
             </div>
             <div class="hcCxRight">
-              <h4>满减活动</h4>
-              <p>满200减20，满500减50，满1000减150</p>
-            </div>
-          </div>
-          <div class="hcCxItem">
-            <div class="hcCxLeft">
-              <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_te.png">
-            </div>
-            <div class="hcCxRight">
-              <h4>满减活动</h4>
-              <p>满200减20，满500减50，满1000减150</p>
-            </div>
-          </div>
-          <div class="hcCxItem">
-            <div class="hcCxLeft">
-              <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_cu.png">
-            </div>
-            <div class="hcCxRight">
-              <h4>满减活动</h4>
-              <p>满200减20，满500减50，满1000减150</p>
-            </div>
-          </div>
-          <div class="hcCxItem">
-            <div class="hcCxLeft">
-              <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_manjian.png">
-            </div>
-            <div class="hcCxRight">
-              <h4>满减活动</h4>
-              <p>满200减20，满500减50，满1000减150</p>
+              <h4>{{n.salesType}}</h4>
+              <p>{{n.description}}</p>
             </div>
           </div>
       </div>
@@ -120,8 +95,11 @@ export default {
     return {
       dialogAptitudeDue: false,
       todoInfo: {},
+      userId: '',
       orgId: '',
       news: [],
+      promotionList: [],
+      openPanel: false,
     }
   },
   components: {
@@ -129,14 +107,8 @@ export default {
   },
   created(){
     this.getTodoItems();
-    for(let i=0;i<10;i++){
-      this.news.push({
-        a: '毛源昌眼镜门店销售管理系统全面升级',
-        b: '2017-12-07 09:09:12',
-        c: '毛源昌眼镜门店销售管理系统，全面升级全面打造新全新系统。',
-        d: false
-      })
-    }
+    this.getNewsList();
+    this.getPromotionList();
   },
   methods:{
     goBills(type){
@@ -190,11 +162,98 @@ export default {
           })
         })
     },
-    //消息详情面板
+    //获取公告列表
+    getNewsList(){
+      const that = this;
+      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      this.orgId = ueserInfo.orgId;
+      that.$axios({
+        url: 'http://myc.qineasy.cn/pos-api/announcement/getAnnouncementList',
+        method: 'post',
+        params: {
+          jsonObject: {
+            status: '1'
+          },
+          keyParams: {
+            weChat: true,
+            orgId: that.orgId
+          }
+        }
+      })
+        .then(function (response) {
+          if (response.data.code != '1') {
+            that.$message({
+              showClose: true,
+              message: '请求数据出问题喽，请重试！',
+              type: 'error'
+            })
+            return false;
+          } else {
+            // console.info(response.data.data);
+            that.news = response.data.data.list;
+          }
+        })
+        .catch(function (error) {
+          console.info(error);
+          that.$message({
+            showClose: true,
+            message: '请求数据失败，请联系管理员',
+            type: 'error'
+          })
+        })
+    },
+    //查看公告详情
     detailPanel(val,index){
-      val.d = ! val.d;
+      const block = this.$refs.open[index].style.display;
+      if(block=='block'){
+        this.$refs.open[index].style.display = 'none';
+      }else{
+        this.$refs.open[index].style.display = 'block';
+      }
+    },
+    //获取促销活动列表
+    getPromotionList(){
+      const that = this;
+      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      this.userId = ueserInfo.userId;
+      this.orgId = ueserInfo.orgId;
+      that.$axios({
+        url: 'http://myc.qineasy.cn/pos-api/salesPromotion/getSalesPromotion',
+        method: 'post',
+        params: {
+          jsonObject: {
+            status: '1'
+          },
+          keyParams: {
+            weChat: true,
+            userId: that.userId,
+            orgId: that.orgId
+          }
+        }
+      })
+        .then(function (response) {
+          if (response.data.code != '1') {
+            that.$message({
+              showClose: true,
+              message: '请求数据出问题喽，请重试！',
+              type: 'error'
+            })
+            return false;
+          } else {
+            // console.info(response.data.data);
+            that.promotionList = response.data.data.list;
+          }
+        })
+        .catch(function (error) {
+          console.info(error);
+          that.$message({
+            showClose: true,
+            message: '请求数据失败，请联系管理员',
+            type: 'error'
+          })
+        })
     }
-  }
+  },
 }
 </script>
 
@@ -259,6 +318,7 @@ export default {
                       font-weight: normal;
                       font-size: 12px;
                       color: #555555;
+                      display: none;
                     }
                     span {
                         font-size: 12px;

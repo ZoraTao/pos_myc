@@ -56,7 +56,7 @@
               <th width="">原单价</th>
               <th width="">实售单价</th>
               <th width="">出货仓库</th>
-              <th width="">取件时间</th>
+              <!-- <th width="">取件时间</th> -->
               <th width="">订单金额</th>
               <th width="">订单状态</th>
               <th width="">操作</th>
@@ -64,7 +64,8 @@
             </thead>
             <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
             <tr class="order_header">
-              <td colspan="10">
+              <!-- <td colspan="10"> -->
+              <td colspan="9">
                 <div class=" img_b" style="position: absolute;top:0;left:0;" v-show="order.orderType=='1'"><img
                   src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ding_icon.png"/></div>
                 <div class=" fn-left">
@@ -85,7 +86,7 @@
               <td>{{parseFloat(list.price)||'商品原单价'}}</td>
               <td><span class="ft_bold">{{parseFloat(list.money)}}</span></td>
               <td>{{order.shopName}}</td>
-              <td>{{order.receiveTime}}</td>
+              <!-- <td>{{order.receiveTime}}</td> -->
               <td  v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
                   <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
