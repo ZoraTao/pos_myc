@@ -67,13 +67,13 @@
         <h5>促销活动</h5>
       </div>
       <div class="hcBottom">
-          <div class="hcCxItem" v-for="(n,index) in promotionList">
+          <div class="hcCxItem" v-for="(n,index) in promotionList" :key="n.salesId">
             <div class="hcCxLeft">
-              <img v-if="n.salesType='1'" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_manjian.png" />
-              <img v-if="n.salesType='2'" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_te.png">
+              <img v-if="n.salesType=='1'" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_manjian.png" />
+              <img v-if="n.salesType=='2'" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_te.png">
             </div>
             <div class="hcCxRight">
-              <h4>{{n.salesType}}</h4>
+              <h4>{{n.title}}</h4>
               <p>{{n.description}}</p>
             </div>
           </div>
