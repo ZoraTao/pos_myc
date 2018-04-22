@@ -74,15 +74,15 @@
                     label="建议配镜">
                         <template slot-scope="scope">
                             <span>
-                              {{scope.row.skuName2||scope.row.skuName}}
-                              <span v-if="scope.row.status=='1'">
+                              <span v-html="scope.row.skuName2||scope.row.skuName"></span>
+                              <!-- <span v-if="scope.row.status=='1'">
                                  定做单号：<span class="readContent">{{scope.row.customId}}</span>
-                                 定做需求:{{scope.row.customMessage}}
+                                 定做需求:{{scope.row.customMessage}} -->
                                  <!-- <span v-show="scope.row.value1">球镜：{{scope.row.value1}}</span>
                                  <span v-show="scope.row.value2">柱镜：{{scope.row.value2}}</span>
                                  <span v-show="scope.row.value3">下架光：{{scope.row.value3}}</span> -->
                                 <!-- <a href="javascript:void(0)" class="readContent">查看详情</a> -->
-                              </span>
+                              <!-- </span> -->
                             </span>
                         </template>
                     </el-table-column>
@@ -1086,7 +1086,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         title = '商品-定做单：'
                     }
                     value.skuName =  title;
-                    value.skuName2 = title;
+                    value.skuName2 = title+'定做单号：<span class="readContent">'+value.customId+'</span>定做需求：'+value.customMessage;
                     value.value1!=''?value.skuName2+='球镜:'+value.value1+' ':value.skuName2;
                     value.value2!=''?value.skuName2+='柱镜:'+value.value2+' ':value.skuName2;
                     value.value3!=''?value.skuName2+='下加光:'+value.value3+' ':value.skuName2;
@@ -1583,13 +1583,13 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     _this.tableData[i].skuName = data.orderItems[i].itemName;
                     _this.tableData[i].discount = data.orderItems[i].discountRate;
                     _this.tableData[i].nums = data.orderItems[i].quantity;
-                    _this.tableData[i].realSale = parseFloat(data.orderItems[i].money);
-                    _this.tableData[i].price = parseFloat(data.orderItems[i].price);
+                    _this.tableData[i].realSale = data.orderItems[i].status == 3?data.orderItems[i].price: data.orderItems[i].money;
+                    _this.tableData[i].price = parseFloat(data.orderItems[i].price)||'0';
                     _this.tableData[i].productId = data.orderItems[i].itemId;
                     _this.tableData[i].sku = data.orderItems[i].itemNo;
                     _this.tableData[i].customId = data.orderItems[i].orderReceiptId;
                     _this.tableData[i].refundId = data.orderItems[i].refundId;
-                    _this.tableData[i].listPrice = (data.orderItems[i].listPrice).toString();
+                    _this.tableData[i].listPrice = data.orderItems[i].listPrice;
                     _this.tableData[i].classId = data.orderItems[i].productType;
                     _this.tableData[i].status = data.orderItems[i].productMold;
                     if(data.orderItems[i].productMold == '1'){//定做
@@ -1826,8 +1826,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     roundOffFlag:"1",//取整标识 0使用 1不用
                     decimal : memberDiscount,//会员卡折扣
                     couponMoney : types == '-1'?'':coupon,//卡券优惠金额
-                    // process : this.orderTemp.process,//加工费
-                    // service : this.orderTemp.service,//服务费
                     orderItemsList:orderItemsList,//商品列表
                     orderDiscount:types == '-1'?'':alldis,//整单折扣
                     orderType:BorderType,

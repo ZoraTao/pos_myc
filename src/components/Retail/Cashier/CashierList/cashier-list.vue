@@ -525,6 +525,9 @@ export default {
                 })
           }
         })
+        //  _this.$router.push({
+        //         name:'billing'
+        //       ,params:{datas:_this.againOrderData}})
       }
     },
     closeOrder(data,bool){
