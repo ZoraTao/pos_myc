@@ -67,7 +67,7 @@
     },
     props: ['memberBaseInfo'],
     created: function () {
-console.info(this.memberBaseInfo)
+// console.info(this.memberBaseInfo)
     }
   }
 </script>

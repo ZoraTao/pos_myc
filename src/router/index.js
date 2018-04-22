@@ -175,7 +175,8 @@ const router = new Router({
                 {
                     path: 'memberDetail',
                     name: 'member-detail',
-                    component: resolve => require(['../components/MemberManage/MemberInquiry/member-detail.vue'], resolve)
+                    component: resolve => require(['../components/MemberManage/MemberInquiry/member-detail.vue'], resolve),
+                    meta:{keepAlive:true}
                 },
                 {
                     path: 'memberComplaints',

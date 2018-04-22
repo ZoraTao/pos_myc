@@ -13,6 +13,8 @@ import VueAreaLinkage from 'vue-area-linkage'
 import VueContextMenu from 'vue-contextmenu'
 import 'vue-contextmenu/style/css/font-awesome.min.css'
 import globaMethods from './utils/mainMethods.js'
+import $ from 'zepto'
+
 Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false
@@ -21,17 +23,16 @@ Vue.use(VueContextMenu)
 Vue.use(VueResource)
 Vue.use(ElementUI)
 Vue.use(VueBus)
-// 地区联动
+    // 地区联动
 Vue.use(VueAreaLinkage)
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  store,
-  // VueContextMenu,
-  components: { App },
-  template: '<App/>',
-  render: h => h(App)
+    el: '#app',
+    router,
+    store,
+    // VueContextMenu,
+    components: { App },
+    template: '<App/>',
+    render: h => h(App)
 })
-

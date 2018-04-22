@@ -73,12 +73,12 @@
           }
         })
           .then(function (response) {
-            console.info(response.data.data)
+            // console.info(response.data.data)
             that.pointsList = response.data.data.pointList;
             that.count = parseInt(response.data.data.count);
           })
           .catch(function (error) {
-            console.info(error)
+            // console.info(error)
           })
       },
       handleCurrentChange:function(){

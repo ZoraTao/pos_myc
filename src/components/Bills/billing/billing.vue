@@ -78,9 +78,9 @@
                               <span v-if="scope.row.status=='1'">
                                  定做单号：<span class="readContent">{{scope.row.customId}}</span>
                                  定做需求:{{scope.row.customMessage}}
-                                 <span v-show="scope.row.value1">球镜：{{scope.row.value1}}</span>
+                                 <!-- <span v-show="scope.row.value1">球镜：{{scope.row.value1}}</span>
                                  <span v-show="scope.row.value2">柱镜：{{scope.row.value2}}</span>
-                                 <span v-show="scope.row.value3">下架光：{{scope.row.value3}}</span>
+                                 <span v-show="scope.row.value3">下架光：{{scope.row.value3}}</span> -->
                                 <!-- <a href="javascript:void(0)" class="readContent">查看详情</a> -->
                               </span>
                             </span>
@@ -1074,7 +1074,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             },
             //选择商品后进行关闭弹窗计算
             selectSku(value,nums){
-                // console.log(value)
+                console.log(value)
                 let _this = this;
                 if(value.status == '1'){
                     let title=''
@@ -1086,7 +1086,15 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         title = '商品-定做单：'
                     }
                     value.skuName =  title;
-                    value.skuName2 = title;//显示
+                    value.skuName2 = title;
+                    value.value1!=''?value.skuName2+='球镜:'+value.value1+' ':value.skuName2;
+                    value.value2!=''?value.skuName2+='柱镜:'+value.value2+' ':value.skuName2;
+                    value.value3!=''?value.skuName2+='下加光:'+value.value3+' ':value.skuName2;
+                    value.classid!=''?value.skuName2+=value.classid+' ':value.skuName2;
+                    value.varietyid!=''?value.skuName2+=value.varietyid+' ':value.skuName2;
+                    value.brandid!=''?value.skuName2+=value.brandid+' ':value.skuName2;
+                    value.specificationid!=''?value.skuName2+=value.specificationid:value.skuName2;
+
                     value.sku = "--";
                     // value.orderPromotionId='';
                 }else if(value.status == '2'){
@@ -1749,10 +1757,12 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         itemNo:this.tableData[item].sku,//商品编码
                         warehouseId:this.tableData[item].warehouseId,//仓库id
                         orderReceiptId:this.tableData[item].customId||'',//定做单id
-                        refundId:this.tableData[item].allotQuantity,//库存
+                        stockId:this.tableData[item].stockId||'',//库存id
+                        refundId:this.tableData[item].refundId,
                         stockQuantity:this.tableData[item].quantity,//总库存
-                        productType:this.tableData[item].classId,
-                        productMold:this.tableData[item].status||'0',//商品类型，前端自定义
+                        productType:this.tableData[item].classId,//商品类型 镜片镜架...
+                        stockQuantityNo:this.tableData[item].allotQuantity,//可分配库存
+                        productMold:this.tableData[item].status||'0',//商品类型，前端自定义 0普通商品 1定做 2自带 3其他 4套餐
                         // price:this.tableData[item].realSale,//实售单价
                     })
 
