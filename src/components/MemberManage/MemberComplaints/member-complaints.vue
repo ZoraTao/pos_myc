@@ -183,10 +183,6 @@
           telphone: '',
           memberCardId: '',
         },
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }],
         value: "",
         nub: 0,//起始条数
         size: 10,//每页显示数据条数
