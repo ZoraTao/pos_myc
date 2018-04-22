@@ -219,11 +219,7 @@ c<template>
       </div>
     </el-dialog>
     <el-dialog class="addMember" title="会员编辑" :visible.sync="memberModifys" width="800px">
-      <MemberModify :submit="isModify" :modifyMessage="modifyMessage" :listenToChild="memberModifySubmit"></MemberModify>
-      <div class="packageDetailButtonGroup">
-        <el-button @click="memberModifys = false">取消</el-button>
-        <el-button type="primary" @click="memberModifySubmit">确定</el-button>
-      </div>
+      <MemberModify :modifyMessage="modifyMessage" ></MemberModify>
     </el-dialog>
   </div>
 </template>
@@ -245,10 +241,9 @@ export default {
   data() {
     return {
       counts: 0,//总条数
-      isSubmit: false,
       addMember: false,
       memberModifys:false,
-      isModify:false,
+      isSubmit:false,
       searchStr: "",
       normalsearch: true,
       moresearch: false,
@@ -286,6 +281,7 @@ export default {
     memberModifySubmit(){
       this.memberModifys = false;
     },
+
     //查询会员列表
     getMemberList(type) {
       var that = this;

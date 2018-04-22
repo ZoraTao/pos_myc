@@ -10,7 +10,7 @@
                     :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
-                    <span style="float: left" @click="aler('classid',item.className)" >{{ item.className }}</span>
+                    <span style="float: left;display:block;width:100%;" @click="aler('classid',item.className)" >{{ item.className }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -22,7 +22,7 @@
                     :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
-                    <span style="float: left" @click="aler('varietyid',item.className)" >{{ item.className }}</span>
+                    <span style="float: left;display:block;width:100%;" @click="aler('varietyid',item.className)" >{{ item.className }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -35,7 +35,7 @@
                     :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
-                    <span style="float: left" @click="aler('brandid',item.className)" >{{ item.className }}</span>
+                    <span style="float: left;display:block;width:100%;" @click="aler('brandid',item.className)" >{{ item.className }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -47,7 +47,7 @@
                     :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
-                    <span style="float: left" @click="aler('specificationid',item.className)" >{{ item.className }}</span>
+                    <span style="float: left;display:block;width:100%;" @click="aler('specificationid',item.className)" >{{ item.className }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -168,6 +168,7 @@ export default {
   },
   methods: {
     aler(name,data){
+      console.log(name,data)
       if(name == 'classid'){
         this.customContent.classid = data;
       }else if(name == 'varietyid'){

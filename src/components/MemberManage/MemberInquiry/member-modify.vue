@@ -163,8 +163,10 @@
         </el-col>
       </el-row>
     </el-form>
-
-    <input type="hidden" v-model="submit"/>
+     <div class="packageDetailButtonGroup">
+        <el-button @click="memberModifys = false">取消</el-button>
+        <el-button type="primary" @click="listenToChildModify">确定</el-button>
+      </div>
   </div>
 </template>
 
@@ -174,7 +176,6 @@
     name: 'AddMember',
     data() {
       return {
-        isSubmit: '',
         memberType: [],//会员类型
         memberFrom: [ //会员来源
           {
@@ -270,10 +271,6 @@
       }
     },
     props: {
-      submit:{
-        type:Boolean,
-        default:false
-      },
       modifyMessage:{
         type:Object,
         default:null
@@ -287,16 +284,58 @@
 
     },
     beforeUpdate: function () {
-      this.isSubmit = this.submit;
     },
     methods: {
-      //向父组件传送的数据
-      sendToParent() {
-        console.log('准备接受啦',this.addMemberForm)
-        if(this.addMemberForm.name != ''){
-        this.$emit('listenToChild', this.addMemberForm)
+      listenToChildModify(){
+        var that = this;
+        let formdata = that.addMemberForm;
+        if (formdata.name != '' && formdata.telphone != '' && formdata.birthday != '' && formdata.sex != '') {
+          that.$axios({
+            url: 'http://myc.qineasy.cn/member-api/member/updateMember',
+            method: 'post',
+            params: {
+              jsonObject: formdata,
+              keyParams: {
+                weChat: true,
+                userId: "8888",
+                orgId: "11387"
+              }
+            }
+          })
+            .then(function (response) {
+              if (response.data.code != '1') {
+                that.$message({
+                  showClose: true,
+                  message: '请求数据出问题喽，请重试！',
+                  type: 'error'
+                })
+                return false;
+              } else {
+                that.memberModifys = false;
+                // console.info(response.data.data)
+                that.$message({
+                  showClose: true,
+                  message: '修改会员成功',
+                  type: 'success'
+                });
+              }
+            })
+            .catch(function (error) {
+              console.info(error)
+              that.$message({
+                showClose: true,
+                message: error,
+                type: 'error'
+              })
+            })
+        } else {
+          that.$message({
+            showClose: true,
+            message: '请输入完整信息',
+            type: 'error'
+          })
         }
-      },
+    },
       //取会员类型
       getMemberCard(){
         var that = this;
@@ -343,11 +382,7 @@
       }
     },
     watch: {
-      isSubmit: function (val) {
-        if (val == true) {
-          this.sendToParent()
-        }
-      }
+
     }
   }
 </script>
