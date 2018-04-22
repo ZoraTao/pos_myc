@@ -78,7 +78,7 @@
             <thead>
             <tr>
               <th width="">商品编码</th>
-              <th width="">商品名称</th>
+              <th width="500px">商品名称</th>
               <th width="">数量</th>
               <th width="">原单价</th>
               <th width="">实售单价</th>

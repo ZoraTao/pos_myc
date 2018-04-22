@@ -113,6 +113,7 @@ export default {
 </script>
 
 <style lang="scss">
+
 .getBillsContent {
   min-height: 400px;
   padding: 2px 20px;
@@ -156,4 +157,5 @@ export default {
     }
   }
 }
+
 </style>

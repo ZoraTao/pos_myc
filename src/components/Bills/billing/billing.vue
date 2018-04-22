@@ -34,7 +34,7 @@
                     <el-form-item label="左镜片 :" class="ParamInput">
                         <el-input class="" placeholder="" @input="setWhere('left');" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2,selectProductSku.selectL,true);"></el-input>
                         <el-button @click="type='0';selectGlass(2);setWhere('left');">···</el-button>
-                        <el-button @click="showTitle('right')">定做</el-button>
+                        <el-button @click="showTitle('left')">定做</el-button>
                     </el-form-item>
                     <el-form-item label="右镜片 :" class="ParamInput">
                         <el-input class="" placeholder="" @input="setWhere('right');" v-model="selectProductSku.selectR" @keyup.enter.native="selectGlass(1,selectProductSku.selectR,true);"></el-input>
@@ -74,7 +74,7 @@
                     label="建议配镜">
                         <template slot-scope="scope">
                             <span>
-                              <span v-html="scope.row.skuName2||scope.row.skuName"></span>
+                              <span v-html="scope.row.skuName3||scope.row.skuName2||scope.row.skuName"></span>
                               <!-- <span v-if="scope.row.status=='1'">
                                  定做单号：<span class="readContent">{{scope.row.customId}}</span>
                                  定做需求:{{scope.row.customMessage}} -->
@@ -1074,7 +1074,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             },
             //选择商品后进行关闭弹窗计算
             selectSku(value,nums){
-                console.log(value)
+                console.log('选择商品后进行渲染',value)
                 let _this = this;
                 if(value.status == '1'){
                     let title=''
@@ -1086,7 +1086,15 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         title = '商品-定做单：'
                     }
                     value.skuName =  title;
-                    value.skuName2 = title+'定做单号：<span class="readContent">'+value.customId+'</span>定做需求：'+value.customMessage;
+                    value.skuName3 = title+'定做单号：<span class="readContent">'+value.customId+'</span>定做需求：'+value.customMessage;
+                    value.skuName2 = title+'定做需求：'+value.customMessage;
+                    value.value1!=''?value.skuName3+='球镜:'+value.value1+' ':value.skuName3;
+                    value.value2!=''?value.skuName3+='柱镜:'+value.value2+' ':value.skuName3;
+                    value.value3!=''?value.skuName3+='下加光:'+value.value3+' ':value.skuName3;
+                    value.classid!=''?value.skuName3+=value.classid+' ':value.skuName3;
+                    value.varietyid!=''?value.skuName3+=value.varietyid+' ':value.skuName3;
+                    value.brandid!=''?value.skuName3+=value.brandid+' ':value.skuName3;
+                    value.specificationid!=''?value.skuName3+=value.specificationid:value.skuName3;
                     value.value1!=''?value.skuName2+='球镜:'+value.value1+' ':value.skuName2;
                     value.value2!=''?value.skuName2+='柱镜:'+value.value2+' ':value.skuName2;
                     value.value3!=''?value.skuName2+='下加光:'+value.value3+' ':value.skuName2;
@@ -1099,12 +1107,14 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     // value.orderPromotionId='';
                 }else if(value.status == '2'){
                     let title = '自带';
-                    if(value.lens == 'left'){
-                        title = title+'左镜片：'
-                    }else if(value.lens == 'right'){
-                        title = title+'右镜片：'
+                    if(value.where == '2'){
+                        title = title+'镜架：'
                     }else{
-                        title = title+'商品：'
+                        if(value.lens == 'left'){
+                            title = title+'左镜片：'
+                        }else if(value.lens == 'right'){
+                            title = title+'右镜片：'
+                        }
                     }
                     value.skuName =  title+value.message;
                     value.skuName2 = title+value.message;//显示
@@ -1112,10 +1122,10 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     value.realSale = '0';
                 }
                 if(!value.status){
-                    // console.log('status',value.status)
+                    console.log('点击类型status',value.status)
                     this.where == 'shop'?value.skuName2=value.skuName: (this.where=='left'?value.skuName2='左'+value.skuName:value.skuName2='右'+value.skuName)
                 }
-                console.log('value',value)
+                console.log('渲染后的value',value)
                 let alldis = _this.allDisCount;
                 if(alldis != '' && typeof parseFloat(alldis) == 'number'){
                     value.realSale =  ((value.discount * value.price)/10).toFixed(2);
@@ -1574,46 +1584,38 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                             })
                     }, 0);
                 }
+                debugger
 
-                _this.tableData = data.orderItems;
+                _this.tableData = []
+
                 for(let i = 0 ; i<data.orderItems.length;i++){
-                    //备注，取镜方式，操作人
-                    _this.tableData[i].status = data.orderItems[i].productMold;
-                    _this.tableData[i].skuName2 = data.orderItems[i].itemName;
-                    _this.tableData[i].skuName = data.orderItems[i].itemName;
-                    _this.tableData[i].discount = data.orderItems[i].discountRate;
-                    _this.tableData[i].nums = data.orderItems[i].quantity;
-                    _this.tableData[i].realSale = data.orderItems[i].status == 3?data.orderItems[i].price: data.orderItems[i].money;
-                    _this.tableData[i].price = parseFloat(data.orderItems[i].price)||'0';
-                    _this.tableData[i].productId = data.orderItems[i].itemId;
-                    _this.tableData[i].sku = data.orderItems[i].itemNo;
-                    _this.tableData[i].customId = data.orderItems[i].orderReceiptId;
-                    _this.tableData[i].refundId = data.orderItems[i].refundId;
-                    _this.tableData[i].listPrice = data.orderItems[i].listPrice;
-                    _this.tableData[i].classId = data.orderItems[i].productType;
-                    _this.tableData[i].status = data.orderItems[i].productMold;
-                    if(data.orderItems[i].productMold == '1'){//定做
-                        delete _this.tableData[i].itemId;
-                        delete _this.tableData[i].productType;
-                        delete _this.tableData[i].refundId;
-                        delete _this.tableData[i].warehouseId;
+                    // //备注，取镜方式，操作人
+                    let obj=new Object();
+                    obj.status = data.orderItems[i].productMold;
+                    obj.skuName2 = data.orderItems[i].itemName;
+                    obj.skuName = data.orderItems[i].itemName;
+                    obj.nums = data.orderItems[i].quantity;
+                    obj.price = parseFloat(data.orderItems[i].price)||'0';
+                    obj.discount = data.orderItems[i].discountRate;
+                    obj.realSale = data.orderItems[i].status == 3?data.orderItems[i].price: data.orderItems[i].money;
+                    obj.status = data.orderItems[i].productMold;
+                    if(data.orderItems[i].productMold == '0'){
+                        obj.productId = data.orderItems[i].itemId;
+                        obj.sku = data.orderItems[i].itemNo;
+                        obj.warehouseId = data.orderItems[i].warehouseId;
+                        obj.stockId = data.orderItems[i].stockId||'';
+                        obj.allotQuantity = data.orderItems[i].stockQuantityNo;
+                        obj.classId = data.orderItems[i].productType;
+                        obj.quantity = data.orderItems[i].stockQuantity;
+                    }else if(data.orderItems[i].productMold == '1'){//定做
+                        obj.customId = data.orderItems[i].orderReceiptId;
+                        obj.classId = data.orderItems[i].productType;
                     }else if(data.orderItems[i].productMold == '2'){//自带
-                        _this.tableData[i].discount='';
-                        delete _this.tableData[i].itemId;
-                        delete _this.tableData[i].discountRate;
-                        delete _this.tableData[i].warehouseId;
-                        delete _this.tableData[i].refundId;
-                        delete _this.tableData[i].productType;
+                            delete obj.discount
                     }else if(data.orderItems[i].productMold == '3'){//其他
-                        _this.tableData[i].discount='';
-                        delete _this.tableData[i].itemId;
-                        delete _this.tableData[i].discountRate;
-                        delete _this.tableData[i].itemNo;
-                        delete _this.tableData[i].warehouseId;
-                        delete _this.tableData[i].refundId;
-                        delete _this.tableData[i].productType;
-                        delete _this.tableData[i].quantity;
+                            delete obj.discount
                     }
+                    _this.tableData.push(obj)
                 }
                 console.log('取单、重新开单商品列表',_this.tableData)
                 _this.computedPay();
@@ -1672,6 +1674,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             //定做商品title
             showTitle(value){
                 let _this = this;
+                console.log(value)
                _this.customizeRH=true;
                     if(value== 'left'){
                         _this.custom='left';
@@ -1860,7 +1863,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                                 type: 'success'
                             });
                         }else{
-                            debugger
                             _this.$message({
                                 showClose: true,
                                 message: '开单成功',

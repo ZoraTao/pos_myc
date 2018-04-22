@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       shopdata: {
-        where: "1",
+        where: "",
         lens: "",
         nums: "",
         message: "",
@@ -78,22 +78,20 @@ export default {
   methods: {
     commitShopMessage() {
       let _this = this;
-      // for (var key in _this.shopdata) {
-      //   if (_this.shopdata[key] == "") {
-      //     console.log(_this.shopdata[key])
-      //     this.$message({
-      //       type: "error",
-      //       message: "请填写完整",
-      //       showClose: true
-      //     });
-      //     return false;
-      //   }
-      // }
-      if(_this.shopdata.where  = '2'){
+      if(_this.shopdata.where == '2'){
         _this.shopdata.lens = ''
       }
+      if(_this.shopdata.where == '1'){
+        if(_this.shopdata.lens == ''){
+           _this.$message({
+             type:'warning',
+             message:'请填写完整',
+             showClose:true
+           })
+           return
+        }
+      }
       let commitMessage = _.clone(_this.shopdata);
-      console.log(commitMessage)
       _this.$emit('commitMessage',commitMessage);
       setTimeout(() => {
         for (var key in _this.shopdata) {

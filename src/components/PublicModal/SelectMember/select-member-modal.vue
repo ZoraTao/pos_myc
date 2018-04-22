@@ -149,6 +149,7 @@ export default {
         background: #efefef;
     }
     .el-tabs--border-card{
+        min-height:252px;
         border:none !important;
     }
     .el-tabs--border-card>.el-tabs__header {
