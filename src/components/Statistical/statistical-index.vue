@@ -1,5 +1,5 @@
 <template>
-  <div> 
+  <div>
     <el-container>
       <el-header style="height:160px;">
         <div class="headerContent">
@@ -12,18 +12,19 @@
             </el-col>
           </el-row>
         </div>
-          
+
           <div class="toggleImg" @click="toggelHeader">
             <img src="https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_ss.png" alt="">
           </div>
         </el-header>
-        
+
       <el-main style="height:432px;">
           <p class="title">统计报表</p>
           <div class="minDiv">
-            <el-row>
-              <el-col  :span="4" v-for="(items,index) in saleData" :key="items.name" >
-                <div class="grid-content bg-purple" @click=" toTargetrouter(items);createTab(index,items)" >
+            <el-row type="flex" justify="space-between">
+              <el-col :span="4" v-for="(items,index) in saleData" :key="items.name" >
+                <!--<div class="grid-content bg-purple" @click=" toTargetrouter(items);createTab(index,items)">-->
+                <div class="grid-content bg-purple">
                   <img :src="items.img" alt="">
                   <h5>{{items.text}}</h5>
                 </div>
@@ -182,7 +183,7 @@ export default {
   position: relative;
   padding: 0;
   .minDiv {
-    max-width: 1270px;
+    max-width: 100%;
     box-sizing: content-box;
     margin: 0 auto;
   }
@@ -197,17 +198,18 @@ export default {
   }
   .el-row {
     top: 83px;
-    left: 105px;
+    left: 0;
+    padding: 0 20px;
   }
   .el-col {
     box-sizing: content-box;
     border: 1px solid #cccccc;
-    width: 198px;
+    /*width: 198px;*/
     cursor: pointer;
     height: 270px;
     .grid-content {
       height: 110px;
-      width: 198px;
+      width: 100%;
       text-align: center;
       overflow: hidden;
     }
@@ -226,8 +228,8 @@ export default {
       }
     }
   }
-  .el-col:nth-child(n + 1) {
-    margin-right: 44px;
+  .el-col:last-child {
+    margin-right: 0;
   }
   .el-col:nth-child(1) .grid-content {
     background: #fac979;
