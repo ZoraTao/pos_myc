@@ -1944,7 +1944,11 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             }
         }
     .el-input__prefix, .el-input__suffix{
-        color:#606266
+        color:#606266;
+
+    }
+    .el-input__inner{
+        color:#888888 ;
     }
     .el-select .el-input .el-select__caret{
         color:#606266

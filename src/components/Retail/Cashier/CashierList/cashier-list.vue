@@ -110,10 +110,9 @@
               <td>{{list.itemNo||'--'}}</td>
               <td>{{list.itemName}}<span class="customText" v-if="list.orderReceiptId">定做单号：{{list.orderReceiptId}}</span></td>
               <td>{{parseInt(list.quantity)||'--'}}</td>
-              <td>{{parseFloat(list.listPrice)}}</td>
+              <td>{{parseFloat(list.price)||(list.productMold == '2'?'--':'0')}}</td>
               <td>
-                <strong  v-if="!order.extraMoney">{{parseFloat(list.money)?parseFloat(list.money):'0'}}</strong>
-                <strong v-if="order.extraMoney">{{parseFloat(list.money)}}</strong>
+                <strong>{{parseFloat(list.money)||(list.productMold == '3'?parseFloat(order.extraMoney):(list.productMold == '2'?'--':'0'))}}</strong>
               </td>
               <td>{{order.shopName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
@@ -193,10 +192,10 @@
                 <tr   v-for="(list,index) in order.orderItems" :key="list.name">
                   <td>{{list.itemNo||'--'}}</td>
                   <td>{{list.itemName||'商品名'}}</td>
-                  <td>{{parseInt(list.quantity)||'--'}}</td>
-                  <td>{{parseFloat(list.price)}}</td>
+                  <td>{{parseInt(list.quantity)||'1'}}</td>
+                  <td>{{parseFloat(list.listPrice)||(list.productMold == '2'?'--':'0')}}</td>
                   <td>
-                    <strong>{{parseFloat(list.money)||parseFloat(order.extraMoney)||'0'}}</strong>
+                    <strong>{{parseFloat(list.money)||(list.productMold == '3'?parseFloat(order.extraMoney):(list.productMold == '2'?'--':'0'))}}</strong>
                   </td>
                   <td>{{order.shopName}}</td>
                   <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
@@ -492,7 +491,6 @@ export default {
   created() {
     this.getOrderList(3);
   },
-
   methods: {
     againOrder(bool,data){
       let _this = this;
@@ -501,11 +499,32 @@ export default {
         _this.againOrderData = data;
       }else{
         _this.againOrderBool = false;
-        // console.log(_this.againOrderData)
-        // _this.$bus.emit('againOrder',_this.againOrderData);
-        _this.$router.push({
-          name:'billing'
-        ,params:{datas:_this.againOrderData}})
+        _this.$myAjax({//先核销该订单
+          url:'pos-api/orderTemp/updateOrderTempStatus',
+          data:{
+            orderId:_this.againOrderData.orderId,
+            status:'11'
+          },
+          success:function(res){
+              if(res.code == 1){
+                _this.$router.push({
+                name:'billing'
+              ,params:{datas:_this.againOrderData}})
+              }else{
+                _this.$message({
+                  type:'error',
+                  message:'重新开单失败',
+                  showClose:true
+                })
+              }
+          },error:function(err){
+             _this.$message({
+                  type:'error',
+                  message:'网络连接失败',
+                  showClose:true
+                })
+          }
+        })
       }
     },
     closeOrder(data,bool){
