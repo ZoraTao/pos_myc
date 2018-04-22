@@ -26,7 +26,8 @@
     "vue-contextmenu": "^1.4.8",
     "vue-resource": "^1.5.0",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "zepto": "^1.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -57,6 +58,7 @@
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^3.0.1",
     "eslint-plugin-vue": "^4.0.0",
+    "exports-loader": "^0.7.0",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
@@ -74,6 +76,7 @@
     "postcss-url": "^7.2.1",
     "rimraf": "^2.6.0",
     "sass-loader": "^6.0.7",
+    "script-loader": "^0.7.2",
     "selenium-server": "^3.0.1",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",

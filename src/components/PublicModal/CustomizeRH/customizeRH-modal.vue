@@ -4,12 +4,14 @@
       <div style="overflow:hidden">
         <div class="customizeInputGroup fn-left shops" v-show="custom == 'shop'">
             <label>类别:</label>
-                <el-select v-model="customContent.class"  placeholder="请选择" @change="initSelect(2)">
+                <el-select v-model="customContent.class" id="classid"  placeholder="请选择" @change="initSelect(2)">
                     <el-option
                     v-for="item in classArray"
                     :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
+                    <span style="float: left" @click="aler('classid',item.className)" >{{ item.className }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.productCategoryId }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -21,6 +23,8 @@
                     :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
+                    <span style="float: left" @click="aler('varietyid',item.className)" >{{ item.className }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.productCategoryId }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -33,6 +37,8 @@
                     :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
+                    <span style="float: left" @click="aler('brandid',item.className)" >{{ item.className }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.productCategoryId }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -44,6 +50,8 @@
                     :key="item.className"
                     :label="item.className"
                     :value="item.productCategoryId">
+                    <span style="float: left" @click="aler('specificationid',item.className)" >{{ item.className }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.productCategoryId }}</span>
                     </el-option>
                 </el-select>
         </div>
@@ -141,7 +149,11 @@ export default {
         nums: "1", //数量
         discount: "10", //折扣
         realSale: "", //实售
-        status: "1"
+        status: "1",
+        classid:'',//类别
+        varietyid:'',//品牌
+        brandid:'',//品种
+        specificationid:'',//规格型号
       },
       sphArray:null,
       cylArray:null,
@@ -159,6 +171,17 @@ export default {
     }
   },
   methods: {
+    aler(name,data){
+      if(name == 'classid'){
+        this.customContent.classid = data;
+      }else if(name == 'varietyid'){
+        this.customContent.varietyid = data;
+      }else if(name == 'brandid'){
+        this.customContent.brandid = data;
+      }else if(name == 'specificationid'){
+        this.customContent.specificationid = data;
+      }
+    },
     initSelect(type){
             var _this = this;
           var id = '';
@@ -287,6 +310,7 @@ export default {
           where = 'L'
         }
       }
+      console.log($('#classid'))
       _this.customContent.price = parseFloat(_this.customContent.price);
       let users =  JSON.parse(localStorage.getItem("userData"));
       _this.$myAjax({
