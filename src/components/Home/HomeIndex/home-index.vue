@@ -258,6 +258,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  .am-ft-red{
+    color: #F58B8B !important;
+  }
 .homeImg {
     flex: 68;
     max-height: 279px;
