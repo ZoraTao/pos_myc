@@ -37,7 +37,7 @@
                 </el-col>
                 <el-col :span="8">
                     <el-checkbox v-model="isHasTruePro"><span>无商品实物码</span></el-checkbox>
-                </el-col>                
+                </el-col>
             </el-row>
         </div>
     </div>
@@ -62,7 +62,7 @@ export default {
             orderNo:'',
             barcode:'',
             productId:'',
-            warehouseId:'', 
+            warehouseId:'',
         },
         shelfData:{
             itemId:'',
@@ -83,8 +83,8 @@ export default {
                 },
                 keyParams: {
                     weChat: true,
-                    userId: '8888',
-                    orgId: '11387'
+                    userId: JSON.parse(localStorage.getItem("userData")).userId,
+                    orgId: JSON.parse(localStorage.getItem("userData")).orgId,
                 }
             }
         })
@@ -94,21 +94,21 @@ export default {
                     showClose: true,
                     message: res.data.msg,
                         type: 'success'
-                });    
+                });
                 _this.chanel();
             }else{
                 _this.$message({
                     showClose: true,
                     message: res.data.msg,
                         type: 'error'
-                });                     
+                });
                 _this.chanel();
             }
-            
+
         })
         .catch(function(error) {
             console.info(error);
-        });          
+        });
       },
       chanel(){
           this.cpShowReceive=this.showReceive;
@@ -128,7 +128,7 @@ export default {
                 _this.shelfData.itemName=element.itemName;
                 _this.shelfData.quantity=element.quantity;
             }
-        })   
+        })
       }
   },
   created:function(){
@@ -139,7 +139,7 @@ export default {
         this.shelfData.itemNo='';
         this.shelfData.itemId='';
         this.shelfData.itemName='';
-        this.shelfData.quantity='';       
+        this.shelfData.quantity='';
         this.showShelfData();
       },
       'receiveData':function(){

@@ -19,7 +19,7 @@
             </li>
         </ul>
         <div class="content am-bg-white" v-if="srcNum==='1'">
-          
+
           <div class="orders">
             <table class="orders_table">
               <thead>
@@ -155,7 +155,7 @@
         :total="count"
         @current-change="getOrderList"
         :current-page.sync="nub">
-        </el-pagination> 
+        </el-pagination>
     </div>
     <el-dialog custom-class="noheader" title="" :visible.sync="showModal">
         <div class="modal-content print-frame">
@@ -255,8 +255,8 @@ export default {
               jsonObject: jsonObject,
               keyParams: {
                 weChat: true,
-                userId: '8888',
-                orgId: '11387'
+                userId: JSON.parse(localStorage.getItem("userData")).userId,
+                orgId: JSON.parse(localStorage.getItem("userData")).orgId,
               }
             }
           })
@@ -277,7 +277,7 @@ export default {
           })
           .catch(function(error) {
             console.info(error);
-          });        
+          });
     },
     changeTab:function(item){
         this.srcNum=item.srcNum;

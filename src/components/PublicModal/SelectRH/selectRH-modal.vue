@@ -199,13 +199,21 @@ export default {
                     },
                     keyParams: {
                         weChat: true,
-                        userId: '8888',
-                        orgId: '11387'
+                        userId: JSON.parse(localStorage.getItem("userData")).userId,
+                        orgId: JSON.parse(localStorage.getItem("userData")).orgId,
                     }
                 }
             })
-            .then(function (response) {
-                that.options=response.data.data.list;
+            .then(function (res) {
+                if(res.code == 1){
+                    that.options=res.data.data.list;
+                }else{
+                    _this.$message({
+                        type:'error',
+                        message:res.msg,
+                        showClose:true
+                    })
+                }
             })
         }
       },

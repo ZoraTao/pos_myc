@@ -79,7 +79,7 @@
         received:0,//已收
         giveChangeMoney:0,//找零
         payContent:[],
-        itemData: 
+        itemData:
         [
           {
             id: '1',
@@ -230,8 +230,8 @@
             },
             keyParams:{
               weChat: true,
-              userId: '8888',
-              orgId: '11387'
+              userId: JSON.parse(localStorage.getItem("userData")).userId,
+              orgId: JSON.parse(localStorage.getItem("userData")).orgId,
             }
           }
         })
@@ -242,14 +242,14 @@
                         showClose: true,
                         message: '收款成功!',
                         type: 'success'
-                    })   
+                    })
                     _this.$emit('closePayMoney',)
           }else{
                     _this.$message({
                         showClose: true,
                         message: res.data.msg,
                         type: 'error'
-                    })              
+                    })
           }
         }).catch((err)=>{
           console.log(err)

@@ -59,13 +59,14 @@
             </div>
         </div>
         <vue-context-menu :contextMenuData="contextMenuData"
-                        @delThisRow="delThisRow">
+                        @dlThisRow="delThisRow">
         </vue-context-menu>
         <div class="borderfff mgt5 am_bg_white flex5">
             <div class="salesSuggest">
                 <el-table
                     :data="tableData"
                     size="small"
+                    @row-dblclick="removeRow"
                     align="left"
                     @row-contextmenu="showMenu"
                     style="width: 100%;margin-bottom:10px;min-height:300px">
@@ -225,17 +226,18 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="取镜公司 :" v-show="publicSelcet.glassesTypeModel=='门店自取'">
-                    <el-select size="mini" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()" @change="sameComType">
+                    <el-select size="mini" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()">
                         <el-option
                         v-for="item in publicSelcet.comTypeOptions"
                         :key="item.shopId"
                         :label="item.shopName"
                         :value="item.shopId">
+                        <span style="display:block;width:100%;float:left;" @click="sameComType(item.shopAddr)">{{item.shopName}}</span>
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="取镜地点 :"  v-show="publicSelcet.glassesTypeModel=='门店自取'">
-                    <p style="width:100px;">{{orderTemp.glassesAddress||'--'}}</p>
+                    <p style="width:150px;" :title="orderTemp.glassesAddress">{{orderTemp.glassesAddress||'--'}}</p>
                 </el-form-item>
                 <div>
                     <el-form-item label="收件人：" v-show="publicSelcet.glassesTypeModel=='快递'">
@@ -614,6 +616,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     label: "暂无"
                 }],
                 value: '',
+                firstEnterSaleIdBool:true,
                 //销售人员
                 shopMember:'',
                 showhideBottom:'',//控制套餐底部按钮
@@ -823,18 +826,24 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     method: 'post',
                     params: {
                         jsonObject: {
-                            orgId:'11387',
+                            // orgId: JSON.parse(localStorage.getItem("userData")).orgId,
+                            // orgId:'11387',
                             //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
                         },
                         keyParams: {
                             weChat: true,
-                            userId: '8888',
-                            orgId: '11387'
+                            userId: JSON.parse(localStorage.getItem("userData")).userId,
+                            orgId: JSON.parse(localStorage.getItem("userData")).orgId,
                         }
                     }
                 })
                 .then(function (response) {
                     _this.options=response.data.data.list;
+                    // console.log(_this.users.userId)
+                    if(_this.firstEnterSaleIdBool){
+                        _this.firstEnterSaleIdBool = false;
+                        _this.shopMember = _this.users.userId;
+                    }
                 })
             },
             setWhere(value){
@@ -853,9 +862,17 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             commitCustom(data){
                 this.selectSku(data,data.nums)
             },
+            removeRow(row,event){
+                let _this = this;
+                if(this.tableData.indexOf(row)!=-1){
+                    this.tableData.splice(this.tableData.indexOf(row),1)
+                }
+                _this.computedPay();
+            },
             //删除表格td
             delThisRow(){
                 var that=this;
+                console.log(1)
                 this.tableData.forEach(function(element,index) {
                     if(element==that.contextMenuData.row){
                         this.tableData.splice(index,1)
@@ -865,10 +882,11 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             },
             //取镜公司地点
             sameComType(value){
+                console.log(value)
                 this.orderTemp.glassesAddress=value
             },
             //获取取镜公司
-            getCompanyList(){
+            getCompanyList(bool){
                 var _this = this;
                 _this.$axios({
                     url: 'http://myc.qineasy.cn/pos-api/shopBy/getShopByList',
@@ -878,13 +896,26 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         },
                         keyParams: {
                             weChat: true,
-                            userId: '8888',
-                            orgId: '11387'
+                            userId: JSON.parse(localStorage.getItem("userData")).userId,
+                            orgId: JSON.parse(localStorage.getItem("userData")).orgId,
                         }
                     }
                 })
                 .then(function (response) {
                     _this.publicSelcet.comTypeOptions=response.data.data.shopByList;
+                    if(bool){
+                        let orgId = _this.users.orgId;
+                        let orgData = _this.publicSelcet.comTypeOptions;
+                        // console.log(orgId)
+                        for(let i=0;i<orgData.length;i++){
+                            if(orgData[i].shopId == orgId){
+                                // console.log('门店地址',orgData[i]);
+                                _this.publicSelcet.comTypeModel = orgId;
+                                _this.orderTemp.glassesAddress =orgData[i].shopAddr;
+                            }
+                        }
+                    }
+                        // _this.orderTemp.glassesAddress = _this.users.
                 })
             },
 
@@ -908,8 +939,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         },
                         keyParams: {
                             weChat: true,
-                            userId: '8888',
-                            orgId: '11387'
+                            userId: JSON.parse(localStorage.getItem("userData")).userId,
+                            orgId: JSON.parse(localStorage.getItem("userData")).orgId,
                         }
                     }
                 })
@@ -1009,14 +1040,22 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                             },
                             keyParams: {
                                 weChat: true,
-                                userId: '8888',
-                                orgId: '11387'
+                                userId: JSON.parse(localStorage.getItem("userData")).userId,
+                                orgId: JSON.parse(localStorage.getItem("userData")).orgId,
                             }
                         }
                     })
-                    .then(function (response) {
+                    .then(function (res) {
                         // console.log(where)
-                        _this.selectProductSku.productSkuData=response.data.data;
+                        if(res.code == 1){
+                            _this.selectProductSku.productSkuData=res.data.data;
+                        }else{
+                             _this.$message({
+                                type:'error',
+                                message:'数据请求出错',
+                                showClose: true,
+                            })
+                        }
                         // let list = _this.selectProductSku.productSkuData.list;
                         // for(var i = 0;i<list.length;i++){
                         //     list[i].skuName2 = where+list[i].skuName;
@@ -1057,8 +1096,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                             },
                             keyParams: {
                                 weChat: true,
-                                userId: '8888',
-                                orgId: '11387'
+                                userId: JSON.parse(localStorage.getItem("userData")).userId,
+                                orgId: JSON.parse(localStorage.getItem("userData")).orgId,
                             }}
                     }).then(function (response) {
                         _this.selectProductSku.productSkuData=response.data.data;
@@ -1069,6 +1108,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 console.log('info',info)
                 this.$nextTick(() => {
                     this.selectProductSku.nub=info.nub;
+                    this.selectProductSku.productSkuData.count=info.productSkuData.nub;
                     this.selectGlass();
                 });
             },
@@ -1364,8 +1404,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                                 },
                                 keyParams: {
                                     weChat: true,
-                                    userId: '8888',
-                                    orgId: '11387'
+                                    userId: JSON.parse(localStorage.getItem("userData")).userId,
+                                    orgId: JSON.parse(localStorage.getItem("userData")).orgId,
                                 }
                             }
                         })
@@ -1632,8 +1672,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                             jsonObject: formdata,
                             keyParams: {
                                 weChat: true,
-                                userId: "8888",
-                                orgId: "11387"
+                                userId:JSON.parse(localStorage.getItem("userData")).userId,
+                                orgId:JSON.parse(localStorage.getItem("userData")).orgId,
                             }
                         }
                     })
@@ -1709,8 +1749,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         },
                         keyParams: {
                             weChat: true,
-                            userId: '8888',
-                            orgId: '11387'
+                            userId: JSON.parse(localStorage.getItem("userData")).userId,
+                            orgId: JSON.parse(localStorage.getItem("userData")).orgId,
                         }
                     }
                 })
@@ -1842,8 +1882,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         jsonObject: jsonObject,
                         keyParams: {
                             weChat: true,
-                            userId: '8888',
-                            orgId: '11387'
+                            userId: JSON.parse(localStorage.getItem("userData")).userId,
+                            orgId: JSON.parse(localStorage.getItem("userData")).orgId,
                         }
                     }
                 })
@@ -1901,6 +1941,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
         mounted(){
             let _this = this;
             _this.users =  JSON.parse(localStorage.getItem("userData"));
+            _this.getPrivateSelect();
+            _this.getCompanyList(true);
             if(_this.$route.params.datas){
                 console.log('重新开单参数',_this.$route.params.datas);
                 _this.openOrder(_this.$route.params.datas)

@@ -77,10 +77,8 @@ export default {
         manyCost.push(message);
       }
       _this.initData();
+      // console.log(manyCost)
       _this.$emit("addCostPay", manyCost);
-    //   setTimeout(function(){
-    //       _this.deactivated();
-    //   },500);
     },
     checkPay(data, $index, index,$event) {//多选框
       let _this = this;
@@ -97,9 +95,6 @@ export default {
       }
       this.data[index].list.splice($index, 1, setMoney);
       _this.computedMoney();
-    },
-    deactivated () {//销毁组件
-        this.$destroy()
     },
     computedMoney() {//计算价格
       let _this = this;
@@ -160,10 +155,16 @@ export default {
     },
     initData(){
         let _this = this;
-            for(var i=0;i<_this.data.length;i++){
-                _this.data.splice(i,1,_this.init[i])
-            }
-            _this.data = _this.init
+        console.log(this.init);
+        for(let i=0;i<this.init.length;i++){
+          for(let j=0;j<this.init[i].list.length;j++){
+              this.init[i].list[j].isCheck = false;
+          }
+        }
+          for(var i=0;i<_this.data.length;i++){
+              _this.data.splice(i,1,_this.init[i])
+          }
+          // _this.data = _this.init
             // for(let i = 0;i<_this.data.length;i++){
             //     console.log(_this.data[i])
             //     for(let a = 0;a<_this.data[i].list.length;a++){
@@ -184,8 +185,8 @@ export default {
             },
             keyParams: {
               weChat: true,
-              userId: "8888",
-              orgId: "11387"
+              userId: JSON.parse(localStorage.getItem("userData")).userId,
+              orgId: JSON.parse(localStorage.getItem("userData")).orgId,
             }
           }
         })
@@ -198,16 +199,16 @@ export default {
               startInit[i].list[j].status = "3";
             }
           }
+          // _this.init = JSON.parse(JSON.stringify(startInit));
           _this.init = _.cloneDeep(startInit);
-          console.log(_this.init)
-          _this.data = _.cloneDeep(startInit);
+          _this.data = startInit;
         });
     }
   },
   watch:{
 
   },
-  mounted: function() {
+  created: function() {
     this.requestList();
   }
 };

@@ -50,7 +50,7 @@
         <h5>公告</h5>
       </div>
       <div class="hcBottom">
-          <div class="hcGgItem" v-for="(i,index) in news">
+          <div class="hcGgItem" v-for="(i,index) in news" :key="i.names">
             <img v-if="index==0" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/logo1.png" class="fn-left"/>
             <div class="fn-left">
               <p @click="detailPanel(i,index)">{{i.title}}</p>
@@ -67,7 +67,7 @@
         <h5>促销活动</h5>
       </div>
       <div class="hcBottom">
-          <div class="hcCxItem" v-for="(n,index) in promotionList" :key="n.salesId">
+          <div class="hcCxItem" v-for="n in promotionList" :key="n.salesId">
             <div class="hcCxLeft">
               <img v-if="n.salesType=='1'" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_manjian.png" />
               <img v-if="n.salesType=='2'" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_te.png">

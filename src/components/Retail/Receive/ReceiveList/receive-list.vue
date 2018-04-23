@@ -171,8 +171,8 @@
         :total="count"
         @current-change="getOrderList"
         :current-page.sync="nub">
-        </el-pagination> 
-        </div>    
+        </el-pagination>
+        </div>
     <el-dialog title="扫码装袋" :visible.sync="showReceive">
         <ReceiveModal :showReceive="showReceive" :receiveData="receiveData" v-on:hideReceive="hideReceive"></ReceiveModal>
     </el-dialog>
@@ -242,8 +242,8 @@ export default {
               },
               keyParams: {
                 weChat: true,
-                userId: '8888',
-                orgId: '11387'
+                userId: JSON.parse(localStorage.getItem("userData")).userId,
+                orgId: JSON.parse(localStorage.getItem("userData")).orgId,
               }
             }
           })
@@ -253,19 +253,19 @@ export default {
                     showClose: true,
                     message: res.data.msg,
                         type: 'success'
-                });    
+                });
                 _this.getOrderList();
             }else{
                 _this.$message({
                     showClose: true,
                     message: res.data.msg,
                         type: 'error'
-                });                     
+                });
             }
           })
           .catch(function(error) {
             console.info(error);
-          });        
+          });
     },
     showReceiveFn:function(value){
         var _this=this;
@@ -337,7 +337,7 @@ export default {
                 type: 'error'
               })
             }
-            
+
           })
           .catch(function(error) {
             console.info(error);

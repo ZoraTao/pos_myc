@@ -291,7 +291,7 @@ export default {
     commitCustom() {
       let _this = this;
       console.log(_this.customContent);
-      if (_this.customContent.value1 ==''||_this.customContent.price==''||typeof parseFloat(_this.customContent.price) != 'number') {
+      if (_this.customContent.price==''||typeof parseFloat(_this.customContent.price) != 'number') {
            _this.$message({
             type: "error",
             message: "请填写规范",

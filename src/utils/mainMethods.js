@@ -1,5 +1,5 @@
 // export function install(Vue, options) {
-  
+
 // }
 import Vue from 'vue'
 Vue.prototype.$myAjax = function (opt) {
@@ -20,8 +20,8 @@ Vue.prototype.$myAjax = function (opt) {
         jsonObject: defaults,
         keyParams: {
           weChat: true,
-          userId: '8888',
-          orgId: '11387'
+          userId: JSON.parse(localStorage.getItem("userData")).userId,
+          orgId: JSON.parse(localStorage.getItem("userData")).orgId,
         }
       }
     })
