@@ -1038,7 +1038,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                                 color:'',
                                 colorCode:'',
                                 categoryCode:code,
-                                product:_this.searchStr.replace(/\+/g,"%2   B"),
+                                product:_this.searchStr.replace(/\+/g,"%2B"),
                                 type:_this.type,
                                 wareh:_this.selectProductSku.wareh,
                                 nub: (_this.selectProductSku.nub==1?0:(_this.selectProductSku.nub-1)*_this.selectProductSku.size),

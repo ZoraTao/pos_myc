@@ -60,7 +60,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{{order.shopName}}</td>
+                <td>{{list.warehouseName}}</td>
                 <td></td>
                 <td>{{parseInt(list.quantity)}}</td>
                 <td></td>

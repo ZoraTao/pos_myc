@@ -63,14 +63,14 @@
                                     </div>
                                     <div class=" fn-right">
                                         <span class="msg">销售&nbsp;&nbsp;</span>
-                                        <span class="msg">{{order.userName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
+                                        <span class="msg">{{order.userName}} &nbsp;&nbsp;{{order.orderTime}}</span>
                                     </div>
 
                                 </td>
                             </tr>
                             <tr v-for="(list,index) in order.orderItems" :key="list.name">
                                 <td>{{list.itemNo}}</td>
-                                <td>{{list.itemName||'商品名'}}</td>
+                                <td>{{list.itemName||'商品名'}}<span class="customs" v-if="list.orderReceiptId">定做单号：{{list.orderReceiptId}}</span></td>
                                 <td>{{parseInt(list.quantity)}}</td>
                                 <td>{{list.warehouseName}}</td>
                                 <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
@@ -92,7 +92,7 @@
                                 </td>
                                 <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                                     <el-button type="primary" v-if="searchForm.status=='51'" @click="showReceiveFn(order)">扫码装袋</el-button>
-                                    <el-button type="primary" v-if="searchForm.status=='53'" @click="sureGetProduct(order)">确认收件</el-button>
+                                    <el-button type="primary" v-if="searchForm.status=='56'" @click="sureGetProduct(order)">确认收件</el-button>
                                 </td>
                             </tr>
                             <div class="gekai"> </div>
@@ -215,7 +215,7 @@ export default {
             'value':'待收件',
             'isActived':false,
             'srcNum':'2',
-            'status':"53"
+            'status':"56"
         },
         {
             'value':'全部',
@@ -651,7 +651,10 @@ export default {
     width: 100%;
     border-bottom: 1px dashed #E1E1E1;
 }
-
+.customs{
+    cursor: pointer;
+    color: #00afe4;
+}
 .saomaHead input,
 .saomaMsgBt {
     width: 130px;
