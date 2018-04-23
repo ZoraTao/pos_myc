@@ -1,5 +1,5 @@
 <template>
-<div class="billing content_box flexH100">
+<div class="billing content_box flexH100" >
     <div class="billingInfo">
         <div class="borderfff flex1">
             <div class="salesclerkInfo">
@@ -11,6 +11,7 @@
                             :key="item.userId"
                             :label="item.trueName"
                             :value="item.userId">
+                            <span style="display:block;width:100%;float:left;">{{item.trueName}}</span>
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -234,7 +235,7 @@
                         :key="item.shopId"
                         :label="item.shopName"
                         :value="item.shopId">
-                        <span style="display:block;width:100%;float:left;" @click="sameComType(item.shopAddr)">{{item.shopName}}</span>
+                        <span style="display:block;width:100%;float:left;" @click="sameComType(item)">{{item.shopName}}</span>
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -424,8 +425,8 @@
     <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="800px" :before-close="cleanSelectShopModal">
         <SelectShopModal :where="where" ref="showSelectShop"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:setBuyShop="selectSku" ></SelectShopModal>
     </el-dialog>
-    <el-dialog class="customizeRH" :title="customText" :visible.sync="customizeRH" width="690px">
-        <CustomizeRHModal  :custom="custom"  ref="customs"  v-on:commitCustomMessage="commitCustom"></CustomizeRHModal >
+    <el-dialog class="customizeRH"   :title="customText" :visible.sync="customizeRH" width="690px">
+        <CustomizeRHModal    :custom="custom"  ref="customs" :shopMember="shopMember" :orgData="orgDatas"  v-on:commitCustomMessage="commitCustom"></CustomizeRHModal >
     </el-dialog>
     <el-dialog class="withShopModal" title="自带商品" :visible.sync="withShop" width="600px">
         <withShopModal v-on:commitMessage="withShopCommit"></withShopModal>
@@ -710,6 +711,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     nub: 1,
                     size:10
                 },
+                orgDatas:null,
                 tableData:[],//用户保存商品信息
                 where:'',//左右镜片
                 addShop:false,
@@ -889,7 +891,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             //取镜公司地点
             sameComType(value){
                 console.log(value)
-                this.orderTemp.glassesAddress=value
+                _this.orgDatas = value;
+                this.orderTemp.glassesAddress=value.shopAddr;//下单门店地址
             },
             //获取取镜公司
             getCompanyList(bool){
@@ -916,6 +919,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         for(let i=0;i<orgData.length;i++){
                             if(orgData[i].shopId == orgId){
                                 // console.log('门店地址',orgData[i]);
+                                _this.orgDatas = orgData[i];
                                 _this.publicSelcet.comTypeModel = orgId;
                                 _this.orderTemp.glassesAddress =orgData[i].shopAddr;
                             }
@@ -1019,6 +1023,8 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                 }
                 if(degress && bool){
                     _this.searchStr = degress
+                }else if(degress == undefined&&bool ==undefined){//如果不是镜片度数搜索
+                    _this.searchStr = ''
                 }
                 let code = null;
                 if(_this.type == ''){
@@ -1956,12 +1962,12 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
 
         },
         created(){
+            this.getPrivateSelect();
+            this.getCompanyList(true);
         },
         mounted(){
             let _this = this;
             _this.users =  JSON.parse(localStorage.getItem("userData"));
-            _this.getPrivateSelect();
-            _this.getCompanyList(true);
             if(_this.$route.params.datas){
                 console.log('重新开单参数',_this.$route.params.datas);
                 _this.openOrder(_this.$route.params.datas)

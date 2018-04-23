@@ -1,5 +1,5 @@
 <template>
-<div id="customizeRH" class=" modal-content-center">
+<div id="customizeRH" class=" modal-content-center" >
     <div class="customizeRHBody">
       <div style="overflow:hidden">
         <div class="customizeInputGroup fn-left shops" v-show="custom == 'shop'">
@@ -164,6 +164,14 @@ export default {
     custom:{
       type:String,
       default:null
+    },
+    shopMember:{
+      type:String,
+      default:null
+    },
+    orgData:{
+      type:Object,
+      default:null
     }
   },
   methods: {
@@ -317,11 +325,11 @@ export default {
                 // orderNo :'',//订单编号',
                 customizeDemand :_this.customContent.customMessage,//定做需求',
                 count:_this.customContent.nums,///'定做数量',
-                customizeOrgName :'毛源昌商城',//users.orgName,//下单公司',
-                customizeOrgId :'11387',//下单公司ID',
-                customizeShopName : '天一恒泰店',//下单门店',
-                customizeShopId:'11387',//下单门店ID',
-                customizePerson :'陈中床',//制单人'
+                customizeOrgName :_this.orgData.shopName,//users.orgName,//下单公司',
+                customizeOrgId :_this.orgData.shopId,//下单公司ID',
+                customizeShopName :_this.orgData.shopName,//下单门店',
+                customizeShopId:_this.orgData.shopId,//下单门店ID',
+                customizePerson :_this.shopMember,//制单人'
                 sph:_this.customContent.value1,//球镜
                 cyl:_this.customContent.value2,//柱镜
                 add:_this.customContent.value3,//下架光
