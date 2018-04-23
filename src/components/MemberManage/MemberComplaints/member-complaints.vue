@@ -7,7 +7,7 @@
             <el-date-picker
               type="date"
               placeholder="选择日期"
-              v-model="startDate"
+              v-model="form.complaintTimeStart"
               format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
               style="width: 130px;"></el-date-picker>
@@ -16,8 +16,8 @@
           <div class="fn-line-block">
             <el-date-picker
               type="date"
-              placeholder="选择时间"
-              v-model="endDate"
+              placeholder="选择日期"
+              v-model="form.complaintTimeEnd"
               format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
               style="width: 130px;"></el-date-picker>
@@ -27,9 +27,9 @@
           <el-select style="width:120px" v-model="form.status" placeholder="请选择">
             <el-option
               v-for="item in statusList"
-              :key="item.id"
+              :key="item.code"
               :label="item.name"
-              :value="item.id">
+              :value="item.code">
             </el-option>
           </el-select>
         </el-form-item>
@@ -72,7 +72,7 @@
             width="180">
           </el-table-column>
           <el-table-column
-            prop="b"
+            prop="name"
             label="会员姓名"
             width="180">
           </el-table-column>
@@ -81,11 +81,14 @@
             label="手机号">
           </el-table-column>
           <el-table-column
-            prop="d"
             label="性别">
+            <template slot-scope="scope">
+              <span v-if="scope.row.sex=='M'">男</span>
+              <span v-if="scope.row.sex=='F'">女</span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="complaintCategoryList.category"
+            prop="category"
             label="投诉类别">
           </el-table-column>
           <el-table-column
@@ -95,19 +98,23 @@
           <el-table-column
             prop="type"
             label="投诉类型">
+            <template slot-scope="scope">
+              <span v-if="scope.row.type=='0'">上门投诉</span>
+              <span v-if="scope.row.type=='1'">电话投诉</span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="h"
+            prop="orderId"
             label="关联零售单号">
           </el-table-column>
           <el-table-column
-            prop="deskClerkId"
+            prop="deskClerkName"
             label="接待人员">
           </el-table-column>
           <el-table-column
             label="状态">
             <template slot-scope="scope">
-              <span class="am-ft-red">{{scope.row.status}}</span>
+              <span class="am-ft-red">{{scope.row.statusName}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -135,7 +142,7 @@
 
     <!--新增投诉-->
     <el-dialog
-      title="提示"
+      title="新增投诉单"
       :visible.sync="isShowNewComplaints"
       width="900px">
       <newComplaintsModal v-on:dialogNewComp="getDialogStatus"></newComplaintsModal>
@@ -143,11 +150,11 @@
     <!--新增投诉-->
     <!--投诉单详情-->
     <el-dialog
-      title="提示"
+      :title="'投诉单_'+ detailData.statusName"
       class="ComplainsBill"
       :visible.sync="isShow"
       width="900px">
-      <ComplainsBillModal v-on:dialogdetComp="getDetDialogStatus"></ComplainsBillModal>
+      <ComplainsBillModal :detAllData="detAllData" :proData="proData" :tableData="tableData" :editHandle="editHandle"  v-on:dialogdetComp="getDetDialogStatus"></ComplainsBillModal>
     </el-dialog>
     <!--投诉单详情-->
   </div>
@@ -161,13 +168,16 @@
     name: "member-complaints",
     data() {
       return {
+        tableData: [],
+        detAllData: {},
+        proData: [],
         complainsList: [],//投诉列表数据
         statusList: [{//状态列表数据
-          id: 0,
-          name: '未处理'
+          code: 0,
+          name: '待处理'
         },
         {
-          id: 1,
+          code: 1,
           name: '已处理'
         }],
         searchModel: "",
@@ -176,17 +186,21 @@
         startDate: '',
         endDate: '',
         form: {
-          complaintTime: '',
+          complaintTimeStart: '',
+          complaintTimeEnd: '',
           status: '',
           orderId: '',
           name: '',
           telphone: '',
-          memberCardId: '',
+          memberCardNo: '',
         },
         value: "",
         nub: 0,//起始条数
         size: 10,//每页显示数据条数
         counts: 0,//总条数
+        detailData: {},//详情数据
+        detailAllData: {},//详情数据
+        editHandle: false,
       };
     },
     props: [''],
@@ -215,21 +229,20 @@
         var that = this;
         const ueserInfo = JSON.parse(localStorage.getItem("userData"));
         that.orgId = ueserInfo.orgId;
-        that.$set(that.form,'complaintTime',[that.startDate,that.endDate]);
         that.$set(that.form,'size',that.size);
         that.$set(that.form,'nub',that.nub);
         // console.info(that.form);
-      that.$axios({
-        url: 'http://myc.qineasy.cn/member-api/memberComplaint/getMemberComplaintList',
-        method: 'post',
-        params: {
-          jsonObject: that.form,
-          keyParams: {
-            weChat: true,
-            orgId: that.orgId
-        }
-        }
-      })
+        that.$axios({
+          url: 'http://myc.qineasy.cn/member-api/memberComplaint/getMemberComplaintList',
+          method: 'post',
+          params: {
+            jsonObject: that.form,
+            keyParams: {
+              weChat: true,
+              orgId: that.orgId
+          }
+          }
+        })
         .then(function (response) {
           if(response.data.code != '1'){
             that.$message({
@@ -256,10 +269,57 @@
         })
       },
       //查看详情
-      getDetail(){
+      getDetail(index,data){
+        // console.info(data)
         var that = this;
         that.isShow = true;
-      }
+        that.detailData = data;
+
+        if (data.statusName == '已处理') {
+          that.editHandle = true
+        } else if (data.statusName == '待处理') {
+          that.editHandle = false;
+        }
+
+          that.$axios({
+            url: 'http://myc.qineasy.cn/member-api/memberComplaint/getMemberComplaint',
+            method: 'post',
+            params: {
+              jsonObject: {
+                memberComplaintId: data.memberComplaintId
+              },
+              keyParams: {
+                weChat: true,
+                orgId: that.orgId,
+                userId: that.userId
+              }
+            }
+          })
+            .then(function (response) {
+              if (response.data.code != '1') {
+                console.info(response.data.msg)
+                that.$message({
+                  showClose: true,
+                  message: '请求数据出问题喽，请重试！',
+                  type: 'error'
+                })
+                return false;
+              } else {
+                // console.info(response.data.data)
+                that.detAllData = response.data.data.memberComplain;
+                that.proData = response.data.data.orderItemsList;
+                that.tableData = response.data.data.complaintCategories;
+              }
+            })
+            .catch(function (error) {
+              console.info(error);
+              that.$message({
+                showClose: true,
+                message: '请求数据失败，请联系管理员',
+                type: 'error'
+              })
+            })
+      },
     }
   };
 </script>
