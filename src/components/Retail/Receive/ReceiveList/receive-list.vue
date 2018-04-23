@@ -72,7 +72,7 @@
                                 <td>{{list.itemNo}}</td>
                                 <td>{{list.itemName||'商品名'}}</td>
                                 <td>{{parseInt(list.quantity)}}</td>
-                                <td>{{order.shopName}}</td>
+                                <td>{{list.warehouseName}}</td>
                                 <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                                     <div class="order_price_box">
                                     <div class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}
@@ -143,7 +143,7 @@
                     label="下单时间">
                     </el-table-column>
                     <el-table-column
-                    prop="shopName"
+                    prop="warehouseName"
                     label="销售门店">
                     </el-table-column>
                     <el-table-column

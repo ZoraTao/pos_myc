@@ -18,7 +18,9 @@
                         <el-date-picker
                         v-model="orderTemp.singleSupTime"
                         class="placeHolder"
+                        @change="modifyDataStyle"
                         align="left"
+                        ref="datapick"
                         style="width: 130px;"
                         placeholder='选择日期'>
                         </el-date-picker>
@@ -416,11 +418,11 @@
             <el-button type="primary" @click="submitNewOptometry=true">保 存</el-button>
         </div>
     </el-dialog>
-    <el-dialog class="selectRH" :title="selectProductSku.title" :visible.sync="showSelectRH" width="870px">
-        <SelectRHModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:selectSku="selectSku" ></SelectRHModal>
+    <el-dialog class="selectRH" :title="selectProductSku.title" :visible.sync="showSelectRH" width="870px" :before-close="cleanSelectRHModal">
+        <SelectRHModal :where="where" ref="SelectRHModal"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:selectSku="selectSku" ></SelectRHModal>
     </el-dialog>
-    <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="800px">
-        <SelectShopModal :where="where"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:setBuyShop="selectSku" ></SelectShopModal>
+    <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="800px" :before-close="cleanSelectShopModal">
+        <SelectShopModal :where="where" ref="showSelectShop"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:setBuyShop="selectSku" ></SelectShopModal>
     </el-dialog>
     <el-dialog class="customizeRH" :title="customText" :visible.sync="customizeRH" width="690px">
         <CustomizeRHModal  :custom="custom"  ref="customs"  v-on:commitCustomMessage="commitCustom"></CustomizeRHModal >
@@ -573,6 +575,7 @@
 
 <script>
 import store from '../../../vuex/store'
+// import {unicode} from '../../../utils/other'
 import {allDate} from '../../../utils/date'
 import SelectMemberModal from '../../PublicModal/SelectMember/select-member-modal.vue'
 import NewOptometryModal from '../../PublicModal/NewOptometry/new-optometry-modal.vue'
@@ -864,6 +867,9 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
             },
             removeRow(row,event){
                 let _this = this;
+                if(event.target.className == 'el-input__inner'){
+                    return
+                }
                 if(this.tableData.indexOf(row)!=-1){
                     this.tableData.splice(this.tableData.indexOf(row),1)
                 }
@@ -1032,7 +1038,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                                 color:'',
                                 colorCode:'',
                                 categoryCode:code,
-                                product:_this.searchStr,
+                                product:_this.searchStr.replace(/\+/g,"%2   B"),
                                 type:_this.type,
                                 wareh:_this.selectProductSku.wareh,
                                 nub: (_this.selectProductSku.nub==1?0:(_this.selectProductSku.nub-1)*_this.selectProductSku.size),
@@ -1046,7 +1052,7 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         }
                     })
                     .then(function (res) {
-                        console.log(res)
+                        // console.log(res)
                         if(res.data.code == 1){
                             _this.selectProductSku.productSkuData=res.data.data;
                         }else{
@@ -1922,12 +1928,23 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     }
                 })
             },
-            hangOrder(){
+            hangOrder(){//取单
                 let _this = this;
                 _this.showGetBill=true;
                 this.$nextTick(() => {
                     _this.$refs.hangOrders.getOrderList('-1');
                 });
+            },
+            modifyDataStyle(){//修改日期改样式
+                this.$refs.datapick.$el.childNodes[1].style.color = '#333';
+            },
+            cleanSelectRHModal(){//关闭弹窗后清除select
+                this.showSelectRH = false;
+                this.$refs.SelectRHModal.childrenCleanSelectRHModal()
+            },
+            cleanSelectShopModal(event){//关闭弹窗后清除select
+                this.showSelectShop = false;
+                this.$refs.showSelectShop.selectBrands(2);
             }
         },
         computed:{
@@ -2020,5 +2037,9 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                }
            }
        }
+   }
+   .salesclerkInfo .el-select{
+       min-width: 100px;
+       max-width: 120px;
    }
 </style>

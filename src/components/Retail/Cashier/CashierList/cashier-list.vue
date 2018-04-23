@@ -78,7 +78,7 @@
             <thead>
             <tr>
               <th width="">商品编码</th>
-              <th width="500px">商品名称</th>
+              <th width="450px">商品名称</th>
               <th width="">数量</th>
               <th width="">原单价</th>
               <th width="">实售单价</th>
@@ -114,7 +114,7 @@
               <td>
                 <strong>{{parseFloat(list.money)||(list.productMold == '3'?parseFloat(order.extraMoney):(list.productMold == '2'?'--':'0'))}}</strong>
               </td>
-              <td>{{order.shopName}}</td>
+              <td>{{list.warehouseName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
                   <div  class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
@@ -162,7 +162,7 @@
             <thead>
             <tr>
               <th>商品编码</th>
-              <th>商品名称</th>
+              <th width="450px">商品名称</th>
               <th>数量</th>
               <th>原单价</th>
               <th>实售单价</th>
@@ -191,13 +191,13 @@
                 </tr>
                 <tr   v-for="(list,index) in order.orderItems" :key="list.name">
                   <td>{{list.itemNo||'--'}}</td>
-                  <td>{{list.itemName||'商品名'}}</td>
+                  <td>{{list.itemName||'商品名'}}<span class="customText" v-if="list.orderReceiptId">定做单号：{{list.orderReceiptId}}</span></td>
                   <td>{{parseInt(list.quantity)||'1'}}</td>
                   <td>{{parseFloat(list.listPrice)||(list.productMold == '2'?'--':'0')}}</td>
                   <td>
                     <strong>{{parseFloat(list.money)||(list.productMold == '3'?parseFloat(order.extraMoney):(list.productMold == '2'?'--':'0'))}}</strong>
                   </td>
-                  <td>{{order.shopName}}</td>
+                  <td>{{list.warehouseName}}</td>
                   <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                     <div class="order_price_box">
                       <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
@@ -281,7 +281,7 @@
                 <strong  v-if="!order.extraMoney">{{parseFloat(list.money)?parseFloat(list.money):'0'}}</strong>
                 <strong v-if="order.extraMoney">{{parseFloat(list.money)}}</strong>
               </td>
-              <td>{{order.shopName}}</td>
+              <td>{{list.warehouseName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
                   <div  class="priceAll am-ft-22">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>

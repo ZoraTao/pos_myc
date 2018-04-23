@@ -122,17 +122,24 @@ export default {
         this.cpSelectProductSku=this.selectProductSku;
         this.$emit('getProductSku', this.cpSelectProductSku);
       },
+      childrenCleanSelectRHModal(){
+          this.brand = '';
+          this.Varieties = '';
+          this.initBrand();
+      },
       selectThis(value){//选择镜片 传值
         value.discount = 10;
         // value.skuName = '';
         value.realSale=value.price;
         console.log(value)
+        this.childrenCleanSelectRHModal();
         this.$emit('selectSku',value);
       },
-      selectThisa(row,event){
+      selectThisa(row,event){//双击
         row.discount = 10;
         // value.skuName = '';
         row.realSale=row.price;
+        this.childrenCleanSelectRHModal();
         this.$emit('selectSku',row);
       },
       changesSelect(type){
@@ -247,6 +254,9 @@ export default {
   },
   watch:{
 
+  },
+  destoryed(){
+      console.log(1)
   },
   mounted:function(){
           this.initBrand();

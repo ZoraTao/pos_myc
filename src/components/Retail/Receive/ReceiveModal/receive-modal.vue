@@ -74,12 +74,21 @@ export default {
   methods:{
       postReceive(){
         var _this=this;
+        if(_this.data.packageNo == ''){
+            _this.$message({
+                type:'warning',
+                message:'请输入物流码',
+                showClose:true
+            })
+            return
+        }
         _this.$axios({
             url: "http://myc.qineasy.cn/pos-api/stockCode/updateStockCode",
             method: "post",
             params: {
                 jsonObject: {
-                    orderNo:_this.data.orderNo
+                    orderNo:_this.data.orderNo,
+                    packageNo:_this.data.packageNo
                 },
                 keyParams: {
                     weChat: true,

@@ -36,6 +36,7 @@ export default {
   methods: {
     openOrder(data) {
     //   console.log(data);
+    let _this = this;
       _this.$myAjax({
         url: "pos-api/orderTemp/updateOrderTempStatus",
         data: {
