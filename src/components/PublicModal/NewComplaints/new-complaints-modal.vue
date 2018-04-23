@@ -65,8 +65,12 @@
                   align="left">
                   <template slot-scope="scope">
                     <el-select v-model="tableData[scope.$index].category" placeholder="请选择" style="width: 100px;">
-                      <el-option label="服务投诉" value="1"></el-option>
-                      <el-option label="质量投诉" value="2"></el-option>
+                      <el-option
+                        v-for="(n,index) in categoryList"
+                        :label="n.name"
+                        :key="n.key"
+                        :value="n.key">
+                      </el-option>
                     </el-select>
                   </template>
                 </el-table-column>
@@ -74,8 +78,22 @@
                   label="投诉小类">
                   <template slot-scope="scope">
                     <el-select v-model="tableData[scope.$index].subCategory" placeholder="请选择" style="width: 100px;">
-                      <el-option label="本店环境" value="1"></el-option>
-                      <el-option label="佩戴人员" value="2"></el-option>
+                      <template v-if="tableData[scope.$index].category=='0'">
+                        <el-option
+                          v-for="(n,index) in innerKey"
+                          :label="n.name"
+                          :key="n.key"
+                          :value="n.key">
+                        </el-option>
+                      </template>
+                      <template v-if="tableData[scope.$index].category=='1'">
+                        <el-option
+                          v-for="(n,index) in innerKey2"
+                          :label="n.name"
+                          :key="n.name"
+                          :value="n.name">
+                        </el-option>
+                      </template>
                     </el-select>
                   </template>
                 </el-table-column>
@@ -96,8 +114,22 @@
                   label="原因">
                   <template slot-scope="scope">
                     <el-select v-model="tableData[scope.$index].reason" placeholder="请选择" style="width: 100px;">
-                      <el-option label="原因内容1" value="1"></el-option>
-                      <el-option label="原因内容2" value="2"></el-option>
+                      <template v-if="tableData[scope.$index].category=='0'">
+                        <el-option
+                          v-for="(n,index) in innerKey"
+                          :label="n.name"
+                          :key="n.key"
+                          :value="n.key">
+                        </el-option>
+                      </template>
+                      <template v-if="tableData[scope.$index].category=='1'">
+                        <el-option
+                          v-for="(n,index) in innerKey2"
+                          :label="n.name"
+                          :key="n.key"
+                          :value="n.key">
+                        </el-option>
+                      </template>
                     </el-select>
                   </template>
                 </el-table-column>
@@ -140,8 +172,8 @@
             <div class="labelInput mgl30">
               <label class="mgr10">投诉类型：</label>
               <el-select v-model="ruleForm.type" placeholder="请选择">
-                <el-option label="0" value="0"></el-option>
-                <el-option label="1" value="1"></el-option>
+                <el-option label="上门投诉" value="0"></el-option>
+                <el-option label="电话投诉" value="1"></el-option>
               </el-select>
             </div>
           </li>
@@ -176,6 +208,29 @@
         telList: [],//零售单
         memberList: [],//接待人员
         dialogStatus: false,
+        categoryList: [//投诉大类
+          {
+            key: '0',
+            name: '服务投诉'
+          },
+          {
+            key: '1',
+            name: '质量问题投诉',
+          },
+        ],
+        innerKey: [//投诉小类
+          { key: '0',name: '本店环境'},
+          { key: '1',name: '接待人员'},
+          { key: '2', name: '验光人员' },
+          { key: '3',name: '收银人员'},
+          { key: '4',name: '佩戴人员'},
+        ],
+        innerKey2: [
+          { key: '5',name: '顾客问题'},
+          { key: '6',name: '装配问题'},
+          { key: '7',name: '验光问题'},
+          { key: '8',name: '产品质量'}
+        ],
         ruleForm: {
           complaintTelphone: '',//投诉人手机号
           telphone: '',//会员手机号
@@ -184,7 +239,7 @@
           complaintTime: '',//投诉日期
           type: '',//投诉类型
           memo: '',//投诉说明
-          complaintCategory: [
+          complaintCategoryList: [
             {
               category: '',//投诉大类
               subCategory: '',//投诉小类
@@ -312,7 +367,7 @@
         const ueserInfo = JSON.parse(localStorage.getItem("userData"));
         that.orgId = ueserInfo.orgId;
         that.userId = ueserInfo.userId;
-        that.ruleForm.complaintCategory = that.tableData;
+        that.ruleForm.complaintCategoryList = that.tableData;
         that.$refs[formName].validate((valid) => {
           if (valid) {
             // console.info(that.ruleForm)
@@ -337,7 +392,7 @@
                   })
                   return false;
                 }else {
-                  // console.info(response.data.data)
+                  console.info(response.data.data)
                   that.$message({
                     showClose: true,
                     message: '新增成功！',
