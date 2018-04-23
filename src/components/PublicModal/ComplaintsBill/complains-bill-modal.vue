@@ -235,9 +235,7 @@
             url: 'http://myc.qineasy.cn/member-api/memberComplaint/updateMemberComplaintStatus',
             method: 'post',
             params: {
-              jsonObject: {
-
-              },
+              jsonObject: that.ruleForm,
               keyParams: {
                 weChat: true,
                 orgId: that.orgId,
