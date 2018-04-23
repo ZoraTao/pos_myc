@@ -220,7 +220,7 @@
                   <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                     <div class="am-ft-orange priceAll">{{(parseFloat(order.moneyAmount)-parseFloat(order.moneyPaid)).toFixed(2)}}</div>
                     <div class="button">
-                      <el-button type="primary" v-on:click="changePay(order)">收银</el-button>
+                      <el-button type="primary"  v-on:click="changePay(order)">收银</el-button>
                     </div>
                   </td>
                 </tr>
