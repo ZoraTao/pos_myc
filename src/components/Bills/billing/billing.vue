@@ -1046,13 +1046,13 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                         }
                     })
                     .then(function (res) {
-                        // console.log(where)
-                        if(res.code == 1){
+                        console.log(res)
+                        if(res.data.code == 1){
                             _this.selectProductSku.productSkuData=res.data.data;
                         }else{
                              _this.$message({
                                 type:'error',
-                                message:'数据请求出错',
+                                message:res.data.msg,
                                 showClose: true,
                             })
                         }
@@ -1226,7 +1226,9 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                     }
                 }
                 if(_this.selectMember.memberInfo!=null){//如果有会员id
-                    _this.discountFlag = 0;
+                     if(_this.selectMember.memberInfo.discount<1){
+                            _this.discountFlag = 0;
+                     }
                     var difference = (_this.memberShipDisCount*countSale).toFixed(2); //会员价 = 会员价格 * 总价
                     let memberDisCount = (countSale - difference).toFixed(2);//会员折扣差价 = 总金额 - 会员价
                     _this.memberShipDisCountSale = memberDisCount
