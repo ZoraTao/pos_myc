@@ -1638,8 +1638,6 @@ import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
                             })
                     }, 0);
                 }
-                debugger
-
                 _this.tableData = []
 
                 for(let i = 0 ; i<data.orderItems.length;i++){

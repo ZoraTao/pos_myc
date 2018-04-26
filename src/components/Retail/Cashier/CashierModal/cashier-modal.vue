@@ -82,7 +82,7 @@
         itemData:
         [
           {
-            id: '1',
+            id: '0',
             type: '现金',
             active: true,
             check:false,
@@ -91,7 +91,7 @@
             money:''
           },
           {
-            id: '2',
+            id: '1',
             type: '会员卡',
             active: true,
             check:false,
@@ -100,7 +100,7 @@
             money:''
           },
           {
-            id: '3',
+            id: '2',
             type: '信用卡',
             active: true,
             check:false,
@@ -109,7 +109,7 @@
             money:''
           },
           {
-            id: '4',
+            id: '3',
             type: '支付宝',
             active: true,
             check:false,
@@ -118,7 +118,7 @@
             money:''
           },
           {
-            id: '5',
+            id: '4',
             type: '微信',
             active: true,
             check:false,
@@ -127,7 +127,7 @@
             money:''
           },
           {
-            id: '6',
+            id: '5',
             type: '银行卡',
             active: true,
             check:false,
@@ -136,7 +136,7 @@
             money:''
           },
           {
-            id: '7',
+            id: '6',
             type: '代价券',
             active: true,
             check:false,
@@ -145,7 +145,7 @@
             money:''
           },
           {
-            id: '8',
+            id: '7',
             type: '积分抵现',
             active: true,
             check:false,
@@ -214,8 +214,8 @@
         let payMessage = [];
         for(let i=0;i<_this.itemSource.length;i++){
           let obj = new Object();
-          obj.orderTypeId = _this.itemSource[i].id;
-          obj.name = _this.itemSource[i].type;
+          obj.payTypeId = _this.itemSource[i].id;
+          // obj.name = _this.itemSource[i].type;
           obj.amount =  _this.itemSource[i].money;
           payMessage.push(obj)
         }

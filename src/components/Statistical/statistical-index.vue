@@ -1,23 +1,23 @@
 <template>
   <div>
     <el-container>
-      <el-header style="height:160px;">
-        <div class="headerContent">
-          <el-row>
-            <el-col :span="4" v-for="(item , index) in defaultsData" :key="item.name">
-              <div class="grid-content bg-purple">
-                <em><span v-if="index>=2">￥</span>{{item.value}}</em>
-                <i>{{item.name}}</i>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-
-          <div class="toggleImg" @click="toggelHeader">
-            <img src="https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_ss.png" alt="">
-          </div>
+      <el-header >
+         <transition name="el-zoom-in-top">
+            <div v-show="showheader" ref="showheaderRef" class="headerContent transition-box">
+              <el-row>
+                <el-col :span="4" v-for="(item , index) in defaultsData" :key="item.name">
+                  <div class="grid-content bg-purple">
+                    <em><span v-if="index>=2">￥</span>{{item.value}}</em>
+                    <i>{{item.name}}</i>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+         </transition>
         </el-header>
-
+ <div class="toggleImg" ref="showImage"  @click="toggelHeader">
+    <img src="https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_ss.png" alt="">
+  </div>
       <el-main style="height:432px;">
           <p class="title">统计报表</p>
           <div class="minDiv">
@@ -70,6 +70,7 @@ export default {
           value: "8000000"
         }
       ],
+      showheader:true,
       saleData: [
         {
           text: "商品报表",
@@ -116,7 +117,16 @@ export default {
   },
   methods: {
     toggelHeader() {
-      console.log("动画");
+        console.log(this.$refs.showImage.getBoundingClientRect().top);
+      if(this.showheader){
+        setTimeout(()=>{
+          this.$refs.showImage.getBoundingClientRect().top = '0px'
+          this.$refs.showheaderRef.parentNode.style.cssText = 'height:0px !important;'
+        },300)
+      }else{
+        this.$refs.showheaderRef.parentNode.style.cssText = 'height:160px !important;'
+      }
+      this.showheader = !this.showheader;
     },
     toTargetrouter(target) {
       this.$router.push(target.link);
@@ -132,8 +142,10 @@ export default {
 <style scoped lang="scss">
 @import "../../reset";
 .el-container {
+  position: relative;
 }
 .el-header {
+    height: 160px !important;
   background: #fff;
   text-align: center;
   font-family: MicrosoftYaHei;
@@ -144,14 +156,7 @@ export default {
     line-height: 31px;
     color: #333;
   }
-  .toggleImg {
-    width: 80px;
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 26px;
-  }
+
   p {
     line-height: 17px;
     font-size: 13px;
@@ -166,7 +171,8 @@ export default {
     color: #00c1eb;
   }
   .headerContent {
-    max-width: 1270px;
+    min-width: 1270px;
+    height: 160px;
     box-sizing: content-box;
     margin: 0 auto;
   }
@@ -177,6 +183,15 @@ export default {
     }
   }
 }
+.toggleImg {
+    width: 80px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 26px;
+    top:135px;
+  }
 .el-main {
   background: #fff;
   margin-top: 10px;
@@ -267,16 +282,5 @@ export default {
     }
   }
 }
-.transition-box {
-  margin-bottom: 10px;
-  width: 200px;
-  height: 100px;
-  border-radius: 4px;
-  background-color: #409eff;
-  text-align: center;
-  color: #fff;
-  padding: 40px 20px;
-  box-sizing: border-box;
-  margin-right: 20px;
-}
+
 </style>

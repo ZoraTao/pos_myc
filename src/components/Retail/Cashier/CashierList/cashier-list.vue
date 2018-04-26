@@ -110,7 +110,7 @@
               <td>{{list.itemNo||'--'}}</td>
               <td>{{list.itemName}}<span class="customText" v-if="list.orderReceiptId">定做单号：{{list.orderReceiptId}}</span></td>
               <td>{{parseInt(list.quantity)||'--'}}</td>
-              <td>{{parseFloat(list.price)||(list.productMold == '2'?'--':'0')}}</td>
+              <td>{{parseFloat(list.listPrice)||(list.productMold == '2'?'--':'0')}}</td>
               <td>
                 <strong>{{parseFloat(list.money)||(list.productMold == '3'?parseFloat(order.extraMoney):(list.productMold == '2'?'--':'0'))}}</strong>
               </td>
