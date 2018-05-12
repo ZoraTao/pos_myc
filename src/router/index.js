@@ -97,6 +97,17 @@ const router = new Router({
                     path: 'optometryOrderCu/:data',
                     name: 'optometryOrderCu',
                     component: resolve => require(['../components/Bills/optometryOrder/optometryOrderCu/optometry-order-cu.vue'], resolve)
+                },
+                {
+                    path: 'backShop',
+                    name: 'backShop',
+                    component: resolve => require(['../components/PublicModal/backShop/backShop.vue'], resolve),
+                    // meta:{keepAlive:true}
+                },
+                {
+                    path: 'replaceShop',
+                    name: 'replaceShop',
+                    component: resolve => require(['../components/PublicModal/replaceShop/replaceShop.vue'], resolve)
                 }
             ]
         },

@@ -317,6 +317,7 @@ export default {
       }
       _this.customContent.price = parseFloat(_this.customContent.price);
       let users =  JSON.parse(localStorage.getItem("userData"));
+      console.log(1,_this.orgData)
       _this.$myAjax({
           url:'pos-api/customize/addCustomize',
           data:{

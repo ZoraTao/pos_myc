@@ -7,82 +7,64 @@
                 <div class="relative">
                     <el-input style="width:270px" v-model="mymodel" placeholder="输入套餐价/套餐名／套餐编码" v-on:change="ModelChange()"></el-input>
                     <div class="GoodsTopPosition" v-if="searchContent">
+                        <!-- <p>圣诞狂欢套餐 TC1230001  499</p>
+                        <p>圣诞狂欢套餐 TC1230001 1 499</p>
+                        <p>圣诞狂欢套餐 TC12300111101  499</p>
                         <p>圣诞狂欢套餐 TC1230001  499</p>
                         <p>圣诞狂欢套餐 TC1230001  499</p>
-                        <p>圣诞狂欢套餐 TC1230001  499</p>
-                        <p>圣诞狂欢套餐 TC1230001  499</p>
-                        <p>圣诞狂欢套餐 TC1230001  499</p>
-                        <p>圣诞狂欢套餐 TC1230001  499</p>
+                        <p>圣诞狂欢套餐 TC1230001  499</p> -->
                     </div>
                 </div>
-                <el-button>查询</el-button>
+                <el-button @click="ModelChange()">查询</el-button>
             </div>
             <div class="packageGoodsContent">
                 <div class="pgCbody">
-                    <div class="defaultContent" v-if="mymodel==''">
+                    <div class="defaultContent" v-show="packagesArr.length<1">
                         <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/image_quesheng.png"/>
                         <p>请选择您想要的套餐</p>
                     </div>
                     <div class="fullContent">
                         <div class="packageDetail">
-                            <div class="packageList" v-if="mymodel!=''&&mymodel!='419'">
-                                <div class="packageItem">
-                                    <p><i>￥</i>499</p>
-                                    <h4>圣诞狂欢套餐</h4>
-                                    <h5>TC1230001</h5>
+                            <div class="packageList">
+                                <div class="packageItem" v-for=" item in packagesArr" :key="item.packageCode" @dblclick="readDetail(item)" v-show="!read">
+                                    <p><i>￥</i>{{item.packagePrice}}</p>
+                                    <h4>{{item.packageName}}</h4>
+                                    <h5>{{item.packageCode}}</h5>
                                     <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_taocan.png">
                                 </div>
-                                <div class="packageItem">
-                                    <p><i>￥</i>499</p>
-                                    <h4>圣诞狂欢套餐</h4>
-                                    <h5>TC1230001</h5>
-                                    <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_taocan.png">
-                                </div>
-                                <div class="packageItem">
-                                    <p><i>￥</i>499</p>
-                                    <h4>圣诞狂欢套餐</h4>
-                                    <h5>TC1230001</h5>
-                                    <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_taocan.png">
-                                </div>
-                                <div class="packageItem">
-                                    <p><i>￥</i>499</p>
-                                    <h4>圣诞狂欢套餐</h4>
-                                    <h5>TC1230001</h5>
-                                    <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_taocan.png">
-                                </div>
-                                <div class="packageItem">
-                                    <p><i>￥</i>499</p>
-                                    <h4>圣诞狂欢套餐</h4>
-                                    <h5>TC1230001</h5>
-                                    <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_taocan.png">
-                                </div>
-                                <div class="packageItem">
-                                    <p><i>￥</i>499</p>
-                                    <h4>圣诞狂欢套餐</h4>
-                                    <h5>TC1230001</h5>
-                                    <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_taocan.png">
-                                </div>
+                                
                             </div>
-                            <div class="packageDetailInfo" v-if="mymodel=='419'">
+                            <div class="packageDetailInfo" v-show="read" v-if="packageCreate!=null&&packageDetails!=null">
                                 <div class="packageDetailTitle">
-                                    <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_fanhui.png"/>
-                                    <p>TC12340001  圣诞狂欢套餐   ￥419</p>
+                                    <img @click="read=!read" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_fanhui.png"/>
+                                    <p>{{packageCreate.packageName}}{{packageCreate.packageCode}} ￥{{packageCreate.packagePrice}}</p>
                                 </div>
                                 <div class="packageDetailContent">
                                         <el-table
                                         size="small"
-                                        :data="data"
+                                        :data="packageDetails"
                                         style="width: 100%">
                                             <el-table-column
-                                                prop="category"
+                                                prop="className"
                                                 label="品类">
                                             </el-table-column>
                                             <el-table-column
-                                                prop="brand"
-                                                label="品牌">
+                                                label="品牌"
+                                                width="120">
+                                                <template slot-scope="scope">
+                                                    <el-select v-model="packageDetails[scope.$index].brandId" placeholder="请选择" v-if="packageDetails[scope.$index].level>3" @focus="initData(scope.row,1)" @change="search(scope.row,1)">
+                                                        <el-option
+                                                        v-for="item in packageDetails[scope.$index].brandArr"
+                                                        :key="item.productCategoryId"
+                                                        :label="item.className"
+                                                        :value="item.productCategoryId">
+                                                        </el-option>
+                                                    </el-select>
+                                                <span v-else>{{packageDetails[scope.$index].brandName}}</span>
+                                            </template>
                                             </el-table-column>
                                             <el-table-column
-                                                prop="sellingPrice"
+                                                prop="packageSalePrice"
                                                 label="零售限价">
                                             </el-table-column>
                                             <el-table-column
@@ -90,37 +72,58 @@
                                                 label="套餐价">
                                             </el-table-column>
                                             <el-table-column
-                                                prop="displacement"
+                                                prop="switchPrice"
                                                 label="置换限价">
                                             </el-table-column>
                                             <el-table-column
-                                                prop="variety"
+                                                prop="varietyName"
                                                 label="品种"
-                                                width="180">
+                                                width="150">
                                                 <template slot-scope="scope">
-                                                    <el-select v-model="value" placeholder="请选择">
+                                                    <el-select v-model="packageDetails[scope.$index].varietyId" placeholder="请选择" v-if="scope.row.level>2" @focus="initData(scope.row,2)" @change="search(scope.row,2)">
                                                         <el-option
-                                                        v-for="item in options"
-                                                        :key="item.value"
-                                                        :label="item.label"
-                                                        :value="item.value">
+                                                        v-for="item in packageDetails[scope.$index].varietyArr"
+                                                        :key="item.productCategoryId"
+                                                        :label="item.className"
+                                                        :value="item.productCategoryId">
                                                         </el-option>
                                                     </el-select>
+                                                <span v-else>{{scope.row.varietyName}}</span>
                                                 </template>
                                             </el-table-column>
                                             <el-table-column
-                                                prop="commodity"
+                                                prop="modelName"
                                                 label="商品"
-                                                width="180">
+                                                width="150">
                                                 <template slot-scope="scope">
-                                                    <el-select v-model="value" placeholder="请选择">
-                                                        <el-option
-                                                        v-for="item in options"
-                                                        :key="item.value"
-                                                        :label="item.label"
-                                                        :value="item.value">
-                                                        </el-option>
-                                                    </el-select>
+                                                    <!-- <el-autocomplete
+                                                        v-if="scope.row.level>1"
+                                                        popper-class="my-autocomplete"
+                                                        v-model="packageDetails[scope.$index].productModelId" 
+                                                        placeholder="请选择" 
+                                                        :fetch-suggestions="querySearchAsync"
+                                                        @select="handleSelect">
+                                                        <template slot-scope="scope">
+                                                            <div class="name">{{ scope.row.farSearchCodeArr.skuName }}</div>
+                                                            <span class="addr">{{ scope.row.farSearchCodeArr.stockId }}</span>
+                                                        </template>
+                                                    </el-autocomplete> -->
+                                                    <el-autocomplete
+                                                      popper-class="my-autocomplete"
+                                                    v-if="scope.row.level>1"
+                                                    @focus="toCopyValue(scope.row,scope.$index)"
+                                                    class="inline-input"
+                                                    v-model="packageDetails[scope.$index].farSearchCode"
+                                                    :fetch-suggestions="querySearch"
+                                                    placeholder="请输入内容"
+                                                    @select="handleSelect"
+                                                    >
+                                                        <template slot-scope="{ item }">
+                                                                <div class="name" >{{ item.skuName }}</div>
+                                                        </template>
+                                                    </el-autocomplete>
+                                                    <!-- <el-input @input="farSearch(scope.row)" v-model="packageDetails[scope.$index].farSearchCode"  v-if="scope.row.level>1"></el-input> -->
+                                                    <span v-else>{{scope.row.modelName}}</span>
                                                 </template>
                                             </el-table-column>
                                         </el-table>
@@ -148,6 +151,12 @@ export default {
           label: '黄金糕'
         }],
         value: '',
+        nowIndex:'',
+        packageDetails:null,
+        read:false,
+        packagesArr:[],
+        nowSearchArr:[],
+        packageCreate:null,
         data:[{
             commodity:'毛源昌1.551非球面防辐射辐射远+1.50',
             variety:'1.55绿膜防辐射远',
@@ -160,7 +169,208 @@ export default {
     }
   },
   methods:{
+      
+      toCopyValue(data,index){
+          this.nowIndex = index;
+          this.farSearch(data)
+          this.nowSearchArr = data;
+      },
+      handleSelect(item) {
+          console.log(this.packageDetails[this.nowIndex])
+            console.log(item);
+          this.packageDetails[this.nowIndex].farSearchCode = item.skuName;
+          this.packageDetails[this.nowIndex].farSearchCodeId = item.productId;
+      },
+      createFilter(queryString) {
+        return (restaurant) => {
+            // console.log(restaurant.skuName,restaurant.skuName.indexOf(queryString))
+          return (restaurant.skuName.toLowerCase().indexOf(queryString.toLowerCase())!=-1);
+        };
+      },
+       querySearch(queryString, cb) {
+           const _this = this;
+           if(_this.nowSearchArr.varietyId=='') return
+            var restaurants = _this.nowSearchArr.farSearchCodeArr;
+            var results = queryString ? restaurants.filter(_this.createFilter(queryString)) : restaurants;
+            // clearTimeout(_this.timeout);
+            // _this.timeout = setTimeout(() => {
+            cb(results);
+            // }, 3000 * Math.random());
+        },
+        //远程搜索
+      farSearch(data){
+          const _this = this;
+          _this.$myAjax({
+              url:'pos-api/productSku/list',
+              data:{
+                sphere: "",
+                cylinder:"",
+                addLight: "",
+                color: "",
+                colorCode: "",
+                categoryCode: [data.productCategoryId,data.brandId,data.varietyId],
+                product: data.farSearchCode,
+                type: _this.productCategoryId=='C001'?'0':'',
+                wareh: '',
+              },success:function(res){
+                  if(res.code == 1){
+                    data.farSearchCodeArr = res.data.list
+                  }else{
+                      _this.$message({
+                          type:'error',
+                          message:res.msg,
+                          showClose:true
+                      })
+                  }
+              },error:function(err){
+
+              }
+          })
+      },
+      initData(data,status){
+          if(status == 1){
+            if(!data.brandBool) return
+          }else if(status == 2){
+            if(!data.varietyBool) return
+          }
+        this.changesSelect(status,data)
+      },
+      changesSelect(type,data){
+          console.log(data)
+            let _this = this;
+            let id = '';
+            switch ((type).toString()) {
+            case '1':
+                    id = data.productCategoryId;
+                    data.brandArr = [];
+                    data.varietyArr = [];
+                break;
+            case '2':
+                    id=data.brandId;
+                    data.varietyArr = [];
+                  break;
+
+          }
+          console.log(id)
+           _this.$myAjax({
+                url: 'pos-api/productCategory/list',
+                data: {
+                        productCategoryId: id
+                },
+                success:function (res) {
+                    if (res.code != '1') {
+                    _this.$message({
+                        showClose: true,
+                        message: '请求数据出问题喽，请重试！',
+                        type: 'error'
+                    })
+                    return false;
+                    } else {
+                        switch ((type).toString()) {
+                            case '1':
+                                data.brandArr = res.data.productCategoryList;
+                                data.brandBool = false;
+                                _this.changesSelect(2,data)
+                                break;
+                            case '2':
+                                data.varietyArr = res.data.productCategoryList;
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+                },
+                error:function (error) {
+                    console.info(error);
+                    _this.$message({
+                    showClose: true,
+                    message: '请求数据失败，请联系管理员',
+                    type: 'error'
+                    })
+                }
+            })
+      },
+      search(data,status){
+          this.changesSelect(status,data)
+      },
+      readDetail(data){
+          console.log(data)
+          let _this = this;
+          _this.$myAjax({
+              url:'pos-api/packages/getPackage',
+              data:{
+                  packageId:data.packageId
+              },success:function(res){
+                  if(res.code == 1){
+                      let datas = res.data.packageDetails;
+                      for(var i=0;i<datas.length;i++){
+                          if(datas[i].level>3){
+                              datas[i].brandBool = true;
+                              datas[i].brandArr = [];
+                              datas[i].varietyArr = [];
+                              datas[i].farSearchCode = '';
+                              datas[i].farSearchCodeId = '';
+                              datas[i].farSearchCodeArr = [];
+                          }else if(datas[i].level>2){
+                              datas[i].varietyBool = true;
+                              datas[i].varietyArr = [];
+                              datas[i].farSearchCode = '';
+                              datas[i].farSearchCodeId = '';
+                              datas[i].farSearchCodeArr = [];
+                          }else if(datas[i].level>1){
+                              datas[i].shopBool = true
+                              datas[i].farSearchCode = '';
+                              datas[i].farSearchCodeId = '';
+                              datas[i].farSearchCodeArr = [];
+                          }
+                      }
+                      _this.packageDetails= datas;
+                      console.log(datas)
+                      _this.packageCreate = res.data.packages;
+                        _this.read = true;
+                  }else{
+                      _this.$message({
+                        showClose:true,
+                        type:"error",
+                        message:'查询失败'
+                    })
+                  }
+              },error:function(err){
+                    _this.$message({
+                        showClose:true,
+                        type:"error",
+                        message:'网络请求失败'
+                    })
+              }
+          })
+      },
       ModelChange:function(){
+          console.log(1)
+          let _this = this;
+          _this.$myAjax({
+              url:'pos-api/packages/getPackageList',
+              data:{
+                    // packageId:id,
+                    packageCode:'',
+                    packageName:'',
+                    packagePrice:'',
+                    // status:1,
+              },success:function(res){
+                  console.log(res)
+                  if(res.code == 1){
+                      _this.packagesArr = res.data.list;
+                  }else{
+                      _this.$message({
+                        showClose:true,
+                        type:"error",
+                        message:'网络请求失败'
+                    })
+                  }
+              },error:function(err){
+                  console.log(err)
+              }
+          })
         if(this.mymodel.length>1){
             this.searchContent=true;
             this.$emit('showBottom')
@@ -169,6 +379,7 @@ export default {
             this.searchContent=false;
             this.$emit('hideBottom')
         }
+
       }
   }
 }
@@ -268,7 +479,7 @@ export default {
                             p{
                                 font-size: 36px;
                                 color: #333333;
-                                margin-top: 10px;
+                                // margin-top: 10px;
                                 i{
                                     font-size: 20px;
                                     color: #888888;
@@ -341,5 +552,24 @@ export default {
             }
         }
     }
+}
+.my-autocomplete{
+    li {
+    line-height: normal;
+    padding: 7px;
+
+    .name {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .addr {
+      font-size: 12px;
+      color: #b4b4b4;
+    }
+
+    .highlighted .addr {
+      color: #ddd;
+    }
+  }
 }
 </style>

@@ -28,6 +28,10 @@ Vue.prototype.$myAjax = function (opt) {
       .then(function (res) {
         successCallback(res.data);
       }).catch(function (err) {
-        errorCallback(err);
+        if(!errorCallback){
+          console.log('请求失败，请写error失败回调')
+        }else{
+          errorCallback(err);
+        }
       });
   };

@@ -57,12 +57,11 @@
                 </el-table-column>
                 <el-table-column
                 prop="skuName"
-                width="260px"
                 label="商品名称">
                 </el-table-column>
                 <el-table-column
                 prop="warehouseName"
-                width="90px"
+                width="140px"
                 label="出货仓库">
                 </el-table-column>
                 <el-table-column
@@ -80,14 +79,14 @@
                 width="80px"
                 label="单价">
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 label="操作">
                     <template slot-scope="scope">
                         <span class="am-ft-blue" @click="selectBuy(scope.row)">
                             选择
                         </span>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <el-pagination
             class="am-ft-right"

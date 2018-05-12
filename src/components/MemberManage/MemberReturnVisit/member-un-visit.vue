@@ -6,47 +6,54 @@
       align="left"
       style="width: 100%;margin-bottom:10px;">
       <el-table-column
-        prop="a"
-        label="会员姓名">
+        prop="memberName"
+        label="会员姓名"
+        width="130px">
       </el-table-column>
       <el-table-column
-        prop="b"
-        label="手机号">
+        prop="telphone"
+        label="手机号"
+        width="150px">
       </el-table-column>
       <el-table-column
-        prop="c"
-        label="性别">
+        label="性别"
+        width="60px">
+        <template slot-scope="scope">{{scope.row.sex=='M'?'男':'女'}}</template>
       </el-table-column>
       <el-table-column
-        prop="d"
-        label="年龄">
+        prop="age"
+        label="年龄"
+        width="60px">
       </el-table-column>
       <el-table-column
-        prop="e"
-        label="零售单号">
+        prop="orderId"
+        label="零售单号"
+        width="150px">
       </el-table-column>
       <el-table-column
-        prop="f"
-        label="应回访类型">
+        prop="typeName"
+        label="应回访类型"
+        width="100px">
       </el-table-column>
       <el-table-column
-        prop="g"
+        prop="styleName"
         label="应回访方式">
       </el-table-column>
       <el-table-column
-        prop="h"
+        prop="visitTime"
         label="应回访日期">
       </el-table-column>
       <el-table-column
-        label="状态">
+        label="状态"
+        width="100px">
         <template slot-scope="scope">
-          <span class="am-ft-orange">{{scope.row.i}}</span>
+          <span class="am-ft-orange">{{scope.row.statusName}}</span>
         </template>
       </el-table-column>
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <span class="am-ft-blue"><a href="javascript:;" @click="openEntryVisit(scope.$index,scope.row)">回访登记</a></span>
+          <span class="am-ft-blue"><a href="javascript:;" @click="openEntryVisit(scope.row,scope.$index)">回访登记</a></span>
         </template>
       </el-table-column>
     </el-table>
@@ -77,40 +84,40 @@
                   <el-col :span="24">
                     <div class="cmInfoItem">
                       <label>会员姓名：</label>
-                      <p>张三三</p>
+                      <p>{{memberVisit.memberName}}</p>
                     </div>
                     <div class="cmInfoItem">
                       <label>手机：</label>
-                      <p>16601010101</p>
+                      <p>{{memberVisit.telphone}}</p>
                     </div>
                     <div class="cmInfoItem">
                       <label>性别：</label>
-                      <p>男</p>
+                      <p>{{memberVisit.sex=='M'?'男':'女'}}</p>
                     </div>
                     <div class="cmInfoItem">
                       <label>年龄：</label>
-                      <p>30</p>
+                      <p>{{memberVisit.age}}</p>
                     </div>
                   </el-col>
                   <el-col :span="24">
                     <div class="cmInfoItem">
                       <label>应回访类型：</label>
-                      <p>生日回访</p>
+                      <p>{{memberVisit.typeName}}</p>
                     </div>
                     <div class="cmInfoItem">
                       <label>应回访方式：</label>
-                      <p>电话回访</p>
+                      <p>{{memberVisit.styleName}}</p>
                     </div>
                     <div class="cmInfoItem">
                       <label>应回访日期：</label>
-                      <p>2017-12-06</p>
+                      <p>{{memberVisit.visitTime}}</p>
                     </div>
                   </el-col>
                 </el-row>
               </div>
             </div>
 
-            <h5 class="complainsNum">零售单号：LSD000000001</h5>
+            <h5 class="complainsNum">零售单号：{{memberVisit.orderId}}</h5>
             <!--商品信息-->
             <div class="grayTable">
               <el-table
@@ -154,36 +161,48 @@
                       label="回访大类"
                       align="left">
                       <template slot-scope="scope">
-                        <el-select v-model="ruleForm.name" placeholder="请选择" style="width: 100px;">
-                          <el-option label="服务投诉" value="1"></el-option>
-                          <el-option label="质量投诉" value="2"></el-option>
+                        <el-select v-model="tableData[scope.$index].bigClass" placeholder="请选择" style="width: 100px;">
+                          <el-option 
+                          v-for="item in visitBigClass"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"></el-option>
                         </el-select>
                       </template>
                     </el-table-column>
                     <el-table-column
                       label="回访小类">
                       <template slot-scope="scope">
-                        <el-select v-model="ruleForm.name" placeholder="请选择" style="width: 100px;">
-                          <el-option label="本店环境" value="1"></el-option>
-                          <el-option label="佩戴人员" value="2"></el-option>
+                        <el-select v-model="tableData[scope.$index].smallClass" placeholder="请选择" style="width: 100px;">
+                          <el-option 
+                          v-for="item in visitSmallClass"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"></el-option>
                         </el-select>
                       </template>
                     </el-table-column>
                     <el-table-column
                       label="负责人">
                       <template slot-scope="scope">
-                        <el-select v-model="ruleForm.name" placeholder="请选择" style="width: 100px;">
-                          <el-option label="王大锤" value="1"></el-option>
-                          <el-option label="三藏" value="2"></el-option>
+                        <el-select v-model="tableData[scope.$index].personInCharge" placeholder="请选择" style="width: 100px;">
+                          <el-option 
+                          v-for="item in ShopPerson"
+                          :key="item.userId"
+                          :label="item.userName"
+                          :value="item.userId"></el-option>
                         </el-select>
                       </template>
                     </el-table-column>
                     <el-table-column
                       label="满意度">
                       <template slot-scope="scope">
-                        <el-select v-model="ruleForm.name" placeholder="请选择" style="width: 100px;">
-                          <el-option label="原因内容1" value="1"></el-option>
-                          <el-option label="原因内容2" value="2"></el-option>
+                        <el-select v-model="tableData[scope.$index].satisfaction" placeholder="请选择" style="width: 100px;">
+                          <el-option 
+                          v-for="item in satisfaction"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"></el-option>
                         </el-select>
                       </template>
                     </el-table-column>
@@ -195,32 +214,37 @@
                     </el-table-column>
                   </el-table>
                 </template>
-                <el-button type="primary" plain class="mgt10 mgb10 mgl10">+ 增行</el-button>
+                <el-button type="primary" plain class="mgt10 mgb10 mgl10" @click="addRow()">+ 增行</el-button>
               </div>
             </div>
             <ul class="optometryMemo">
               <li class="fn-left">
                 <div class="labelInput">
                   <label class="mgr10">回访人员：</label>
-                  <el-select style="width:120px" v-model="ruleForm.value" placeholder="请选择">
+                  <el-select style="width:120px" v-model="visitContent.person" placeholder="请选择">
                     <el-option
-                      v-for="item in data"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                      v-for="item in ShopPerson"
+                      :key="item.userId"
+                      :label="item.userName"
+                      :value="item.userId">
                     </el-option>
                   </el-select>
                 </div>
                 <div class="labelInput mgl30">
                   <label class="mgr10">回访日期 :</label>
-                  <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date"
+                  <el-date-picker type="date" placeholder="选择日期" v-model="visitContent.time"
+                  value-format='yyyy-MM-dd HH:mm:ss'
                                   style="width: 127px;"></el-date-picker>
                 </div>
                 <div class="labelInput mgl30">
                   <label class="mgr10">回访方式：</label>
-                  <el-select v-model="ruleForm.options" placeholder="请选择">
-                    <el-option label="0" value="0"></el-option>
-                    <el-option label="1" value="1"></el-option>
+                  <el-select v-model="visitContent.style" placeholder="请选择">
+                    <el-option
+                      v-for="item in visitStyle"
+                      :key="item.userId"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
                   </el-select>
                 </div>
               </li>
@@ -230,7 +254,7 @@
                   <el-input
                     type="textarea"
                     :rows="2"
-                    v-model="ruleForm.memo">
+                    v-model="visitContent.message">
                   </el-input>
                 </div>
               </li>
@@ -240,7 +264,7 @@
       </div>
       <div class="packageDetailButtonGroup">
         <el-button @click="isShowNewComplaints = false">取消</el-button>
-        <el-button type="primary" @click="isShowNewComplaints = false">保存</el-button>
+        <el-button type="primary" @click="submit()">保存</el-button>
       </div>
     </el-dialog>
   </div>
@@ -255,41 +279,197 @@
         size: 10,//每页显示数据条数
         counts: this.listCounts,//总条数
         isShowNewComplaints: false,
+        memberVisit:{},
         ruleForm: {
-          name: ''
+          bigClass: '',
+          smallClass:'',
+          personInCharge:'',
+          satisfaction:''
         },
+        ShopPerson:[],
         rules: {
           name: [
             {required: true, message: '请输入', trigger: 'blur'}
           ]
         },
         name: [],
+        visitBigClass:[],
+        visitSmallClass:[],
+        satisfaction:[],//满意度
+        visitStyle:[],
+        visitClass:[],
         data: [],
+        visitContent:{
+            person:'',
+            time:'',
+            style:'',
+            message:''
+        },
         tableData: [
-          {},
-          {}
+          {
+            bigClass: '',
+          smallClass:'',
+          personInCharge:'',
+          satisfaction:''
+          }
         ],
 
       }
     },
     props: ['listData', 'listCounts', 'mypagination'],
     created() {
-
+      this.seachAgrument(19);//回访大类
+      this.seachAgrument(20);//回访小类
+      this.seachAgrument(21);//满意度
+      this.seachAgrument(22);//回访方式
+      this.seachAgrument(23);//回访类别
+      this.seachPerson();//负责人、回访人员
     },
     methods: {
+      addRow(){
+        this.tableData.push({
+          bigClass: '',
+          smallClass:'',
+          personInCharge:'',
+          satisfaction:''
+        })
+      },
+      seachAgrument(id){
+        const _this = this;
+        _this.$myAjax({
+          url:'cas-api/systemConfig/getSystemConfigList',
+          data:{
+            type:id
+          },success:function(res){
+            if(res.code ==1){
+              if(id==19){
+                _this.visitBigClass= res.data.list;
+              }else if(id==20){
+                _this.visitSmallClass= res.data.list;
+              }else if(id==21){
+                _this.satisfaction= res.data.list;
+              }else if(id==22){
+                _this.visitStyle= res.data.list;
+              }else if(id==23){
+                _this.visitClass= res.data.list;
+              }
+            }else{
+              _this.$message({
+                showClose: true,
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          },error:function(err){
+            console.log(err)
+            _this.$message({
+                showClose: true,
+                message: err,
+                type: 'error'
+              })
+          }
+        })
+      },
+      submit(){
+        const _this = this;
+          let arr = [];
+          for(var i=0;i<_this.tableData.length;i++){
+            arr.push({
+              classId:_this.tableData[i].bigClass,
+              principalUserId:_this.tableData[i].personInCharge,
+              styleId:_this.tableData[i].smallClass,
+              value:_this.tableData[i].satisfaction,
+            })
+          }
+         
+        _this.$myAjax({
+          url:"pos-api/returnVisit/updateReturnVisit",
+          data:{
+            returnVisitDetailList:arr,
+            returnVisit:{
+              remark:_this.visitContent.message,
+              returnVisitId:_this.memberVisit.returnVisitId,
+              status:2,
+              statusCode:0,
+              visitStyle:_this.visitContent.style,
+              visitTime:_this.visitContent.time,
+              visitUserId:_this.visitContent.person,
+            }
+          },
+          success:function(res){
+            if(res.code ==1){
+              _this.isShowNewComplaints = false;
+              _this.tableData=[{
+                                bigClass: '',
+                                smallClass:'',
+                                personInCharge:'',
+                                satisfaction:''
+                              }];
+              for(var o in _this.visitContent){
+                _this.visitContent[o]='';
+              }
+            }else{
+                 _this.$message({
+                showClose: true,
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          },error:function(err){
+              _this.$message({
+                showClose: true,
+                message: err,
+                type: 'error'
+              })
+          }
+        })
+      },
+      seachPerson(){
+        const _this = this;
+        _this.$myAjax({
+          url:'cas-api/user/getUsersByOrgId',
+          data:{
+            orgId:JSON.parse(localStorage.getItem("userData")).orgId
+          },success:function(res){
+            if(res.code ==1){
+              _this.ShopPerson = res.data.userList;
+              
+            }else{
+              _this.$message({
+                showClose: true,
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          },error:function(err){
+            console.log(err)
+            _this.$message({
+                showClose: true,
+                message: err,
+                type: 'error'
+              })
+          }
+        })
+      },
       //分页
       handleCurrentChange(val) {
         this.nub = (`${val}` - 1) * this.size;
         this.mypagination(this.nub);
       },
       //回访登记
-      openEntryVisit(){
+      openEntryVisit(data,index){
         this.isShowNewComplaints = true;
+        this.memberVisit = data;
       },
       //删除回访信息
       deleteRow(index, rows) {
         rows.splice(index, 1);
       }
+    },
+    watch:{
+      // tableData(newValue,oldValue){
+      //   console.log(newValue,oldValue)
+      // }
     }
   }
 </script>

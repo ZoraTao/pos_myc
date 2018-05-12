@@ -31,6 +31,12 @@
             </select>
           </div>
           <div class="formItem">
+            <select class="form-control" @change="replace()" v-model="LoginSystem">
+              <option value="0">毛源昌登录系统</option>
+              <option value="1">毛源昌管理系统</option>
+            </select>
+          </div>
+          <div class="formItem">
             <input type="button" class="loginBtn" value="登  录" v-on:click="toLogin()"/>
           </div>
           <div class="formItem">
@@ -67,6 +73,7 @@ export default {
         company:'毛源昌西湖区分公司',
         department:'销售部'
       },
+      LoginSystem:'0',
       dialogVisible:false,
       errorTitle:'密码错误，登录失败！'
     }
@@ -105,6 +112,11 @@ export default {
         _this.errorTitle = '通信错误，请重试';
         _this.dialogVisible = true
       })
+    },
+    replace(){
+      if(this.LoginSystem == 1){
+        location.href="http://myc.qineasy.cn/oms_myc/login.jsp"
+      }
     },
     goHome(){
       this.$router.push('/base/homeIndex')
