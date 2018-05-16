@@ -45,7 +45,76 @@
         </li>
       </ul>
       <!-- 代发货 -->
-      <div class="content am-bg-white" v-if="srcNum==='1'||srcNum==='2'">
+      <div class="content am-bg-white" v-if="srcNum==='1'">
+        <div class="orders">
+          <table class="orders_table">
+            <thead>
+            <tr>
+              <th width="230px">商品编码</th>
+              <th width="400px">商品名称</th>
+              <th width="">数量</th>
+              <th width="">原单价</th>
+              <th width="">实售单价</th>
+              <th width="">出货仓库</th>
+              <!-- <th width="">取件时间</th> -->
+              <th width="">订单金额</th>
+              <th width="">订单状态</th>
+              <th width="">操作</th>
+            </tr>
+            </thead>
+            <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
+            <tr class="order_header">
+              <!-- <td colspan="10"> -->
+              <td colspan="9">
+                <div class=" img_b" style="position: absolute;top:0;left:0;" v-show="order.orderType=='1'"><img
+                  src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ding_icon.png"/></div>
+                <div class=" fn-left">
+                  <span class="order_id mgl30">{{order.orderNo}}</span>
+                  <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
+                </div>
+                <div class=" fn-right">
+                  <span class="msg">销售&nbsp;&nbsp;</span>
+                  <span class="msg">{{order.userName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
+                </div>
+
+              </td>
+            </tr>
+            <tr v-for="(list,index) in order.orderItems" :key="list.name">
+              <td>{{list.itemNo}}</td>
+              <td>{{list.itemName||'商品名'}}</td>
+              <td>{{parseInt(list.quantity)}}</td>
+              <td>{{parseFloat(list.price)||'商品原单价'}}</td>
+              <td><span class="ft_bold">{{parseFloat(list.money)}}</span></td>
+              <td>{{order.shopName}}</td>
+              <!-- <td>{{order.receiveTime}}</td> -->
+              <td  v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
+                <div class="order_price_box">
+                  <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
+                  <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
+                  <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-show="order.discountMoney>0">折扣：<strong>{{order.discountMoney}}</strong></div>
+                  <div v-show="parseFloat(order.activityMoney)!=0">活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                </div>
+
+              </td>
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                <div class="am-ft-gray9"  v-if="srcNum==='1'">已完成</div>
+                <div class="am-ft-gray9"  v-if="srcNum==='2'">退货</div>
+                <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
+              </td>
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                <div class="look_d am-ft-gray9">换货</div>
+                <div class="look_d am-ft-gray9">申请退货</div>
+                <div class="look_d am-ft-gray9">补打销售单</div>
+              </td>
+
+            </tr>
+            <div class="gekai"></div>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="content am-bg-white" v-if="srcNum==='2'">
         <div class="orders">
           <table class="orders_table">
             <thead>
@@ -215,7 +284,7 @@
           'status':"6"
         },
         {
-          'value': '退货',
+          'value': '退换货',
           'isActived': false,
           'srcNum': '2',
           'status':"10"

@@ -8,9 +8,10 @@
         v-for="(i,index) in items"
         v-bind:class="{ active:i.isActive }"
         @click="changeTab(i);"
+        @dblclick="closeTab(index)"
         :key="index">
           {{i.text}}
-          <i v-if="i.text != '首页'" class="el-icon-close"  @click="closeTab(index)"></i>
+          <i v-if="i.text != '首页'" class="el-icon-close"  @click="closeTab(index)" ></i>
         </li>
       </ul>
       <div class="header-top-right">
@@ -169,6 +170,7 @@ export default {
     }
     this.items = JSON.parse(localStorage.getItem("items"));
     // console.log(this.items);
+    
     //追加tab
     var _this = this;
     _this.$bus.$on("createTab", function(data) {

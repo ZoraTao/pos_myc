@@ -44,7 +44,7 @@
                 label="商品编码">
                 </el-table-column>
                 <el-table-column
-                width="250px"
+                width="300px"
                 prop="skuName"
                 label="商品名称">
                 </el-table-column>
@@ -68,14 +68,14 @@
                 width="80px"
                 label="单价">
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 label="操作">
                     <template slot-scope="scope">
                         <span class="am-ft-blue" @click="selectThis(scope.row)">
                             选择
                         </span>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <el-pagination
             class="am-ft-right"
@@ -95,7 +95,7 @@
 
 export default {
   name: 'selectRHModal',
-  props:['selectProductSku'],
+  props:['selectProductSku','selectBrand'],
   data () {
     return {
         options: [
@@ -140,6 +140,7 @@ export default {
         // value.skuName = '';
         row.realSale=row.price;
         this.childrenCleanSelectRHModal();
+        row.status = '0';
         this.$emit('selectSku',row);
       },
       changesSelect(type){

@@ -6,47 +6,54 @@
       align="left"
       style="width: 100%;margin-bottom:10px;">
       <el-table-column
-        prop="a"
-        label="会员姓名">
+        prop="memberName"
+        label="会员姓名"
+        width="130px">
       </el-table-column>
       <el-table-column
-        prop="b"
-        label="手机号">
+        prop="telphone"
+        label="手机号"
+        width="150px">
       </el-table-column>
       <el-table-column
-        prop="c"
-        label="性别">
+        label="性别"
+        width="60px">
+        <template slot-scope="scope">{{scope.row.sex=='M'?'男':'女'}}</template>
       </el-table-column>
       <el-table-column
-        prop="d"
-        label="年龄">
+        prop="age"
+        label="年龄"
+        width="60px">
       </el-table-column>
       <el-table-column
-        prop="e"
-        label="零售单号">
+        prop="orderId"
+        label="零售单号"
+        width="150px">
       </el-table-column>
       <el-table-column
-        prop="f"
-        label="应回访类型">
+        prop="typeName"
+        label="应回访类型"
+        width="100px">
       </el-table-column>
       <el-table-column
-        prop="g"
+        prop="styleName"
         label="应回访方式">
       </el-table-column>
       <el-table-column
-        prop="h"
+        prop="visitTime"
         label="应回访日期">
       </el-table-column>
       <el-table-column
-        label="状态">
+        label="状态"
+        width="100px">
         <template slot-scope="scope">
-          <span class="am-ft-gray9">{{scope.row.i}}</span>
+          <span class="am-ft-orange">{{scope.row.statusName}}</span>
         </template>
       </el-table-column>
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <span class="am-ft-blue"><a href="javascript:;">查看</a></span>
+          <span class="am-ft-blue"><a href="javascript:;" @click="openEntryVisit(scope.row,scope.$index)">回访登记</a></span>
         </template>
       </el-table-column>
     </el-table>

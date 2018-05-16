@@ -59,7 +59,7 @@
                     <li class="fn-left glass_table_770 pb10">
                         <table>
                             <tr class="" v-for="(item,index) in distanceData" :key="index">
-                                <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
+                                <td class="w10 ft_bold"><span v-html="index==0?'R':'L'"></span></td>
                                 <td class="w90">
                                 <el-form :model="item" :rules="rules" ref="distanceData">
                                   <el-form-item prop="sph">
@@ -385,8 +385,7 @@ export default {
           va: "",
           dpd: "",
           npd: "",
-          hpd: "",
-          add: ""
+          hpd: ""
         },
         {
           sph: "",
@@ -395,7 +394,8 @@ export default {
           va: "",
           dpd: "",
           npd: "",
-          hpd: ""
+          hpd: "",
+          add: ""
         }
       ],
       nighData: [

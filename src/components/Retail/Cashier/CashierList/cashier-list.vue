@@ -492,6 +492,7 @@ export default {
     this.getOrderList(3);
   },
   methods: {
+    //重新开单
     againOrder(bool,data){
       let _this = this;
       if(!bool){
@@ -525,9 +526,9 @@ export default {
                 })
           }
         })
-        //  _this.$router.push({
-        //         name:'billing'
-        //       ,params:{datas:_this.againOrderData}})
+         _this.$router.push({
+                name:'billing'
+              ,params:{datas:_this.againOrderData}})
       }
     },
     closeOrder(data,bool){

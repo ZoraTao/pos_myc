@@ -76,82 +76,82 @@
                   <el-table-column
                     prop="date"
                     label="零售时间"
-                    width="105">
+                    width="100">
                   </el-table-column>
                   <el-table-column label="销售统计">
                     <el-table-column
                       prop="name"
                       label="销售金额"
-                      width="90">
+                      width="88">
                     </el-table-column>
                     <el-table-column
                       prop="name"
                       label="实退金额"
-                      width="90">
+                      width="88">
                     </el-table-column>
                     <el-table-column
                       prop="name"
                       label="实售金额"
-                      width="90">
+                      width="88">
                     </el-table-column>
                   </el-table-column>
                   <el-table-column label="欠还款统计">
                       <el-table-column
                         prop="province"
                         label="欠款金额"
-                        width="90">
+                        width="88">
                       </el-table-column>
                       <el-table-column
                         prop="city"
                         label="实退金额"
-                        width="90">
+                        width="88">
                       </el-table-column>
                     </el-table-column>
                      <el-table-column label="收银方式">
                       <el-table-column
                         prop="province"
                         label="商场支付"
-                        width="90">
+                        width="88">
                       </el-table-column>
                       <el-table-column
                         prop="city"
                         label="市名卡"
-                        width="90">
+                        width="88">
                       </el-table-column>
                       <el-table-column
                         prop="province"
                         label="现金"
-                        width="90">
+                        width="88">
                       </el-table-column>
                       <el-table-column
                         prop="city"
                         label="会员卡"
-                        width="90">
+                        width="88">
                       </el-table-column>
                       <el-table-column
                         prop="province"
                         label="信用卡"
-                        width="90">
+                        width="88">
                       </el-table-column>
                       <el-table-column
                         prop="city"
                         label="支付宝"
-                        width="90">
+                        width="88">
                       </el-table-column>
                       <el-table-column
                         prop="province"
                         label="微信"
-                        width="90">
+                        width="88">
                       </el-table-column>
                       <el-table-column
                         prop="city"
                         label="银行卡"
-                        width="90">
+                        width="88">
                       </el-table-column>
                        <el-table-column
                         prop="city"
                         label="代金券"
-                        width="90">
+                        width="88">
                       </el-table-column>
                     </el-table-column>
                 </el-table>
@@ -322,5 +322,8 @@ export default {
 } */
 .cell{
   text-align: center;
+}
+.el-select{
+  width: 140px;
 }
 </style>

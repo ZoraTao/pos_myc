@@ -1,6 +1,6 @@
 <template>
-<div class="billing content_box flexH100" >
-    <div class="billingInfo">
+<div class="billing content_box flexH100">
+    <div class="billingInfo" >
         <div class="borderfff flex1">
             <div class="salesclerkInfo">
                 <el-form ref="form">
@@ -34,6 +34,25 @@
             </div>
             <div class="salesclerkParam">
                 <el-form ref="form">
+                   <el-form-item class="ParamInput">
+                        <el-select v-model="selectBrand.varieties" placeholder="类别" @change="changesSelect(2)">
+                         <el-option 
+                         v-for="item in varietiesArr"
+                         :key="item.classCode"
+                         :label="item.className"
+                         :value="item.productCategoryId">
+                         </el-option>
+                       </el-select>
+                    </el-form-item>
+                    <el-form-item  class="ParamInput">
+                       <el-select v-model="selectBrand.brand" placeholder='品牌'>
+                         <el-option 
+                         v-for="item in brandArr"
+                         :key="item.classCode"
+                         :label="item.className"
+                         :value="item.productCategoryId"></el-option>
+                       </el-select>
+                    </el-form-item>
                     <el-form-item label="左镜片 :" class="ParamInput">
                         <el-input class="" placeholder="" @input="setWhere('left');" v-model="selectProductSku.selectL" @keyup.enter.native="selectGlass(2,selectProductSku.selectL,true);"></el-input>
                         <el-button @click="type='0';selectGlass(2);setWhere('left');">···</el-button>
@@ -95,7 +114,11 @@
                     width="140px">
                         <template slot-scope="scope">
                             <span class="am-ft-bold am-ft-black">
-                                {{scope.row.nums||'--'}}
+                                <el-input 
+                                v-model="tableData[scope.$index].nums"
+                                :disabled = "tableData[scope.$index].status == 2 || tableData[scope.$index].status == 3"
+                                @change="changeNums(scope.row,scope.$index);"
+                                ></el-input>
                             </span>
                         </template>
                     </el-table-column>
@@ -189,7 +212,7 @@
             </div>
             <div class="fn-left singleDiscount">
                 <p><span>整单折扣 :</span>
-                <el-input class="" placeholder="" v-model="allDisCount" @change="afterDiscount"/> 折
+                <el-input class="" placeholder="" v-model="allDisCount" @change="afterDiscount()"/> 折
                 </p>
             </div>
             <div class="fn-right singleDiscount">
@@ -203,76 +226,85 @@
             </div>
         </div>
         <div class="orderType flex1">
-            <el-form ref="form">
-                <el-form-item>
-                    <el-checkbox v-model="orderTemp.urgent">是否加急单</el-checkbox>
-                </el-form-item>
-                <el-form-item label="取镜时间 :" >
-                    <el-date-picker
-                    v-model="orderTemp.glassesTime"
-                    value-format="yyyy-MM-dd"
-                    align="left"
-                    :default-value="defaultTimes"
-                    type="date"
-                    style="width:130px"
-                    placeholder="选择日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="取镜方式 :">
-                    <el-select size="mini" class="shopexpress"  v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
-                        <el-option
-                        v-for="item in selectOptions"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.name">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="取镜公司 :" v-show="publicSelcet.glassesTypeModel=='门店自取'">
-                    <el-select size="mini" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()">
-                        <el-option
-                        v-for="item in publicSelcet.comTypeOptions"
-                        :key="item.shopId"
-                        :label="item.shopName"
-                        :value="item.shopId">
-                        <span style="display:block;width:100%;float:left;" @click="sameComType(item)">{{item.shopName}}</span>
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="取镜地点 :"  v-show="publicSelcet.glassesTypeModel=='门店自取'">
-                    <p style="width:150px;" :title="orderTemp.glassesAddress">{{orderTemp.glassesAddress||'--'}}</p>
-                </el-form-item>
-                <div>
-                    <el-form-item label="收件人：" v-show="publicSelcet.glassesTypeModel=='快递'">
-                        <el-input class="express"  v-model="express.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="手机号：" v-show="publicSelcet.glassesTypeModel=='快递'">
-                        <el-input class="express" v-model="express.telphone"></el-input>
-                    </el-form-item>
-                    <el-form-item  label="收件地址：" v-show="publicSelcet.glassesTypeModel=='快递'">
-                        <el-input class="expressAddress"  v-model="express.address"></el-input>
-                    </el-form-item>
-                </div>
-                    <el-form-item>
-                        <el-input class="" v-model="orderTemp.saleMemo" placeholder="销售备注"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input size="mini" v-model="publicSelcet.processMemo" placeholder="加工备注" @visible-change="getPublicSelect(3,publicSelcet.processMemoOptions)">
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input size="mini" v-model="publicSelcet.specialMemo" placeholder="特殊备注" @visible-change="getPublicSelect(4,publicSelcet.specialMemoOptions)">
-                        </el-input>
-                    </el-form-item>
-
+            <el-form ref="form" class="ov">
+                    <div style="width:100%" class="ov">
+                        <el-form-item>
+                            <el-checkbox v-model="orderTemp.urgent">是否加急单</el-checkbox>
+                        </el-form-item>
+                        <el-form-item label="取镜时间 :" >
+                            <el-date-picker
+                            v-model="orderTemp.glassesTime"
+                            value-format="yyyy-MM-dd"
+                            align="left"
+                            :default-value="defaultTimes"
+                            type="date"
+                            style="width:130px"
+                            placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="取镜方式 :">
+                            <el-select size="mini" class="shopexpress"  v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
+                                <el-option
+                                v-for="item in selectOptions"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.code">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="取镜公司 :" v-show="publicSelcet.glassesTypeModel=='2'">
+                            <el-select size="mini" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()">
+                                <el-option
+                                v-for="item in publicSelcet.comTypeOptions"
+                                :key="item.shopId"
+                                :label="item.shopName"
+                                :value="item.shopId">
+                                <span style="display:block;width:100%;float:left;" @click="sameComType(item)">{{item.shopName}}</span>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="取镜地点 :"  v-show="publicSelcet.glassesTypeModel=='2'">
+                            <p style="width:150px;" :title="orderTemp.glassesAddress">{{orderTemp.glassesAddress||'--'}}</p>
+                        </el-form-item>
+                        <div class="ov">
+                            <el-form-item label="收件人：" v-show="publicSelcet.glassesTypeModel=='1'">
+                                <el-input class="express"  v-model="express.name"></el-input>
+                            </el-form-item>
+                            <el-form-item label="手机号：" v-show="publicSelcet.glassesTypeModel=='1'">
+                                <el-input class="express" v-model="express.telphone"></el-input>
+                            </el-form-item>
+                            <el-form-item  label="收件地址：" v-show="publicSelcet.glassesTypeModel=='1'">
+                                <el-input class="expressAddress"  v-model="express.address"></el-input>
+                            </el-form-item>
+                        </div>
+                    </div>
+                    <div style="width:100%" class="ov remarks">
+                        <el-row>
+                          <el-col :span="8">
+                              <el-form-item class="box100">
+                                <el-input class="box100" v-model="orderTemp.saleMemo" placeholder="销售备注"></el-input>
+                              </el-form-item>
+                          </el-col>
+                            <el-col :span="8">
+                                    <el-form-item class="box100">
+                                    <el-input size="mini" class="box100" v-model="publicSelcet.processMemo" placeholder="加工备注" @visible-change="getPublicSelect(3,publicSelcet.processMemoOptions)"></el-input>
+                                </el-form-item>
+                            </el-col>
+                              <el-col :span="8">
+                                    <el-form-item class="box100">
+                                        <el-input size="mini" class="box100" v-model="publicSelcet.specialMemo" placeholder="特殊备注" @visible-change="getPublicSelect(4,publicSelcet.specialMemoOptions)"></el-input>
+                                    </el-form-item>
+                              </el-col>
+                            </el-row>
+                    </div>
             </el-form>
         </div>
         <div class="buttonGroup flex1">
             <div class="fn-left">
                 <el-button type="primary">手工单[S]</el-button>
                 <el-button type="primary">赠送[S]</el-button>
-                <el-button type="primary">退货[T]</el-button>
-                <el-button type="primary">换货</el-button>
+                <el-button type="primary" @click="backShoping('back',true)">退货[T]</el-button>
+                <el-button type="primary" @click="backShoping('replace',true)">换货</el-button>
                 <el-button type="primary" @click="reprint=true">补打</el-button>
                 <el-button type="primary">预览</el-button>
                 <el-button type="primary" @click="hangOrder" >取单</el-button>
@@ -359,11 +391,13 @@
                     v-for="value in includeOptometryData"
                     :key="value.name"
                     :data="value.item"
+                    v-if="value.item[0].lData != ''||value.item[0].rData != ''"
                     size="small"
                     align="left"
                     style="width: 100%;">
                     <el-table-column
-                    :label="value.name">
+                    :label="value.name"
+                    >
                         <template slot-scope="scope">
                             <span v-if="scope.row.keys == 'add'">下加光</span>
                             <span v-if="scope.row.keys == 'ax'">轴位</span>
@@ -420,7 +454,7 @@
         </div>
     </el-dialog>
     <el-dialog class="selectRH" :title="selectProductSku.title" :visible.sync="showSelectRH" width="870px" :before-close="cleanSelectRHModal">
-        <SelectRHModal :where="where" ref="SelectRHModal"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:selectSku="selectSku" ></SelectRHModal>
+        <SelectRHModal :where="where" ref="SelectRHModal"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:selectSku="selectSku" :selectBrand="selectBrand" ></SelectRHModal>
     </el-dialog>
     <el-dialog class="selectShop" title="选择商品" :visible.sync="showSelectShop" width="800px" :before-close="cleanSelectShopModal">
         <SelectShopModal :where="where" ref="showSelectShop"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:setBuyShop="selectSku" ></SelectShopModal>
@@ -457,7 +491,7 @@
         <CouponBarCodeModal :conponData="conponData" :memberMessage="selectMember.memberInfo" @receiveconpon="receiveconpon"></CouponBarCodeModal>
     </el-dialog>
 
-    <el-dialog
+    <!-- <el-dialog
         custom-class="noheader am-ft-center"
         title="挂单"
         :visible.sync="pendingOrders"
@@ -469,7 +503,7 @@
             <el-button @click="pendingOrders=false"></el-button>
             <el-button type="primary" @click="pendingOrders = false">确定</el-button>
         </span>
-    </el-dialog>
+    </el-dialog> -->
     <el-dialog title="取单" :visible.sync="showGetBill" width="700px">
         <GetBill ref="hangOrders" @openOrder="openOrder"></GetBill>
     </el-dialog>
@@ -485,6 +519,24 @@
             <el-button @click="isNotMember = false;addMember=true">取消</el-button>
             <el-button type="primary" @click="isNotMember = false">添加会员</el-button>
         </span>
+    </el-dialog>
+    <el-dialog 
+        title="退货单"
+        :visible.sync="backShop"
+        width="460px"
+        center>
+        <div class="textCenter " >
+          <backshopModel @tohide="backShoping('back',false)" ref="backShopRefs"></backshopModel>
+        </div>
+    </el-dialog>
+    <el-dialog 
+        title="换货单"
+        :visible.sync="replaceShop"
+        width="460px"
+        center>
+        <div class="textCenter  ">
+          <replaceShopModel @tohide="backShoping('replace',false)" ref="replaceShopRefs"></replaceShopModel>
+        </div>
     </el-dialog>
     <el-dialog
         custom-class="noheader am-ft-center comfirmModal"
@@ -508,7 +560,7 @@
         <div slot="footer" class="dialog-footer">
             <div class="mgt10">
                 <el-button @click="permission = false;confirmAllDiscount(false);">取消</el-button>
-                <el-button type="primary" @click="permission = false;confirmAllDiscount(true);">直接签批</el-button>
+                <el-button type="primary" @click="permission = false;">直接签批</el-button>
                 <el-popover
                 ref="popover"
                 placement="bottom-start"
@@ -575,1475 +627,1730 @@
 </template>
 
 <script>
-import store from '../../../vuex/store'
+import store from "../../../vuex/store";
 // import {unicode} from '../../../utils/other'
-import {allDate} from '../../../utils/date'
-import SelectMemberModal from '../../PublicModal/SelectMember/select-member-modal.vue'
-import NewOptometryModal from '../../PublicModal/NewOptometry/new-optometry-modal.vue'
-import SelectRHModal from '../../PublicModal/SelectRH/selectRH-modal.vue'
-import SelectShopModal from '../../PublicModal/SelectShop/selectShop-modal.vue'
-import GetBill from '../../PublicModal/GetBill/get-bill-modal.vue'
-import CustomizeRHModal from '../../PublicModal/customizeRH/customizeRH-modal.vue'
-import PackageGoodsModal from '../../PublicModal/PackageGoods/package-goods-modal.vue'
-import OtherExpenseModal from '../../PublicModal/OtherExpense/other-expense-modal.vue'
-import CouponBarCodeModal from '../../PublicModal/CouponBarCode/couponBar-code-modal.vue'
-import EndorsementModal from '../../PublicModal/Endorsement/endorsement-modal.vue'
-import ReprintModal from '../../PublicModal/Reprint/reprint-modal.vue'
+import { allDate } from "../../../utils/date.js";
+import { judgeCode } from "../../../utils/other.js";
+import SelectMemberModal from "../../PublicModal/SelectMember/select-member-modal.vue";
+import NewOptometryModal from "../../PublicModal/NewOptometry/new-optometry-modal.vue";
+import SelectRHModal from "../../PublicModal/SelectRH/selectRH-modal.vue";
+import SelectShopModal from "../../PublicModal/SelectShop/selectShop-modal.vue";
+import GetBill from "../../PublicModal/GetBill/get-bill-modal.vue";
+import CustomizeRHModal from "../../PublicModal/customizeRH/customizeRH-modal.vue";
+import PackageGoodsModal from "../../PublicModal/PackageGoods/package-goods-modal.vue";
+import OtherExpenseModal from "../../PublicModal/OtherExpense/other-expense-modal.vue";
+import CouponBarCodeModal from "../../PublicModal/CouponBarCode/couponBar-code-modal.vue";
+import EndorsementModal from "../../PublicModal/Endorsement/endorsement-modal.vue";
+import ReprintModal from "../../PublicModal/Reprint/reprint-modal.vue";
 import AddMember from "../../PublicModal/addMember/add-member-modal.vue";
-import cuActions from '../../PublicModal/cuActions/cuActions-modal.vue'
-import withShopModal from '../../PublicModal/withShop/withShop-modal.vue'
-    export default {
+import cuActions from "../../PublicModal/cuActions/cuActions-modal.vue";
+import withShopModal from "../../PublicModal/withShop/withShop-modal.vue";
+import backshopModel from '../../PublicModal/backShopModel/backShopModel.vue'
+import replaceShopModel from '../../PublicModal/replaceShopModel/replaceShopModel.vue'
+export default {
+  name: "billing",
+  data() {
+    return {
+      contextMenuData: {
+        // the contextmenu name(@1.4.1 updated)
+        menuName: "demo",
+        // The coordinates of the display(菜单显示的位置)
+        axios: {
+          x: null,
+          y: null
+        },
+        row: "",
+        users: {},
+        // Menu options (菜单选项)
+        menulists: [
+          {
+            fnHandler: "delThisRow", // Binding events(绑定事件)
+            btnName: "删除" // The name of the menu option (菜单名称)
+          }
+        ]
+      },
+      options: [
+        {
+          value: "选项1",
+          label: "暂无"
+        }
+      ],
+      value: "",
+      firstEnterSaleIdBool: true,
+      //销售人员
+      shopMember: "",
+      showhideBottom: "", //控制套餐底部按钮
+      custom: "", //定做状态
+      customText: "1",
+      selectOptions: "",
+      publicSelcet: {
+        glassesTypeOptions: [
+          {
+            name: "",
+            id: ""
+          }
+        ],
+        glassesTypeModel: "2",
+        comTypeOptions: [],
+        comTypeModel: null,
+        processMemoOptions: [],
+        processMemo: null,
+        specialMemoOptions: [],
+        specialMemo: null
+      },
+      orderTemp: {
+        memberId: "",
+        prescriptionsId: "",
+        urgent: false,
+        glassesTime: new Date(),
+        glassesType: "",
+        glassesCompany: "",
+        glassesAddress: "",
+        saleMemo: "",
+        processMemo: "",
+        specialMemo: "",
+        roundOffFlag: "",
+        couponDetailId: "",
+        process: "0",
+        service: "0",
+        singleSupTime: new Date()
+      },
+      eyesdata: {
+        sph: "",
+        cyl: "",
+        add: ""
+      },
+      optometryId: "",
+      defaultTimes: new Date(),
+      type: "",
+      optometryTime: "",
+      submitNewOptometry: false, //控制 提交验光单子组件传值
+      includeOptometryData: null, //保存即将录入验光单信息 作为验光单数据副本
+      amountSale: 0, //原价合计
+      optometryData: [], //验光单数据
+      optometryList: null, //验光单列表数据
+      selectMember: {
+        //选择会员数据集合
+        selectM: "",
+        memberInfo: null //会员信息
+      },
+      extraMoney: 0, //其他费用
+      saleCount: "0.00", //合计
+      // receivable:'',//应收金额
+      actionSale: 0, //活动金额
+      numCount: 0, //件数
+      allDisCount: "", //整单折扣
+      memberShipDisCount: "10", //会员折扣
+      memberShipDisCountSale: 0, //会员折扣抵扣金额
+      discountFlag: 1,
+      discountSale: 0, //优惠券折扣金额
+      conponDiscountMoney: "", //优惠券折扣金额
+      actionCost: {}, //促销活动信息
+      conponResponse: {},
+      timeDefaultShow: "", //当前日期默认值
+      express: {
+        //快递方式
+        name: "", //收件人
+        telphone: "", //手机号
+        address: "" //收件地址
+      },
+      searchStr: "", // 镜片查询参数
+      selectProductSku: {
+        selectR: "",
+        selectL: "",
+        where: "",
+        selectSP: "",
+        productSkuData: "",
+        cylinder: "",
+        title: "",
+        wareh: "",
+        product: "",
+        categoryCode: "",
+        type: "",
+        count: 0,
+        nub: 1,
+        size: 10
+      },
+      orgDatas: null,
+      tableData: [], //用户保存商品信息
+      where: "", //左右镜片
+      addShop: false,
+      //以下为控制modal弹框变量,
+      conponData: null,
+      isSubmit: false,
+      reprint: false,
+      endorsement: false,
+      loginUserPermission: false,
+      permission: false,
+      pendingOrders: false,
+      CouponBarCode: false,
+      otherExpense: false,
+      packageGoods: false,
+      customizeRH: false,
+      backShop:false,
+      replaceShop:false,
+      withShop: false,
+      addMember: false,
+      isNotMember: false,
+      showGetBill: false,
+      showSelectShop: false,
+      showSelectRH: false,
+      showNewOptometry: false,
+      isOptometryDialogVisible: false,
+      showSelectMember: false,
+      cuActions: false,
+      selectBrand:{
+        varieties:'',
+        brand:'',
+      },
+      varietiesArr:[],
+      brandArr:[],
+    };
+  },
+  components: {
+    SelectMemberModal,
+    NewOptometryModal,
+    SelectRHModal,
+    SelectShopModal,
+    GetBill,
+    CustomizeRHModal,
+    withShopModal,
+    PackageGoodsModal,
+    OtherExpenseModal,
+    CouponBarCodeModal,
+    EndorsementModal,
+    ReprintModal,
+    AddMember,
+    cuActions,
+    backshopModel,
+    replaceShopModel
+  },
 
-        name: "billing",
-        data() {
-            return {
-                contextMenuData: {
-                // the contextmenu name(@1.4.1 updated)
-                menuName: 'demo',
-                // The coordinates of the display(菜单显示的位置)
-                axios: {
-                    x: null,
-                    y: null
-                },
-                row:'',
-                users:{},
-                // Menu options (菜单选项)
-                menulists: [
-                    {
-                        fnHandler: 'delThisRow', // Binding events(绑定事件)
-                        btnName: '删除' // The name of the menu option (菜单名称)
-                    }
-                ]
-                },
-                options: [{
-                    value: "选项1",
-                    label: "暂无"
-                }],
-                value: '',
-                firstEnterSaleIdBool:true,
-                //销售人员
-                shopMember:'',
-                showhideBottom:'',//控制套餐底部按钮
-                custom:'',//定做状态
-                customText:'1',
-                selectOptions: '',
-                publicSelcet:{
-                    glassesTypeOptions:[{
-                        name:'',
-                        id:''
-                    }],
-                    glassesTypeModel:'门店自取',
-                    comTypeOptions:[],
-                    comTypeModel:null,
-                    processMemoOptions:[],
-                    processMemo:null,
-                    specialMemoOptions:[],
-                    specialMemo:null,
-                },
-                orderTemp:{
-                    memberId:'',
-                    prescriptionsId :'',
-                    urgent:false,
-                    glassesTime:new Date(),
-                    glassesType:'',
-                    glassesCompany:'',
-                    glassesAddress:'',
-                    saleMemo:'',
-                    processMemo:'',
-                    specialMemo:'',
-                    roundOffFlag:'',
-                    couponDetailId:'',
-                    process:'0',
-                    service:'0',
-                    singleSupTime:new Date(),
-                },
-                eyesdata:{
-                sph:'',
-                cyl:'',
-                add:'',
-                },
-                optometryId:'',
-                defaultTimes:new Date(),
-                type:'',
-                optometryTime:'',
-                submitNewOptometry:false,//控制 提交验光单子组件传值
-                includeOptometryData:null,//保存即将录入验光单信息 作为验光单数据副本
-                amountSale:0,//原价合计
-                optometryData:[],//验光单数据
-                optometryList:null,//验光单列表数据
-                selectMember:{//选择会员数据集合
-                    selectM:'',
-                    memberInfo:null//会员信息
-                },
-                extraMoney:0,//其他费用
-                saleCount:'0.00',//合计
-                // receivable:'',//应收金额
-                actionSale:0,//活动金额
-                numCount:0,//件数
-                allDisCount:'',//整单折扣
-                memberShipDisCount:'10',//会员折扣
-                memberShipDisCountSale:0,//会员折扣抵扣金额
-                discountFlag:1,
-                discountSale:0,//优惠券折扣金额
-                conponDiscountMoney:'',//优惠券折扣金额
-                actionCost:{},//促销活动信息
-                conponResponse:{},
-                timeDefaultShow:'',//当前日期默认值
-                express:{//快递方式
-                    name:'',//收件人
-                    telphone:'',//手机号
-                    address:'',//收件地址
-                },
-                searchStr:'',// 镜片查询参数
-                selectProductSku:{
-                    selectR:'',
-                    selectL:'',
-                    where:'',
-                    selectSP:'',
-                    productSkuData:'',
-                    cylinder:'',
-                    title:'',
-                    wareh:'',
-                    product:'',
-                    categoryCode:'',
-                    type:'',
-                    count: 0,
-                    nub: 1,
-                    size:10
-                },
-                orgDatas:null,
-                tableData:[],//用户保存商品信息
-                where:'',//左右镜片
-                addShop:false,
-                //以下为控制modal弹框变量,
-                conponData:null,
-                isSubmit: false,
-                reprint:false,
-                endorsement:false,
-                loginUserPermission:false,
-                permission:false,
-                pendingOrders:false,
-                CouponBarCode:false,
-                otherExpense:false,
-                packageGoods:false,
-                customizeRH:false,
-                withShop:false,
-                addMember:false,
-                isNotMember:false,
-                showGetBill:false,
-                showSelectShop:false,
-                showSelectRH:false,
-                showNewOptometry:false,
-                isOptometryDialogVisible:false,
-                showSelectMember:false,
-                cuActions:false
+  methods: {
+    // 促销活动、
+    openConpon(data) {
+      this.cuActions = data;
+    },
+    //促销活动计算方案
+    actionComputed(data) {
+      let _this = this;
+      _this.actionCost = data;
+      _this.computedPay();
+    },
+    //右键菜单
+    showMenu(row, event) {
+      event.preventDefault();
+      var x = event.clientX;
+      var y = event.clientY;
+      // Get the current location
+      this.contextMenuData.axios = {
+        x,
+        y
+      };
+      this.contextMenuData.row = row;
+    },
+    //打开优惠券
+    openCouponBarCode() {
+      if (this.selectMember.memberInfo) {
+        this.CouponBarCode = true;
+      } else {
+        this.$message({
+          showClose: true,
+          message: "用户数据获取失败，请先选择用户",
+          type: "error"
+        });
+      }
+    },
+    //其他费用
+    otherExpenseFn() {
+      let _this = this;
+      _this.$nextTick(() => {
+        _this.$refs.otherExpenseRef.addCost();
+      });
+    },
+    //其他费用添加到列表
+    addCostPayFn(data) {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].name) {
+          let obj = new Object();
+          obj.skuName2 = data[i].name + ":";
+          obj.skuName = "";
+          for (let j = 0; j < data[i].skuName.length; j++) {
+            obj.skuName2 += data[i].skuName[j].name + " ";
+            obj.skuName += data[i].skuName[j].name + " ";
+          }
+          obj.price = 0;
+          for (let j = 0; j < data[i].skuName.length; j++) {
+            obj.price += parseFloat(data[i].skuName[j].displacement);
+          }
+          obj.realSale = obj.price;
+          obj.status = "3";
+          this.selectSku(obj);
+        }
+      }
+    },
+    //自带商品添加
+    withShopCommit(data) {
+      this.selectSku(data, data.nums);
+      this.withShop = false;
+    },
+    //获取销售人员
+    getPrivateSelect(type, options) {
+      var _this = this;
+      _this
+        .$axios({
+          url: "http://myc.qineasy.cn/cas-api/user/getUserByOrg",
+          method: "post",
+          params: {
+            jsonObject: {
+              // orgId: JSON.parse(localStorage.getItem("userData")).orgId,
+              // orgId:'11387',
+              //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
+            },
+            keyParams: {
+              weChat: true,
+              userId: JSON.parse(localStorage.getItem("userData")).userId,
+              orgId: JSON.parse(localStorage.getItem("userData")).orgId
             }
-        },
-        components:{
-            SelectMemberModal,
-            NewOptometryModal,
-            SelectRHModal,
-            SelectShopModal,
-            GetBill,
-            CustomizeRHModal,
-            withShopModal,
-            PackageGoodsModal,
-            OtherExpenseModal,
-            CouponBarCodeModal,
-            EndorsementModal,
-            ReprintModal,
-            AddMember,
-            cuActions
-        },
+          }
+        })
+        .then(function(response) {
+          _this.options = response.data.data.list;
+          // console.log(_this.users.userId)
+          if (_this.firstEnterSaleIdBool) {
+            _this.firstEnterSaleIdBool = false;
+            _this.shopMember = _this.users.userId;
+          }
+        });
+    },
+    setWhere(value) {
+      let _this = this;
+      _this.type = "0";
+      // 辨别左右镜片
+      if (value == "left") {
+        this.where = "left";
+      } else if (value == "right") {
+        this.where = "right";
+      } else if (value == "shop") {
+        this.where = "shop";
+      }
+    },
+    //定做商品
+    commitCustom(data) {
+      this.selectSku(data, data.nums);
+    },
+    removeRow(row, event) {
+      let _this = this;
+      if (event.target.className == "el-input__inner") {
+        return;
+      }
+      if (this.tableData.indexOf(row) != -1) {
+        this.tableData.splice(this.tableData.indexOf(row), 1);
+      }
+      _this.computedPay();
+    },
+    //删除表格td
+    delThisRow() {
+      var that = this;
+      console.log(1);
+      this.tableData.forEach(function(element, index) {
+        if (element == that.contextMenuData.row) {
+          this.tableData.splice(index, 1);
+        }
+      }, this);
+      that.computedPay();
+    },
+    //取镜公司地点
+    sameComType(value) {
+      let _this = this;
+      console.log(value);
+      _this.orgDatas = value;
+      _this.orderTemp.glassesAddress = value.shopAddr; //下单门店地址
+    },
+    //退货
+    backShoping(status,bool){
+      let _this = this;
+      if(status === 'back'){
+          _this.backShop = bool;
+          console.log(_this.$refs);
+          if(bool){
+            _this.$nextTick(()=>{
+              _this.$refs.backShopRefs.searchReason();
+            })
+          }
+      }else if(status === 'replace'){
+        _this.replaceShop = bool;
+        if(bool){
+            _this.$nextTick(()=>{
+              _this.$refs.replaceShopRefs.searchReason();
+            });
+        }
+      }
+    },
+    
+    //获取取镜公司
+    getCompanyList(bool) {
+      var _this = this;
+      _this
+        .$axios({
+          url: "http://myc.qineasy.cn/pos-api/shopBy/getShopByList",
+          method: "post",
+          params: {
+            jsonObject: {},
+            keyParams: {
+              weChat: true,
+              userId: JSON.parse(localStorage.getItem("userData")).userId,
+              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+            }
+          }
+        })
+        .then(function(response) {
+          _this.publicSelcet.comTypeOptions = response.data.data.shopByList;
+          if (bool) {
+            let orgId = _this.users.orgId;
+            let orgData = _this.publicSelcet.comTypeOptions;
+            // console.log(orgId)
+            for (let i = 0; i < orgData.length; i++) {
+              if (orgData[i].shopId == orgId) {
+                // console.log('门店地址',orgData[i]);
+                _this.orgDatas = orgData[i];
+                _this.publicSelcet.comTypeModel = orgId;
+                _this.orderTemp.glassesAddress = orgData[i].shopAddr;
+              }
+            }
+          }
+          // _this.orderTemp.glassesAddress = _this.users.
+        });
+    },
 
-        methods:{
-            // 促销活动、
-            openConpon(data){
-                this.cuActions = data;
+    //获取公共select options
+    getPublicSelect(type, options) {
+      if (options == "") {
+        // console.log("1")
+      } else {
+        // console.log("2")
+      }
+      var _this = this;
+      _this
+        .$axios({
+          url: "http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList",
+          method: "post",
+          params: {
+            jsonObject: {
+              pid: "",
+              id: "",
+              type: type
+              //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
             },
-            //促销活动计算方案
-            actionComputed(data){
-                let _this = this;
-                _this.actionCost = data;
-                _this.computedPay();
-            },
-            //右键菜单
-            showMenu (row, event) {
-                event.preventDefault()
-                var x = event.clientX
-                var y = event.clientY
-                // Get the current location
-                this.contextMenuData.axios = {
-                    x, y
-                }
-                this.contextMenuData.row=row;
-            },
-            //打开优惠券
-            openCouponBarCode(){
-                if(this.selectMember.memberInfo){
-                    this.CouponBarCode=true;
-                }else{
-                    this.$message({
-                        showClose: true,
-                        message: '用户数据获取失败，请先选择用户',
-                        type: 'error'
-                    })
-                }
-            },
-            //其他费用
-            otherExpenseFn(){
-                let _this = this;
-               _this.$nextTick(()=>{
-                _this.$refs.otherExpenseRef.addCost();
-               });
-            },
-            //其他费用添加到列表
-            addCostPayFn(data){
-                    for(let i=0;i<data.length;i++){
-                        if(data[i].name){
-                            let obj = new Object();
-                            obj.skuName2 = data[i].name+':'
-                            obj.skuName = '';
-                            for(let j = 0; j<data[i].skuName.length; j++){
-                                obj.skuName2 += data[i].skuName[j].name+' '
-                                obj.skuName += data[i].skuName[j].name+' '
-                            }
-                            obj.price = 0;
-                            for(let j = 0; j<data[i].skuName.length; j++){
-                                obj.price+=parseFloat(data[i].skuName[j].displacement)
-                            }
-                            obj.realSale = obj.price
-                            obj.status = '3';
-                            this.selectSku(obj)
-                        }
-                    }
-            },
-            //自带商品添加
-            withShopCommit(data){
-                this.selectSku(data,data.nums);
-                this.withShop = false;
-            },
-            //获取销售人员
-            getPrivateSelect(type,options){
-                var _this = this;
-                _this.$axios({
-                    url: 'http://myc.qineasy.cn/cas-api/user/getUserByOrg',
-                    method: 'post',
-                    params: {
-                        jsonObject: {
-                            // orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-                            // orgId:'11387',
-                            //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
-                        },
-                        keyParams: {
-                            weChat: true,
-                            userId: JSON.parse(localStorage.getItem("userData")).userId,
-                            orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-                        }
-                    }
-                })
-                .then(function (response) {
-                    _this.options=response.data.data.list;
-                    // console.log(_this.users.userId)
-                    if(_this.firstEnterSaleIdBool){
-                        _this.firstEnterSaleIdBool = false;
-                        _this.shopMember = _this.users.userId;
-                    }
-                })
-            },
-            setWhere(value){
-                let _this =this;
-                _this.type='0';
-                // 辨别左右镜片
-                if(value == 'left'){
-                    this.where = 'left'
-                }else if (value == 'right'){
-                    this.where = 'right'
-                }else if(value == 'shop'){
-                    this.where = 'shop'
-                }
-            },
-            //定做商品
-            commitCustom(data){
-                this.selectSku(data,data.nums)
-            },
-            removeRow(row,event){
-                let _this = this;
-                if(event.target.className == 'el-input__inner'){
-                    return
-                }
-                if(this.tableData.indexOf(row)!=-1){
-                    this.tableData.splice(this.tableData.indexOf(row),1)
-                }
-                _this.computedPay();
-            },
-            //删除表格td
-            delThisRow(){
-                var that=this;
-                console.log(1)
-                this.tableData.forEach(function(element,index) {
-                    if(element==that.contextMenuData.row){
-                        this.tableData.splice(index,1)
-                    }
-                }, this);
-                that.computedPay();
-            },
-            //取镜公司地点
-            sameComType(value){
-                console.log(value)
-                _this.orgDatas = value;
-                this.orderTemp.glassesAddress=value.shopAddr;//下单门店地址
-            },
-            //获取取镜公司
-            getCompanyList(bool){
-                var _this = this;
-                _this.$axios({
-                    url: 'http://myc.qineasy.cn/pos-api/shopBy/getShopByList',
-                    method: 'post',
-                    params: {
-                        jsonObject: {
-                        },
-                        keyParams: {
-                            weChat: true,
-                            userId: JSON.parse(localStorage.getItem("userData")).userId,
-                            orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-                        }
-                    }
-                })
-                .then(function (response) {
-                    _this.publicSelcet.comTypeOptions=response.data.data.shopByList;
-                    if(bool){
-                        let orgId = _this.users.orgId;
-                        let orgData = _this.publicSelcet.comTypeOptions;
-                        // console.log(orgId)
-                        for(let i=0;i<orgData.length;i++){
-                            if(orgData[i].shopId == orgId){
-                                // console.log('门店地址',orgData[i]);
-                                _this.orgDatas = orgData[i];
-                                _this.publicSelcet.comTypeModel = orgId;
-                                _this.orderTemp.glassesAddress =orgData[i].shopAddr;
-                            }
-                        }
-                    }
-                        // _this.orderTemp.glassesAddress = _this.users.
-                })
-            },
+            keyParams: {
+              weChat: true,
+              userId: JSON.parse(localStorage.getItem("userData")).userId,
+              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+            }
+          }
+        })
+        .then(function(response) {
+          _this.selectOptions = response.data.data.list;
+        });
+    },
+    //选择镜片 商品
+    selectGlass(type, degress, bool) {
+      if (this.optometryData == null) {
+        this.$message({
+          showClose: true,
+          message: "验光单获取失败!",
+          type: "error"
+        });
+        // return false;
+      }
+      var _this = this;
+      // Object.keys(_this.selectProductSku).forEach(element => {
+      //    _this.selectProductSku[element]
+      // });
+      this.selectProductSku.type = _this.type;
+      this.selectProductSku.wareh = "";
+      this.selectProductSku.cylinder = "";
+      this.selectProductSku.productSkuData = "";
+      this.selectProductSku.product = "";
+      if (type == 1) {
+        this.selectProductSku.selectSP = "";
+        this.showSelectRH = true;
+        this.selectProductSku.title = "选择右镜片";
+        // this.selectProductSku.cylinder=_this.selectProductSku.selectR;柱镜==度数model干嘛
+        // var where = '右镜片：'
+        for (var i = 0; i < this.optometryData.length; i++) {
+          if (
+            this.optometryData[i].key != "0" &&
+            this.optometryData[i].key != "1"
+          ) {
+            if (this.optometryData[i].value[0].sph != "") {
+              this.eyesdata.sph = this.optometryData[i].value[1].sph;
+              this.eyesdata.cyl = this.optometryData[i].value[1].cyl;
+              this.eyesdata.add = this.optometryData[i].value[1].add;
+              break;
+            }
+          }
+        }
+      } else if (type == 2) {
+        this.showSelectRH = true;
+        this.selectProductSku.title = "选择左镜片";
+        // this.selectProductSku.cylinder=_this.selectProductSku.selectL;
+        // var where = '左镜片：'
+        for (var i = 0; i < this.optometryData.length; i++) {
+          if (
+            this.optometryData[i].key != "0" &&
+            this.optometryData[i].key != "1"
+          ) {
+            if (this.optometryData[i].value[0].sph != "") {
+              this.eyesdata.sph = this.optometryData[i].value[0].sph;
+              this.eyesdata.cyl = this.optometryData[i].value[0].cyl;
+              this.eyesdata.add = this.optometryData[i].value[0].add;
+              break;
+            }
+          }
+        }
+      } else if (type == 3) {
+        // var where = '商品：'
+        this.selectProductSku.selectR = "";
+        this.selectProductSku.selectL = "";
+        this.showSelectShop = true;
+        this.selectProductSku.product = this.selectProductSku.selectSP;
+        this.eyesdata.sph = "";
+        this.eyesdata.cyl = "";
+      } else if (type == null) {
+        // console.log('null')
+      } else {
+        // console.log('else')
+      }
+      if (degress && bool) {
+        _this.searchStr = degress;
+      } else if (degress == undefined && bool == undefined) {
+        //如果不是镜片度数搜索
+        _this.searchStr = "";
+      }
+      let code = [];
+      if(_this.selectBrand.varieties !='' && type!='3'){
+          code=[_this.selectBrand.varieties,_this.selectBrand.brand,'']
+      }else{
+        if (_this.type == "") {
+          code = ["C002", "", ""];
+        } else {
+          code = ["C001", "", ""];
+        }
+      }
+      setTimeout(() => {
+        _this
+          .$axios({
+            url: "http://myc.qineasy.cn/pos-api/productSku/list",
+            method: "post",
+            params: {
+              //
+              jsonObject: {
+                sphere: _this.eyesdata.sph,
+                cylinder: _this.eyesdata.cyl,
+                addLight: "",
+                color: "",
+                colorCode: "",
+                categoryCode: code,
+                product: _this.searchStr.replace(/\+/g, "%2B"),
+                type: _this.type,
+                wareh: _this.selectProductSku.wareh,
+                nub:
+                  _this.selectProductSku.nub == 1
+                    ? 0
+                    : (_this.selectProductSku.nub - 1) *
+                      _this.selectProductSku.size,
+                size: _this.selectProductSku.size
+              },
+              keyParams: {
+                weChat: true,
+                userId: JSON.parse(localStorage.getItem("userData")).userId,
+                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              }
+            }
+          })
+          .then(function(res) {
+            // console.log('查询镜片完毕',res.data)
+            if (res.data.code == 1) {
+              _this.selectProductSku.productSkuData = res.data.data;
+            } else {
+              _this.$message({
+                type: "error",
+                message: res.data.msg,
+                showClose: true
+              });
+            }
+            // let list = _this.selectProductSku.productSkuData.list;
+            // for(var i = 0;i<list.length;i++){
+            //     list[i].skuName2 = where+list[i].skuName;
+            // }
+          });
+      }, 0);
+    },
+    //商品镜片列表点击查询
+    rhtWareHouse(value) {
+      // console.log(value)
+      this.selectProductSku.wareh = value.wareh || "";
+      this.selectProductSku.product = value.product || "";
+      this.selectProductSku.categoryCode = value.categoryCode || "";
+      var _this = this;
+      console.log(value);
+      if (value.product) {
+        _this.searchStr = value.product;
+      }
+      setTimeout(() => {
+        _this
+          .$axios({
+            url: "http://myc.qineasy.cn/pos-api/productSku/list",
+            method: "post",
+            params: {
+              jsonObject: {
+                sphere: "",
+                cylinder: _this.selectProductSku.cylinder,
+                type: _this.type,
+                addLight: "",
+                color: "",
+                colorCode: "",
+                categoryCode: _this.selectProductSku.categoryCode,
+                product: _this.searchStr || _this.selectProductSku.product,
+                wareh: _this.selectProductSku.wareh,
+                nub:
+                  _this.selectProductSku.nub == 1
+                    ? 0
+                    : (_this.selectProductSku.nub - 1) *
+                      _this.selectProductSku.size,
+                size: _this.selectProductSku.size
+              },
+              keyParams: {
+                weChat: true,
+                userId: JSON.parse(localStorage.getItem("userData")).userId,
+                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              }
+            }
+          })
+          .then(function(res) {
+            if(res.data.code == 1){
+              _this.selectProductSku.productSkuData = res.data.data;
+            }else{
+              _this.$message({
+                    showClose: true,
+                    message: res.data.msg,
+                    type: 'error'
+                  })
+            }
+          });
+      }, 0);
+    },
+    getProductSku(info) {
+      console.log("info", info);
+      this.$nextTick(() => {
+        this.selectProductSku.nub = info.nub;
+        this.selectProductSku.productSkuData.count = info.productSkuData.nub;
+        this.selectGlass();
+      });
+    },
+     changesSelect(type){
+            let _this = this;
+            let id = '';
+            // console.log(this.selectBrand)
+            switch ((type).toString()) {
+              case '1':
+              _this.selectBrand.varieties= '';
+              _this.varietiesArr= [];
+              _this.selectBrand.brand = '';
+              _this.brandArr = [];
+              case '2':
+                  id=this.selectBrand.varieties;
+                  _this.selectBrand.brand='';
+                _this.brandArr = [];
+                break;
 
-            //获取公共select options
-            getPublicSelect(type,options){
-                if(options==''){
-                    // console.log("1")
-                }else{
-                    // console.log("2")
+          }
+           _this.$myAjax({
+                url: 'pos-api/productCategory/list',
+                data: {
+                        productCategoryId: id
                 }
-                var _this = this;
-                _this.$axios({
-                    url: 'http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList',
-                    method: 'post',
-                    params: {
-                        jsonObject: {
-                            pid:'',
-                            id:'',
-                            type: type
-                            //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
-                        },
-                        keyParams: {
-                            weChat: true,
-                            userId: JSON.parse(localStorage.getItem("userData")).userId,
-                            orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-                        }
-                    }
-                })
-                .then(function (response) {
-                    _this.selectOptions=response.data.data.list;
-                })
-            },
-            //选择镜片 商品
-            selectGlass(type,degress,bool){
-                if(this.optometryData==null){
-                    this.$message({
-                        showClose: true,
-                        message: '验光单获取失败!',
-                            type: 'error'
-                    })
-                    // return false;
-                }
-                var _this= this;
-                // Object.keys(_this.selectProductSku).forEach(element => {
-                //    _this.selectProductSku[element]
-                // });
-                this.selectProductSku.type=_this.type;
-                this.selectProductSku.wareh='';
-                this.selectProductSku.cylinder='';
-                this.selectProductSku.productSkuData='';
-                this.selectProductSku.product="";
-                if(type==1){
-                    this.selectProductSku.selectSP='';
-                    this.showSelectRH=true;
-                    this.selectProductSku.title="选择右镜片";
-                    // this.selectProductSku.cylinder=_this.selectProductSku.selectR;柱镜==度数model干嘛
-                    // var where = '右镜片：'
-                    for(var i=0;i<this.optometryData.length;i++){
-                        if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
-                            if(this.optometryData[i].value[0].sph!=''){
-                                this.eyesdata.sph=this.optometryData[i].value[1].sph;
-                                this.eyesdata.cyl=this.optometryData[i].value[1].cyl;
-                                this.eyesdata.add=this.optometryData[i].value[1].add;
-                                break;
-                            }
-                        }
-                    }
-                }else if(type==2){
-                    this.showSelectRH=true;
-                    this.selectProductSku.title="选择左镜片"
-                    // this.selectProductSku.cylinder=_this.selectProductSku.selectL;
-                    // var where = '左镜片：'
-                    for(var i=0;i<this.optometryData.length;i++){
-                        if(this.optometryData[i].key!='0'&&this.optometryData[i].key!='1'){
-                            if(this.optometryData[i].value[0].sph!=''){
-                                this.eyesdata.sph=this.optometryData[i].value[0].sph;
-                                this.eyesdata.cyl=this.optometryData[i].value[0].cyl;
-                                this.eyesdata.add=this.optometryData[i].value[0].add;
-                                break;
-                            }
-                        }
-                    }
-                }else if(type==3){
-                    // var where = '商品：'
-                    this.selectProductSku.selectR='';
-                    this.selectProductSku.selectL='';
-                    this.showSelectShop=true;
-                    this.selectProductSku.product=this.selectProductSku.selectSP;
-                    this.eyesdata.sph= ''
-                    this.eyesdata.cyl=''
-                }else if(type==null){
-                    // console.log('null')
-                }else{
-                    // console.log('else')
-                }
-                if(degress && bool){
-                    _this.searchStr = degress
-                }else if(degress == undefined&&bool ==undefined){//如果不是镜片度数搜索
-                    _this.searchStr = ''
-                }
-                let code = null;
-                if(_this.type == ''){
-                    code = ['C002','','']
-                }else{
-                    code = ['C001','','']
-                }
-                setTimeout(() => {
-                    _this.$axios({
-                        url: 'http://myc.qineasy.cn/pos-api/productSku/list',
-                        method: 'post',
-                        params: {//
-                            jsonObject: {
-                                sphere:_this.eyesdata.sph,
-                                cylinder:_this.eyesdata.cyl,
-                                addLight:'',
-                                color:'',
-                                colorCode:'',
-                                categoryCode:code,
-                                product:_this.searchStr.replace(/\+/g,"%2B"),
-                                type:_this.type,
-                                wareh:_this.selectProductSku.wareh,
-                                nub: (_this.selectProductSku.nub==1?0:(_this.selectProductSku.nub-1)*_this.selectProductSku.size),
-                                size: _this.selectProductSku.size
-                            },
-                            keyParams: {
-                                weChat: true,
-                                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                                orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-                            }
-                        }
-                    })
-                    .then(function (res) {
-                        // console.log(res)
-                        if(res.data.code == 1){
-                            _this.selectProductSku.productSkuData=res.data.data;
-                        }else{
-                             _this.$message({
-                                type:'error',
-                                message:res.data.msg,
-                                showClose: true,
-                            })
-                        }
-                        // let list = _this.selectProductSku.productSkuData.list;
-                        // for(var i = 0;i<list.length;i++){
-                        //     list[i].skuName2 = where+list[i].skuName;
-                        // }
-
-                    })
-                }, 0);
-
-            },
-            //商品镜片列表点击查询
-            rhtWareHouse(value){
-                // console.log(value)
-                this.selectProductSku.wareh=value.wareh||"";
-                this.selectProductSku.product=value.product||"";
-                this.selectProductSku.categoryCode=value.categoryCode||"";
-                var _this = this;
-                console.log(value)
-                if(value.product){
-                    _this.searchStr = value.product;
-                }
-                setTimeout(() => {
-                    _this.$axios({
-                        url: 'http://myc.qineasy.cn/pos-api/productSku/list',
-                        method: 'post',
-                        params: {
-                            jsonObject: {
-                                sphere:'',
-                                cylinder:_this.selectProductSku.cylinder,
-                                type:_this.type,
-                                addLight:'',
-                                color:'',
-                                colorCode:'',
-                                categoryCode:_this.selectProductSku.categoryCode,
-                                product:_this.searchStr||_this.selectProductSku.product,
-                                wareh:_this.selectProductSku.wareh,
-                                nub: (_this.selectProductSku.nub==1?0:(_this.selectProductSku.nub-1)*_this.selectProductSku.size),
-                                size: _this.selectProductSku.size
-                            },
-                            keyParams: {
-                                weChat: true,
-                                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                                orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-                            }}
-                    }).then(function (response) {
-                        _this.selectProductSku.productSkuData=response.data.data;
-                    })
-                }, 0);
-            },
-            getProductSku(info){
-                console.log('info',info)
-                this.$nextTick(() => {
-                    this.selectProductSku.nub=info.nub;
-                    this.selectProductSku.productSkuData.count=info.productSkuData.nub;
-                    this.selectGlass();
-                });
-            },
-            //选择商品后进行关闭弹窗计算
-            selectSku(value,nums){
-                console.log('选择商品后进行渲染',value)
-                let _this = this;
-                if(value.status == '1'){
-                    let title=''
-                    if(this.custom =='right'){
-                        title = '右镜片-定做单：'
-                    }else if(this.custom == 'left'){
-                        title = '左镜片-定做单：'
-                    }else {
-                        title = '商品-定做单：'
-                    }
-                    value.skuName =  title;
-                    value.skuName3 = title+'定做单号：<span class="readContent">'+value.customId+'</span>定做需求：'+value.customMessage;
-                    value.skuName2 = title+'定做需求：'+value.customMessage;
-                    value.value1!=''?value.skuName3+='球镜:'+value.value1+' ':value.skuName3;
-                    value.value2!=''?value.skuName3+='柱镜:'+value.value2+' ':value.skuName3;
-                    value.value3!=''?value.skuName3+='下加光:'+value.value3+' ':value.skuName3;
-                    value.classid!=''?value.skuName3+=value.classid+' ':value.skuName3;
-                    value.varietyid!=''?value.skuName3+=value.varietyid+' ':value.skuName3;
-                    value.brandid!=''?value.skuName3+=value.brandid+' ':value.skuName3;
-                    value.specificationid!=''?value.skuName3+=value.specificationid:value.skuName3;
-                    value.value1!=''?value.skuName2+='球镜:'+value.value1+' ':value.skuName2;
-                    value.value2!=''?value.skuName2+='柱镜:'+value.value2+' ':value.skuName2;
-                    value.value3!=''?value.skuName2+='下加光:'+value.value3+' ':value.skuName2;
-                    value.classid!=''?value.skuName2+=value.classid+' ':value.skuName2;
-                    value.varietyid!=''?value.skuName2+=value.varietyid+' ':value.skuName2;
-                    value.brandid!=''?value.skuName2+=value.brandid+' ':value.skuName2;
-                    value.specificationid!=''?value.skuName2+=value.specificationid:value.skuName2;
-
-                    value.sku = "--";
-                    // value.orderPromotionId='';
-                }else if(value.status == '2'){
-                    let title = '自带';
-                    if(value.where == '2'){
-                        title = title+'镜架：'
-                    }else{
-                        if(value.lens == 'left'){
-                            title = title+'左镜片：'
-                        }else if(value.lens == 'right'){
-                            title = title+'右镜片：'
-                        }
-                    }
-                    value.skuName =  title+value.message;
-                    value.skuName2 = title+value.message;//显示
-                    value.sku="--";
-                    value.realSale = '0';
-                }
-                if(!value.status){
-                    console.log('点击类型status',value.status)
-                    this.where == 'shop'?value.skuName2=value.skuName: (this.where=='left'?value.skuName2='左'+value.skuName:value.skuName2='右'+value.skuName)
-                }
-                console.log('渲染后的value',value)
-                let alldis = _this.allDisCount;
-                if(alldis != '' && typeof parseFloat(alldis) == 'number'){
-                    value.realSale =  ((value.discount * value.price)/10).toFixed(2);
-                }
-                 if(!nums){
-                     if(value.status !=3){
-                        value.nums = 1;
-                     }
-                 }
-                 if(this.allDisCount>0){//添加商品的时候如果有整单折扣
-                    this.addShop = true
-                 }
-                _this.tableData.push(value);
-                _this.showSelectRH = false;
-                _this.customizeRH = false;
-                _this.showSelectShop = false;
-                _this.computedPay();
-            },
-            //计算价格区域
-            computedPay(alldiscount){
-                let _this = this;
-                let countSale = 0;
-                let n = 0;
-                // _this.allDisCount = '';
-                // console.log(_this.tableData)
-                _this.extraMoney = 0;
-                for(let i=0;i<_this.tableData.length;i++){//循环计算价格
-                    if(_this.tableData[i].status!='2'&&_this.tableData[i].status!='3'){
-                        let thisSale =  parseFloat(_this.tableData[i].realSale);
-                        countSale = countSale+thisSale
-                    }
-                    if(_this.tableData[i].status!='3'){
-                        n+=parseInt(_this.tableData[i].nums);
-                    }
-                    if(_this.tableData[i].status=='3'){//其他费用
-                        _this.extraMoney+=parseFloat(_this.tableData[i].realSale)
-                    }
-                }
-                if(_this.actionCost.actionId){
-                    if(_this.actionCost.money){
-                        countSale = countSale - _this.actionCost.money;//优惠金额后
-                    }else if(_this.actionCost.discount){
-                        countSale =parseFloat(countSale*_this.actionCost.discount/10).toFixed(2);//打折后价格
-                        _this.actionCost.discountMoney =( (1 - parseFloat(_this.actionCost.discount)/10)*countSale).toFixed(2);//打折优惠金额
-                    }
-                }
-                this.amountSale = parseFloat(countSale).toFixed(2);//原价合计
-
-                if((_this.conponResponse.amount>0 || _this.conponResponse.discount >0)){//如果有优惠券
-                    // 金额||折扣
-                    if(_this.conponResponse.amount>0 ){//按固定金额算
-                        _this.conponDiscountMoney = _this.conponResponse.amount;
-                        countSale = countSale - _this.conponResponse.amount;//优惠价 = 无折扣前 - 优惠价↓
-                    }else if(_this.conponResponse.discount >0){//按折扣算
-                        let conpon = parseFloat(countSale*_this.conponResponse.discount/10).toFixed(2);
-                        _this.conponDiscountMoney = (parseFloat(countSale)-conpon).toFixed(2);
-                        countSale = conpon;
-                    }
-                }
-                if(_this.selectMember.memberInfo!=null){//如果有会员id
-                     if(_this.selectMember.memberInfo.discount<1){
-                            _this.discountFlag = 0;
-                     }
-                    var difference = (_this.memberShipDisCount*countSale).toFixed(2); //会员价 = 会员价格 * 总价
-                    let memberDisCount = (countSale - difference).toFixed(2);//会员折扣差价 = 总金额 - 会员价
-                    _this.memberShipDisCountSale = memberDisCount
-                    countSale = countSale - parseFloat(memberDisCount); //会员价
-                }
-                _this.numCount = n;
-                _this.saleCount = Math.round(parseFloat(countSale)*100)/100;//无整单折扣情况下
-
-                if(_this.addShop||alldiscount=='alldiscount'){
-                    if(_this.allDisCount >0){
-                         _this.discountSale = parseFloat(_this.saleCount - (_this.allDisCount*_this.saleCount)/10).toFixed(2);
-                        //最后价格 = 整单折扣前 * 折扣 ↓
-                        _this.saleCount = (_this.allDisCount/10 * _this.saleCount).toFixed(2);
-                    }
-                }
-            },
-            //商品折扣发生变化
-            changePrice(value,type,index){
-                // this.allDisCount = '';
-                this.discountSale = '';
-                if(type==1){
-                    value.realSale=parseFloat(value.price*value.discount/10).toFixed(2);
-                }else{
-                    value.realSale=parseFloat(value.price/value.discount*10).toFixed(2);
-                }
-                 this.tableData.splice(index,1,value);
-                this.computedPay('alldiscount');
-            },
-            confirmAllDiscount(value){
-                if(value){
-                    if(parseFloat(this.allDisCount) > 0 ){//有整单折扣
-                        this.addShop = false;
-                        this.computedPay();
-                        // //整单折扣金额差价 = 折扣前 - 折扣后↓
-                        this.discountSale = parseFloat(this.saleCount - (this.allDisCount*this.saleCount)/10).toFixed(2);
-                        //最后价格 = 整单折扣前 * 折扣 ↓
-                        this.saleCount = (this.allDisCount/10 * this.saleCount).toFixed(2);
-                        // let discount = _this.tableData;
-                        // for(var i=0;i<discount.length;i++){
-                        //     discount[i].discount = parseFloat(_this.allDisCount);
-                        //     discount[i].realSale = (discount[i].discount*discount[i].price/10).toFixed(2);
-                        // }
-                        // // console.log(discount)
-                        // _this.tableData = [];
-                        // _this.tableData = discount;
-                        // _this.computedPay();
-                    }
-                }else{
-                    this.allDisCount = '';
-                    this.discountSale = '';
-                    this.computedPay();
-                }
-            },
-            //整单折扣
-            afterDiscount(){
-                let _this = this ;
-                _this.permission=true;
-            },
-            //获取用户验光单列表
-            getOptometryRecordList(memberId) {
-                var that = this;
-                that.$axios({
-                url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsList',
-                method: 'post',
-                params: {
-                    jsonObject: {
-                        memberId: memberId||this.selectMember.memberInfo.memberId
-                    },
-                    keyParams: {
-                        weChat: true
-                    }
-                }
-                })
-                .then(function (response) {
-                    if(response.data.code=='1'){
-                        // console.log(response.data.data.list)
-                        that.optometryList=response.data.data.list;
-                    }else{
-                        that.$message({
-                            showClose: true,
-                            message: response.data.msg,
-                                type: 'error'
-                        })
-                    }
-                })
-                .catch(function (error) {
-                    console.info(error)
-                })
-            },
-            //取得该次验光单信息
-            getPrescriptions(id){
-                var that = this;
-                that.$axios({
-                url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptions',
-                method: 'post',
-                params: {
-                    jsonObject: {
-                        prescriptionId: id||this.optometryId
-                    },
-                    keyParams: {
-                        weChat: true
-                    }
-                }
-                })
-                .then(function (response) {
-                    if(response.data.code==1&&response.data.data.eyes.length>0){
-                        that.optometryData=response.data.data.eyes;
-                        that.optometryId=response.data.data.prescriptions.prescriptionId;
-                        that.optometryTime=response.data.data.prescriptions.prescriptionTime;
-                        that.getOptometryRecordList();
-                        that.includeOptometry();
-                    }else{
-                        that.$message({
-                            showClose: true,
-                            message: response.data.msg,
-                                type: 'error'
-                        })
-                    }
-                })
-                .catch(function (error) {
-                    console.info(error)
-                })
-            },
-
-            //获取用户最后一次验光单信息,搜索会员后调用验光单信息
-            getOptometryRecord() {
-                var _this = this;
-                _this.$axios({
-                url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately',
-                method: 'post',
-                params: {
-                    jsonObject: {
-                        memberId: this.selectMember.memberInfo.memberId
-                    },
-                    keyParams: {
-                        weChat: true
-                    }
-                }
-                })
-                .then(function (response) {
-                    if(response.data.code==1&&response.data.data.eyes.length>0){
-                        _this.showSelectMember=false;
-                        _this.isOptometryDialogVisible=true;
-                        _this.optometryData=response.data.data.eyes;
-                        _this.optometryId=response.data.data.prescriptions.prescriptionId;
-                        _this.optometryTime=response.data.data.prescriptions.prescriptionTime;
-                    }else{
-                        _this.isOptometryDialogVisible = true;
-                        _this.$message({
-                            showClose: true,
-                            message: response.data.msg,
-                                type: 'warning'
-                        });
-                        _this.includeOptometryData = null;
-                        _this.showSelectMember = false ;
-                    }
-                })
-                .catch(function (error) {
-                    console.info(error)
-                })
-            },
-            //回车查询会员
-            key13GetMemberInfo(){
-                var _this=this;
-                setTimeout(() => {
-                    if(_this.selectMember.selectM.length==11){
-                        _this.$axios({
-                            url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
-                            method: 'post',
-                            params: {
-                                jsonObject: {
-                                    seachCode:_this.selectMember.selectM,
-                                    size:5,
-                                    nub:0
-                                },
-                                keyParams: {
-                                    weChat: true,
-                                    userId: JSON.parse(localStorage.getItem("userData")).userId,
-                                    orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-                                }
-                            }
-                        })
-                        .then(function (response) {
-                            if(response.data.code==1){
-                                // console.log(response)
-                                // _this.isOptometryDialogVisible = false;
-                                // _this.includeOptometry()
-                                _this.getMemberInfo(response.data.data.memberList[0])
-                            }else{
-                                _this.$message({
-                                    showClose: true,
-                                    message: '会员信息获取失败',
-                                        type: 'error'
-                                })
-                            }
-                        })
-                    }
-                }, 0);
-            },
-            //选择会员子组件返回函数 获取用户信息
-            getMemberInfo(value,bool){//bool作为挂单直接导入，
-                this.selectMember.memberInfo=value
-                this.memberShipDisCount=this.selectMember.memberInfo.discount;
-                this.conpon();//选择用户后，获取优惠券信息
-                this.computedPay();//如果选择用户前选择商品了就再次进行计算
-                // this.allDisCount='';//整单折扣归零,重新输入进行计算
-                if(value&&!bool){
-                    this.getOptometryRecord();
-                    this.getOptometryRecordList();
-                }
-            },
-            //使用优惠券
-            receiveconpon(data){
-                this.CouponBarCode = false;
-                if(data.couponModality == '0'){
-                    data.amount =  '';
-                }else if(data.couponModality =='1'){
-                    data.discount ='';
-                }
-                console.log(data)
-                this.conponResponse = data;
-                this.computedPay()
-            },
-            //优惠券信息获取
-            conpon(){
-                let _this = this;
-                _this.$axios({
-                    url:'http://myc.qineasy.cn/coupon-api/newCouponMsg/getMyAllCoupon',
-                    method:'post',
-                    params:{
-                        jsonObject:{
-                        memberCardNo:_this.selectMember.memberInfo.memberCardNo,//会员卡号
-                        // orgScope:'',//适用门店编号
-                        // couponMsgId:'',//优惠券信息Id
-                        // couponNo:'',//优惠券编号
-                        // fullAmount:'',//满额条件 0没有门槛
-                        // couponState:'',//卡券状态
-                        // activeTime:'',//当天时间，是否当天可用
-                        // nub:'',//分页起始位
-                        // size:'',//每页条数
-                        },
-                    keyParams: {
-                        weChat: true
-                    }
-                }
-                })
-                .then(function(res){
-                    if(res.data.code == 1){
-                        _this.conponData = res.data.data;
-                    }else{
-                         _this.$message({
-                                showClose: true,
-                                message: '请求数据出问题喽，请重试！',
-                                type: 'error'
-                            })
-                    }
-
-                }).catch(function(err){
+            ,success:function(res){
+                  if (res.code != '1') {
                     _this.$message({
-                                showClose: true,
-                                message: '请求数据出问题喽，请重试！',
-                                type: 'error'
-                            })
-                })
-
-            },
-            //获取新增验光单信息
-            getNewoptometry(value){
-                console.log(value)
-                this.showNewOptometry=false;
-                this.getPrescriptions(value.prescriptions.prescriptionId);
-                // this.optometryData=value.eyes;
-                // this.optometryId=value.prescriptions.prescriptionId;
-                // this.optometryTime=value.prescriptions.prescriptionTime;
-                // console.log(this.optometryId, this.optometryTime)
-                // this.includeOptometry();
-            },
-            //录入验光单信息
-            includeOptometry(){
-                var _this=this;
-                console.log('录入验光单信息',_this.optometryData)
-                if(_this.optometryData!=null){
-                    var tableArr=[];
-                    _this.optometryData.forEach(element => {
-                        if(element.key!="0"&&element.key!="1"){
-                        var tArr=[];
-                        var keys=[];
-                        var lData=[];
-                        var rData=[];
-                            for(var item in element.value[1]){
-                                delete element.value[0].leftRight;
-                                delete element.value[0].perscriptionType;
-                                delete element.value[0].prescriptionId;
-                                delete element.value[0].prescriptionEye;
-                                delete element.value[0].nub;
-                                delete element.value[0].size;
-                                delete element.value[1].nub;
-                                delete element.value[1].size;
-                                delete element.value[1].prescriptionEye;
-                                delete element.value[1].leftRight;
-                                delete element.value[1].perscriptionType;
-                                delete element.value[1].prescriptionId;
-
-                                tArr.push(
-                                    {
-                                        keys:item,
-                                        lData:element.value[0][item],
-                                        rData:element.value[1][item]
-                                    }
-                                )
-                            }
-                        var name;
-                        switch ((element.key).toString()) {
-                            // case '0':
-                            //     name='检影';
-                            //     break;
-                            // case '1':
-                            //     name='主观';
-                            //     break;
-                            case '2':
-                                name='远用';
-                                break;
-                            case '3':
-                                name='近用';
-                                break;
-                            case '4':
-                                name='渐进';
-                                break;
-                            case '5':
-                                name='隐形';
-                                break;
-                            default:
-                                break;
-                        }
-                            tableArr.push({item:tArr,name:name})
-                        }
-                    });
-                    if(tableArr)
-                    _this.includeOptometryData=tableArr;
-                    // console.log(_this.includeOptometryData)
-                }
-            },
-            //刷新页面
-            resetPage(){
-                location.reload();
-            },
-            //取单操作
-            openOrder(data){
-                // console.log(data)
-                let _this = this;
-                _this.showGetBill = false;
-                if(data.memberId != '0'){
-                        setTimeout(() => {
-                            _this.$myAjax({
-                                url: 'member-api/member/getMemberListByBoYang',
-                                data: {
-                                        memberId:data.memberId,
-                                        size:5,
-                                        nub:0
-                                },
-                                success:function(res){
-                                    if(res.code==1){
-                                        _this.getMemberInfo(res.data.memberList[0],true)
-
-                                    }else{
-                                        _this.$message({
-                                            showClose: true,
-                                            message: '会员信息获取失败',
-                                                type: 'error'
-                                        })
-                                    }
-                                }
-                            });
-                            _this.$myAjax({//验光单信息获取
-                                url:'pos-api/prescriptions/getPrescriptions',
-                                data:{
-                                    prescriptionId:data.prescriptionsId
-                                },
-                                success:function(res){
-                                        if(res.code != 1 &&res.data.eyes.length == 0) {return false}
-                                        _this.optometryData=res.data.eyes;
-                                        _this.optometryId=res.data.prescriptions.prescriptionId;
-                                        _this.optometryTime=res.data.prescriptions.prescriptionTime;
-                                        _this.getOptometryRecordList(data.memberId);
-                                        _this.includeOptometry();
-                                },
-                                error:function(err){
-                                    console.log(err)
-                                    _this.$message({
-                                        showClose: true,
-                                        message: err.msg,
-                                            type: 'error'
-                                    })
-                                }
-                            })
-                    }, 0);
-                }
-                _this.tableData = []
-
-                for(let i = 0 ; i<data.orderItems.length;i++){
-                    // //备注，取镜方式，操作人
-                    let obj=new Object();
-                    obj.status = data.orderItems[i].productMold;
-                    obj.skuName2 = data.orderItems[i].itemName;
-                    obj.skuName = data.orderItems[i].itemName;
-                    obj.nums = data.orderItems[i].quantity;
-                    obj.price = parseFloat(data.orderItems[i].price)||'0';
-                    obj.discount = data.orderItems[i].discountRate;
-                    obj.realSale = data.orderItems[i].status == 3?data.orderItems[i].price: data.orderItems[i].money;
-                    obj.status = data.orderItems[i].productMold;
-                    if(data.orderItems[i].productMold == '0'){
-                        obj.productId = data.orderItems[i].itemId;
-                        obj.sku = data.orderItems[i].itemNo;
-                        obj.warehouseId = data.orderItems[i].warehouseId;
-                        obj.stockId = data.orderItems[i].stockId||'';
-                        obj.allotQuantity = data.orderItems[i].stockQuantityNo;
-                        obj.classId = data.orderItems[i].productType;
-                        obj.quantity = data.orderItems[i].stockQuantity;
-                    }else if(data.orderItems[i].productMold == '1'){//定做
-                        obj.customId = data.orderItems[i].orderReceiptId;
-                        obj.classId = data.orderItems[i].productType;
-                    }else if(data.orderItems[i].productMold == '2'){//自带
-                            delete obj.discount
-                    }else if(data.orderItems[i].productMold == '3'){//其他
-                            delete obj.discount
-                    }
-                    _this.tableData.push(obj)
-                }
-                console.log('取单、重新开单商品列表',_this.tableData)
-                _this.computedPay();
-            },
-            //添加会员 子组件返回事件 提交表单信息，data为从子组件取到的数据
-            memberAddSubmit: function (formdata) {
-                var _this = this;
-                _this.isSubmit = !_this.isSubmit;
-                if (formdata.name != '' && formdata.telphone != '' && formdata.birthday != '' && formdata.sex != '') {
-                    _this.$axios({
-                        url: 'http://myc.qineasy.cn/member-api/member/addMember',
-                        method: 'post',
-                        params: {
-                            jsonObject: formdata,
-                            keyParams: {
-                                weChat: true,
-                                userId:JSON.parse(localStorage.getItem("userData")).userId,
-                                orgId:JSON.parse(localStorage.getItem("userData")).orgId,
-                            }
-                        }
-                    })
-                    .then(function (response) {
-                        if (response.data.code != '1') {
-                            _this.$message({
-                                showClose: true,
-                                message: response.data.msg,
-                                type: 'error'
-                            })
-                            return false;
-                        } else {
-                            _this.addMember = false;
-                            _this.MemberInfoForAdd(response.data.data.memberId)
-                            _this.$message({
-                                showClose: true,
-                                message: '新增会员成功',
-                                type: 'success'
-                            });
-                        }
-                    })
-                    .catch(function (error) {
-                        console.info(error)
-                        _this.$message({
-                            showClose: true,
-                            message: error,
-                            type: 'error'
-                        })
-                    })
-                } else {
-                    _this.$message({
-                        showClose: true,
-                        message: '请输入完整信息',
-                        type: 'error'
-                    })
-                }
-            },
-            //定做商品title
-            showTitle(value){
-                let _this = this;
-                console.log(value)
-               _this.customizeRH=true;
-                    if(value== 'left'){
-                        _this.custom='left';
-                        _this.customText = '定做-左镜片'
-                         _this.$nextTick(()=>{
-                            _this.$refs.customs.initSelect(2);
-                        })
-                    }else if(value=='right'){
-                        _this.custom='right';
-                        _this.customText = '定做-右镜片';
-                        _this.$nextTick(()=>{
-                            _this.$refs.customs.initSelect(2);
-                        })
-                    }else if(value == 'shop'){
-                        _this.custom='shop';
-                        _this.customText = '定做-商品';
-                        _this.$nextTick(()=>{
-                            _this.$refs.customs.initSelect(1);
-                        })
-                    }
-
-            },
-            //新增验光单后获取用户信息录入到页面
-            MemberInfoForAdd(memberId){
-                var _this=this;
-                _this.$axios({
-                    url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
-                    method: 'post',
-                    params: {
-                        jsonObject: {
-                            seachCode:memberId
-                        },
-                        keyParams: {
-                            weChat: true,
-                            userId: JSON.parse(localStorage.getItem("userData")).userId,
-                            orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-                        }
-                    }
-                })
-                .then(function (response) {
-                    if(response.data.code==1){
-                        _this.getMemberInfo(response.data.data.memberList[0]);
-                    }else{
-                        _this.$message({
-                            showClose: true,
-                            message: '会员信息获取失败',
-                                type: 'error'
-                        })
-                    }
-                })
-            },
-            //开单
-            addOrderTemp(types){//type = -1 挂单
-                var _this=this;
-                if(this.selectMember.memberInfo==null){
-                    _this.$message({
-                        showClose: true,
-                        message: '会员信息获取失败',
-                            type: 'warning'
-                    })
-                    // return false;
-                }
-                if(!this.optometryId){
-                    // _this.$message({
-                    //     showClose: true,
-                    //     message: '验光单信息获取失败',
-                    //         type: 'error'
-                    // })
-                    // return false;
-                }
-                var orderItemsList=[];
-                console.log(this.tableData)
-                for(var item in this.tableData){
-                    orderItemsList.push({
-                        itemId:this.tableData[item].productId,//商品sku码
-                        itemName:this.tableData[item].skuName2,//明细名称
-                        proMemo:this.tableData[item].skuName,
-                        quantity:this.tableData[item].nums,//数量
-                        discountRate:this.tableData[item].discount,//折扣比率
-                        orderPromotionId:'',//订单营销活动id
-                        listPrice:this.tableData[item].price,//原价
-                        roundFlag:"1",//商品取整
-                        itemNo:this.tableData[item].sku,//商品编码
-                        warehouseId:this.tableData[item].warehouseId,//仓库id
-                        orderReceiptId:this.tableData[item].customId||'',//定做单id
-                        stockId:this.tableData[item].stockId||'',//库存id
-                        refundId:this.tableData[item].refundId,
-                        stockQuantity:this.tableData[item].quantity,//总库存
-                        productType:this.tableData[item].classId,//商品类型 镜片镜架...
-                        stockQuantityNo:this.tableData[item].allotQuantity,//可分配库存
-                        productMold:this.tableData[item].status||'0',//商品类型，前端自定义 0普通商品 1定做 2自带 3其他 4套餐
-                        // price:this.tableData[item].realSale,//实售单价
-                    })
-
-                }
-                console.log(orderItemsList)
-                if(orderItemsList==''){
-                    _this.$message({
-                        showClose: true,
-                        message: '商品信息获取失败',
-                            type: 'error'
+                      showClose: true,
+                      message: '请求数据出问题喽，请重试！',
+                      type: 'error'
                     })
                     return false;
+                  } else {
+                      switch ((type).toString()) {
+                        case '1':
+                              let list = [];
+                              for(var i=0;i<res.data.productCategoryList.length;i++){
+                                  if(res.data.productCategoryList[i].productCategoryId == "C001"||res.data.productCategoryList[i].productCategoryId == "C004"){
+                                    list.push(res.data.productCategoryList[i]);
+                                  }
+                              }
+                              _this.varietiesArr=list;
+                          case '2':
+                              _this.brandArr=res.data.productCategoryList;
+                              break;
+                          default:
+                              break;
+                      }
+                  }
+                },error:function(err){
+                  console.info(err);
+                  _this.$message({
+                    showClose: true,
+                    message: '请求数据失败，请联系管理员',
+                    type: 'error'
+                  })
                 }
-
-                let memberId = '';//会员id
-                if(_this.selectMember.memberInfo){
-                    memberId = _this.selectMember.memberInfo.memberId
-                }
-                let memberDiscount = 10;//会员卡折扣  游客默认10 满折
-                if(_this.selectMember.memberInfo){
-                    console.log('会员信息',this.selectMember.memberInfo)
-                    memberDiscount = (parseFloat(this.selectMember.memberInfo.discount*10)).toFixed(2)
-                }
-                let alldis = this.allDisCount;//整单折扣
-                if(alldis  == ''){
-                    alldis = "10";
-                }
-                let coupon = this.conponDiscountMoney;//卡券优惠金额
-                if(!coupon){
-                    coupon = '0'
-                }
-                let BorderType = '0'
-                for(var i=0;i<orderItemsList.length;i++){
-                    if(orderItemsList[i].orderReceiptId){
-                            BorderType = '1'
-                    }
-                }
-                this.orderTemp.glassesTime = allDate.TimetoDateDay(Date.parse(this.orderTemp.glassesTime));
-
-                var jsonObject =
-                {
-                    memberId : memberId,//会员id
-                    prescriptionsId  : this.optometryId,//验光单id
-                    urgent : (this.orderTemp.urgent).toString(),//是否加急
-                    glassesTime : this.orderTemp.glassesTime,//取镜时间
-                    glassesType : this.orderTemp.glassesType,//取镜类型
-                    glassesCompany : this.publicSelcet.comTypeModel|| '取镜公司',//取镜公司
-                    glassesAddress : this.orderTemp.glassesAddress||'取镜地址',//取镜地址
-                    saleMemo : this.orderTemp.saleMemo||'销售备注',//销售备注
-                    processMemo : this.publicSelcet.processMemo||'加工备注',//加工备注
-                    specialMemo : this.publicSelcet.specialMemo||'特殊备注',//特殊备注
-                    couponDetailId : types == '-1'?'':this.orderTemp.couponDetailId,//优惠券id
-                    moneyProduct:(parseFloat(this.amountSale)).toFixed(2),//原价合计
-                    moneyAmount:(parseFloat(this.saleCount)).toFixed(2),//应付
-                    moneyPaid:0,//应收
-                    couponNo:types == '-1'?'':this.conponResponse.couponNo,//优惠券卡号核销
-                    activityMoney:types == '-1'?'':this.actionCost.money||this.actionCost.discountMoney,//活动优惠金额,
-                    discountMoney:this.memberShipDisCountSale,//折扣优惠金额,会员
-                    cardDiscount:this.memberShipDisCount,//会员折扣
-                    discountFlag:this.discountFlag,//是否使用会员折扣
-                    roundOffFlag:"1",//取整标识 0使用 1不用
-                    decimal : memberDiscount,//会员卡折扣
-                    couponMoney : types == '-1'?'':coupon,//卡券优惠金额
-                    orderItemsList:orderItemsList,//商品列表
-                    orderDiscount:types == '-1'?'':alldis,//整单折扣
-                    orderType:BorderType,
-                    extraMoney:_this.extraMoney,//其他费用
-                    status:types=="-1"?'-1':'' //挂单
-                }
-                _this.$axios({
-                    url: 'http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp',
-                    method: 'post',
-                    params: {
-                        jsonObject: jsonObject,
-                        keyParams: {
-                            weChat: true,
-                            userId: JSON.parse(localStorage.getItem("userData")).userId,
-                            orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-                        }
-                    }
-                })
-                .then(function (response) {
-                    if (response.data.code != '1') {
-                        _this.$message({
-                            showClose: true,
-                            message: '请求数据出问题喽，请重试！',
-                            type: 'error'
-                        })
-                        return false;
-                    } else {
-                        if(types == '-1'){
-                            _this.$message({
-                                showClose: true,
-                                message: '挂单成功',
-                                type: 'success'
-                            });
-                        }else{
-                            _this.$message({
-                                showClose: true,
-                                message: '开单成功',
-                                type: 'success'
-                            });
-                        }
-                        setTimeout(function(){
-                            location.reload();
-                        },1000)
-                        // if(是门店收银){
-                            // let orderId = response.data.data.orderId;//直接开单收银  门店收银
-                            // _this.$router.push({path:'/cashier/cashierList',query:{orderId:orderId}})
-                        // }
-
-                    }
-                })
-            },
-            hangOrder(){//取单
-                let _this = this;
-                _this.showGetBill=true;
-                this.$nextTick(() => {
-                    _this.$refs.hangOrders.getOrderList('-1');
-                });
-            },
-            modifyDataStyle(){//修改日期改样式
-                this.$refs.datapick.$el.childNodes[1].style.color = '#333';
-            },
-            cleanSelectRHModal(){//关闭弹窗后清除select
-                this.showSelectRH = false;
-                this.$refs.SelectRHModal.childrenCleanSelectRHModal()
-            },
-            cleanSelectShopModal(event){//关闭弹窗后清除select
-                this.showSelectShop = false;
-                this.$refs.showSelectShop.selectBrands(2);
-            }
-        },
-        computed:{
-
-        },
-        mounted(){
-        },
-        beforeDestory(){
-
-        },
-        created(){
-            this.getPrivateSelect();
-            this.getCompanyList(true);
-        },
-        mounted(){
-            let _this = this;
-            _this.users =  JSON.parse(localStorage.getItem("userData"));
-            if(_this.$route.params.datas){
-                console.log('重新开单参数',_this.$route.params.datas);
-                _this.openOrder(_this.$route.params.datas)
-            }
-        },
-        watch:{
-            // tableData(newValue,oldValue){
-            //     console.log(newValue,oldValue)
-            // }
+      })},
+    //选择商品后进行关闭弹窗计算
+    selectSku(value, nums) {
+      console.log("选择商品后进行渲染", value);
+      let _this = this;
+      if (value.status == "1") {
+        let title = "";
+        if (this.custom == "right") {
+          title = "右镜片-定做单：";
+        } else if (this.custom == "left") {
+          title = "左镜片-定做单：";
+        } else {
+          title = "商品-定做单：";
         }
-    };
+        value.skuName = title;
+        value.skuName3 =
+          title +
+          '定做单号：<span class="readContent">' +
+          value.customId +
+          "</span>定做需求：" +
+          value.customMessage;
+        value.skuName2 = title + "定做需求：" + value.customMessage;
+        value.value1 != ""
+          ? (value.skuName3 += "球镜:" + value.value1 + " ")
+          : value.skuName3;
+        value.value2 != ""
+          ? (value.skuName3 += "柱镜:" + value.value2 + " ")
+          : value.skuName3;
+        value.value3 != ""
+          ? (value.skuName3 += "下加光:" + value.value3 + " ")
+          : value.skuName3;
+        value.classid != ""
+          ? (value.skuName3 += value.classid + " ")
+          : value.skuName3;
+        value.varietyid != ""
+          ? (value.skuName3 += value.varietyid + " ")
+          : value.skuName3;
+        value.brandid != ""
+          ? (value.skuName3 += value.brandid + " ")
+          : value.skuName3;
+        value.specificationid != ""
+          ? (value.skuName3 += value.specificationid)
+          : value.skuName3;
+        value.value1 != ""
+          ? (value.skuName2 += "球镜:" + value.value1 + " ")
+          : value.skuName2;
+        value.value2 != ""
+          ? (value.skuName2 += "柱镜:" + value.value2 + " ")
+          : value.skuName2;
+        value.value3 != ""
+          ? (value.skuName2 += "下加光:" + value.value3 + " ")
+          : value.skuName2;
+        value.classid != ""
+          ? (value.skuName2 += value.classid + " ")
+          : value.skuName2;
+        value.varietyid != ""
+          ? (value.skuName2 += value.varietyid + " ")
+          : value.skuName2;
+        value.brandid != ""
+          ? (value.skuName2 += value.brandid + " ")
+          : value.skuName2;
+        value.specificationid != ""
+          ? (value.skuName2 += value.specificationid)
+          : value.skuName2;
+
+        value.sku = "--";
+        // value.orderPromotionId='';
+      } else if (value.status == "2") {
+        let title = "自带";
+        if (value.where == "2") {
+          title = title + "镜架：";
+        } else {
+          if (value.lens == "left") {
+            title = title + "左镜片：";
+          } else if (value.lens == "right") {
+            title = title + "右镜片：";
+          }
+        }
+        value.skuName = title + value.message;
+        value.skuName2 = title + value.message; //显示
+        value.sku = "--";
+        value.realSale = "0";
+      }
+      if (value.status == '0') {
+        console.log("点击类型status", value.status);
+        this.where == "shop"
+          ? (value.skuName2 = value.skuName)
+          : this.where == "left"
+            ? (value.skuName2 = "左" + (value.classId=='C004' ? '隐形眼镜' + value.skuName.substr(5) : value.skuName))
+            : (value.skuName2 = "右" + (value.classId=='C004' ? '隐形眼镜' + value.skuName.substr(5) : value.skuName));
+      }
+      console.log("渲染后的value", value);
+      let alldis = _this.allDisCount;
+      if (alldis != "" && typeof parseFloat(alldis) == "number") {
+        value.realSale = (value.discount * value.price / 10).toFixed(2);
+      }
+      if (!nums) {
+        // if (value.status != 3) {
+          value.nums = 1;
+        // }
+      }
+      if (this.allDisCount > 0) {
+        //添加商品的时候如果有整单折扣
+        this.addShop = true;
+      }
+      _this.tableData.push(value);
+      _this.showSelectRH = false;
+      _this.customizeRH = false;
+      _this.showSelectShop = false;
+      _this.computedPay();
+    },
+    //计算价格区域
+    computedPay(alldiscount) {
+      let _this = this;
+      let countSale = 0;
+      let n = 0;
+      // _this.allDisCount = '';
+      // console.log(_this.tableData)
+      _this.extraMoney = 0;
+      for (let i = 0; i < _this.tableData.length; i++) {
+        //循环计算价格
+        if (
+          _this.tableData[i].status != "2" &&
+          _this.tableData[i].status != "3"
+        ) {
+          let thisSale = parseFloat(_this.tableData[i].realSale);
+          countSale = countSale + thisSale;
+        }
+        if (_this.tableData[i].status != "3") {
+          n += parseInt(_this.tableData[i].nums);
+        }
+        if (_this.tableData[i].status == "3") {
+          //其他费用
+          _this.extraMoney += parseFloat(_this.tableData[i].realSale);
+        }
+      }
+      if (_this.actionCost.actionId) {
+        if (_this.actionCost.money) {
+          countSale = countSale - _this.actionCost.money; //优惠金额后
+        } else if (_this.actionCost.discount) {
+          countSale = parseFloat(
+            countSale * _this.actionCost.discount / 10
+          ).toFixed(2); //打折后价格
+          _this.actionCost.discountMoney = (
+            (1 - parseFloat(_this.actionCost.discount) / 10) *
+            countSale
+          ).toFixed(2); //打折优惠金额
+        }
+      }
+      this.amountSale = parseFloat(countSale).toFixed(2); //原价合计
+
+      if (
+        _this.conponResponse.amount > 0 ||
+        _this.conponResponse.discount > 0
+      ) {
+        //如果有优惠券
+        // 金额||折扣
+        if (_this.conponResponse.amount > 0) {
+          //按固定金额算
+          _this.conponDiscountMoney = _this.conponResponse.amount;
+          countSale = countSale - _this.conponResponse.amount; //优惠价 = 无折扣前 - 优惠价↓
+        } else if (_this.conponResponse.discount > 0) {
+          //按折扣算
+          let conpon = parseFloat(
+            countSale * _this.conponResponse.discount / 10
+          ).toFixed(2);
+          _this.conponDiscountMoney = (parseFloat(countSale) - conpon).toFixed(
+            2
+          );
+          countSale = conpon;
+        }
+      }
+      if (_this.selectMember.memberInfo != null) {
+        //如果有会员id
+        if (_this.selectMember.memberInfo.discount < 1) {
+          _this.discountFlag = 0;
+        }
+        var difference = (_this.memberShipDisCount * countSale).toFixed(2); //会员价 = 会员价格 * 总价
+        let memberDisCount = (countSale - difference).toFixed(2); //会员折扣差价 = 总金额 - 会员价
+        _this.memberShipDisCountSale = memberDisCount;
+        countSale = countSale - parseFloat(memberDisCount); //会员价
+      }
+      _this.numCount = n;
+      _this.saleCount = Math.round(parseFloat(countSale) * 100) / 100; //无整单折扣情况下
+
+      if (_this.addShop || alldiscount == "alldiscount") {
+        if (_this.allDisCount > 0) {
+          _this.discountSale = parseFloat(
+            _this.saleCount - _this.allDisCount * _this.saleCount / 10
+          ).toFixed(2);
+          //最后价格 = 整单折扣前 * 折扣 ↓
+          _this.saleCount = (_this.allDisCount / 10 * _this.saleCount).toFixed(
+            2
+          );
+        }
+      }
+    },
+    changeNums(value,index){
+      console.log(value)
+      value.realSale = parseFloat(value.price * value.discount/10 * value.nums).toFixed(2);
+      this.tableData.splice(index, 1, value);
+      this.computedPay("alldiscount");
+    },
+    //商品折扣发生变化
+    changePrice(value, type, index) {
+      // console.log(value,type,index)
+      // this.allDisCount = '';
+      this.discountSale = "";//优惠券优惠金额
+      if (type == 1) {//正常都是1，8折计算为*0.8
+        value.realSale = parseFloat(value.price * value.discount / 10 * value.nums).toFixed(2);
+      } else {
+        value.realSale = parseFloat(value.price / value.discount * 10 * value.nums).toFixed(2);
+      }
+      this.tableData.splice(index, 1, value);
+      this.computedPay("alldiscount");
+    },
+    confirmAllDiscount(value) {
+      console.log(value,'触发整单折扣计算')
+      if (value && parseFloat(this.allDisCount) > 0) {
+          //有整单折扣
+          this.addShop = false;
+          this.computedPay();
+          // //整单折扣金额差价 = 折扣前 - 折扣后↓
+          this.discountSale = parseFloat(
+            this.saleCount - this.allDisCount * this.saleCount / 10
+          ).toFixed(2);
+          //最后价格 = 整单折扣前 * 折扣 ↓
+          this.saleCount = (this.allDisCount / 10 * this.saleCount).toFixed(2);
+      } else {
+        this.allDisCount = "";
+        this.discountSale = "";
+        this.computedPay();
+      }
+    },
+    //整单折扣
+    afterDiscount() {
+      let _this = this;
+      // _this.permission = true;
+      _this.confirmAllDiscount(true);
+    },
+    //获取用户验光单列表
+    getOptometryRecordList(memberId) {
+      var that = this;
+      that
+        .$axios({
+          url:
+            "http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsList",
+          method: "post",
+          params: {
+            jsonObject: {
+              memberId: memberId || this.selectMember.memberInfo.memberId
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+        .then(function(response) {
+          if (response.data.code == "1") {
+            // console.log(response.data.data.list)
+            that.optometryList = response.data.data.list;
+          } else {
+            that.$message({
+              showClose: true,
+              message: response.data.msg,
+              type: "error"
+            });
+          }
+        })
+        .catch(function(error) {
+          console.info(error);
+        });
+    },
+    //取得该次验光单信息
+    getPrescriptions(id) {
+      var that = this;
+      that
+        .$axios({
+          url: "http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptions",
+          method: "post",
+          params: {
+            jsonObject: {
+              prescriptionId: id || this.optometryId
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+        .then(function(response) {
+          if (response.data.code == 1 && response.data.data.eyes.length > 0) {
+            that.optometryData = response.data.data.eyes;
+            that.optometryId = response.data.data.prescriptions.prescriptionId;
+            that.optometryTime =
+              response.data.data.prescriptions.prescriptionTime;
+            that.getOptometryRecordList();
+            that.includeOptometry();
+          } else {
+            that.$message({
+              showClose: true,
+              message: response.data.msg,
+              type: "error"
+            });
+          }
+        })
+        .catch(function(error) {
+          console.info(error);
+        });
+    },
+
+    //获取用户最后一次验光单信息,搜索会员后调用验光单信息
+    getOptometryRecord() {
+      var _this = this;
+      _this
+        .$axios({
+          url:
+            "http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately",
+          method: "post",
+          params: {
+            jsonObject: {
+              memberId: this.selectMember.memberInfo.memberId
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+        .then(function(response) {
+          if (response.data.code == 1 && response.data.data.eyes.length > 0) {
+            _this.showSelectMember = false;
+            _this.isOptometryDialogVisible = true;
+            _this.optometryData = response.data.data.eyes;
+            _this.optometryId = response.data.data.prescriptions.prescriptionId;
+            _this.optometryTime =
+              response.data.data.prescriptions.prescriptionTime;
+          } else {
+            _this.isOptometryDialogVisible = true;
+            _this.$message({
+              showClose: true,
+              message: response.data.msg,
+              type: "warning"
+            });
+            _this.includeOptometryData = null;
+            _this.showSelectMember = false;
+          }
+        })
+        .catch(function(error) {
+          console.info(error);
+        });
+    },
+    //回车查询会员
+    key13GetMemberInfo() {
+      var _this = this;
+      setTimeout(() => {
+        if (_this.selectMember.selectM.length == 11) {
+          _this
+            .$axios({
+              url:
+                "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
+              method: "post",
+              params: {
+                jsonObject: {
+                  seachCode: _this.selectMember.selectM,
+                  size: 5,
+                  nub: 0
+                },
+                keyParams: {
+                  weChat: true,
+                  userId: JSON.parse(localStorage.getItem("userData")).userId,
+                  orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                }
+              }
+            })
+            .then(function(response) {
+              if (response.data.code == 1) {
+                // console.log(response)
+                // _this.isOptometryDialogVisible = false;
+                // _this.includeOptometry()
+                _this.getMemberInfo(response.data.data.memberList[0]);
+              } else {
+                _this.$message({
+                  showClose: true,
+                  message: "会员信息获取失败",
+                  type: "error"
+                });
+              }
+            });
+        }
+      }, 0);
+    },
+    //选择会员子组件返回函数 获取用户信息
+    getMemberInfo(value, bool) {
+      //bool作为挂单直接导入，
+      this.selectMember.memberInfo = value;
+      this.memberShipDisCount = this.selectMember.memberInfo.discount;
+      this.conpon(); //选择用户后，获取优惠券信息
+      this.computedPay(); //如果选择用户前选择商品了就再次进行计算
+      // this.allDisCount='';//整单折扣归零,重新输入进行计算
+      if (value && !bool) {
+        this.getOptometryRecord();
+        this.getOptometryRecordList();
+      }
+    },
+    //使用优惠券
+    receiveconpon(data) {
+      this.CouponBarCode = false;
+      if (data.couponModality == "0") {
+        data.amount = "";
+      } else if (data.couponModality == "1") {
+        data.discount = "";
+      }
+      console.log(data);
+      this.conponResponse = data;
+      this.computedPay();
+    },
+    //优惠券信息获取
+    conpon() {
+      let _this = this;
+      _this
+        .$axios({
+          url: "http://myc.qineasy.cn/coupon-api/newCouponMsg/getMyAllCoupon",
+          method: "post",
+          params: {
+            jsonObject: {
+              memberCardNo: _this.selectMember.memberInfo.memberCardNo //会员卡号
+              // orgScope:'',//适用门店编号
+              // couponMsgId:'',//优惠券信息Id
+              // couponNo:'',//优惠券编号
+              // fullAmount:'',//满额条件 0没有门槛
+              // couponState:'',//卡券状态
+              // activeTime:'',//当天时间，是否当天可用
+              // nub:'',//分页起始位
+              // size:'',//每页条数
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+        .then(function(res) {
+          if (res.data.code == 1) {
+            _this.conponData = res.data.data;
+          } else {
+            _this.$message({
+              showClose: true,
+              message: "请求数据出问题喽，请重试！",
+              type: "error"
+            });
+          }
+        })
+        .catch(function(err) {
+          _this.$message({
+            showClose: true,
+            message: "请求数据出问题喽，请重试！",
+            type: "error"
+          });
+        });
+    },
+    //获取新增验光单信息
+    getNewoptometry(value) {
+      console.log(value);
+      this.showNewOptometry = false;
+      this.getPrescriptions(value.prescriptions.prescriptionId);
+      // this.optometryData=value.eyes;
+      // this.optometryId=value.prescriptions.prescriptionId;
+      // this.optometryTime=value.prescriptions.prescriptionTime;
+      // console.log(this.optometryId, this.optometryTime)
+      // this.includeOptometry();
+    },
+    //录入验光单信息
+    includeOptometry() {
+      var _this = this;
+      console.log("录入验光单信息", _this.optometryData);
+      if (_this.optometryData != null) {
+        var tableArr = [];
+        _this.optometryData.forEach(element => {
+          if (element.key != "0" && element.key != "1") {
+            var tArr = [];
+            var keys = [];
+            var lData = [];
+            var rData = [];
+            for (var item in element.value[1]) {
+              delete element.value[0].leftRight;
+              delete element.value[0].perscriptionType;
+              delete element.value[0].prescriptionId;
+              delete element.value[0].prescriptionEye;
+              delete element.value[0].nub;
+              delete element.value[0].size;
+              delete element.value[1].nub;
+              delete element.value[1].size;
+              delete element.value[1].prescriptionEye;
+              delete element.value[1].leftRight;
+              delete element.value[1].perscriptionType;
+              delete element.value[1].prescriptionId;
+
+              tArr.push({
+                keys: item,
+                lData: element.value[0][item],
+                rData: element.value[1][item]
+              });
+            }
+            var name;
+            switch (element.key.toString()) {
+              // case '0':
+              //     name='检影';
+              //     break;
+              // case '1':
+              //     name='主观';
+              //     break;
+              case "2":
+                name = "远用";
+                break;
+              case "3":
+                name = "近用";
+                break;
+              case "4":
+                name = "渐进";
+                break;
+              case "5":
+                name = "隐形";
+                break;
+              default:
+                break;
+            }
+            tableArr.push({ item: tArr, name: name });
+          }
+        });
+        if (tableArr) _this.includeOptometryData = tableArr;
+        console.log(_this.includeOptometryData)
+      }
+    },
+    //刷新页面
+    resetPage() {
+      location.reload();
+    },
+    //取单操作
+    openOrder(data) {
+      // console.log(data)
+      let _this = this;
+      _this.showGetBill = false;
+      if (data.memberId != "0") {
+        setTimeout(() => {
+          _this.$myAjax({
+            url: "member-api/member/getMemberListByBoYang",
+            data: {
+              memberId: data.memberId,
+              size: 5,
+              nub: 0
+            },
+            success: function(res) {
+              if (res.code == 1) {
+                _this.getMemberInfo(res.data.memberList[0], true);
+              } else {
+                _this.$message({
+                  showClose: true,
+                  message: "会员信息获取失败",
+                  type: "error"
+                });
+              }
+            }
+          });
+          _this.$myAjax({
+            //验光单信息获取
+            url: "pos-api/prescriptions/getPrescriptions",
+            data: {
+              prescriptionId: data.prescriptionsId
+            },
+            success: function(res) {
+              if (res.code != 1 && res.data.eyes.length == 0) {
+                return false;
+              }
+              _this.optometryData = res.data.eyes;
+              _this.optometryId = res.data.prescriptions.prescriptionId;
+              _this.optometryTime = res.data.prescriptions.prescriptionTime;
+              _this.getOptometryRecordList(data.memberId);
+              _this.includeOptometry();
+            },
+            error: function(err) {
+              console.log(err);
+              _this.$message({
+                showClose: true,
+                message: err.msg,
+                type: "error"
+              });
+            }
+          });
+        }, 0);
+      }
+      _this.tableData = [];
+
+      for (let i = 0; i < data.orderItems.length; i++) {
+        // //备注，取镜方式，操作人
+        let obj = new Object();
+        obj.orderItemId =  data.orderItems[i].orderItemId;
+        obj.status = data.orderItems[i].productMold;
+        obj.skuName2 = data.orderItems[i].itemName;
+        obj.skuName = data.orderItems[i].itemName;
+        obj.nums = data.orderItems[i].quantity;
+        obj.price = parseFloat(data.orderItems[i].price) || "0";
+        obj.discount = data.orderItems[i].discountRate;
+        obj.realSale =
+          data.orderItems[i].status == 3
+            ? data.orderItems[i].price
+            : data.orderItems[i].money;
+        obj.status = data.orderItems[i].productMold;
+        if (data.orderItems[i].productMold == "0") {
+          obj.productId = data.orderItems[i].itemId;
+          obj.sku = data.orderItems[i].itemNo;
+          obj.warehouseId = data.orderItems[i].warehouseId;
+          obj.stockId = data.orderItems[i].stockId || "";
+          obj.allotQuantity = data.orderItems[i].stockQuantityNo;
+          obj.classId = data.orderItems[i].productType;
+          obj.quantity = data.orderItems[i].stockQuantity;
+        } else if (data.orderItems[i].productMold == "1") {
+          //定做
+          obj.customId = data.orderItems[i].orderReceiptId;
+          obj.classId = data.orderItems[i].productType;
+        } else if (data.orderItems[i].productMold == "2") {
+          //自带
+          delete obj.discount;
+        } else if (data.orderItems[i].productMold == "3") {
+          //其他
+          delete obj.discount;
+        }
+        _this.tableData.push(obj);
+      }
+      console.log("取单、重新开单商品列表", _this.tableData);
+      _this.computedPay();
+    },
+    //添加会员 子组件返回事件 提交表单信息，data为从子组件取到的数据
+    memberAddSubmit: function(formdata) {
+      var _this = this;
+      _this.isSubmit = !_this.isSubmit;
+      if (
+        formdata.name != "" &&
+        formdata.telphone != "" &&
+        formdata.birthday != "" &&
+        formdata.sex != ""
+      ) {
+        _this
+          .$axios({
+            url: "http://myc.qineasy.cn/member-api/member/addMember",
+            method: "post",
+            params: {
+              jsonObject: formdata,
+              keyParams: {
+                weChat: true,
+                userId: JSON.parse(localStorage.getItem("userData")).userId,
+                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              }
+            }
+          })
+          .then(function(response) {
+            if (response.data.code != "1") {
+              _this.$message({
+                showClose: true,
+                message: response.data.msg,
+                type: "error"
+              });
+              return false;
+            } else {
+              _this.addMember = false;
+              _this.MemberInfoForAdd(response.data.data.memberId);
+              _this.$message({
+                showClose: true,
+                message: "新增会员成功",
+                type: "success"
+              });
+            }
+          })
+          .catch(function(error) {
+            console.info(error);
+            _this.$message({
+              showClose: true,
+              message: error,
+              type: "error"
+            });
+          });
+      } else {
+        _this.$message({
+          showClose: true,
+          message: "请输入完整信息",
+          type: "error"
+        });
+      }
+    },
+    //定做商品title
+    showTitle(value) {
+      let _this = this;
+      console.log(value);
+      _this.customizeRH = true;
+      if (value == "left") {
+        _this.custom = "left";
+        _this.customText = "定做-左镜片";
+        _this.$nextTick(() => {
+          _this.$refs.customs.initSelect(2);
+        });
+      } else if (value == "right") {
+        _this.custom = "right";
+        _this.customText = "定做-右镜片";
+        _this.$nextTick(() => {
+          _this.$refs.customs.initSelect(2);
+        });
+      } else if (value == "shop") {
+        _this.custom = "shop";
+        _this.customText = "定做-商品";
+        _this.$nextTick(() => {
+          _this.$refs.customs.initSelect(1);
+        });
+      }
+    },
+    //新增验光单后获取用户信息录入到页面
+    MemberInfoForAdd(memberId) {
+      var _this = this;
+      _this
+        .$axios({
+          url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
+          method: "post",
+          params: {
+            jsonObject: {
+              seachCode: memberId
+            },
+            keyParams: {
+              weChat: true,
+              userId: JSON.parse(localStorage.getItem("userData")).userId,
+              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+            }
+          }
+        })
+        .then(function(response) {
+          if (response.data.code == 1) {
+            _this.getMemberInfo(response.data.data.memberList[0]);
+          } else {
+            _this.$message({
+              showClose: true,
+              message: "会员信息获取失败",
+              type: "error"
+            });
+          }
+        });
+    },
+    //开单
+    addOrderTemp(types) {
+      //type = -1 挂单
+      var _this = this;
+      if (this.selectMember.memberInfo == null) {
+        _this.$message({
+          showClose: true,
+          message: "会员信息获取失败",
+          type: "warning"
+        });
+        // return false;
+      }
+      if (!this.optometryId) {
+        // _this.$message({
+        //     showClose: true,
+        //     message: '验光单信息获取失败',
+        //         type: 'error'
+        // })
+        // return false;
+      }
+      var orderItemsList = [];
+      console.log(this.tableData);
+      for (var item in this.tableData) {
+        orderItemsList.push({
+          itemId: this.tableData[item].productId, //商品sku码
+          itemName: this.tableData[item].skuName2, //明细名称
+          proMemo: this.tableData[item].skuName,
+          quantity: this.tableData[item].nums, //数量
+          discountRate: this.tableData[item].discount, //折扣比率
+          orderPromotionId: "", //订单营销活动id
+          listPrice: this.tableData[item].price, //原价
+          roundFlag: "1", //商品取整
+          itemNo: this.tableData[item].sku, //商品编码
+          warehouseId: this.tableData[item].warehouseId, //仓库id
+          orderReceiptId: this.tableData[item].customId || "", //定做单id
+          stockId: this.tableData[item].stockId || "", //库存id
+          refundId: this.tableData[item].refundId,
+          stockQuantity: this.tableData[item].quantity, //总库存
+          productType: this.tableData[item].classId, //商品类型 镜片镜架...
+          stockQuantityNo: this.tableData[item].allotQuantity, //可分配库存
+          productMold: this.tableData[item].status || "0" //商品类型，前端自定义 0普通商品 1定做 2自带 3其他 4套餐
+          // price:this.tableData[item].realSale,//实售单价
+        });
+      }
+      console.log(orderItemsList);
+      if (orderItemsList == "") {
+        _this.$message({
+          showClose: true,
+          message: "商品信息获取失败",
+          type: "error"
+        });
+        return false;
+      }
+
+      let memberId = ""; //会员id
+      if (_this.selectMember.memberInfo) {
+        memberId = _this.selectMember.memberInfo.memberId;
+      }
+      let memberDiscount = 10; //会员卡折扣  游客默认10 满折
+      if (_this.selectMember.memberInfo) {
+        console.log("会员信息", this.selectMember.memberInfo);
+        memberDiscount = parseFloat(
+          this.selectMember.memberInfo.discount * 10
+        ).toFixed(2);
+      }
+      let alldis = this.allDisCount; //整单折扣
+      if (alldis == "") {
+        alldis = "10";
+      }
+      let coupon = this.conponDiscountMoney; //卡券优惠金额
+      if (!coupon) {
+        coupon = "0";
+      }
+      let BorderType = "0";
+      for (var i = 0; i < orderItemsList.length; i++) {
+        if (orderItemsList[i].orderReceiptId) {
+          BorderType = "1";
+        }
+      }
+      this.orderTemp.glassesTime = allDate.TimetoDateDay(
+        Date.parse(this.orderTemp.glassesTime)
+      );
+      // if(this.publicSelcet.glassesTypeModel == '1'){
+      //     this.express  快递信息
+      // }
+      var jsonObject = {
+        memberId: memberId, //会员id
+        prescriptionsId: this.optometryId, //验光单id
+        urgent: this.orderTemp.urgent.toString(), //是否加急
+        glassesTime: this.orderTemp.glassesTime, //取镜时间
+        glassesType: this.orderTemp.glassesType, //取镜类别
+        glassesCompany: this.publicSelcet.comTypeModel || "取镜公司", //取镜公司
+        glassesAddress: this.orderTemp.glassesAddress || "无", //取镜地址
+        saleMemo: this.orderTemp.saleMemo || "销售备注", //销售备注
+        processMemo: this.publicSelcet.processMemo || "加工备注", //加工备注
+        specialMemo: this.publicSelcet.specialMemo || "特殊备注", //特殊备注
+        couponDetailId: types == "-1" ? "" : this.orderTemp.couponDetailId, //优惠券id
+        moneyProduct: parseFloat(this.amountSale).toFixed(2), //原价合计
+        moneyAmount: parseFloat(this.saleCount).toFixed(2), //应付
+        moneyPaid: 0, //应收
+        couponNo: types == "-1" ? "" : this.conponResponse.couponNo, //优惠券卡号核销
+        activityMoney:
+          types == "-1"
+            ? ""
+            : this.actionCost.money || this.actionCost.discountMoney, //活动优惠金额,
+        discountMoney: this.memberShipDisCountSale, //折扣优惠金额,会员
+        cardDiscount: this.memberShipDisCount, //会员折扣
+        discountFlag: this.discountFlag, //是否使用会员折扣
+        roundOffFlag: "1", //取整标识 0使用 1不用
+        decimal: memberDiscount, //会员卡折扣
+        couponMoney: types == "-1" ? "" : coupon, //卡券优惠金额
+        orderItemsList: orderItemsList, //商品列表
+        orderDiscount: types == "-1" ? "" : alldis, //整单折扣
+        orderType: BorderType,
+        extraMoney: _this.extraMoney, //其他费用
+        status: types == "-1" ? "-1" : "" //挂单
+      };
+      _this
+        .$axios({
+          url: "http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp",
+          method: "post",
+          params: {
+            jsonObject: jsonObject,
+            keyParams: {
+              weChat: true,
+              userId: JSON.parse(localStorage.getItem("userData")).userId,
+              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+            }
+          }
+        })
+        .then(function(response) {
+          console.log(response)
+          return
+          if (response.data.code != "1") {
+            _this.$message({
+              showClose: true,
+              message: "请求数据出问题喽，请重试！",
+              type: "error"
+            });
+            return false;
+          } else {
+            if (types == "-1") {
+              _this.$message({
+                showClose: true,
+                message: "挂单成功",
+                type: "success"
+              });
+            } else {
+              _this.$message({
+                showClose: true,
+                message: "开单成功",
+                type: "success"
+              });
+            }
+            setTimeout(function() {
+              location.reload();
+            }, 1000);
+            // if(是门店收银){
+            // let orderId = response.data.data.orderId;//直接开单收银  门店收银
+            // _this.$router.push({path:'/cashier/cashierList',query:{orderId:orderId}})
+            // }
+          }
+        });
+    },
+    hangOrder() {
+      //取单
+      let _this = this;
+      _this.showGetBill = true;
+      this.$nextTick(() => {
+        _this.$refs.hangOrders.getOrderList("-1");
+      });
+    },
+    modifyDataStyle() {
+      //修改日期改样式
+      this.$refs.datapick.$el.childNodes[1].style.color = "#333";
+    },
+    cleanSelectRHModal() {
+      //关闭弹窗后清除select
+      this.showSelectRH = false;
+      this.$refs.SelectRHModal.childrenCleanSelectRHModal();
+    },
+    cleanSelectShopModal(event) {
+      //关闭弹窗后清除select
+      this.showSelectShop = false;
+      this.$refs.showSelectShop.selectBrands(2);
+    }
+  },
+  computed: {},
+  mounted() {
+    
+  },
+  beforeDestory() {},
+  created() {
+    this.getPrivateSelect();
+    this.getCompanyList(true);
+    this.getPublicSelect(5,this.publicSelcet.glassesTypeOptions);
+    this.changesSelect(1);
+  },
+  mounted() {
+    let _this = this;
+    _this.users = JSON.parse(localStorage.getItem("userData"));
+    if (_this.$route.params.datas) {
+      console.log("重新开单参数", _this.$route.params.datas);
+      _this.openOrder(_this.$route.params.datas);
+    }
+  },
+  watch: {
+    // tableData(newValue,oldValue){
+    //     console.log(newValue,oldValue)
+    // }
+  }
+};
 </script>
 <style lang="scss">
-    @import "../../../reset";
-    @import "billing";
+@import "../../../reset";
+@import "billing";
 
-    .setNum{
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button{
-            -webkit-appearance: none !important;
-            margin: 0;
-        }
-        input[type="number"]{-moz-appearance:textfield;}
-    }
-    .placeHolder{
-            input::input-placeholder{color:#606266!important;}
-            input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
-            color: #606266!important;
-            }
-            input:-moz-placeholder, textarea:-moz-placeholder {
-            color: #606266!important;
-            }
-            input::-moz-placeholder, textarea::-moz-placeholder {
-            color: #606266!important;
-            }
-            input:-ms-input-placeholder, textarea:-ms-input-placeholder {
-            color: #606266!important;
-            }
-            .el-input__inner{
-                width: 150px;
-            }
-        }
-    .el-input__prefix, .el-input__suffix{
-        color:#606266;
+.setNum {
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+.placeHolder {
+  input::input-placeholder {
+    color: #606266 !important;
+  }
+  input::-webkit-input-placeholder,
+  textarea::-webkit-input-placeholder {
+    color: #606266 !important;
+  }
+  input:-moz-placeholder,
+  textarea:-moz-placeholder {
+    color: #606266 !important;
+  }
+  input::-moz-placeholder,
+  textarea::-moz-placeholder {
+    color: #606266 !important;
+  }
+  input:-ms-input-placeholder,
+  textarea:-ms-input-placeholder {
+    color: #606266 !important;
+  }
+  .el-input__inner {
+    width: 150px;
+  }
+}
+.el-input__prefix,
+.el-input__suffix {
+  color: #606266;
+}
+.el-input__inner {
+  color: #888888;
+}
+.el-select .el-input .el-select__caret {
+  color: #606266;
+}
+.inputBold span {
+  font-weight: bold;
+}
+.shopexpress {
+  width: 80px;
+}
+.express {
+  width: 80px;
+}
+.expressAddress {
+  width: 120px;
+}
+.expressAddress{
+  .el-input__inner{
+    width: 100% !important;
+    max-width: 300px !important;
+  }
+}
 
+.orderType {
+  .el-form {
+    .el-date-editor {
+      .el-input__inner {
+        color: red;
+      }
     }
-    .el-input__inner{
-        color:#888888 ;
-    }
-    .el-select .el-input .el-select__caret{
-        color:#606266
-    }
-    .inputBold span{
-        font-weight: bold;
-    }
-    .shopexpress{
-        width: 95px;
-    }
-    .express{
-        width: 80px;
-    }
-    .orderType .el-form-item .el-form-item__content input{
-        max-width: 300px !important;
-    }
-    .expressAddress{
-        width: 110px;
-    }
-   .orderType {
-       .el-form{
-           .el-date-editor{
-               .el-input__inner{
-                   color:red;
-               }
-           }
-       }
-   }
-   .salesclerkInfo .el-select{
-       min-width: 100px;
-       max-width: 120px;
-   }
+  }
+}
+.box100 {
+  width: 100%;
+}
+.ov {
+  overflow: hidden;
+}
+.salesclerkInfo .el-select {
+  min-width: 100px;
+  max-width: 120px;
+}
+.remarks {
+  .el-form-item__content{
+    width: 100%;
+  }
+  .el-input__inner{
+    width: 90%;
+    max-width: 400px !important;
+  }
+}
 </style>
