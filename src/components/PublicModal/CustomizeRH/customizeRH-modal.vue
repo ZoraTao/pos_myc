@@ -345,6 +345,9 @@ export default {
                 choose:where,//左右镜
                 // {"customizeDemand":"1111","count":"1","customizeOrgName":"毛源昌商城","customizeOrgId":"11387","customizeShopName":"天一恒泰店","customizeShopId":"11387","customizePerson":"陈中床"}
           },
+          keyParams:{
+            corporationId:JSON.parse(localStorage.getItem("userData")).corporationId,
+          },
           success:function(res){
               if(res.code == 1){
                   _this.customContent.customId = res.data.customizeNo;

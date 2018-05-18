@@ -7,39 +7,41 @@
       align="left"
       style="width: 100%">
       <el-table-column
-        prop="a"
+        prop="warehouseCheckCode"
         label="盘点单号"
-        width="120">
+        width="200">
       </el-table-column>
       <el-table-column
-        prop="b"
+        prop="warehouseCheckTypeName"
         label="盘点单类型"
         width="120">
       </el-table-column>
       <el-table-column
-        prop="c"
-        label="计划盘点时间">
+        prop="initCheckTime"
+        label="计划盘点时间"
+        width="150">
       </el-table-column>
       <el-table-column
-        prop="d"
+        prop="warehouseName"
         label="盘点仓库">
       </el-table-column>
       <el-table-column
-        prop="e"
+        prop="checkUserName"
         label="盘点人">
       </el-table-column>
       <el-table-column
-        prop="f"
-        label="制单时间">
+        prop="createTime"
+        label="制单时间"
+        width="150">
       </el-table-column>
       <el-table-column
-        prop="g"
+        prop="createUserName"
         label="制单人">
       </el-table-column>
       <el-table-column
         label="状态">
         <template slot-scope="scope">
-         <p class="am-ft-orange">未盘点</p>
+         <p class="am-ft-orange">{{scope.row.statusName}}</p>
         </template>
       </el-table-column>
       <el-table-column
@@ -53,8 +55,11 @@
     <el-pagination
       background
       class="am-ft-right mgt10"
-      layout=" prev, pager, next"
-      :total="10">
+      layout=" prev, pager, next" 
+      @current-change="requestOrder"
+      :page-size="pageSize"
+      :total="listCounts"
+      :current-page.sync="nub">
     </el-pagination>
   </div>
 </template>
@@ -65,24 +70,38 @@
     component: {},
     data() {
       return {
-        tableData: [{
-          a: 'pd165412512',
-          b: '大盘点',
-          c: '2017-12-25 16:26:00',
-          d: '大关店',
-          e: '张三',
-          f: '2017-12-25 16:26:00',
-          g: '白月初',
-        }]
+        pageSize:10,
+        size:10,
+        tableData: [],
+        listCounts:0,
+        nub:1,
       }
     },
     methods: {
+      requestOrder(){
+        const _this = this;
+        _this.$myAjax({
+          url:'pos-api/warehouseCheck/getWarehouseCheckList',
+          data:{
+            status:0,
+            nub:_this.nub == 1?'0':_this.nub*_this.size,
+            size:10,
+          },
+          success:function(res){
+              if(res.code == 1){
+                _this.listCounts = res.data.count;
+                _this.tableData = res.data.list;
+              }
+          },error:function(err){
+
+          }
+        })
+      },
       //开始盘点
-      goCheck(){
+      goCheck(data){
         this.$router.push({
-          path: '/commodity/checkInventory',
           name: 'check-inventory',
-          params: {}
+          params: {data:data}
         })
       }
     }

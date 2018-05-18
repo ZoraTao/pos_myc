@@ -1,5 +1,5 @@
 <template>
-  <section class=" content_box">
+  <section class=" content_box" >
     <div class="am-bg-white cashier_box">
       <ul class="cashier_tab">
         <li v-for="item in tabs" :key="item.value" :class="{'on':item.isActived}" @click="changeTab(item)">
@@ -66,7 +66,7 @@
             <tr class="order_header">
               <!-- <td colspan="10"> -->
               <td colspan="9">
-                <div class=" img_b" style="position: absolute;top:0;left:0;" v-show="order.orderType=='1'"><img
+                <div class=" img_b" v-cloak style="position: absolute;top:0;left:0;" v-show="order.orderType=='1'"><img
                   src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ding_icon.png"/></div>
                 <div class=" fn-left">
                   <span class="order_id mgl30">{{order.orderNo}}</span>
@@ -91,9 +91,9 @@
                 <div class="order_price_box">
                   <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
                   <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
-                  <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
-                  <div v-show="order.discountMoney>0">折扣：<strong>{{order.discountMoney}}</strong></div>
-                  <div v-show="parseFloat(order.activityMoney)!=0">活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-if="order.couponMoney>0">卡券：<strong>{{parseFloat(order.couponMoney).toFixed(2)}}</strong></div>
+                  <div v-if="order.discountMoney>0">折扣：<strong>{{parseFloat(order.discountMoney).toFixed(2)}}</strong></div>
+                  <div v-if="order.activityMoney>0">活动：<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
                 </div>
 
               </td>
@@ -114,9 +114,9 @@
           </table>
         </div>
       </div>
-      <div class="content am-bg-white" v-if="srcNum==='2'">
+      <div class="content am-bg-white" v-if="srcNum==='2'" >
         <div class="orders">
-          <table class="orders_table">
+          <table class="orders_table" v-loading="orderTempListBool">
             <thead>
             <tr>
               <th width="230px">商品编码</th>
@@ -132,14 +132,15 @@
             </tr>
             </thead>
             <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
-            <tr class="order_header">
+            <tr :class="{'order_header':order.orderType!=2&&order.orderType!=3,'replaceBack':(order.orderType==2||order.orderType==3)}">
+              
               <!-- <td colspan="10"> -->
               <td colspan="9">
-                <div class=" img_b" style="position: absolute;top:0;left:0;" v-show="order.orderType=='1'"><img
-                  src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ding_icon.png"/></div>
+                <img v-cloak class="tag" :src="order.orderType==3?'https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_ztui.png':'https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_zhuan.png'" alt="" >
                 <div class=" fn-left">
-                  <span class="order_id mgl30">{{order.orderNo}}</span>
+                  <span class="order_id mgl30 font-weight_Bold font-size_18 font-family-bold color_555555">{{order.orderNo}}</span>
                   <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
+                  <span class="msg">&nbsp; &nbsp;原订单号： <strong>{{order.pOrderId}}</strong></span>
                 </div>
                 <div class=" fn-right">
                   <span class="msg">销售&nbsp;&nbsp;</span>
@@ -149,32 +150,32 @@
               </td>
             </tr>
             <tr v-for="(list,index) in order.orderItems" :key="list.name">
-              <td>{{list.itemNo}}</td>
-              <td>{{list.itemName||'商品名'}}</td>
+              <td><div class="tagShop" >
+                <img v-show="list.type == '1'" src="https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_huan.png" alt="">
+                <img v-show="list.type == '-1'" src="https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_tui.png" alt="">
+                </div>{{list.itemNo}}</td>
+              <td>{{list.itemName}}</td>
               <td>{{parseInt(list.quantity)}}</td>
-              <td>{{parseFloat(list.price)||'商品原单价'}}</td>
-              <td><span class="ft_bold">{{parseFloat(list.money)}}</span></td>
+              <td>{{parseFloat(list.price)||'--'}}</td>
+              <td><span class="ft_bold">{{list.status == 3?parseFloat(list.money):(list.status == 2?'--':parseFloat(list.price))||'--'}}</span></td>
               <td>{{order.shopName}}</td>
               <!-- <td>{{order.receiveTime}}</td> -->
               <td  v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
                   <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
                   <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
-                  <div v-show="parseFloat(order.couponMoney)!=0">卡券：<strong>{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
-                  <div v-show="order.discountMoney>0">折扣：<strong>{{order.discountMoney}}</strong></div>
-                  <div v-show="parseFloat(order.activityMoney)!=0">活动：<strong>{{parseFloat(order.activityMoney)>0?parseFloat(order.activityMoney).toFixed(2):'0.00'}}</strong></div>
+                  <div v-if="order.couponMoney>0">卡券：<strong>{{parseFloat(order.couponMoney).toFixed(2)}}</strong></div>
+                  <div v-if="order.discountMoney>0">折扣：<strong>{{parseFloat(order.discountMoney).toFixed(2)}}</strong></div>
+                  <div v-if="order.activityMoney>0">活动：<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
                 </div>
 
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="am-ft-gray9"  v-if="srcNum==='1'">已完成</div>
-                <div class="am-ft-gray9"  v-if="srcNum==='2'">退货</div>
-                <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
+                <div class="color_backBtn" >{{list.status=='12'?'申请退货':list.statusName}}</div>
+                <div class="color_readDetail" @click="toOrderDetail(order)">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="look_d am-ft-gray9">换货</div>
-                <div class="look_d am-ft-gray9">申请退货</div>
-                <div class="look_d am-ft-gray9">补打销售单</div>
+                <div class="color_cancalBackShop" @click="toCancalBackOrReplaceShop(0,order)">{{order.orderType==3?'取消退货':'取消换货'}}</div>
               </td>
 
             </tr>
@@ -254,6 +255,16 @@
       @current-change="getOrderList"
       :current-page.sync="nub">
       </el-pagination> 
+      <el-dialog
+      title="提示"
+      :visible.sync="cancalBackOrReplaceOrder"
+      width="500px">
+      <div class="closeContent">你确定要关闭售后订单吗？</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancalBackOrReplaceOrder = false">取 消</el-button>
+        <el-button type="danger" @click="toCancalBackOrReplaceShop(1,true)">确 定</el-button>
+      </span>
+    </el-dialog>
     </div>      
   </section>
 </template>
@@ -273,7 +284,10 @@
         },
         orderTempList: [],
         nub: 1,
+        orderTempListBool:true,
         size: 15,
+        closeOrderData:null,
+        cancalBackOrReplaceOrder:false,
         count: 0,
         showModal: false,
         srcNum: '1',
@@ -310,6 +324,7 @@
     },
     methods: {
       changeTab: function (item) {
+        this.orderTempListBool = true;
         this.srcNum = item.srcNum;
         this.tabs.forEach(function (element) {
           element.isActived = false;
@@ -318,6 +333,42 @@
           }
         })
         this.getOrderList();
+      },
+      toCancalBackOrReplaceShop(num,order){
+        // 取消退换货
+        const _this = this;
+        if(num == 0){
+          _this.cancalBackOrReplaceOrder = true;
+          _this.closeOrderData = order;
+          return
+        }else if(num == 1){
+          _this.$myAjax({
+            url:'pos-api/orderTemp/orderTempRefund/update',
+            data:{
+              orderId:_this.closeOrderData.orderId,
+              type:'3'
+            },
+            success:function(res){
+              if(res.code == 1){
+          _this.cancalBackOrReplaceOrder = false;
+                console.log(res)
+                _this.$message({
+                  message:'申请取消成功',
+                  showClose:true,
+                  type:'success'
+                })
+              }else{
+                _this.$message({
+                  message:'申请取消失败',
+                  showClose:true,
+                  type:'error'
+                })
+              }
+            },error:function(err){
+
+            }
+          })
+        }
       },
       showModalMiddle: function () {
         this.showCashier = true;
@@ -357,6 +408,7 @@
             })
             .then(function(res) {
               // console.info(res.data.data)
+              _this.orderTempListBool = false;
               if(res.data.code == 1){
                 _this.count = res.data.data.count;
                 _this.orderTempList = [];
@@ -449,7 +501,18 @@
   .cashier_top li {
     margin-left: 30px;
   }
-
+  .replaceBack{
+    background: #FFF3F3 !important;
+    border:0;
+    text-align: left;
+    position: relative;
+    .tag{
+         float: left;
+          position: absolute;
+          top: 0;
+          left: 0;
+    }
+  }
   .find_btn {
     display: inline-block;
     width: 70px;
@@ -465,7 +528,9 @@
   .orders {
     padding: 9px;
   }
-
+  [v-cloak] {
+      display: none !important;
+  }
   .orders_table {
     width: 100%;
   }
@@ -473,7 +538,19 @@
   .orders_table thead tr {
     height: 40px;
   }
-
+  .color_backBtn{
+    font-size: 13px;
+    color: #DB5858 !important;
+  }
+  .color_cancalBackShop{
+    font-size: 13px;
+    color: #00AFE4 !important;
+    cursor: pointer;
+  }
+  .color_readDetail{
+    font-size: 13px;
+    color: #333333 !important;
+  }
   .orders_table thead tr th {
     background: #F4F4F4;
     font-weight: bold;
@@ -507,6 +584,7 @@
     background: #F4F4F4 !important;
     border: 0px;
     text-align: left;
+    position: relative;
   }
 
   .orders_table .order_header .order_id {
@@ -527,7 +605,9 @@
     font-size: 12px;
     color: #555555;
   }
-
+  .orders_tbody{
+    position: relative;
+  }
   .orders_tbody tr {
     /* display: inline-block; */
     height: 40px;
@@ -557,7 +637,10 @@
   .orders_tbody .rowspan_td strong {
     color: #000;
   }
-
+  .closeContent{
+    margin: 30px 0;
+    text-align: center;
+  }
   .orders_tbody .rowspan_td .priceAll {
     font-weight: bold;
     font-size: 16px;
@@ -597,7 +680,23 @@
     text-align: left;
     padding: 0 10px;
   }
-
+  .tagShop{
+    height: 100%;
+    display:inline-block;
+    width: 40px;
+  }
+  .font-family-bold{
+    font-family: MicrosoftYaHei-Bold;
+  }
+  .font-weight_Bold{
+    font-weight: bold;
+  }
+  .color_555555{
+    color:#555555;
+  }
+  .font-size_18{
+    font-size: 18px;
+  }
   /* 全部 */
   .orderList_table tbody tr:nth-child(2n) {
     background: rgba(246, 246, 246, 0.50);

@@ -4,7 +4,7 @@ $white: #FFFFFF;
 $blue: #009fcf;
 $yellow: #EA9100;
 $orange: #FF6600;
-
+$night: #999999;
 $gary-import: #303133;
 $gary-normal: #606266;
 $gary-secondary: #909399;
@@ -32,7 +32,9 @@ $radius3: $h3 solid #E1E1E1;
 .am-ft-red {
     color: $red !important;
 }
-
+.am-ft-night{
+    color: $night important;
+}
 .am-ft-darkred {
     color: $dark-red !important;
 }

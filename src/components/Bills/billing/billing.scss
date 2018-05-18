@@ -612,7 +612,10 @@
     border: 1px solid #fff;
   }
 }
-
+.el-table__empty-block{
+  width: auto !important;
+  background: rgb(246, 246, 246);
+}
 .memberInfo {
   .selectEyeglass {
     width: 100%;
@@ -636,14 +639,20 @@
     th {
       background: #fff !important;
       text-align: center;
+      font-size: 13px !important;
+      color:#333333 !important;
       padding: 7px 8px !important;
     }
     td {
       text-align: center;
-      padding: 8.5px 8px;
+      padding: 8.5px 0px;
     }
-    tr:nth-of-type(even) {
-      background: rgba(246, 246, 246, 0.50);
+    tr {
+      background: rgba(246, 246, 246,1);
+      td:nth-child(1){
+        text-indent:20px;
+        white-space: nowrap !important;
+    }
     }
   }
 }

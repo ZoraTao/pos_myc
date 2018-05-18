@@ -14,14 +14,14 @@
       </div>
       <div class="orderMemberdDetail">
           <div>
-              <span>开单时间：<i>{{orderData.ordertemp.createTime}}</i></span>
+              <span>开单时间：<i>{{(orderData.ordertemp.createTime).substring(0,19)}}</i></span>
               <span>销售部门：<i>{{orderData.ordertemp.shopName}}</i></span>
               <span>&nbsp;&nbsp;销售：<i>李四</i></span>
           </div>
           <div>
               <span>会员姓名：<i>{{orderData.ordertemp.name}}</i></span>
               <span>&nbsp;&nbsp;&nbsp;手机号：<i>{{orderData.ordertemp.telphone}}</i></span>
-              <span>&nbsp;&nbsp;取件：<i>{{(orderData.ordertemp.glassesTime)}}</i></span>
+              <span>&nbsp;&nbsp;取件：<i>{{(orderData.ordertemp.glassesTime).substring(0,19)}}</i></span>
           </div>
       </div>
     </div>
@@ -44,8 +44,7 @@
         <el-table-column
           label="商品名称">
           <template slot-scope="scope">
-              {{scope.row.itemName}}定做单号:{{scope.row.orderReceiptId}}
-
+              {{scope.row.itemName}}<span v-if="scope.row.productMold == '1'">定做单号:{{scope.row.orderReceiptId}}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -66,7 +65,7 @@
           label="实售单价"
           width="120px">
           <template slot-scope="scope">
-            <strong>{{ parseFloat(scope.row.money)||'--'}}</strong>
+            <strong>{{ scope.row.productMold == '3'?parseFloat(scope.row.listPrice):(parseFloat(scope.row.money)||'--')}}</strong>
           </template>
         </el-table-column>
         <el-table-column
@@ -108,116 +107,168 @@
               <ul class="glass_table_head">
                 <li class="wid80"> &nbsp;&nbsp;</li>
                 <li class="w50"> &nbsp;&nbsp;</li>
-                <li class="w90">SPH</li>
-                <li class="w90">CYL</li>
-                <li class="w90">AX</li>
-                <li class="w90">VA</li>
-                <li class="w90">DPD</li>
-                <li class="w90">NPD</li>
-                <li class="w90">HPD</li>
-                <li class="w90">PD</li>
-                <li class="w90">ADD</li>
+                <li class="w90">球镜(SPH)</li>
+                <li class="w90">柱镜(CYL)</li>
+                <li class="w90">轴位(AX)</li>
+                <li class="w90">矫正视力(VA)</li>
+                <li class="w90">棱镜</li>
+                <li class="w90">基底</li>
+                <li class="w90">基弧</li>
+                <li class="w90">远瞳距(DPD)</li>
+                <li class="w90">瞳高(HPD)</li>
+                <li class="w90">总瞳距(PD)</li>
+                <li class="w90">下加光(ADD)</li>
               </ul>
-              <ul v-if="far[0].sph">
+              <ul>
                 <li class="fn-left  msg_left" >远用</li>
                 <li class="fn-left glass_table_770">
                   <table>
                     <tr class="border_bottom">
                       <td class="w50">R</td>
-                      <td class="w90">{{far[0].sph}}</td>
-                      <td class="w90">{{far[0].cyl}}</td>
-                      <td class="w90">{{far[0].ax}}</td>
-                      <td class="w90">{{far[0].va}}</td>
-                      <td class="w90">{{far[0].dpd}}</td>
-                      <td class="w90">{{far[0].npd}}</td>
-                      <td class="w90">{{far[0].hpd}}</td>
-                      <td class="w90">{{far[0].pd}}</td>
-                      <td class="w90 border_left" rowspan="2">{{far[0].add}}</td>
-                    </tr>
-                    <tr class="dis_bg">
-                      <td class="w50">L</td>
                       <td class="w90">{{far[1].sph}}</td>
                       <td class="w90">{{far[1].cyl}}</td>
                       <td class="w90">{{far[1].ax}}</td>
                       <td class="w90">{{far[1].va}}</td>
                       <td class="w90">{{far[1].dpd}}</td>
-                      <td class="w90">{{far[1].npd}}</td>
+                      <td class="w90">{{far[1].lj}}</td>
+                      <td class="w90">{{far[1].jd}}</td>
+                      <td class="w90">{{far[1].jh}}</td>
                       <td class="w90">{{far[1].hpd}}</td>
-                      <td class="w90">{{far[1].pd}}</td>
+                      <td class="w90 border_left" rowspan="2">{{far[1].pd}}</td>
+                      <td class="w90 border_left" rowspan="2">{{far[1].add}}</td>
+                    </tr>
+                    <tr class="dis_bg">
+                      <td class="w50">L</td>
+                      <td class="w90">{{far[0].sph}}</td>
+                      <td class="w90">{{far[0].cyl}}</td>
+                      <td class="w90">{{far[0].ax}}</td>
+                      <td class="w90">{{far[0].va}}</td>
+                      <td class="w90">{{far[0].dpd}}</td>
+                      <td class="w90">{{far[0].lj}}</td>
+                      <td class="w90">{{far[0].jd}}</td>
+                      <td class="w90">{{far[0].jh}}</td>
+                      <td class="w90">{{far[0].hpd}}</td>
                     </tr>
                   </table>
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list" v-if="near[0].sph">
+            <li class="clearfix combination_table_list" >
+              <ul class="glass_table_head">
+                <li class="wid80"> &nbsp;&nbsp;</li>
+                <li class="w50"> &nbsp;&nbsp;</li>
+                <li class="w90">球镜(SPH)</li>
+                <li class="w90">柱镜(CYL)</li>
+                <li class="w90">轴位(AX)</li>
+                <li class="w90">矫正视力(VA)</li>
+                <li class="w90">棱镜</li>
+                <li class="w90">基底</li>
+                <li class="w90">基弧</li>
+                <li class="w90">近瞳距(DPD)</li>
+                <li class="w90">总瞳距(PD)</li>
+              </ul>
               <ul>
                 <li class="fn-left msg_left">近用</li>
                 <li class="fn-left glass_table_770">
                   <table>
                     <tr class="border_bottom">
                       <td class="w50">R</td>
-                      <td class="w90">{{near[0].sph}}</td>
-                      <td class="w90">{{near[0].cyl}}</td>
-                      <td class="w90">{{near[0].ax}}</td>
-                      <td class="w90">{{near[0].va}}</td>
-                      <td class="w90">{{near[0].dpd}}</td>
-                      <td class="w90">{{near[0].npd}}</td>
-                      <td class="w90">{{near[0].hpd}}</td>
-                    </tr>
-                    <tr class="dis_bg">
-                      <td class="w50">L</td>
                       <td class="w90">{{near[1].sph}}</td>
                       <td class="w90">{{near[1].cyl}}</td>
                       <td class="w90">{{near[1].ax}}</td>
                       <td class="w90">{{near[1].va}}</td>
+                      <td class="w90">{{near[1].lg}}</td>
+                      <td class="w90">{{near[1].jd}}</td>
+                      <td class="w90">{{near[1].jh}}</td>
                       <td class="w90">{{near[1].dpd}}</td>
-                      <td class="w90">{{near[1].npd}}</td>
-                      <td class="w90">{{near[1].hpd}}</td>
+                      <td class="w90 border_left" rowspan="2">{{near[1].pd}}</td>
+                      
+                    </tr>
+                    <tr class="dis_bg">
+                      <td class="w50">L</td>
+                      <td class="w90">{{near[0].sph}}</td>
+                      <td class="w90">{{near[0].cyl}}</td>
+                      <td class="w90">{{near[0].ax}}</td>
+                      <td class="w90">{{near[0].va}}</td>
+                      <td class="w90">{{near[0].lg}}</td>
+                      <td class="w90">{{near[0].jd}}</td>
+                      <td class="w90">{{near[0].jh}}</td>
+                      <td class="w90">{{near[0].dpd}}</td>
                     </tr>
                   </table>
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list" v-if="contact[0].sph">
+            <li class="clearfix combination_table_list">
+              <ul class="glass_table_head">
+                <li class="wid80"> &nbsp;&nbsp;</li>
+                <li class="w50"> &nbsp;&nbsp;</li>
+                <li class="w90">球镜(SPH)</li>
+                <li class="w90">柱镜(CYL)</li>
+                <li class="w90">轴位(AX)</li>
+                <li class="w90">矫正视力(VA)</li>
+                <li class="w90">瞳距(PD)</li>
+                <li class="w90">下加光(ADD)</li>
+              </ul>
               <ul>
-                <li class="fn-left msg_left">隐形</li>
+                <li class="fn-left msg_left">主观</li>
                 <li class="fn-left glass_table_770">
                   <table>
                     <tr class="border_bottom">
                       <td class="w50">R</td>
-                      <td class="w90">{{contact[0].sph}}</td>
-                      <td class="w90">{{contact[0].cyl}}</td>
-                      <td class="w90">{{contact[0].ax}}</td>
-                      <td class="w90">{{contact[0].va}}</td>
+                      <td class="w90">{{subjective[1].sph}}</td>
+                      <td class="w90">{{subjective[1].cyl}}</td>
+                      <td class="w90">{{subjective[1].ax}}</td>
+                      <td class="w90">{{subjective[1].va}}</td>
+                      <td class="w90">{{subjective[1].pd}}</td>
+                      <td class="w90 border_left" rowspan="2">{{subjective[1].add}}</td>
                     </tr>
                     <tr class="dis_bg">
                       <td class="w50">L</td>
-                      <td class="w90">{{contact[1].sph}}</td>
-                      <td class="w90">{{contact[1].cyl}}</td>
-                      <td class="w90">{{contact[1].ax}}</td>
-                      <td class="w90">{{contact[1].va}}</td>
+                      <td class="w90">{{subjective[0].sph}}</td>
+                      <td class="w90">{{subjective[0].cyl}}</td>
+                      <td class="w90">{{subjective[0].ax}}</td>
+                      <td class="w90">{{subjective[0].va}}</td>
+                      <td class="w90">{{subjective[0].pd}}</td>
                     </tr>
                   </table>
                 </li>
               </ul>
             </li>
-            <li class="clearfix combination_table_list" v-if="asymptotic[0].sph">
+            <li class="clearfix combination_table_list" >
+              <ul class="glass_table_head">
+                <li class="wid80"> &nbsp;&nbsp;</li>
+                <li class="w50"> &nbsp;&nbsp;</li>
+                <li class="w90">球镜(SPH)</li>
+                <li class="w90">柱镜(CYL)</li>
+                <li class="w90">轴位(AX)</li>
+                <li class="w90">矫正视力(VA)</li>
+                <li class="w90">瞳距(PD)</li>
+              </ul>
               <ul>
-                <li class="fn-left  msg_left">渐进</li>
+                <li class="fn-left  msg_left">客观</li>
                 <li class="fn-left glass_table_770">
                   <table>
                     <tr class="border_bottom">
                       <td class="w50">R</td>
-                      <td class="w90">{{asymptotic[0].sph}}</td>
+                      <td class="w90">{{skiascopy[1].sph}}</td>
+                      <td class="w90">{{skiascopy[1].sph}}</td>
+                      <td class="w90">{{skiascopy[1].sph}}</td>
+                      <td class="w90">{{skiascopy[1].sph}}</td>
+                      <td class="w90">{{skiascopy[1].pd}}</td>
                     </tr>
                     <tr class="dis_bg">
                       <td class="w50">L</td>
-                      <td class="w90">{{asymptotic[1].sph}}</td>
+                      <td class="w90">{{skiascopy[0].sph}}</td>
+                      <td class="w90">{{skiascopy[0].sph}}</td>
+                      <td class="w90">{{skiascopy[0].sph}}</td>
+                      <td class="w90">{{skiascopy[0].sph}}</td>
+                      <td class="w90">{{skiascopy[0].pd}}</td>
                     </tr>
                   </table>
                 </li>
               </ul>
-            </li>
+            </li> 
 
           </ul>
         </div>
@@ -325,8 +376,20 @@
               </span>
             </div>
             <div class="divBorder" ></div>
-            <el-table
-              :data="tableData"
+            <div class="Memo">
+                <div class="titles">销售备注</div>
+                <div class="messages">{{orderData.ordertemp.saleMemo}}</div>
+            </div>
+            <div class="Memo">
+                <div class="titles">加工备注</div>
+                <div class="messages">{{orderData.ordertemp.processMemo}}</div>
+            </div>
+            <div class="Memo">
+                <div class="titles">特殊备注</div>
+                <div class="messages">{{orderData.ordertemp.specialMemo}}</div>
+            </div>
+            <!-- <el-table
+              :data="orderData.ordertemp"
               :show-header = false
               align="left"
               size="small"
@@ -335,17 +398,17 @@
                 label="名称"
                 width="100px">
                 <template slot-scope="scope">
-                  <strong>销售备注</strong>
+                  <strong></strong>
                 </template>
               </el-table-column>
               <el-table-column
                 label="备注内容"
                 width="300px">
                 <template slot-scope="scope">
-                  <strong>备注备注备注备注备注</strong>
+                  <strong></strong>
                 </template>
               </el-table-column>
-            </el-table>
+            </el-table> -->
       </div>
     </div>
   </section>
@@ -364,7 +427,7 @@ export default {
       far: [], //远用
       subjective: [], //主观
       near: [], //近用
-      skiascopy: [], // 检影
+      skiascopy: [], // 客观
       asymptotic: [], // 渐近
       contact: [], // 隐形
       tableData2: [],
@@ -456,20 +519,17 @@ export default {
       }
     },
     eyesDate(data) {
+      console.log(data)
       let _this = this;
       for (var i = 0; i < data.length; i++) {
         if (data[i].key == 0) {
-          _this.skiascopy = data[i].value;
-        } else if (data[i].key == 1) {
-          _this.subjective = data[i].value;
-        } else if (data[i].key == 2) {
           _this.far = data[i].value;
-        } else if (data[i].key == 3) {
+        } else if (data[i].key == 1) {
           _this.near = data[i].value;
-        } else if (data[i].key == 4) {
-          _this.asymptotic = data[i].value;
-        } else if (data[i].key == 5) {
-          _this.contact = data[i].value;
+        } else if (data[i].key == 2) {
+          _this.subjective = data[i].value;
+        } else if (data[i].key == 3) {
+          _this.skiascopy = data[i].value;
         }
       }
     },
@@ -632,6 +692,7 @@ export default {
       }
     }
   }
+  
   .orderShoppingDetail {
     overflow: hidden;
     background: #fff;
@@ -677,21 +738,21 @@ export default {
     }
 
     .optometryTable {
-      width: 940px;
+      width: 1200px;
       margin-top: 15px;
       border-top: 2px dashed #d8d8d8;
     }
     .glass_combination_table {
       .glass_table_head{
-        width: 940px;
+        width: 1200px;
       }
-      width: 940px;
+      width: 1200px;
       border: none;
       /* height: 400px; */
     }
 
     .glass_table_head {
-      width: 870px;
+      width: 1200px;
       height: 30px;
       line-height: 30px;
       font-weight: bold;
@@ -702,7 +763,7 @@ export default {
     }
 
     .glass_table_770 {
-      width: 860px;
+      width: 1041px;
     }
 
     .glass_table_head li {
@@ -796,12 +857,28 @@ export default {
     }
   }
 }
-
+.Memo{
+  width:100%;
+  overflow:hidden;
+  text-indent:24px;
+  line-height:20px;
+  margin-top:3px;
+  .titles{
+      width:100px;
+      float:left;
+    }
+.messages{
+      float:left;
+      width:200px;
+    }
+}
 </style>
 <style>
 [v-cloak] {
   display: none;
 }
+
+
 .back{
   width: 100%;
   background: #fff;

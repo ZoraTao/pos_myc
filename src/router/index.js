@@ -187,7 +187,7 @@ const router = new Router({
                     path: 'memberDetail',
                     name: 'member-detail',
                     component: resolve => require(['../components/MemberManage/MemberInquiry/member-detail.vue'], resolve),
-                    meta:{keepAlive:true}
+                    // meta:{keepAlive:true}
                 },
                 {
                     path: 'memberComplaints',
@@ -252,6 +252,12 @@ const router = new Router({
                     path: 'inventory-temporary',
                     name: 'inventory-check-temporary',
                     component: resolve => require(['../components/CommodityStocks/inventory-temporary/inventory-check-temporary'], resolve)
+                },
+                //盘点不平处理
+                {
+                    path: 'unevenness-order',
+                    name: 'unevenness-order-index',
+                    component: resolve => require(['../components/CommodityStocks/unevenness/unevenness.vue'], resolve)
                 },
                 // 添加临时盘点单
                 {

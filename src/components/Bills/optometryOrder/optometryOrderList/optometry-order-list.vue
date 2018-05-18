@@ -25,7 +25,7 @@
         </div>
 
         <div class="fn-right ">
-            <button class="add_btn bg_white_col_blue" @click="showNewOptometry=true">
+            <button class="add_btn bg_white_col_blue" @click="openNewOpt()">
                 + 新增验光单
             </button>
         </div>
@@ -53,7 +53,7 @@
         </div>
         <!--验光列表-->
         <div v-show="listData.length>1&&detailData.length==0">
-            <div class="list_name">验光列表(23)</div>
+            <div class="list_name">验光列表({{count}})</div>
             <el-table
                 :data="listData"
                 stripe
@@ -89,7 +89,7 @@
                 <el-table-column
                 label="操作">
                     <template slot-scope="scope">
-                        <span class="am-ft-blue" @click="getMemberDetail(scope.row.prescriptionId,scope.row.memberId)"><a>查看详情</a></span>
+                        <span class="am-ft-blue" @click="getMemberDetail(scope.row.prescriptionId,scope.row)"><a>查看详情</a></span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -104,14 +104,10 @@
             </el-pagination>
         </div>
         <!--验光单一条数据详情-->
-        <optometryOrderCu :memberDet="memberDet" :memberInfo="detailData" :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
+        <optometryOrderCu @backs="backs" :memberDet="memberDet" :memberInfo="detailData"  :eyes="eyesData" v-if="Object.keys(detailData).length>0"></optometryOrderCu>
     </div>
     <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="950px">
-        <NewOptometryModal :submit="submitNewOptometry" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
-        <div class="packageDetailButtonGroup">
-            <el-button @click="showNewOptometry = false">取 消</el-button>
-            <el-button type="primary" @click="submitNewOptometry=true">保 存</el-button>
-        </div>
+        <NewOptometryModal ref="addOptometry" :submit="submitNewOptometry" @closeEyesModel="closeEyesModel" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
     </el-dialog>
 </div>
 </template>
@@ -140,7 +136,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 count: 0,
                 nub: 1,
                 size: 15,
-
+                back:'yes'
             };
         },
         components:{
@@ -156,6 +152,13 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
             }
         },
         methods:{
+            backs(){
+                this.detailData =[];
+            },
+            closeEyesModel(){
+                this.showNewOptometry = false;
+
+            },
             getOrderList(isFirst) {
                 if(isFirst){
                     this.noSearchText="输入会员信息查询验光单"
@@ -197,8 +200,9 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                     })
                 }, 0);
             },
-            getMemberDetail(id,memberId) {
+            getMemberDetail(id,data) {
                 var that = this;
+                console.log(id,data)
                 that.$axios({
                     url: this.deatilUrl,
                     method: 'post',
@@ -216,15 +220,14 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
                 .then(function (response) {
                     that.detailData=response.data.data.prescriptions;
                     that.eyesData=response.data.data.eyes;
+                    console.log( that.detailData,that.eyesData)
+                    return 
                     if(that.memberDet!='detail'){
                         that.$router.push({
-                            path: '/bills/optometryOrderCu',
+                            // path: '/bills/optometryOrderCu',
                             name: 'optometryOrderCu',
                             params: {
-                                data:
-                                {
-                                    memberId:memberId,
-                                }
+                                memberId:data.memberId,
                             }
                         });
                     }
@@ -233,7 +236,14 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
             getNewoptometry(){
                 this.showNewOptometry=false;
                 this.getOrderList();
-            }
+            },
+            openNewOpt(){
+                const _this = this;
+                _this.showNewOptometry=true;
+                _this.$nextTick(()=>{
+                    _this.$refs.addOptometry.cleardata();
+                })
+            },
         }
     };
 </script>

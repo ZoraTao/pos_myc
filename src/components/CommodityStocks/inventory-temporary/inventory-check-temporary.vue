@@ -2,27 +2,35 @@
   <div class="content-out-wrapper stocks-content">
     <!--top-->
     <el-row class="inquiry-row mgt6">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline am-ft-left">
+      <el-form :inline="true" :model="selectData" class="demo-form-inline am-ft-left">
         <el-col :span="20">
           <el-form-item label="盘点日期：">
             <div class="fn-line-block">
-              <el-date-picker type="date" placeholder="选择日期" v-model="formInline.date1"
-                              style="width: 125px;"></el-date-picker>
+              <el-date-picker 
+              type="date" 
+              placeholder="选择日期" 
+              value-format="yyyy-MM-dd HH:mm:ss"
+              v-model="selectData.startTime"
+              style="width: 125px;"></el-date-picker>
             </div>
             <div class="fn-line-block am-ft-center am-text-secondary">至</div>
             <div class="fn-line-block">
-              <el-date-picker type="date" placeholder="选择日期" v-model="formInline.date2"
-                              style="width: 125px;"></el-date-picker>
+              <el-date-picker 
+              type="date" 
+              placeholder="选择日期" 
+              v-model="selectData.endTime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              style="width: 125px;"></el-date-picker>
             </div>
           </el-form-item>
           <el-form-item label="盘点部门：">
-            <el-select v-model="formInline.select1" placeholder="请选择" style="width: 130px">
+            <el-select v-model="selectData.department" placeholder="请选择" style="width: 130px">
               <el-option label="1" value="1"></el-option>
               <el-option label="2" value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="盘点仓库：">
-            <el-select v-model="formInline.select1" placeholder="请选择" style="width: 130px">
+            <el-select v-model="selectData.base" placeholder="请选择" style="width: 130px">
               <el-option label="1" value="1"></el-option>
               <el-option label="2" value="2"></el-option>
             </el-select>
@@ -39,71 +47,75 @@
     <!--content-->
     <el-row class="inquiry-row mgt10">
       <el-col :span="24">
-        <h2 class="am-ft-16 mgb15">查询结果 (23)</h2>
+        <h2 class="am-ft-16 mgb15">查询结果 ({{count}})</h2>
       </el-col>
       <el-col :span="24">
           <el-table
-            :data="tableData"
-            stripe
-            size="small"
-            align="left"
-            style="width: 100%">
-            <el-table-column
-              prop="a"
-              label="临时盘点单号"
-              width="120">
-            </el-table-column>
-            <el-table-column
-              prop="b"
-              label="盘点仓库"
-              width="120">
-            </el-table-column>
-            <el-table-column
-              prop="c"
-              label="盘点部门">
-            </el-table-column>
-            <el-table-column
-              prop="d"
-              label="盘点人">
-            </el-table-column>
-            <el-table-column
-              prop="e"
-              label="制单人">
-            </el-table-column>
-            <el-table-column
-              prop="f"
-              label="制单时间"
-              width="140">
-            </el-table-column>
-            <el-table-column
-              prop="g"
-              label="盘前数">
-            </el-table-column>
-            <el-table-column
-              prop="h"
-              label="实盘数">
-            </el-table-column>
-            <el-table-column
-              label="差异数">
-              <template slot-scope="scope">
-                <p v-if="scope.row.i !== 0" class="am-ft-red">{{scope.row.i}}</p>
-                <p v-if="scope.row.i == 0" class="am-text-placeholder">{{scope.row.i}}</p>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="操作">
-              <template slot-scope="scope">
-                <a href="javascript:;">查看详情</a>
-              </template>
-            </el-table-column>
-          </el-table>
+        :data="tableData"
+        stripe
+        size="small"
+        align="left"
+        style="width: 100%">
+        <el-table-column
+          prop="warehouseCheckCode"
+          label="盘点单号"
+          width="200">
+        </el-table-column>
+        <el-table-column
+          prop="initCheckTime"
+          label="盘点时间"
+          width="150">
+        </el-table-column>
+        <el-table-column
+          prop="warehouseName"
+          label="盘点仓库"
+          width="150">
+        </el-table-column>
+        <el-table-column
+          prop="checkUserName"
+          label="盘点人">
+        </el-table-column>
+        <el-table-column
+          prop="warehouseCheckTypeName"
+          label="盘点单类型"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          label="盘前数"
+          width="150">
+          <template slot-scope="scope">
+            <span>600</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="实盘数">
+          <template slot-scope="scope">
+            <span>600</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="差异数">
+          <template slot-scope="scope">
+            <p class="am-ft-red">-5</p>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作">
+          <template slot-scope="scope">
+            <a href="javascript:;" @click="goCheck(scope.row)">查看详情</a>
+          </template>
+        </el-table-column>
+      </el-table>
           <!--分页-->
-          <el-pagination
-            background
-            class="am-ft-right mgt10"
-            layout="total, prev, pager, next"
-            :total="10">
-          </el-pagination>
+       <el-pagination
+          background
+          class="am-ft-right mgt10"
+          layout=" prev, pager, next" 
+          :page-size="size"
+          :total="count"
+          :current-page.sync="nub"
+          @current-change="requestOrder" >
+        </el-pagination>
       </el-col>
     </el-row>
   </div>
@@ -116,12 +128,16 @@
     data() {
       return {
         input1: '',
-        formInline: {
-          select1: '',
+        size:10,
+        nub:1,
+        selectData: {
+          department: '',
+          base:'',
           _check: false,
-          date1: '',
-          date2: ''
+          startTime: '',
+          endTime: ''
         },
+        count:0,
         tableData: [{
           a: 'LPD1230001',
           b: '湖滨店',
@@ -136,6 +152,30 @@
       }
     },
     methods: {
+      requestOrder(id){
+         
+        const _this = this;
+        _this.$myAjax({
+          url:'pos-api/warehouseCheck/getWarehouseCheckList',
+          data:{
+            // status:id,
+            nub: _this.nub*_this.size,
+            size: _this.size,
+          },
+          success:function(res){
+              if(res.code == 1){
+                _this.count = res.data.count;
+                _this.tableData = res.data.list;
+              }
+          },error:function(err){
+              _this.$message({
+                message:err,
+                type:'error',
+                showClose:true
+              })
+          }
+        })
+      },
       onSubmit() {
         console.log('submit!');
       },
@@ -146,6 +186,8 @@
           params: {}
         })
       }
+    },created(){
+      this.requestOrder();
     }
   }
 </script>

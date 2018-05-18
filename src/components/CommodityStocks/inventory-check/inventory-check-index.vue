@@ -22,8 +22,8 @@
     <!--/top-->
 
     <!--tab-->
-    <el-tabs type="border-card" class="mgt15">
-      <el-tab-pane label="未盘点">
+    <el-tabs type="border-card" v-model="nowTab" class="mgt15" @tab-click="clickTab" >
+      <el-tab-pane label="未盘点"  name="not">
         <!--无数据时缺省显示-->
         <el-row class="inquiry-row content-info-box" v-if="false">
           <el-col :span="24">
@@ -36,16 +36,14 @@
         <!--/无数据时缺省显示-->
 
         <!--有数据时显示-->
-        <not-check></not-check>
+        <not-check ref="notcheck"></not-check>
         <!--/有数据时显示-->
       </el-tab-pane>
-
-      <el-tab-pane label="盘点中">
-        <check-ing></check-ing>
+      <el-tab-pane label="盘点中"  name="ing">
+        <check-ing ref="checking"></check-ing>
       </el-tab-pane>
-
-      <el-tab-pane label="已完成">
-        <check-ed></check-ed>
+      <el-tab-pane label="已完成"  name="end">
+        <check-ed ref="checked"></check-ed>
       </el-tab-pane>
     </el-tabs>
 
@@ -67,6 +65,7 @@
     data() {
       return {
         input1: '',
+        nowTab:"not",
         formInline: {
           select1: '',
           _check: false
@@ -74,9 +73,28 @@
       }
     },
     methods: {
+      clickTab(tab,event){
+        const _this = this;
+        if(_this.nowTab == 'not'){
+            _this.$nextTick(()=>{
+              _this.$refs.notcheck.requestOrder(0);
+            })
+        }else if(_this.nowTab == 'ing'){
+            _this.$nextTick(()=>{
+              _this.$refs.checking.requestOrder(1);
+            })
+        }else if(_this.nowTab == 'end'){
+            _this.$nextTick(()=>{
+              _this.$refs.checked.requestOrder(2);
+            })
+        }
+      },
       onSubmit() {
         console.log('submit!');
       }
+    },
+    created(){
+      this.clickTab();
     }
   }
 </script>
