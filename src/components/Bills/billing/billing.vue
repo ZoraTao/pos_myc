@@ -5,7 +5,7 @@
             <div class="salesclerkInfo">
                 <el-form ref="form">
                     <el-form-item label="销售员 :">
-                        <el-select size="mini" class="placeHolder" v-model="shopMember" placeholder="请选择" @visible-change="getPrivateSelect()">
+                        <el-select size="mini" class="placeHolder express inputPl0" v-model="shopMember" placeholder="请选择" @visible-change="getPrivateSelect()">
                             <el-option
                             v-for="item in options"
                             :key="item.userId"
@@ -27,15 +27,15 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="会员 :" class="memberInput">
-                        <el-input class="" v-model.trim="selectMember.selectM" placeholder="输入会员卡号/手机号" @keyup.enter.native="key13GetMemberInfo"></el-input>
+                        <el-input class="" v-model="selectMember.selectM" placeholder="输入会员卡号/手机号" @keyup.enter.native="key13GetMemberInfo"></el-input>
                         <el-button  @click="showSelectMember=true">最近会员</el-button>
                     </el-form-item>
                 </el-form>
             </div>
             <div class="salesclerkParam">
                 <el-form ref="form">
-                   <el-form-item class="ParamInput">
-                        <el-select v-model="selectBrand.varieties" placeholder="类别"  @change="changesSelect(2)">
+                   <el-form-item class="ParamInput w80">
+                        <el-select v-model="selectBrand.varieties" placeholder="类别" @change="changesSelect(2)">
                          <el-option 
                          v-for="item in varietiesArr"
                          :key="item.classCode"
@@ -44,7 +44,7 @@
                          </el-option>
                        </el-select>
                     </el-form-item>
-                    <el-form-item  class="ParamInput">
+                    <el-form-item  class="ParamInput w80">
                        <el-select v-model="selectBrand.brand" placeholder='品牌'>
                          <el-option 
                          v-for="item in brandArr"
@@ -231,7 +231,7 @@
                         <el-form-item>
                             <el-checkbox v-model="orderTemp.urgent">是否加急单</el-checkbox>
                         </el-form-item>
-                        <el-form-item label="取镜时间 :" >
+                        <el-form-item label="取镜时间：" >
                             <el-date-picker
                             v-model="orderTemp.glassesTime"
                             value-format="yyyy-MM-dd"
@@ -242,8 +242,8 @@
                             placeholder="选择日期">
                             </el-date-picker>
                         </el-form-item>
-                        <el-form-item label="取镜方式 :">
-                            <el-select size="mini" class="shopexpress"  v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
+                        <el-form-item label="取镜方式：">
+                            <el-select size="mini" style="width:95px;"  v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
                                 <el-option
                                 v-for="item in selectOptions"
                                 :key="item.id"
@@ -252,8 +252,8 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="取镜公司 :" v-show="publicSelcet.glassesTypeModel=='2'">
-                            <el-select size="mini" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()">
+                        <el-form-item label="取镜公司：" v-show="publicSelcet.glassesTypeModel=='2'">
+                            <el-select size="mini"  style="width:160px;" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()">
                                 <el-option
                                 v-for="item in publicSelcet.comTypeOptions"
                                 :key="item.shopId"
@@ -263,7 +263,7 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="取镜地点 :"  v-show="publicSelcet.glassesTypeModel=='2'">
+                        <el-form-item label="取镜地点："  v-show="publicSelcet.glassesTypeModel=='2'">
                             <p style="width:150px;" :title="orderTemp.glassesAddress">{{orderTemp.glassesAddress||'--'}}</p>
                         </el-form-item>
                         <div class="ov">
@@ -423,7 +423,7 @@
                 <div class="oldGlassMess" v-if="includeOptometryData&&optometryDetail">
                     <div class="oldGlassMessBox">
                         <p>旧镜信息 L:{{optometryDetail.originalL}} &nbsp;R:{{optometryDetail.originalR}} &nbsp;PD:{{optometryDetail.originalPd}}</p>
-                        <span style="cursor:pointer" @click="toReadDetail(optometryDetail.prescriptionId)">查看完整验光单</span>
+                        <span style="curosr:pointer;" @click="toReadDetail(optometryDetail.prescriptionId)">查看完整验光单</span>
                     </div>
                 </div>
             </div>
@@ -1000,7 +1000,7 @@ export default {
     //取镜公司地点
     sameComType(value) {
       let _this = this;
-      // console.log(value);
+      console.log(value);
       _this.orgDatas = value;
       _this.orderTemp.glassesAddress = value.shopAddr; //下单门店地址
     },
@@ -1016,7 +1016,7 @@ export default {
       let _this = this;
       if(status === 'back'){
           _this.backShop = bool;
-          // console.log(_this.$refs);
+          console.log(_this.$refs);
           if(bool){
             _this.$nextTick(()=>{
               _this.$refs.backShopRefs.searchReason();
@@ -1182,11 +1182,11 @@ export default {
         // console.log('else')
       }
       if (degress && bool) {
-        // console.log(1,degress,bool)
+        console.log(1,degress,bool)
         _this.searchStr = degress;
       } else if (degress == undefined && bool == undefined) {
         //如果不是镜片度数搜索
-        // console.log(2,degress,bool)
+        console.log(2,degress,bool)
         _this.searchStr = "";
       }
       let code = [];
@@ -1305,7 +1305,7 @@ export default {
     },
     getProductSku(info) {
       const _this = this;
-      console.info("info", info);
+      console.log("info", info);
       _this.$nextTick(() => {
         _this.selectProductSku.nub = info.nub;
         _this.selectProductSku.productSkuData.count = info.productSkuData.nub;
@@ -1460,7 +1460,7 @@ export default {
         value.realSale = "0";
       }
       if (value.status == '0') {
-        // console.log("点击类型status", value.status);
+        console.log("点击类型status", value.status);
         this.where == "shop"
           ? (value.skuName2 = value.skuName)
           : this.where == "left"
@@ -1468,7 +1468,7 @@ export default {
             : (value.skuName2 = "右" + (value.classId=='C004' ? '隐形眼镜' + value.skuName.substr(5) : value.skuName));
       }
       if(name =='package'){//套餐产品
-          // console.log(value);
+          console.log(value);
           let packageShop = [];
           for(var i =0;i<value.length;i++){
               let obj = {};
@@ -1618,7 +1618,7 @@ export default {
       
     },
     changeNums(value,index){
-      // console.log(value)
+      console.log(value)
       value.realSale = parseFloat(value.price * value.discount/10 * value.nums).toFixed(2);
       this.tableData.splice(index, 1, value);
       this.computedPay("alldiscount");
@@ -1751,11 +1751,7 @@ export default {
           }
         })
         .catch(function(error) {
-           _this.$message({
-              showClose: true,
-              message: error,
-              type: "warning"
-            });
+          console.info(error);
         });
     },
 
@@ -1778,6 +1774,7 @@ export default {
         })
         .then(function(response) {
           if (response.data.code == 1 && response.data.data.eyes.length > 0) {
+            console.log(1,response.data.data)
             _this.showSelectMember = false;
             _this.isOptometryDialogVisible = true;
             _this.optometryData = response.data.data.eyes;
@@ -1949,13 +1946,14 @@ export default {
               delete element.value[1].perscriptionType;
               delete element.value[1].prescriptionId;
               if(element.value[0][item] !='' || element.value[1][item] !=""){
-                tArr.push({
-                  keys: item,
-                  lData: element.value[0][item],
-                  rData: element.value[1][item]
-                });
+                if(item!='leftRight'){
+                    tArr.push({
+                    keys: item,
+                    lData: element.value[0][item],
+                    rData: element.value[1][item]
+                  });
+                }
               }
-              
             }
             var name;
             switch (element.key.toString()) {
@@ -2026,6 +2024,7 @@ export default {
               prescriptionId: data.prescriptionsId
             },
             success: function(res) {
+              console.log(res.data)
               if (res.code != 1 && res.data.eyes.length == 0) {
                 return false;
               }
@@ -2037,6 +2036,7 @@ export default {
               _this.includeOptometry();
             },
             error: function(err) {
+              console.log(err);
               _this.$message({
                 showClose: true,
                 message: err.msg,
@@ -2432,6 +2432,7 @@ export default {
             // _this.$router.push({path:'/cashier/cashierList',query:{orderId:orderId}})
             // }
         },error:function(err){
+          console.log(err)
             _this.$message({
                 showClose: true,
                 message: err,
@@ -2457,6 +2458,7 @@ export default {
               })
             }
           },error:function(err){
+            console.log(err)
             _this.$message({
                 showClose: true,
                 message: err,
@@ -2522,6 +2524,7 @@ export default {
     endorsementFn(){
       const _this = this;
         _this.endorsement=true;
+      console.log(_this.$refs)
       _this.$nextTick(()=>{
         _this.$refs.endorsement.requestOrder();
       })
@@ -2648,6 +2651,60 @@ export default {
   .el-input__inner{
     width: 90%;
     max-width: 400px !important;
+  }
+}
+
+.salesSuggest {
+  .el-table {
+    margin-bottom: 0 !important;
+    th {
+      background-color: #b3e3f6 !important;
+      text-align: center;
+      padding: 11px 8px !important;
+    }
+    td {
+      text-align: center;
+      padding: 4px 8px;
+    }
+    tr:nth-of-type(even) {
+      background: rgba(246, 246, 246, 0.50);
+    }
+    tr td:first-child,
+    tr th:first-child {
+      text-align: left;
+      padding-left: 18px;
+    }
+  }
+  .settleAccounts {
+    height: 67px;
+    background: #fff;
+    padding: 0 18px;
+    text-align: right;
+    p {
+      line-height: 30px;
+      span {
+        margin-right: 10px;
+        color: #666666;
+      }
+      b {
+        font-weight: bold;
+        font-size: 12px;
+        color: #000;
+        margin-left: 5px;
+      }
+    }
+  }
+}
+
+@media only screen and (min-height: 790px) {
+  .salesSuggest .el-table {
+    max-height: 300px !important;
+    overflow-y: scroll;
+  }
+} //modal
+.inputPl0{
+  input{
+    padding: 0;
   }
 }
 </style>
