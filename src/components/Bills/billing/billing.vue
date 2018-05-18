@@ -5,7 +5,7 @@
             <div class="salesclerkInfo">
                 <el-form ref="form">
                     <el-form-item label="销售员 :">
-                        <el-select size="mini" class="placeHolder" v-model="shopMember" placeholder="请选择" @visible-change="getPrivateSelect()">
+                        <el-select size="mini" class="placeHolder express inputPl0" v-model="shopMember" placeholder="请选择" @visible-change="getPrivateSelect()">
                             <el-option
                             v-for="item in options"
                             :key="item.userId"
@@ -116,7 +116,7 @@
                             <span class="am-ft-bold am-ft-black">
                                 <el-input 
                                 v-model="tableData[scope.$index].nums"
-                                :disabled = "tableData[scope.$index].status == 2 || tableData[scope.$index].status == 3"
+                                :disabled = "tableData[scope.$index].status == '2' || tableData[scope.$index].status == '3'|| tableData[scope.$index].status == '4'"
                                 @change="changeNums(scope.row,scope.$index);"
                                 ></el-input>
                             </span>
@@ -137,7 +137,7 @@
                         <template slot-scope="scope">
                             <el-input class=""
                             placeholder=""
-                            :disabled="tableData[scope.$index].status == '2' ||tableData[scope.$index].status == '3'"
+                            :disabled="tableData[scope.$index].status == '2' ||tableData[scope.$index].status == '3'||tableData[scope.$index].status == '4'"
                             v-model="tableData[scope.$index].discount"
                             @change="changePrice(scope.row,1,scope.$index);"></el-input>
                         </template>
@@ -310,7 +310,7 @@
                 <el-button type="primary" @click="hangOrder" >取单</el-button>
                 <!-- <el-badge :value="3" class="item"> -->
                 <el-badge  class="item">
-                    <el-button type="primary" @click="endorsement=true">签批</el-button>
+                    <el-button type="primary" @click="endorsementFn();">签批</el-button>
                 </el-badge>
             </div>
             <div class="fn-right">
@@ -374,10 +374,10 @@
         <div class="eyeglassBills borderfff mgt10">
             <div class="eyeglassTop">
                 <label>验光单</label>
-                <el-button type="primary" @click="showNewOptometry=true">新增</el-button>
+                <el-button type="primary" @click="openNewOpt()">新增</el-button>
             </div>
             <div class="selectEyeglass">
-                <el-select size="mini" v-model="optometryId" placeholder="" @change="getPrescriptions()">
+                <el-select size="mini" v-model="optometryId" placeholder="" @change="getPrescriptions()" v-show="includeOptometryData">
                     <el-option
                     v-for="item in optometryList"
                     :key="item.prescriptionId"
@@ -391,22 +391,23 @@
                     v-for="value in includeOptometryData"
                     :key="value.name"
                     :data="value.item"
-                    v-if="value.item[0].lData != ''||value.item[0].rData != ''"
                     size="small"
-                    align="left"
-                    style="width: 100%;">
+                    align="left">
                     <el-table-column
                     :label="value.name"
                     >
                         <template slot-scope="scope">
+                            <span v-if="scope.row.keys == 'cyl'">柱镜</span>
+                            <span v-if="scope.row.keys == 'sph'">球镜</span>
                             <span v-if="scope.row.keys == 'add'">下加光</span>
                             <span v-if="scope.row.keys == 'ax'">轴位</span>
-                            <span v-if="scope.row.keys == 'cyl'">柱镜</span>
                             <span v-if="scope.row.keys == 'dpd'">远瞳距</span>
+                            <span v-if="scope.row.keys == 'jd'">基底</span>
+                            <span v-if="scope.row.keys == 'lj'">棱镜</span>
+                            <span v-if="scope.row.keys == 'jh'">基弧</span>
                             <span v-if="scope.row.keys == 'hpd'">瞳高</span>
                             <span v-if="scope.row.keys == 'npd'">近瞳距</span>
                             <span v-if="scope.row.keys == 'pd'">瞳距</span>
-                            <span v-if="scope.row.keys == 'sph'">球镜</span>
                             <span v-if="scope.row.keys == 'va'">矫正视力</span>
                         </template>
                     </el-table-column>
@@ -419,10 +420,10 @@
                     label="R">
                     </el-table-column>
                 </el-table>
-                <div class="oldGlassMess">
+                <div class="oldGlassMess" v-if="includeOptometryData&&optometryDetail">
                     <div class="oldGlassMessBox">
-                        <p>旧镜信息</p>
-                        <span>查看完整验光单</span>
+                        <p>旧镜信息 L:{{optometryDetail.originalL}} &nbsp;R:{{optometryDetail.originalR}} &nbsp;PD:{{optometryDetail.originalPd}}</p>
+                        <span @click="toReadDetail(optometryDetail.prescriptionId)">查看完整验光单</span>
                     </div>
                 </div>
             </div>
@@ -438,8 +439,8 @@
         <span>{{optometryTime||'暂无数据'}} 验光单号：{{optometryId||'暂无数据'}}</span>
         <span slot="footer" class="dialog-footer">
             <el-button  v-show="!optometryId" @click="isOptometryDialogVisible = false">先不了</el-button>
-            <el-button  v-show="!optometryId" type="primary" @click="isOptometryDialogVisible = false;showNewOptometry=true">我要新增</el-button>
-            <el-button   v-show="optometryId"  @click="isOptometryDialogVisible = false;showNewOptometry=true">不,我要新增</el-button>
+            <el-button  v-show="!optometryId" type="primary" @click="isOptometryDialogVisible = false;openNewOpt();">我要新增</el-button>
+            <el-button   v-show="optometryId"  @click="isOptometryDialogVisible = false;openNewOpt()">不,我要新增</el-button>
             <el-button v-show="optometryId" type="primary" @click="isOptometryDialogVisible = false;includeOptometry()">调入</el-button>
         </span>
     </el-dialog>
@@ -447,11 +448,7 @@
         <SelectMemberModal :selectM="selectMember.selectM" v-on:memberInfo="getMemberInfo"></SelectMemberModal>
     </el-dialog>
     <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="950px">
-        <NewOptometryModal  :submit="submitNewOptometry" :memberInfo="selectMember.memberInfo" :showNewOptometry="showNewOptometry" v-on:getNewoptometry="getNewoptometry"></NewOptometryModal>
-        <div class="packageDetailButtonGroup">
-            <el-button @click="showNewOptometry = false">取 消</el-button>
-            <el-button type="primary" @click="submitNewOptometry=true">保 存</el-button>
-        </div>
+        <NewOptometryModal  ref="addOptometry" :memberInfo="selectMember.memberInfo"  v-on:getNewoptometry="getNewoptometry" @closeEyesModel="closeEyesModel"></NewOptometryModal>
     </el-dialog>
     <el-dialog class="selectRH" :title="selectProductSku.title" :visible.sync="showSelectRH" width="870px" :before-close="cleanSelectRHModal">
         <SelectRHModal :where="where" ref="SelectRHModal"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:selectSku="selectSku" :selectBrand="selectBrand" ></SelectRHModal>
@@ -469,12 +466,8 @@
         <cuActions :numCount='numCount' @closeShow="openConpon(false)" :saleCount='saleCount' @actionMessage="actionComputed"></cuActions>
     </el-dialog>
     <el-dialog class="packageGoods" title="选择套餐" :visible.sync="packageGoods" width="800px">
-        <PackageGoodsModal @showBottom="showhideBottom=true" @hideBottom="showhideBottom=false"></PackageGoodsModal>
-        <div class="packageDetailButtonGroup" v-show="showhideBottom">
-            <el-checkbox class="fn-left">套餐置换</el-checkbox>
-            <el-button @click="packageGoods = false">取 消</el-button>
-            <el-button type="primary" @click="packageGoods = false">确定</el-button>
-        </div>
+        <PackageGoodsModal @toHidePackageModel="closePackage" ></PackageGoodsModal>
+        
     </el-dialog>
     <el-dialog class="otherExpense" title="其它费用" :visible.sync="otherExpense" width="700px">
         <OtherExpenseModal ref="otherExpenseRef" @addCostPay="addCostPayFn"></OtherExpenseModal>
@@ -547,31 +540,28 @@
         <div class="textCenter mgt30 permissionBox">
             <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">您没有以下折扣权限，是否申请签批？</h4>
             <p><span>BM12340002 : {{allDisCount}}折</span></p>
-            <!-- <p><span>BM12340002 : 8折</span></p> -->
+            <p v-for="item in strlist" :key="item"><span>{{item}}</span></p>
             <p class="textareaBox">
                 <i class="am-ft-red">*</i>
                 <el-input
                 type="textarea"
                 :rows="4"
-                placeholder="请输入内容">
+                placeholder="请输入内容"
+                v-model="checkMemo">
                 </el-input>
             </p>
         </div>
         <div slot="footer" class="dialog-footer">
             <div class="mgt10">
                 <el-button @click="permission = false;confirmAllDiscount(false);">取消</el-button>
-                <el-button type="primary" @click="permission = false;">直接签批</el-button>
+                <el-button type="primary" @click="loginUserPermission = true;">直接签批</el-button>
                 <el-popover
                 ref="popover"
                 placement="bottom-start"
                 width="224"
                 trigger="hover">
                         <ul class="endorser">
-                            <li @click="loginUserPermission=true;permission=false;"><span>SP001</span><p>张婷婷</p></li>
-                            <li><span>SP001</span><p>张婷婷</p></li>
-                            <li><span>SP001</span><p>张婷婷</p></li>
-                            <li><span>SP001</span><p>张婷婷</p></li>
-                            <li><span>SP001</span><p>张婷婷</p></li>
+                            <li v-for="item in ShopPerson" :key="item.userId" @click="signToSubmit(item)"><span>{{item.userName}}</span><p>{{item.userId}}</p></li>
                         </ul>
                 </el-popover>
                 <el-button type="primary" v-popover:popover>申请签批</el-button>
@@ -588,29 +578,29 @@
         <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">签批人登录签批</h4>
         <el-form>
             <el-form-item class="mgb0">
-                <el-input auto-complete="off" placeholder="用户名"></el-input>
+                <el-input auto-complete="off" placeholder="用户名" v-model="signaBatch.user"></el-input>
             </el-form-item>
             <el-form-item class="mgb0">
-                <el-input auto-complete="off" placeholder="密码"></el-input>
+                <el-input auto-complete="off" type="passWord" placeholder="密码" v-model="signaBatch.pass" @keyup.native.enter="signABatch()"></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="loginUserPermission = false;">取消</el-button>
-            <el-button type="primary" @click="loginUserPermission = false">签批</el-button>
+            <el-button type="primary" @click="signABatch()">签批</el-button>
         </span>
     </el-dialog>
 
-    <el-dialog class="endorsement" title="签批 (5)" :visible.sync="endorsement" width="600px">
-        <EndorsementModal></EndorsementModal>
+    <el-dialog class="endorsement" title="签批" :visible.sync="endorsement" width="600px">
+        <EndorsementModal ref="endorsement"></EndorsementModal>
     </el-dialog>
 
     <el-dialog class="reprint" title="补打" :visible.sync="reprint" width="900px">
         <ReprintModal></ReprintModal>
-        <div class="receiptsData">
+        <!-- <div class="receiptsData">
             <h4>补打记录</h4>
             <p>2017-12-15 15:34 hz3046 销售补打</p>
             <p>2017-12-15 15:34 hz3046 销售补打</p>
-        </div>
+        </div> -->
         <span slot="footer" class="dialog-footer">
             <el-button @click="reprint = false;">取消</el-button>
             <el-button type="primary" @click="reprint = false">打印</el-button>
@@ -675,11 +665,19 @@ export default {
           label: "暂无"
         }
       ],
+      signaBatch:{
+        user:'',
+        pass:''
+      },
+      orgId:'',//审批门店id
+      userId:'',//审批人id
+      check_user:'',//申请审批人
+      checkMemo:'',//审批内容
       value: "",
       firstEnterSaleIdBool: true,
       //销售人员
       shopMember: "",
-      showhideBottom: "", //控制套餐底部按钮
+      ShopPerson:[],//本店人员
       custom: "", //定做状态
       customText: "1",
       selectOptions: "",
@@ -720,11 +718,13 @@ export default {
         cyl: "",
         add: ""
       },
+      orgPeople:[],//本店员工
       optometryId: "",
       defaultTimes: new Date(),
       type: "",
       optometryTime: "",
-      submitNewOptometry: false, //控制 提交验光单子组件传值
+      optometryDetail:null,
+      // submitNewOptometry: false, //控制 提交验光单子组件传值
       includeOptometryData: null, //保存即将录入验光单信息 作为验光单数据副本
       amountSale: 0, //原价合计
       optometryData: [], //验光单数据
@@ -743,6 +743,7 @@ export default {
       memberShipDisCount: "10", //会员折扣
       memberShipDisCountSale: 0, //会员折扣抵扣金额
       discountFlag: 1,
+      packagePrice:0,//套餐金额
       discountSale: 0, //优惠券折扣金额
       conponDiscountMoney: "", //优惠券折扣金额
       actionCost: {}, //促销活动信息
@@ -754,6 +755,7 @@ export default {
         telphone: "", //手机号
         address: "" //收件地址
       },
+      strlist:[],//审核列表
       searchStr: "", // 镜片查询参数
       selectProductSku: {
         selectR: "",
@@ -827,6 +829,17 @@ export default {
   },
 
   methods: {
+    //选择套餐弹窗
+    closePackage(data){
+      console.log(data)
+      if(data){
+
+        this.packagePrice=parseFloat(this.packagePrice)+parseFloat(data.package.packagePrice);
+        console.log(this.packagePrice)
+        this.selectSku(data.data,null,'package');
+      }
+        this.packageGoods = false;
+    },
     // 促销活动、
     openConpon(data) {
       this.cuActions = data;
@@ -915,11 +928,20 @@ export default {
           }
         })
         .then(function(response) {
-          _this.options = response.data.data.list;
-          // console.log(_this.users.userId)
-          if (_this.firstEnterSaleIdBool) {
-            _this.firstEnterSaleIdBool = false;
-            _this.shopMember = _this.users.userId;
+          // console.log(response.data.data)
+          if(response.data.code == 1 ){
+            _this.options = response.data.data.list;
+            // console.log(_this.users.userId)
+            if (_this.firstEnterSaleIdBool) {
+              _this.firstEnterSaleIdBool = false;
+              _this.shopMember = _this.users.userId;
+            }
+          }else{
+            _this.$message({
+              showClose: true,
+              message: "销售员数据获取失败",
+              type: "warning"
+            });
           }
         });
     },
@@ -939,10 +961,22 @@ export default {
     commitCustom(data) {
       this.selectSku(data, data.nums);
     },
+    toReadDetail(id){ 
+        const _this = this;
+        _this.$router.push({
+          name:'optometryOrderCu',
+          params:{
+            id:id
+          }
+        })
+    },
     removeRow(row, event) {
       let _this = this;
       if (event.target.className == "el-input__inner") {
         return;
+      }
+      if(row.status == 4){
+        return
       }
       if (this.tableData.indexOf(row) != -1) {
         this.tableData.splice(this.tableData.indexOf(row), 1);
@@ -951,14 +985,17 @@ export default {
     },
     //删除表格td
     delThisRow() {
-      var that = this;
-      console.log(1);
+      var _this = this;
       this.tableData.forEach(function(element, index) {
-        if (element == that.contextMenuData.row) {
-          this.tableData.splice(index, 1);
+        if (element == _this.contextMenuData.row) {
+          if(this.tableData[index].status == '4'){
+
+          }else{
+            this.tableData.splice(index, 1);
+          }
         }
       }, this);
-      that.computedPay();
+      _this.computedPay();
     },
     //取镜公司地点
     sameComType(value) {
@@ -966,6 +1003,13 @@ export default {
       console.log(value);
       _this.orgDatas = value;
       _this.orderTemp.glassesAddress = value.shopAddr; //下单门店地址
+    },
+    openNewOpt(){
+      const _this = this;
+      _this.showNewOptometry=true;
+      _this.$nextTick(()=>{
+        _this.$refs.addOptometry.cleardata();
+      })
     },
     //退货
     backShoping(status,bool){
@@ -987,7 +1031,13 @@ export default {
         }
       }
     },
-    
+    closeEyesModel(){
+      const _this = this;
+      _this.showNewOptometry = false;
+      // _this.$nextTick(()=>{
+      //   _this.$refs.addOptometry.cleardata();
+      // })
+    },
     //获取取镜公司
     getCompanyList(bool) {
       var _this = this;
@@ -1072,6 +1122,13 @@ export default {
       this.selectProductSku.cylinder = "";
       this.selectProductSku.productSkuData = "";
       this.selectProductSku.product = "";
+      console.log(this.optometryData);
+      let appkey =''
+      if(_this.appkey == '0'){//如果是0，筛选远用
+          appkey = 1
+      }else if(_this.appKey == '1'){//近用
+          appkey = 0
+      }
       if (type == 1) {
         this.selectProductSku.selectSP = "";
         this.showSelectRH = true;
@@ -1080,8 +1137,9 @@ export default {
         // var where = '右镜片：'
         for (var i = 0; i < this.optometryData.length; i++) {
           if (
-            this.optometryData[i].key != "0" &&
-            this.optometryData[i].key != "1"
+            this.optometryData[i].key != "2" &&
+            this.optometryData[i].key != "3" &&
+            this.optometryData[i].key != appkey
           ) {
             if (this.optometryData[i].value[0].sph != "") {
               this.eyesdata.sph = this.optometryData[i].value[1].sph;
@@ -1098,8 +1156,9 @@ export default {
         // var where = '左镜片：'
         for (var i = 0; i < this.optometryData.length; i++) {
           if (
-            this.optometryData[i].key != "0" &&
-            this.optometryData[i].key != "1"
+            this.optometryData[i].key != "2" &&
+            this.optometryData[i].key != "3" &&
+            this.optometryData[i].key != appkey
           ) {
             if (this.optometryData[i].value[0].sph != "") {
               this.eyesdata.sph = this.optometryData[i].value[0].sph;
@@ -1123,9 +1182,11 @@ export default {
         // console.log('else')
       }
       if (degress && bool) {
+        console.log(1,degress,bool)
         _this.searchStr = degress;
       } else if (degress == undefined && bool == undefined) {
         //如果不是镜片度数搜索
+        console.log(2,degress,bool)
         _this.searchStr = "";
       }
       let code = [];
@@ -1138,6 +1199,7 @@ export default {
           code = ["C001", "", ""];
         }
       }
+      console.log(_this.eyesdata)
       setTimeout(() => {
         _this
           .$axios({
@@ -1195,7 +1257,7 @@ export default {
       this.selectProductSku.categoryCode = value.categoryCode || "";
       var _this = this;
       console.log(value);
-      if (value.product) {
+      if (_this.searchStr) {
         _this.searchStr = value.product;
       }
       setTimeout(() => {
@@ -1242,11 +1304,18 @@ export default {
       }, 0);
     },
     getProductSku(info) {
+      const _this = this;
       console.log("info", info);
-      this.$nextTick(() => {
-        this.selectProductSku.nub = info.nub;
-        this.selectProductSku.productSkuData.count = info.productSkuData.nub;
-        this.selectGlass();
+      _this.$nextTick(() => {
+        _this.selectProductSku.nub = info.nub;
+        _this.selectProductSku.productSkuData.count = info.productSkuData.nub;
+        if(this.where == "left"){
+          _this.selectGlass(2,_this.selectProductSku.selectL,true);
+        }else if(this.where = "right"){
+          _this.selectGlass(1,_this.selectProductSku.selectR,true);
+        }else{
+            _this.selectGlass();
+        }
       });
     },
      changesSelect(type){
@@ -1255,14 +1324,16 @@ export default {
             // console.log(this.selectBrand)
             switch ((type).toString()) {
               case '1':
-              _this.selectBrand.varieties= '';
-              _this.varietiesArr= [];
-              _this.selectBrand.brand = '';
-              _this.brandArr = [];
+                _this.selectBrand.varieties= '';
+                _this.varietiesArr= [];
+                _this.selectBrand.brand = '';
+                _this.brandArr = [];
+                break;
               case '2':
                   id=this.selectBrand.varieties;
                   _this.selectBrand.brand='';
-                _this.brandArr = [];
+                  _this.brandArr = [];
+                  if(id=="") return
                 break;
 
           }
@@ -1289,6 +1360,7 @@ export default {
                                   }
                               }
                               _this.varietiesArr=list;
+                              break
                           case '2':
                               _this.brandArr=res.data.productCategoryList;
                               break;
@@ -1306,7 +1378,7 @@ export default {
                 }
       })},
     //选择商品后进行关闭弹窗计算
-    selectSku(value, nums) {
+    selectSku(value, nums, name) {
       console.log("选择商品后进行渲染", value);
       let _this = this;
       if (value.status == "1") {
@@ -1395,12 +1467,49 @@ export default {
             ? (value.skuName2 = "左" + (value.classId=='C004' ? '隐形眼镜' + value.skuName.substr(5) : value.skuName))
             : (value.skuName2 = "右" + (value.classId=='C004' ? '隐形眼镜' + value.skuName.substr(5) : value.skuName));
       }
+      if(name =='package'){//套餐产品
+          console.log(value);
+          let packageShop = [];
+          for(var i =0;i<value.length;i++){
+              let obj = {};
+            if(value[i].hasOwnProperty('farSearchCodeId')){
+              obj.productId = value[i].farSearchCodeId;//商品id
+              obj.skuName2=value[i].farSearchCode;
+              obj.skuName=value[i].farSearchCode;
+              obj.sku=value[i].sku;
+              obj.warehouseId=value[i].warehouseId;
+              obj.stockId=value[i].stockId;
+              obj.quantity=value[i].quantity;
+              obj.classId=value[i].productCategoryId;
+              obj.allotQuantity=value[i].allotQuantity;
+            }else{
+              obj.productId = value[i].productSku.productId;//商品id
+              obj.skuName2=value[i].productSku.skuName;
+              obj.skuName=value[i].productSku.skuName;
+              obj.sku=value[i].productSku.sku;
+              obj.warehouseId=value[i].productSku.warehouseId;
+              obj.stockId=value[i].productSku.stockId;
+              obj.quantity=value[i].productSku.quantity;
+              obj.classId=value[i].productSku.productCategoryId;
+              obj.allotQuantity=value[i].productSku.allotQuantity;
+              // obj.realSale=value[i].productSku.packagePrice;
+            }
+              obj.packageDetailId = value[i].packageDetailId;
+              obj.price=value[i].packagePrice;
+              obj.nums=value[i].nums||'1';
+              obj.packageId = value[i].packageId;
+              obj.status=value[i].status;//
+              obj.realSale='--';
+              obj.discount='10.00';
+              _this.tableData.push(obj)
+          }
+      }
       console.log("渲染后的value", value);
       let alldis = _this.allDisCount;
       if (alldis != "" && typeof parseFloat(alldis) == "number") {
         value.realSale = (value.discount * value.price / 10).toFixed(2);
       }
-      if (!nums) {
+      if (!nums&&name!='package') {
         // if (value.status != 3) {
           value.nums = 1;
         // }
@@ -1409,7 +1518,9 @@ export default {
         //添加商品的时候如果有整单折扣
         this.addShop = true;
       }
-      _this.tableData.push(value);
+      if(name != 'package'){
+        _this.tableData.push(value);
+      }
       _this.showSelectRH = false;
       _this.customizeRH = false;
       _this.showSelectShop = false;
@@ -1419,6 +1530,7 @@ export default {
     computedPay(alldiscount) {
       let _this = this;
       let countSale = 0;
+      // let packagePrice = 0;
       let n = 0;
       // _this.allDisCount = '';
       // console.log(_this.tableData)
@@ -1427,7 +1539,8 @@ export default {
         //循环计算价格
         if (
           _this.tableData[i].status != "2" &&
-          _this.tableData[i].status != "3"
+          _this.tableData[i].status != "3" &&
+          _this.tableData[i].status != "4"
         ) {
           let thisSale = parseFloat(_this.tableData[i].realSale);
           countSale = countSale + thisSale;
@@ -1439,6 +1552,10 @@ export default {
           //其他费用
           _this.extraMoney += parseFloat(_this.tableData[i].realSale);
         }
+        // if(_this.tableData[i].status == '4'){
+        //   //套餐
+        //   packagePrice += parseFloat(_this.tableData[i].price);
+        // }
       }
       if (_this.actionCost.actionId) {
         if (_this.actionCost.money) {
@@ -1491,15 +1608,14 @@ export default {
 
       if (_this.addShop || alldiscount == "alldiscount") {
         if (_this.allDisCount > 0) {
-          _this.discountSale = parseFloat(
-            _this.saleCount - _this.allDisCount * _this.saleCount / 10
-          ).toFixed(2);
+          _this.discountSale = parseFloat(_this.saleCount - _this.allDisCount * _this.saleCount / 10).toFixed(2);
           //最后价格 = 整单折扣前 * 折扣 ↓
-          _this.saleCount = (_this.allDisCount / 10 * _this.saleCount).toFixed(
-            2
-          );
+          _this.saleCount = (_this.allDisCount / 10 * _this.saleCount).toFixed(2);
         }
       }
+        _this.amountSale = (parseFloat(_this.amountSale)+parseFloat(_this.packagePrice)).toFixed(2);
+        _this.saleCount = (parseFloat(_this.saleCount)+parseFloat(_this.packagePrice)).toFixed(2);
+      
     },
     changeNums(value,index){
       console.log(value)
@@ -1546,8 +1662,8 @@ export default {
     },
     //获取用户验光单列表
     getOptometryRecordList(memberId) {
-      var that = this;
-      that
+      var _this = this;
+      _this
         .$axios({
           url:
             "http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsList",
@@ -1564,9 +1680,9 @@ export default {
         .then(function(response) {
           if (response.data.code == "1") {
             // console.log(response.data.data.list)
-            that.optometryList = response.data.data.list;
+            _this.optometryList = response.data.data.list;
           } else {
-            that.$message({
+            _this.$message({
               showClose: true,
               message: response.data.msg,
               type: "error"
@@ -1579,8 +1695,8 @@ export default {
     },
     //取得该次验光单信息
     getPrescriptions(id) {
-      var that = this;
-      that
+      var _this = this;
+      _this
         .$axios({
           url: "http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptions",
           method: "post",
@@ -1595,14 +1711,39 @@ export default {
         })
         .then(function(response) {
           if (response.data.code == 1 && response.data.data.eyes.length > 0) {
-            that.optometryData = response.data.data.eyes;
-            that.optometryId = response.data.data.prescriptions.prescriptionId;
-            that.optometryTime =
+            console.log('取验光单信息',response.data.data)
+            _this.optometryData = response.data.data.eyes;
+            _this.appKey = response.data.data.prescriptions.appKey;
+            _this.optometryId = response.data.data.prescriptions.prescriptionId;
+            _this.optometryTime =
               response.data.data.prescriptions.prescriptionTime;
-            that.getOptometryRecordList();
-            that.includeOptometry();
+            _this.getOptometryRecordList(response.data.data.member.memberId);
+            setTimeout(() => {
+              _this.$myAjax({
+                url: "member-api/member/getMemberListByBoYang",
+                data: {
+                  memberId: response.data.data.member.memberId,
+                  size: 5,
+                  nub: 0
+                },
+                success: function(res) {
+                  if (res.code == 1) {
+                    _this.getMemberInfo(res.data.memberList[0], true);
+                  } else {
+                    _this.$message({
+                      showClose: true,
+                      message: "会员信息获取失败",
+                      type: "error"
+                    });
+                  }
+                },error:function(err){
+                  console.log(err)
+                }
+              })
+            })
+            _this.includeOptometry();
           } else {
-            that.$message({
+            _this.$message({
               showClose: true,
               message: response.data.msg,
               type: "error"
@@ -1633,12 +1774,14 @@ export default {
         })
         .then(function(response) {
           if (response.data.code == 1 && response.data.data.eyes.length > 0) {
+            console.log(1,response.data.data)
             _this.showSelectMember = false;
             _this.isOptometryDialogVisible = true;
             _this.optometryData = response.data.data.eyes;
+            _this.optometryDetail = response.data.data.prescriptions;
             _this.optometryId = response.data.data.prescriptions.prescriptionId;
-            _this.optometryTime =
-              response.data.data.prescriptions.prescriptionTime;
+            _this.optometryTime = response.data.data.prescriptions.prescriptionTime;
+            _this.appKey = response.data.data.prescriptions.appKey;
           } else {
             _this.isOptometryDialogVisible = true;
             _this.$message({
@@ -1765,8 +1908,12 @@ export default {
     //获取新增验光单信息
     getNewoptometry(value) {
       console.log(value);
-      this.showNewOptometry = false;
-      this.getPrescriptions(value.prescriptions.prescriptionId);
+      const _this =this;
+      _this.showNewOptometry = false;
+      // _this.$nextTick(()=>{
+      //   _this.$refs.addOptometry.cleardata();
+      // })
+      _this.getPrescriptions(value.prescriptions.prescriptionId);
       // this.optometryData=value.eyes;
       // this.optometryId=value.prescriptions.prescriptionId;
       // this.optometryTime=value.prescriptions.prescriptionTime;
@@ -1780,7 +1927,7 @@ export default {
       if (_this.optometryData != null) {
         var tableArr = [];
         _this.optometryData.forEach(element => {
-          if (element.key != "0" && element.key != "1") {
+          // if (element.key != "0" && element.key != "1") {
             var tArr = [];
             var keys = [];
             var lData = [];
@@ -1798,38 +1945,42 @@ export default {
               delete element.value[1].leftRight;
               delete element.value[1].perscriptionType;
               delete element.value[1].prescriptionId;
-
-              tArr.push({
-                keys: item,
-                lData: element.value[0][item],
-                rData: element.value[1][item]
-              });
+              if(element.value[0][item] !='' || element.value[1][item] !=""){
+                tArr.push({
+                  keys: item,
+                  lData: element.value[0][item],
+                  rData: element.value[1][item]
+                });
+              }
+              
             }
             var name;
             switch (element.key.toString()) {
-              // case '0':
-              //     name='检影';
-              //     break;
-              // case '1':
-              //     name='主观';
-              //     break;
-              case "2":
-                name = "远用";
-                break;
-              case "3":
-                name = "近用";
-                break;
-              case "4":
-                name = "渐进";
-                break;
-              case "5":
-                name = "隐形";
-                break;
+              case '0':
+                  name = '远用';
+                  break;
+              case '1':
+                  name = '近用';
+                  break;
+              // case "2":
+              //     name = "主观";
+              //   break;
+              // case "3":
+              //     name = "客观";
+                // break;
+              // case "4":
+              //   name = "渐进";
+              //   break;
+              // case "5":
+              //   name = "隐形";
+                // break;
               default:
                 break;
             }
-            tableArr.push({ item: tArr, name: name });
-          }
+            if(name){
+              tableArr.push({ item: tArr, name: name });
+            }
+          // }
         });
         if (tableArr) _this.includeOptometryData = tableArr;
         console.log(_this.includeOptometryData)
@@ -1872,10 +2023,12 @@ export default {
               prescriptionId: data.prescriptionsId
             },
             success: function(res) {
+              console.log(res.data)
               if (res.code != 1 && res.data.eyes.length == 0) {
                 return false;
               }
               _this.optometryData = res.data.eyes;
+              _this.optometryDetail = res.data.prescriptions;
               _this.optometryId = res.data.prescriptions.prescriptionId;
               _this.optometryTime = res.data.prescriptions.prescriptionTime;
               _this.getOptometryRecordList(data.memberId);
@@ -2024,7 +2177,7 @@ export default {
           method: "post",
           params: {
             jsonObject: {
-              seachCode: memberId
+              memberId: memberId
             },
             keyParams: {
               weChat: true,
@@ -2044,6 +2197,12 @@ export default {
             });
           }
         });
+    },
+    signToSubmit(item){
+      const _this = this;
+      console.log(item);
+      _this.check_user = item.userId;
+      _this.addOrderTemp(1);
     },
     //开单
     addOrderTemp(types) {
@@ -2065,32 +2224,75 @@ export default {
         // })
         // return false;
       }
-      var orderItemsList = [];
-      console.log(this.tableData);
-      for (var item in this.tableData) {
-        orderItemsList.push({
-          itemId: this.tableData[item].productId, //商品sku码
-          itemName: this.tableData[item].skuName2, //明细名称
-          proMemo: this.tableData[item].skuName,
-          quantity: this.tableData[item].nums, //数量
-          discountRate: this.tableData[item].discount, //折扣比率
-          orderPromotionId: "", //订单营销活动id
-          listPrice: this.tableData[item].price, //原价
-          roundFlag: "1", //商品取整
-          itemNo: this.tableData[item].sku, //商品编码
-          warehouseId: this.tableData[item].warehouseId, //仓库id
-          orderReceiptId: this.tableData[item].customId || "", //定做单id
-          stockId: this.tableData[item].stockId || "", //库存id
-          refundId: this.tableData[item].refundId,
-          stockQuantity: this.tableData[item].quantity, //总库存
-          productType: this.tableData[item].classId, //商品类型 镜片镜架...
-          stockQuantityNo: this.tableData[item].allotQuantity, //可分配库存
-          productMold: this.tableData[item].status || "0" //商品类型，前端自定义 0普通商品 1定做 2自带 3其他 4套餐
-          // price:this.tableData[item].realSale,//实售单价
-        });
+      let datas = this.tableData;
+      let packageArr = [];
+      let orderItemsList = [];
+      let packageList = [];
+      let packageDetails = [];
+      let packageArrId = []
+      for(var i=0;i<datas.length;i++){
+          if(datas[i].status == '4'){
+            packageArr.push(datas[i]);
+          }
       }
-      console.log(orderItemsList);
-      if (orderItemsList == "") {
+      for(var i=0;i<packageArr.length;i++){
+        if(packageArrId.indexOf(packageArr[i].packageId)==-1){//创建多个套餐包
+            packageArrId.push(packageArr[i].packageId)
+            let obj = {};
+            obj.packageId = packageArr[i].packageId;
+            obj.packageDetails = [];
+            packageList.push(obj)
+        }
+        for(var j=0;j<packageList.length;j++){
+          if(packageList[j].packageId == packageArr[i].packageId){
+            packageList[j].packageDetails.push({
+              itemId: packageArr[i].productId, //商品sku码
+              itemName: packageArr[i].skuName2||packageArr[i].skuName, //明细名称
+              proMemo: packageArr[i].skuName,
+              quantity: packageArr[i].nums, //数量
+              discountRate: packageArr[i].discount, //折扣比率
+              orderPromotionId: "", //订单营销活动id
+              listPrice: packageArr[i].price, //原价
+              roundFlag: "1", //商品取整
+              itemNo: packageArr[i].sku, //商品编码
+              warehouseId: packageArr[i].warehouseId, //仓库id
+              orderReceiptId: packageArr[i].customId || "", //定做单id
+              stockId: packageArr[i].stockId || "", //库存id
+              refundId: packageArr[i].refundId || "",
+              stockQuantity: packageArr[i].quantity, //总库存
+              productType: packageArr[i].classId||"", //商品类型 镜片镜架...
+              stockQuantityNo: packageArr[i].allotQuantity, //可分配库存
+              packageDetailId: packageArr[i].packageDetailId,//套餐商品id
+              productMold: packageArr[i].status || "0" //商品类型，前端自定义 0普通商品 1定做 2自带 3其他 4套餐
+            })
+          }
+        }
+      }
+      for (var item in this.tableData) {
+        if(this.tableData[item].status != 4){
+          orderItemsList.push({
+            itemId: this.tableData[item].productId, //商品sku码
+            itemName: this.tableData[item].skuName2||this.tableData[item].skuName, //明细名称
+            proMemo: this.tableData[item].skuName,
+            quantity: this.tableData[item].nums, //数量
+            discountRate: this.tableData[item].discount, //折扣比率
+            orderPromotionId: "", //订单营销活动id
+            listPrice: this.tableData[item].price, //原价
+            roundFlag: "1", //商品取整
+            itemNo: this.tableData[item].sku, //商品编码
+            warehouseId: this.tableData[item].warehouseId, //仓库id
+            orderReceiptId: this.tableData[item].customId || "", //定做单id
+            stockId: this.tableData[item].stockId || "", //库存id
+            refundId: this.tableData[item].refundId,
+            stockQuantity: this.tableData[item].quantity, //总库存
+            productType: this.tableData[item].classId, //商品类型 镜片镜架...
+            stockQuantityNo: this.tableData[item].allotQuantity, //可分配库存
+            productMold: this.tableData[item].status || "0" //商品类型，前端自定义 0普通商品 1定做 2自带 3其他 4套餐
+            // price:this.tableData[item].realSale,//实售单价
+          });
+        }   
+      }
+      if (_this.tableData.length == 0) {
         _this.$message({
           showClose: true,
           message: "商品信息获取失败",
@@ -2132,27 +2334,27 @@ export default {
       // }
       var jsonObject = {
         memberId: memberId, //会员id
-        prescriptionsId: this.optometryId, //验光单id
-        urgent: this.orderTemp.urgent.toString(), //是否加急
-        glassesTime: this.orderTemp.glassesTime, //取镜时间
-        glassesType: this.orderTemp.glassesType, //取镜类别
-        glassesCompany: this.publicSelcet.comTypeModel || "取镜公司", //取镜公司
-        glassesAddress: this.orderTemp.glassesAddress || "无", //取镜地址
-        saleMemo: this.orderTemp.saleMemo || "销售备注", //销售备注
-        processMemo: this.publicSelcet.processMemo || "加工备注", //加工备注
-        specialMemo: this.publicSelcet.specialMemo || "特殊备注", //特殊备注
-        couponDetailId: types == "-1" ? "" : this.orderTemp.couponDetailId, //优惠券id
-        moneyProduct: parseFloat(this.amountSale).toFixed(2), //原价合计
-        moneyAmount: parseFloat(this.saleCount).toFixed(2), //应付
+        prescriptionsId: _this.optometryId, //验光单id
+        urgent: _this.orderTemp.urgent.toString(), //是否加急
+        glassesTime: _this.orderTemp.glassesTime, //取镜时间
+        glassesType: _this.orderTemp.glassesTypeModel, //取镜类别
+        glassesCompany: _this.publicSelcet.comTypeModel || "取镜公司", //取镜公司
+        glassesAddress: _this.orderTemp.glassesAddress || "无", //取镜地址
+        saleMemo: _this.orderTemp.saleMemo || "销售备注", //销售备注
+        processMemo: _this.publicSelcet.processMemo || "加工备注", //加工备注
+        specialMemo: _this.publicSelcet.specialMemo || "特殊备注", //特殊备注
+        couponDetailId: types == "-1" ? "" : _this.orderTemp.couponDetailId, //优惠券id
+        moneyProduct: parseFloat(_this.amountSale).toFixed(2), //原价合计
+        moneyAmount: parseFloat(_this.saleCount).toFixed(2), //应付
         moneyPaid: 0, //应收
-        couponNo: types == "-1" ? "" : this.conponResponse.couponNo, //优惠券卡号核销
+        couponNo: types == "-1" ? "" : _this.conponResponse.couponNo, //优惠券卡号核销
         activityMoney:
           types == "-1"
             ? ""
-            : this.actionCost.money || this.actionCost.discountMoney, //活动优惠金额,
-        discountMoney: this.memberShipDisCountSale, //折扣优惠金额,会员
-        cardDiscount: this.memberShipDisCount, //会员折扣
-        discountFlag: this.discountFlag, //是否使用会员折扣
+            : _this.actionCost.money || _this.actionCost.discountMoney, //活动优惠金额,
+        discountMoney: _this.memberShipDisCountSale, //折扣优惠金额,会员
+        cardDiscount: _this.memberShipDisCount>1?(_this.memberShipDisCount/10):_this.memberShipDisCount, //会员折扣
+        discountFlag: _this.discountFlag, //是否使用会员折扣
         roundOffFlag: "1", //取整标识 0使用 1不用
         decimal: memberDiscount, //会员卡折扣
         couponMoney: types == "-1" ? "" : coupon, //卡券优惠金额
@@ -2160,54 +2362,141 @@ export default {
         orderDiscount: types == "-1" ? "" : alldis, //整单折扣
         orderType: BorderType,
         extraMoney: _this.extraMoney, //其他费用
-        status: types == "-1" ? "-1" : "" //挂单
+        status: types == "-1" ? "-1" : types||'', //挂单
+        check_user:_this.check_user,//审批人
+        checkMemo:_this.checkMemo,//审批内容
+        packageList:packageList,//套餐
       };
-      _this
-        .$axios({
-          url: "http://myc.qineasy.cn/pos-api/orderTemp/addOrderTemp",
-          method: "post",
-          params: {
-            jsonObject: jsonObject,
-            keyParams: {
-              weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+      let params = {};
+      if(_this.userId!='' && _this.orgId!=''){
+        params.userId = _this.userId;
+        params.orgId = _this.orgId;
+        _this.signaBatch.user = '';
+        _this.signaBatch.pass = '';
+      }
+        _this.$myAjax({
+          url:'pos-api/orderTemp/addOrderTemp',
+          data:jsonObject,
+          keyParams:params,
+          success:function(res){
+            // console.log(res)
+            if (res.code != "1") {
+                _this.$message({
+                  showClose: true,
+                  message: "请求数据出问题喽，请重试！",
+                  type: "error"
+                });
+              return 
+            } else if(res.code == 1){
+              if(res.data.checkFlag == 1){
+                  _this.permission = true;
+                  _this.searchOrgPeople();
+                  _this.strlist = res.data.strList;
+                  _this.$message({
+                    showClose: true,
+                    message: "登录账号权限不足",
+                    type: "warning"
+                    })    
+                  _this.loginUserPermission = false;
+              }else{
+                  if (types == "-1") {
+                      _this.$message({
+                        showClose: true,
+                        message: "挂单成功",
+                        type: "success"
+                      });
+                    } else {
+                      _this.$message({
+                        showClose: true,
+                        message: "开单成功",
+                        type: "success"
+                      });
+                    }
+                    if(_this.userId != ''){
+                      _this.permission = false;
+                      _this.loginUserPermission = false;
+                      _this.signaBatch.user = '';
+                      _this.signaBatch.pass = '';
+                      _this.userId = '';
+                      _this.orgId = '';
+                    }
+                    
+                setTimeout(function() {
+                  location.reload();
+                }, 1000);
+              }
             }
-          }
-        })
-        .then(function(response) {
-          console.log(response)
-          return
-          if (response.data.code != "1") {
-            _this.$message({
-              showClose: true,
-              message: "请求数据出问题喽，请重试！",
-              type: "error"
-            });
-            return false;
-          } else {
-            if (types == "-1") {
-              _this.$message({
-                showClose: true,
-                message: "挂单成功",
-                type: "success"
-              });
-            } else {
-              _this.$message({
-                showClose: true,
-                message: "开单成功",
-                type: "success"
-              });
-            }
-            setTimeout(function() {
-              location.reload();
-            }, 1000);
             // if(是门店收银){
             // let orderId = response.data.data.orderId;//直接开单收银  门店收银
             // _this.$router.push({path:'/cashier/cashierList',query:{orderId:orderId}})
             // }
+        },error:function(err){
+          console.log(err)
+            _this.$message({
+                showClose: true,
+                message: err,
+                type: "error"
+              });
+        }
+      })
+    },
+    searchOrgPeople(){
+      const _this = this;
+      _this.$myAjax({
+          url:'cas-api/user/getUsersByOrgId',
+          data:{
+            orgId:JSON.parse(localStorage.getItem("userData")).orgId
+          },success:function(res){
+            if(res.code ==1){
+              _this.ShopPerson = res.data.userList;
+            }else{
+              _this.$message({
+                showClose: true,
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          },error:function(err){
+            console.log(err)
+            _this.$message({
+                showClose: true,
+                message: err,
+                type: 'error'
+              })
           }
-        });
+        })
+    },
+    //登录签批
+    signABatch(){
+      const _this = this;
+      _this.$myAjax({
+        url:'cas-api/user/userlogin',
+        data:{
+          userName:_this.signaBatch.user,
+          passWord:_this.signaBatch.pass,
+        },
+        success:function(res){
+          console.log(res.data.user)
+          if(res.code == 1){
+            _this.userId = res.data.user.userId,
+            _this.orgId = res.data.user.orgId
+            _this.addOrderTemp()
+            
+          }else{
+            _this.$message({
+              type:'error',
+              message:res.msg,
+              showClose:true
+            })
+          }
+        },error:function(err){
+          _this.$message({
+              type:'error',
+              message:err,
+              showClose:true
+            })
+        }
+      })
     },
     hangOrder() {
       //取单
@@ -2230,6 +2519,15 @@ export default {
       //关闭弹窗后清除select
       this.showSelectShop = false;
       this.$refs.showSelectShop.selectBrands(2);
+    },
+    endorsementFn(){
+      const _this = this;
+        _this.endorsement=true;
+      console.log(_this.$refs)
+      _this.$nextTick(()=>{
+        _this.$refs.endorsement.requestOrder();
+      })
+      
     }
   },
   computed: {},
@@ -2309,14 +2607,15 @@ export default {
 .inputBold span {
   font-weight: bold;
 }
+
 .shopexpress {
-  width: 80px;
+  width: 95px;
 }
 .express {
   width: 80px;
 }
 .expressAddress {
-  width: 120px;
+  width: 105px;
 }
 .expressAddress{
   .el-input__inner{
@@ -2357,23 +2656,23 @@ export default {
 .salesSuggest {
   .el-table {
     margin-bottom: 0 !important;
-  }
-  th {
-    background: #b3e3f6;
-    text-align: center;
-    padding: 11px 8px !important;
-  }
-  td {
-    text-align: center;
-    padding: 4px 8px;
-  }
-  tr:nth-of-type(even) {
-    background: rgba(246, 246, 246, 0.50);
-  }
-  tr td:first-child,
-  tr th:first-child {
-    text-align: left;
-    padding-left: 18px;
+    th {
+      background-color: #b3e3f6 !important;
+      text-align: center;
+      padding: 11px 8px !important;
+    }
+    td {
+      text-align: center;
+      padding: 4px 8px;
+    }
+    tr:nth-of-type(even) {
+      background: rgba(246, 246, 246, 0.50);
+    }
+    tr td:first-child,
+    tr th:first-child {
+      text-align: left;
+      padding-left: 18px;
+    }
   }
   .settleAccounts {
     height: 67px;
@@ -2402,4 +2701,9 @@ export default {
     overflow-y: scroll;
   }
 } //modal
+.inputPl0{
+  input{
+    padding: 0;
+  }
+}
 </style>

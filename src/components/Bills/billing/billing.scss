@@ -341,7 +341,7 @@
 
 .salesclerkParam .ParamInput {
   float: left;
-  margin-right: 5px;
+  margin-right: 10px;
   margin-bottom: 0;
   &:first-child {
     margin-left: 10px;
@@ -433,7 +433,7 @@
 }
 
 .salesDiscount {
-  padding: 8px 18px;
+  padding: 8px 10px;
   height: 65px;
   max-height: 65px;
   background: #FAFAFA;
@@ -499,7 +499,7 @@
 }
 
 .orderType {
-  padding: 14px 18px;
+  padding: 14px 10px;
   max-height: 100px;
   height: 100px;
   background: #fff;
@@ -569,7 +569,6 @@
       width: 80px !important;
       font-size: 16px !important;
       padding: 0;
-      margin-right: 5px;
       &:not(:last-child) {
         background: #FFFFFF;
         border: 1px solid #C7C7C7;
@@ -595,7 +594,9 @@
     border: 1px solid #fff;
   }
 }
-
+.el-table__empty-block{
+  width: auto !important;
+}
 .memberInfo {
   .selectEyeglass {
     width: 100%;
@@ -619,14 +620,20 @@
     th {
       background: #fff !important;
       text-align: center;
+      font-size: 13px !important;
+      color:#333333 !important;
       padding: 7px 8px !important;
     }
     td {
       text-align: center;
-      padding: 8.5px 8px;
+      padding: 8.5px 0px;
     }
-    tr:nth-of-type(even) {
-      background: rgba(246, 246, 246, 0.50);
+    tr {
+      background: rgba(246, 246, 246,1);
+      td:nth-child(1){
+        text-indent:20px;
+        white-space: nowrap !important;
+    }
     }
   }
 }
@@ -659,6 +666,7 @@
     .fn-left {
       button {
         padding: 0 10px;
+        margin-left: 5px;
       }
     }
     .fn-right {
@@ -668,6 +676,9 @@
         padding: 0;
       }
     }
+  }
+  .el-badge{
+    margin-left: 0;
   }
 }
 
