@@ -205,16 +205,14 @@ export default {
       },
       handleSelect(item) {
         //   console.log(this.packageDetails[this.nowIndex])
-            // console.log(item);
           this.packageDetails[this.nowIndex].farSearchCode = item.skuName;
-        //   this.packageDetails[this.nowIndex].item = item;
           this.packageDetails[this.nowIndex].farSearchCodeId = item.productId;
           this.packageDetails[this.nowIndex].sku = item.sku;
           this.packageDetails[this.nowIndex].warehouseId = item.warehouseId;
           this.packageDetails[this.nowIndex].stockId = item.stockId;
           this.packageDetails[this.nowIndex].quantity = item.quantity;
           this.packageDetails[this.nowIndex].allotQuantity = item.allotQuantity;
-          this.packageDetails[this.nowIndex].productCategoryId = item.productCategoryId;
+          this.packageDetails[this.nowIndex].productCategoryId = item.classId;
       },
       createFilter(queryString) {
         return (restaurant) => {
@@ -235,6 +233,7 @@ export default {
         //远程搜索
       farSearch(data){
           const _this = this;
+          console.log(data)
           _this.$myAjax({
               url:'pos-api/productSku/list',
               data:{

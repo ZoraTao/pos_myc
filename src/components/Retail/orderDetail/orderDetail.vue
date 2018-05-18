@@ -305,9 +305,11 @@
               width="100">
             </el-table-column>
             <el-table-column
-              prop="createTime"
               label="操作时间"
               width="200px">
+              <template slot-scope="scope">
+                  {{(scope.row.createTime).substring(0,19)}}
+              </template>
             </el-table-column>
           </el-table>
       </div>
