@@ -27,7 +27,7 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="会员 :" class="memberInput">
-                        <el-input class="" v-model="selectMember.selectM" placeholder="输入会员卡号/手机号" @keyup.enter.native="key13GetMemberInfo"></el-input>
+                        <el-input class="" v-model.trim="selectMember.selectM" placeholder="输入会员卡号/手机号" @keyup.enter.native="key13GetMemberInfo"></el-input>
                         <el-button  @click="showSelectMember=true">最近会员</el-button>
                     </el-form-item>
                 </el-form>
@@ -423,7 +423,7 @@
                 <div class="oldGlassMess" v-if="includeOptometryData&&optometryDetail">
                     <div class="oldGlassMessBox">
                         <p>旧镜信息 L:{{optometryDetail.originalL}} &nbsp;R:{{optometryDetail.originalR}} &nbsp;PD:{{optometryDetail.originalPd}}</p>
-                        <span @click="toReadDetail(optometryDetail.prescriptionId)">查看完整验光单</span>
+                        <span style="cursor:pointer" @click="toReadDetail(optometryDetail.prescriptionId)">查看完整验光单</span>
                     </div>
                 </div>
             </div>
@@ -965,7 +965,7 @@ export default {
         const _this = this;
         _this.$router.push({
           name:'optometryOrderCu',
-          params:{
+          query:{
             id:id
           }
         })
@@ -1000,7 +1000,7 @@ export default {
     //取镜公司地点
     sameComType(value) {
       let _this = this;
-      console.log(value);
+      // console.log(value);
       _this.orgDatas = value;
       _this.orderTemp.glassesAddress = value.shopAddr; //下单门店地址
     },
@@ -1016,7 +1016,7 @@ export default {
       let _this = this;
       if(status === 'back'){
           _this.backShop = bool;
-          console.log(_this.$refs);
+          // console.log(_this.$refs);
           if(bool){
             _this.$nextTick(()=>{
               _this.$refs.backShopRefs.searchReason();
@@ -1182,11 +1182,11 @@ export default {
         // console.log('else')
       }
       if (degress && bool) {
-        console.log(1,degress,bool)
+        // console.log(1,degress,bool)
         _this.searchStr = degress;
       } else if (degress == undefined && bool == undefined) {
         //如果不是镜片度数搜索
-        console.log(2,degress,bool)
+        // console.log(2,degress,bool)
         _this.searchStr = "";
       }
       let code = [];
@@ -1305,7 +1305,7 @@ export default {
     },
     getProductSku(info) {
       const _this = this;
-      console.log("info", info);
+      console.info("info", info);
       _this.$nextTick(() => {
         _this.selectProductSku.nub = info.nub;
         _this.selectProductSku.productSkuData.count = info.productSkuData.nub;
@@ -1460,7 +1460,7 @@ export default {
         value.realSale = "0";
       }
       if (value.status == '0') {
-        console.log("点击类型status", value.status);
+        // console.log("点击类型status", value.status);
         this.where == "shop"
           ? (value.skuName2 = value.skuName)
           : this.where == "left"
@@ -1468,7 +1468,7 @@ export default {
             : (value.skuName2 = "右" + (value.classId=='C004' ? '隐形眼镜' + value.skuName.substr(5) : value.skuName));
       }
       if(name =='package'){//套餐产品
-          console.log(value);
+          // console.log(value);
           let packageShop = [];
           for(var i =0;i<value.length;i++){
               let obj = {};
@@ -1618,7 +1618,7 @@ export default {
       
     },
     changeNums(value,index){
-      console.log(value)
+      // console.log(value)
       value.realSale = parseFloat(value.price * value.discount/10 * value.nums).toFixed(2);
       this.tableData.splice(index, 1, value);
       this.computedPay("alldiscount");
@@ -1751,7 +1751,11 @@ export default {
           }
         })
         .catch(function(error) {
-          console.info(error);
+           _this.$message({
+              showClose: true,
+              message: error,
+              type: "warning"
+            });
         });
     },
 
@@ -1774,7 +1778,6 @@ export default {
         })
         .then(function(response) {
           if (response.data.code == 1 && response.data.data.eyes.length > 0) {
-            console.log(1,response.data.data)
             _this.showSelectMember = false;
             _this.isOptometryDialogVisible = true;
             _this.optometryData = response.data.data.eyes;
@@ -2023,7 +2026,6 @@ export default {
               prescriptionId: data.prescriptionsId
             },
             success: function(res) {
-              console.log(res.data)
               if (res.code != 1 && res.data.eyes.length == 0) {
                 return false;
               }
@@ -2035,7 +2037,6 @@ export default {
               _this.includeOptometry();
             },
             error: function(err) {
-              console.log(err);
               _this.$message({
                 showClose: true,
                 message: err.msg,
@@ -2431,7 +2432,6 @@ export default {
             // _this.$router.push({path:'/cashier/cashierList',query:{orderId:orderId}})
             // }
         },error:function(err){
-          console.log(err)
             _this.$message({
                 showClose: true,
                 message: err,
@@ -2457,7 +2457,6 @@ export default {
               })
             }
           },error:function(err){
-            console.log(err)
             _this.$message({
                 showClose: true,
                 message: err,
@@ -2523,7 +2522,6 @@ export default {
     endorsementFn(){
       const _this = this;
         _this.endorsement=true;
-      console.log(_this.$refs)
       _this.$nextTick(()=>{
         _this.$refs.endorsement.requestOrder();
       })

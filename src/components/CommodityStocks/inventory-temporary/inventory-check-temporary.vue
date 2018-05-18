@@ -16,19 +16,27 @@
             </div>
           </el-form-item>
           <el-form-item label="盘点部门：">
-            <el-select v-model="formInline.select1" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="selectData.department" placeholder="请选择" style="width: 130px">
+              <el-option 
+              v-for="item in orgList"
+              :key="item.shopId"
+              :label="item.shopName"
+              :value="item.shopId"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="盘点仓库：">
-            <el-select v-model="formInline.select1" placeholder="请选择" style="width: 130px">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="selectData.base" placeholder="请选择" style="width: 130px">
+              <el-option 
+              v-for="item in baseList"
+              :key="item.warehouseId"
+              :label="item.warehouseName"
+              :value="item.warehouseId"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" plain @click="onSubmit">查询</el-button>
+            <el-button type="primary" plain @click="requestOrder()">查询</el-button>
           </el-form-item>
         </el-col>
         <el-col :span="2" class="fn-right mgr20">
@@ -122,20 +130,73 @@
           date1: '',
           date2: ''
         },
-        tableData: [{
-          a: 'LPD1230001',
-          b: '湖滨店',
-          c: '湖滨店',
-          d: '张三',
-          e: '张三',
-          f: '2017-12-25 16:26:00',
-          g: '230',
-          h: '229',
-          i: '-1'
-        }]
+        count:0,
+        tableData: [],
+        baseList:[],
+        orgList:[],
       }
     },
     methods: {
+      requestOrder(id){
+        const _this = this;
+        _this.$myAjax({
+          url:'pos-api/warehouseCheck/getWarehouseCheckList',
+          data:{
+            // status:id,
+            checkStart:_this.selectData.startTime,
+            checkEnd:_this.selectData.endTime,
+            warehouseId:_this.selectData.base,//仓库ID
+            orgId:_this.selectData.department,
+            nub: _this.nub == 1?'0':(_this.nub-1)*_this.size,
+            size: _this.size,
+          },
+          success:function(res){
+              if(res.code == 1){
+                _this.count = res.data.count;
+                _this.tableData = res.data.list;
+              }
+          },error:function(err){
+              _this.$message({
+                message:err,
+                type:'error',
+                showClose:true
+              })
+          }
+        })
+      },
+      initList(){
+        const _this = this;
+        _this.$myAjax({
+          url:'pos-api/warehouse/getWarehouseList',
+          data:{},
+          success:function(res){
+            if(res.code == 1){
+                _this.baseList = res.data.list;
+            }
+          },error:function(err){
+            _this.$message({
+              showClose: true,
+              message: err,
+              type: "error"
+            })
+          }
+        })
+        _this.$myAjax({
+          url:'pos-api/shopBy/getShopByList',
+          data:{},
+          success:function(res){
+            if(res.code == 1){
+              _this.orgList = res.data.shopByList;
+            }
+          },error:function(err){
+            _this.$message({
+              showClose: true,
+              message: err,
+              type: "error"
+            })
+          }
+        })
+      },
       onSubmit() {
         console.log('submit!');
       },
@@ -146,6 +207,9 @@
           params: {}
         })
       }
+    },created(){
+      this.initList();
+      this.requestOrder();
     }
   }
 </script>
