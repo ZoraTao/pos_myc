@@ -2,9 +2,14 @@
   <div class="unevenness">
       <div class="header">
           <label>仓库：</label>
-          <el-select v-model="selectBase">
-            <el-option :label="1" value="123"></el-option>
-          </el-select>
+          <el-select v-model="selectBase" placeholder="请选择" style="width: 130px">
+              <el-option 
+              v-for="item in baseList"
+              :key="item.warehouseId"
+              :label="item.warehouseName"
+              :value="item.warehouseId"
+              ></el-option>
+              </el-select>
           <el-button>查询</el-button>
       </div>
       <div class="main">
@@ -42,25 +47,45 @@ import alreadyHandle from './alreadyHandle.vue'
           data: 1,
           tab:'notHandle',
           selectBase:'',
+          baseList:[]
         }
       },
       methods:{
         clickTab(){
           const _this = this;
-          if(_this.tab = 'notHandle'){
+          if(_this.tab == 'notHandle'){
               _this.$nextTick(()=>{
                 _this.$refs.notHandle.requestOrder(0);
               })
-          }else if(_this.tab = 'yesHandle'){
+          }else if(_this.tab == 'yesHandle'){
               _this.$nextTick(()=>{
                 _this.$refs.alreadyHandle.requestOrder(2);
               })
           }
         },
+        searchBase(){
+          const _this = this;
+          _this.$myAjax({
+            url:'pos-api/warehouse/getWarehouseList',
+            data:{},
+            success:function(res){
+              if(res.code == 1){
+                  _this.baseList = res.data.list;
+              }
+            },error:function(err){
+              _this.$message({
+                showClose: true,
+                message: err,
+                type: "error"
+              })
+            }
+          })
+        }
         
     },
     created(){
       this.clickTab();
+      this.searchBase();
     }
   }
 </script>

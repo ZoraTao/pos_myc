@@ -19,7 +19,7 @@
         <el-table-column
           prop="warehouseName"
           label="盘点仓库"
-          width="140">
+          width="150">
         </el-table-column>
         <el-table-column
           prop="checkUserName"
@@ -52,7 +52,7 @@
           <el-table-column
           label="状态">
           <template slot-scope="scope">
-            <p class="am-ft-night">已处理</p>
+            <p class="am-ft-orange">待处理</p>
           </template>
         </el-table-column>
         <el-table-column
@@ -80,9 +80,9 @@
     data(){
       return{
         tableData:[],
-        nub:1,
-        size:10,
-        count:0,
+          nub:1,
+          size:10,
+          count:0,
       }
     },
     methods:{
@@ -92,13 +92,14 @@
           url:'pos-api/warehouseCheck/getWarehouseCheckList',
           data:{
             status:id,
-            nub: _this.nub*_this.size,
+            nub: _this.nub==0?'0':(_this.nub-1)*_this.size,
             size: _this.size,
           },
           success:function(res){
               if(res.code == 1){
                 _this.count = res.data.count;
                 _this.tableData = res.data.list;
+                console.log(_this.tableData)
               }
           },error:function(err){
             _this.$message({
@@ -106,7 +107,7 @@
                 type:'error',
                 showClose:true
               })
-          }
+          } 
         })
       }
     }

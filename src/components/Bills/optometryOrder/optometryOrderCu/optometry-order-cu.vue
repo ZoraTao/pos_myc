@@ -12,7 +12,7 @@
         <ul class="optometry_head_msg">
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">手机号:</span>{{userInfo.mobile}}</li>
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">姓名:</span>&nbsp;{{userInfo.memberName}}</li>
-          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;{{cpMemberInfo.memberCardNo}}</li>
+          <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">会员卡号 :</span>&nbsp;{{userInfo.memberCardNo}}</li>
           <li class="fn-left am-ft-gray3"><span class="am-ft-gray6">性别 :</span>&nbsp;<em
             v-if="cpMemberInfo.sex=='M'">男</em>
             <em v-else>女</em></li>
@@ -291,13 +291,10 @@
     name: "optometryOrderCu",
     data() {
       return {
-        cpMemberInfo:{
-          memberCardNo:'',
-          sex:'',
-          birthday:''
-        },
+        cpMemberInfo:{},//验光人信息
+        prescriptions:{},
         eyesData: [],//验光数据
-        userInfo: {},//验光人信息
+        userInfo: {},//会员数据
         data1: [{},{}], //检影数据
         data2: [{},{}],//主观数据
         data3: [{},{}],//远用数据
@@ -309,7 +306,9 @@
     },
     props: ['memberDet', 'memberInfo','eyes','back'],
     created: function () {
-        if(this.eyes!=undefined){
+      if(this.$route.query.id){
+        this.searchOptometryData(this.$route.query.id)
+      }else if(this.eyes!=undefined){
           this.eyesData=this.eyes;
           this.userInfo=this.memberInfo;
           this.cpMemberInfo=this.memberInfo;
@@ -324,6 +323,25 @@
       // console.log(this.$route.params.data.memberId)
     },
     methods: {
+      searchOptometryData(id){
+        const _this = this;
+        _this.$myAjax({
+          url:'pos-api/prescriptions/getPrescriptions',
+          data:{
+            prescriptionId:id
+          },
+          success:function(res){
+            if(res.code == 1){
+              _this.eyesData= res.data.eyes;
+              _this.userInfo= res.data.prescriptions;
+              _this.cpMemberInfo=res.data.member;
+              _this.setData();
+            }
+          },error:function(err){
+            console.log(err)
+          }
+        })
+      },
       getOptometryRecord() {
         var _this = this;
         console.log(_this.$route.params)
@@ -353,13 +371,15 @@
       },
       toback(index){
         const _this = this;
-        console.log(index)
-        // this.$router.go(index);
-        _this.$emit('backs')
+        if(_this.$route.query.id){
+          this.$router.go(index);
+        }else{
+          _this.$emit('backs')
+        }
       },
       setData:function(){
           var that=this;
-          if(that.eyes.length == 0){ 
+          if(that.eyesData.length == 0){ 
             that.$message({
               type:'warning',
               showClose:true,
