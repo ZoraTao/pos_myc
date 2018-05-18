@@ -78,16 +78,12 @@ module.exports = {
             {
                 test: /\.scss$/,
                 loaders: ["style", "css", "sass"]
-            }, {
-                test: require.resolve('zepto'),
-                loader: 'exports-loader?window.$!script-loader'
             }
         ]
     },
     plugins: [
         new webpack.ProvidePlugin({
-            $: 'zepto',
-            Zepto: 'zepto'
+            
         })
     ],
     node: {
