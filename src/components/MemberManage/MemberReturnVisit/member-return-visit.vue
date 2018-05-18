@@ -84,7 +84,7 @@
   import AlreadyVisit from './member-already-visit'
 
   export default {
-    name: "member-return-visit", 
+    name: "member-return-visit",
     data() {
       return {
         form:{

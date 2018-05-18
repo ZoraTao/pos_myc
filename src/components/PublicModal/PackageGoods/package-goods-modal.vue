@@ -6,6 +6,14 @@
             <div class="packageGoodsTop">
                 <div class="relative">
                     <el-input style="width:270px" v-model="mymodel" placeholder="输入套餐价/套餐名／套餐编码" v-on:change="ModelChange()"></el-input>
+                    <div class="GoodsTopPosition" v-if="searchContent">
+                        <!-- <p>圣诞狂欢套餐 TC1230001  499</p>
+                        <p>圣诞狂欢套餐 TC1230001 1 499</p>
+                        <p>圣诞狂欢套餐 TC12300111101  499</p>
+                        <p>圣诞狂欢套餐 TC1230001  499</p>
+                        <p>圣诞狂欢套餐 TC1230001  499</p>
+                        <p>圣诞狂欢套餐 TC1230001  499</p> -->
+                    </div>
                 </div>
                 <el-button @click="ModelChange()">查询</el-button>
             </div>
@@ -121,11 +129,6 @@
                                         </el-table>
                                 </div>
                             </div>
-                            <div class="packageDetailButtonGroup" v-show="read">
-                                <el-checkbox class="fn-left">套餐置换</el-checkbox>
-                                <el-button @click="toHidePackageModel(false)">取 消</el-button>
-                                <el-button type="primary" @click="toHidePackageModel(true)">确定</el-button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -166,55 +169,17 @@ export default {
     }
   },
   methods:{
-      toHidePackageModel(bool){
-          const _this = this;
-          let times = Date.parse(new Date());
-          console.log(times)
-          for(var i=0,datas = _this.packageDetails;i<datas.length;i++){
-              _this.packageDetails[i].status = '4'
-              _this.packageDetails[i].dataTimt = times
-          }
-          console.log(_this.packageDetails)
-          if(bool){
-              for(var i=0,datas = _this.packageDetails;i<datas.length;i++){
-                  if(datas[i].farSearchCode == ''&&datas[i].modelName == ''){
-                      _this.$message({
-                          message:'请填写完整',
-                          type:'error',
-                          showClose:true
-                      })
-                      return 
-                  }
-              }
-            let obj = {
-                data:_this.packageDetails,
-                package:_this.packageCreate
-            }
-            _this.$emit('toHidePackageModel',obj);
-          }else{
-              _this.$emit('toHidePackageModel',bool)
-          }
-          this.packageDetails = [];
-          this.read = false;
-          this.packagesArr = [];
-      },
+      
       toCopyValue(data,index){
           this.nowIndex = index;
           this.farSearch(data)
           this.nowSearchArr = data;
       },
       handleSelect(item) {
-        //   console.log(this.packageDetails[this.nowIndex])
-            // console.log(item);
+          console.log(this.packageDetails[this.nowIndex])
+            console.log(item);
           this.packageDetails[this.nowIndex].farSearchCode = item.skuName;
-        //   this.packageDetails[this.nowIndex].item = item;
           this.packageDetails[this.nowIndex].farSearchCodeId = item.productId;
-          this.packageDetails[this.nowIndex].sku = item.sku;
-          this.packageDetails[this.nowIndex].warehouseId = item.warehouseId;
-          this.packageDetails[this.nowIndex].stockId = item.stockId;
-          this.packageDetails[this.nowIndex].quantity = item.quantity;
-          this.packageDetails[this.nowIndex].allotQuantity = item.allotQuantity;
-          this.packageDetails[this.nowIndex].productCategoryId = item.productCategoryId;
       },
       createFilter(queryString) {
         return (restaurant) => {
@@ -271,7 +236,7 @@ export default {
         this.changesSelect(status,data)
       },
       changesSelect(type,data){
-        //   console.log(data)
+          console.log(data)
             let _this = this;
             let id = '';
             switch ((type).toString()) {
@@ -286,7 +251,7 @@ export default {
                   break;
 
           }
-        //   console.log(id)
+          console.log(id)
            _this.$myAjax({
                 url: 'pos-api/productCategory/list',
                 data: {
@@ -330,7 +295,7 @@ export default {
           this.changesSelect(status,data)
       },
       readDetail(data){
-        //   console.log(data)
+          console.log(data)
           let _this = this;
           _this.$myAjax({
               url:'pos-api/packages/getPackage',
@@ -381,6 +346,7 @@ export default {
           })
       },
       ModelChange:function(){
+          console.log(1)
           let _this = this;
           _this.$myAjax({
               url:'pos-api/packages/getPackageList',
@@ -405,6 +371,14 @@ export default {
                   console.log(err)
               }
           })
+        if(this.mymodel.length>1){
+            this.searchContent=true;
+            this.$emit('showBottom')
+            }
+        if(this.mymodel.length==0){
+            this.searchContent=false;
+            this.$emit('hideBottom')
+        }
 
       }
   }

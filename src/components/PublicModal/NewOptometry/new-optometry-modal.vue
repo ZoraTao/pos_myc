@@ -34,165 +34,125 @@
         </div>
         <div class="newOptometryOptician">
             <label class="mgr10">配镜处方：</label>
-            <!-- <el-checkbox v-model="prescription.isDistance">远用</el-checkbox>
-            <el-checkbox v-model="prescription.isNigh">近用</el-checkbox> -->
-            <!-- <el-checkbox v-model="prescription.isGradually">渐进</el-checkbox>
-            <el-checkbox v-model="prescription.isContact">隐形</el-checkbox> -->
+            <el-checkbox v-model="prescription.isDistance">远用</el-checkbox>
+            <el-checkbox v-model="prescription.isNigh">近用</el-checkbox>
+            <el-checkbox v-model="prescription.isGradually">渐进</el-checkbox>
+            <el-checkbox v-model="prescription.isContact">隐形</el-checkbox>
         </div>
         <ul class="glass_combination_table">
             <li class="clearfix combination_table_list">
                 <ul class="glass_table_head">
                     <li class="wid80"> &nbsp;&nbsp;</li>
                     <li class="w10"> &nbsp;&nbsp;</li>
-                    <li class="w74">球镜</li>
-                    <li class="w74">柱镜</li>
-                    <li class="w74">轴位</li>
-                    <li class="w74">矫正视力</li>
-                    <li class="w74">棱镜</li>
-                    <li class="w74">基底</li>
-                    <li class="w74">基弧</li>
-                    <li class="w74">远瞳距</li>
-                    <!-- <li class="w74">近瞳距</li> -->
-                    <li class="w74">瞳高</li>
-                    <li class="w74">总瞳距</li>
-                    <li class="w74">ADD</li>
+                    <li class="w90">球镜</li>
+                    <li class="w90">柱镜</li>
+                    <li class="w90">轴位</li>
+                    <li class="w90">矫正视力</li>
+                    <li class="w90">远瞳距</li>
+                    <li class="w90">近瞳距</li>
+                    <li class="w90">瞳高</li>
+                    <li class="w90">瞳距</li>
+                    <li class="w90">下加光</li>
                 </ul>
-                <ul>
-                    <li class="fn-left  msg_left"><el-button :class="{'el-button-Mini':true,'miniBtn':prescription.isDistance}" size="mini" @click="prescription.isDistance = true;prescription.isNigh = false">远用</el-button></li>
+                <ul v-if="prescription.isDistance">
+                    <li class="fn-left  msg_left">远用</li>
                     <li class="fn-left glass_table_770 pb10">
                         <table>
                             <tr class="" v-for="(item,index) in distanceData" :key="index">
                                 <td class="w10 ft_bold"><span v-html="index==0?'R':'L'"></span></td>
-                                <td class="w74">
+                                <td class="w90">
                                 <el-form :model="item" :rules="rules" ref="distanceData">
                                   <el-form-item prop="sph">
                                     <el-input v-model="item.sph"></el-input>
                                   </el-form-item>
                                 </el-form>
                                 </td>
-                                <td class="w74">
+                                <td class="w90">
                                   <el-form :model="item" :rules="rules" ref="distanceData">
                                     <el-form-item prop="sph">
                                       <el-input v-model="item.cyl"></el-input>
                                     </el-form-item>
                                   </el-form>
                                 </td>
-                                <td class="w74"><el-input v-model="item.ax"></el-input></td>
-                                <td class="w74"><el-input v-model="item.va"></el-input></td>
-                                <td class="w74"><el-input v-model="item.lj"></el-input></td>
-                                <td class="w74">
-                                  <el-select v-model="item.jd" placeholder=''  class="selectOption">
-                                    <el-option
-                                      v-for="item in selectOpt"
-                                      :key="item.value"
-                                      :label="item.value"
-                                      :value="item.value">
-                                    </el-option>
-                                  </el-select>
-                                </td>
-                                <td class="w74"><el-input v-model="item.jh"></el-input></td>
-                                <td class="w74"><el-input v-model="item.dpd"></el-input></td>
-                                <!-- <td class="w74"><el-input v-model="item.npd"></el-input></td> -->
-                                <td class="w74"><el-input v-model="item.hpd"></el-input></td>
-                                <td class="w74 glass_table_2x" rowspan="2" v-if="index==0"><el-input v-model="item.pd"></el-input></td>
-                                <td class="w74 glass_table_2x" rowspan="2" v-if="index==0"><el-input v-model="item.add"></el-input></td>
+                                <td class="w90"><el-input v-model="item.ax"></el-input></td>
+                                <td class="w90"><el-input v-model="item.va"></el-input></td>
+                                <td class="w90"><el-input v-model="item.dpd"></el-input></td>
+                                <td class="w90"><el-input v-model="item.npd"></el-input></td>
+                                <td class="w90"><el-input v-model="item.hpd"></el-input></td>
+                                <td class="w90"><el-input v-model="item.pd"></el-input></td>
+                                <td class="w90 glass_table_2x" rowspan="2" v-if="index==0"><el-input v-model="item.add"></el-input></td>
                             </tr>
                         </table>
                     </li>
                 </ul>
             </li>
-            <li class="clearfix combination_table_list">
-              <ul class="glass_table_head">
-                  <li class="wid80"> &nbsp;&nbsp;</li>
-                  <li class="w10"> &nbsp;&nbsp;</li>
-                  <li class="w74">球镜</li>
-                  <li class="w74">柱镜</li>
-                  <li class="w74">轴位</li>
-                  <li class="w74">矫正视力</li>
-                  <li class="w74">棱镜</li>
-                  <li class="w74">基底</li>
-                  <li class="w74">基弧</li>
-                  <li class="w74">近瞳距</li>
-                  <li class="w74">总瞳距</li>
-              </ul>
-              <li class="clearfix combination_table_list">
+            <li class="clearfix combination_table_list" v-if="prescription.isNigh">
                 <ul>
-                      <li class="fn-left  msg_left"><el-button :class="{'el-button-Mini':true,'miniBtn':prescription.isNigh}" size="mini" @click="prescription.isDistance = false;prescription.isNigh = true">近用</el-button></li>
-                      <li class="fn-left glass_table_770 pb10">
-                          <table>
-                              <tr class="" v-for="(item,index) in nighData" :key="index">
-                                  <td class="w10 ft_bold"><span v-html="index==0?'R':'L'"></span></td>
-                                  <td class="w74">
-                                    <el-form :model="item" :rules="rules" ref="nighData">
-                                      <el-form-item prop="sph">
-                                        <el-input v-model="item.sph"></el-input>
-                                      </el-form-item>
-                                    </el-form>
-                                  </td>
-                                  <td class="w74">
-                                    <el-form :model="item" :rules="rules" ref="nighData">
-                                      <el-form-item prop="sph">
-                                        <el-input v-model="item.cyl"></el-input>
-                                      </el-form-item>
-                                    </el-form>
-                                  </td>
-                                  <td class="w74"><el-input v-model="item.ax"></el-input></td>
-                                  <td class="w74"><el-input v-model="item.va"></el-input></td>
-                                  <td class="w74"><el-input v-model="item.lj"></el-input></td>
-                                  <td class="w74">
-                                    <el-select v-model="item.jd" placeholder='' class="selectOption">
-                                    <el-option
-                                      v-for="item in selectOpt"
-                                      :key="item.value"
-                                      :label="item.value"
-                                      :value="item.value">
-                                    </el-option>
-                                  </el-select>
-                                  </td>
-                                  <td class="w74"><el-input v-model="item.jh"></el-input></td>
-                                  <td class="w74"><el-input v-model="item.dpd"></el-input></td>
-                                <td class="w74 glass_table_2x" rowspan="2" v-if="index==0"><el-input v-model="item.pd"></el-input></td>
-                              </tr>
-                          </table>
-                      </li>
-              </ul>
+                    <li class="fn-left  msg_left">近用</li>
+                    <li class="fn-left glass_table_770 pb10">
+                        <table>
+                            <tr class="" v-for="(item,index) in nighData" :key="index">
+                                <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
+                                <td class="w90">
+                                <el-form :model="item" :rules="rules" ref="nighData">
+                                  <el-form-item prop="sph">
+                                    <el-input v-model="item.sph"></el-input>
+                                  </el-form-item>
+                                </el-form>
+                                </td>
+                                <td class="w90">
+                                  <el-form :model="item" :rules="rules" ref="nighData">
+                                    <el-form-item prop="sph">
+                                      <el-input v-model="item.cyl"></el-input>
+                                    </el-form-item>
+                                  </el-form>
+                                </td>
+                                <td class="w90"><el-input v-model="item.ax"></el-input></td>
+                                <td class="w90"><el-input v-model="item.va"></el-input></td>
+                                <td class="w90"><el-input v-model="item.dpd"></el-input></td>
+                                <td class="w90"><el-input v-model="item.npd"></el-input></td>
+                                <td class="w90"><el-input v-model="item.hpd"></el-input></td>
+                            </tr>
+                        </table>
+                    </li>
+                </ul>
             </li>
-            <!-- <li class="clearfix combination_table_list" v-if="prescription.isContact">
+            <li class="clearfix combination_table_list" v-if="prescription.isContact">
                 <ul>
                     <li class="fn-left  msg_left">隐形</li>
                     <li class="fn-left glass_table_770">
                         <table>
                             <tr class="" v-for="(item,index) in contactData" :key="index">
                                 <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
-                                <td class="w74">
+                                <td class="w90">
                                 <el-form :model="item" :rules="rules" ref="contactData">
                                   <el-form-item prop="sph">
                                     <el-input v-model="item.sph"></el-input>
                                   </el-form-item>
                                 </el-form>
                                 </td>
-                                <td class="w74">
+                                <td class="w90">
                                   <el-form :model="item" :rules="rules" ref="contactData">
                                     <el-form-item prop="sph">
                                       <el-input v-model="item.cyl"></el-input>
                                     </el-form-item>
                                   </el-form>
                                 </td>
-                                <td class="w74"><el-input v-model="item.ax"></el-input></td>
-                                <td class="w74"><el-input v-model="item.va"></el-input></td>
+                                <td class="w90"><el-input v-model="item.ax"></el-input></td>
+                                <td class="w90"><el-input v-model="item.va"></el-input></td>
                             </tr>
                         </table>
                     </li>
                 </ul>
-            </li> -->
-            <!-- <li class="clearfix combination_table_list" :class="{'mgl450':!prescription.isContact}" v-if="prescription.isGradually">
+            </li>
+            <li class="clearfix combination_table_list" :class="{'mgl450':!prescription.isContact}" v-if="prescription.isGradually">
                 <ul>
                     <li class="fn-left  msg_left">渐进</li>
                     <li class="fn-left glass_table_770">
                         <table>
                             <tr class="" v-for="(item,index) in graduallyData" :key="index">
                                 <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
-                                <td class="w74">
+                                <td class="w90">
                                   <el-form :model="item" :rules="rules" ref="graduallyData">
                                     <el-form-item prop="npd">
                                       <el-input v-model="item.npd"></el-input>
@@ -203,7 +163,7 @@
                         </table>
                     </li>
                 </ul>
-            </li> -->
+            </li>
         </ul>
 
         <div class="newOptometryOptician">
@@ -221,25 +181,14 @@
                             <label class="w10">L</label><el-input style="width:80px" v-model="prescriptions.originalL"></el-input>
                         </div>
                         <div class="labelInput">
-                            <label class="w10">PD</label><el-input style="width:80px" v-model="prescriptions.originalPd"></el-input>
-                        </div>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="fn-left msg_left breakMsg" style="margin-top:15px;">矫正<br/>视力</li>
-                    <li class="fn-left glass_table_770">
-                        <div class="labelInput">
-                            <label class="w10">R</label><el-input style="width:80px" v-model="prescriptions.jzR"></el-input>
-                        </div>
-                        <div class="labelInput">
-                            <label class="w10">L</label><el-input style="width:80px" v-model="prescriptions.jzL"></el-input>
+                            <label class="w10">瞳距</label><el-input style="width:80px" v-model="prescriptions.originalPd"></el-input>
                         </div>
                     </li>
                 </ul>
             </li>
             <li class="clearfix combination_table_list">
                 <ul>
-                    <li class="fn-left msg_left breakMsg" style="margin-top:15px;">眼部<br/>健康</li>
+                    <li class="fn-left msg_left breakMsg">眼部<br/>健康</li>
                     <li class="fn-left glass_table_770">
                         <div class="labelInput">
                             <label>上下眼睑：</label><el-input style="width:80px" v-model="health.k1"></el-input>
@@ -263,33 +212,33 @@
                 <ul class="glass_table_head">
                     <li class="wid80"> &nbsp;&nbsp;</li>
                     <li class="w10"> &nbsp;&nbsp;</li>
-                    <li class="w74">球镜</li>
-                    <li class="w74">柱镜</li>
-                    <li class="w74">轴位</li>
-                    <li class="w74">矫正视力</li>
-                    <li class="w74">瞳距</li>
-                    <li class="w74">ADD</li>
+                    <li class="w90">球镜</li>
+                    <li class="w90">柱镜</li>
+                    <li class="w90">轴位</li>
+                    <li class="w90">矫正视力</li>
+                    <li class="w90">瞳距</li>
+                    <li class="w90">下加光</li>
                 </ul>
                 <ul>
-                    <li class="fn-left  msg_left">主观</li>
+                    <li class="fn-left  msg_left">检影</li>
                     <li class="fn-left glass_table_770 pb10">
                         <table>
                             <tr class="">
-                                <td class="w10 ft_bold">R</td>
-                                <td class="w74"><el-input v-model="skiascopyData[0].sph"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[0].cyl"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[0].ax"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[0].va"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[0].pd"></el-input></td>
-                                <td class="w74 glass_table_2x" rowspan="2"><el-input v-model="skiascopyData[0].add"></el-input></td>
+                                <td class="w10 ft_bold">L</td>
+                                <td class="w90"><el-input v-model="skiascopyData[0].sph"></el-input></td>
+                                <td class="w90"><el-input v-model="skiascopyData[0].cyl"></el-input></td>
+                                <td class="w90"><el-input v-model="skiascopyData[0].ax"></el-input></td>
+                                <td class="w90"><el-input v-model="skiascopyData[0].va"></el-input></td>
+                                <td class="w90"><el-input v-model="skiascopyData[0].pd"></el-input></td>
+                                <td class="w90 glass_table_2x" rowspan="2"><el-input v-model="skiascopyData[0].add"></el-input></td>
                             </tr>
                             <tr class="">
-                                <td class="w10 ft_bold">L</td>
-                                <td class="w74"><el-input v-model="skiascopyData[1].sph"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[1].cyl"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[1].ax"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[1].va"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[1].pd"></el-input></td>
+                                <td class="w10 ft_bold">R</td>
+                                <td class="w90"><el-input v-model="skiascopyData[1].sph"></el-input></td>
+                                <td class="w90"><el-input v-model="skiascopyData[1].cyl"></el-input></td>
+                                <td class="w90"><el-input v-model="skiascopyData[1].ax"></el-input></td>
+                                <td class="w90"><el-input v-model="skiascopyData[1].va"></el-input></td>
+                                <td class="w90"><el-input v-model="skiascopyData[1].pd"></el-input></td>
                             </tr>
                         </table>
                     </li>
@@ -297,25 +246,25 @@
             </li>
             <li class="clearfix combination_table_list pt10">
                 <ul>
-                    <li class="fn-left  msg_left">客观</li>
+                    <li class="fn-left  msg_left">主观</li>
                     <li class="fn-left glass_table_770">
                         <table>
                             <tr class="">
-                                <td class="w10 ft_bold">R</td>
-                                <td class="w74"><el-input v-model="subjectivityData[0].sph"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[0].cyl"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[0].ax"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[0].va"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[0].pd"></el-input></td>
-                                <!-- <td class="w74 glass_table_2x" rowspan="2"><el-input v-model="skiascopyData[0].add"></el-input></td> -->
+                                <td class="w10 ft_bold">L</td>
+                                <td class="w90"><el-input v-model="subjectivityData[0].sph"></el-input></td>
+                                <td class="w90"><el-input v-model="subjectivityData[0].cyl"></el-input></td>
+                                <td class="w90"><el-input v-model="subjectivityData[0].ax"></el-input></td>
+                                <td class="w90"><el-input v-model="subjectivityData[0].va"></el-input></td>
+                                <td class="w90"><el-input v-model="subjectivityData[0].pd"></el-input></td>
+                                <td class="w90 glass_table_2x" rowspan="2"><el-input v-model="skiascopyData[0].add"></el-input></td>
                             </tr>
                             <tr class="">
-                                <td class="w10 ft_bold">L</td>
-                                <td class="w74"><el-input v-model="subjectivityData[1].sph"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[1].cyl"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[1].ax"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[1].va"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[1].pd"></el-input></td>
+                                <td class="w10 ft_bold">R</td>
+                                <td class="w90"><el-input v-model="subjectivityData[1].sph"></el-input></td>
+                                <td class="w90"><el-input v-model="subjectivityData[1].cyl"></el-input></td>
+                                <td class="w90"><el-input v-model="subjectivityData[1].ax"></el-input></td>
+                                <td class="w90"><el-input v-model="subjectivityData[1].va"></el-input></td>
+                                <td class="w90"><el-input v-model="subjectivityData[1].pd"></el-input></td>
                             </tr>
                         </table>
                     </li>
@@ -336,18 +285,6 @@
                     </li>
                 </ul>
             </li>
-            <li class="clearfix combination_table_list">
-                <ul>
-                    <li class="fn-left glass_table_770">
-                        <div class="labelInput mgl30">
-                            <label>远用眼位：</label><el-input v-model="prescriptions.yyyw"></el-input>
-                        </div>
-                        <div class="labelInput mgl30">
-                            <label>近用眼位：</label><el-input v-model="prescriptions.jyyw"></el-input>
-                        </div>
-                    </li>
-                </ul>
-            </li>
         </ul>
         <ul class="optometryMemo">
             <li class="fn-left ft_bold mgr10">验光备注：</li>
@@ -356,7 +293,6 @@
                 v-model="prescriptions.memo"
                 type="textarea"
                 :rows="2"
-                style="width:850px;"
                 placeholder="请输入内容"></el-input>
             </li>
         </ul>
@@ -399,23 +335,19 @@
             </li>
         </ul>
     </div>
-    <div class="packageDetailButtonGroup">
-          <el-button @click="closeEyesModel()">取 消</el-button>
-          <el-button type="primary" @click="submitThisModal()">保 存</el-button>
-    </div>
 </div>
 </template>
 
 <script>
-import { allDate } from "../../../utils/date.js";
+import {allDate} from '../../../utils/date.js'
 export default {
   name: "NewOptometryModal",
-  props: [ "memberInfo"],
+  props: ["submit","memberInfo","showNewOptometry"],
   data() {
     return {
       options: [],
-      sourceOptions: [],
-      optometristOptions: [],
+      sourceOptions:[],
+      optometristOptions:[],
       value: "",
       needReg: false,
       ruleForm: {
@@ -426,109 +358,90 @@ export default {
         sex: "",
         birthday: ""
       },
-      selectOpt:[],
       rules: {
         telphone: [{ required: true, message: "请输入", trigger: "blur" }],
-        sph: [{ required: true, message: " ", trigger: "blur" }],
-        cyl: [{ required: true, message: " ", trigger: "blur" }],
-        npd: [{ required: true, message: " ", trigger: "blur" }]
+        sph : [{ required: true, message: " ", trigger: "blur" }],
+        cyl : [{ required: true, message: " ", trigger: "blur" }],
+        npd : [{ required: true, message: " ", trigger: "blur" }],
       },
       prescription: {
         isDistance: true,
-        isNigh: false
-        // isContact: false,
-        // isGradually: false
+        isNigh: false,
+        isContact: false,
+        isGradually: false
       },
-      pickerOptions0: {
-        disabledDate(time) {
-          return time.getTime() > Date.now() - 8.64e6;
-        }
-      },
-      defaultValue: allDate.TimeToDay(),
+       pickerOptions0: {
+          disabledDate(time) {
+            return time.getTime() > Date.now() - 8.64e6
+          }
+        },
+
+      defaultValue:allDate.TimeToDay(),
       distanceData: [
         {
-          leftRight:'1',
           sph: "",
           cyl: "",
           ax: "",
           va: "",
           dpd: "",
-          // npd: "",
-          hpd: "",
-          jd:"",
-          jh:"",
-          lj:"",
-          pd:"",
-          add: "",
+          npd: "",
+          hpd: ""
         },
         {
-          leftRight:'0',
           sph: "",
           cyl: "",
           ax: "",
           va: "",
           dpd: "",
-          // npd: "",
+          npd: "",
           hpd: "",
-          jd:"",
-          jh:"",
-          lj:"",
-          pd:"",
-        },
-      ],
-      nighDataCopy:null,
-      nighData: [
-        {
-          leftRight:'1',
-          sph: "",
-          cyl: "",
-          ax: "",
-          va: "",
-          npd: "",
-          lj:"",
-          jd:"",
-          jh:"",
-          pd:""
-        },
-        {
-          leftRight:'0',
-          sph: "",
-          cyl: "",
-          ax: "",
-          va: "",
-          npd: "",
-          lj: "",
-          jh: "",
-          jd: "",
-          pd: ""
+          add: ""
         }
       ],
-      // contactData: [
-      //   {
-      //     sph: "",
-      //     cyl: "",
-      //     ax: "",
-      //     va: ""
-      //   },
-      //   {
-      //     sph: "",
-      //     cyl: "",
-      //     ax: "",
-      //     va: ""
-      //   }
-      // ],
-      // graduallyData: [
-      //   {
-      //     npd: ""
-      //   },
-      //   {
-      //     npd: ""
-      //   }
-      // ],
-      skiascopyDataCopy:null,
+      nighData: [
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          dpd: "",
+          npd: "",
+          hpd: ""
+        },
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          dpd: "",
+          npd: "",
+          hpd: ""
+        }
+      ],
+      contactData: [
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: ""
+        },
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: ""
+        }
+      ],
+      graduallyData: [
+        {
+          npd: ""
+        },
+        {
+          npd: ""
+        }
+      ],
       skiascopyData: [
         {
-          leftRight:'1',
           sph: "",
           cyl: "",
           ax: "",
@@ -537,27 +450,6 @@ export default {
           add: ""
         },
         {
-          leftRight:'0',
-          sph: "",
-          cyl: "",
-          ax: "",
-          va: "",
-          pd: "",
-        }
-      ],
-      subjectivityDataCopy:null,
-      subjectivityData: [
-        {
-          leftRight:'1',
-          sph: "",
-          cyl: "",
-          ax: "",
-          va: "",
-          pd: "",
-          add:""
-        },
-        {
-          leftRight:'0',
           sph: "",
           cyl: "",
           ax: "",
@@ -565,7 +457,23 @@ export default {
           pd: ""
         }
       ],
-      healthCopy:null,
+      subjectivityData: [
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          pd: "",
+          add: ""
+        },
+        {
+          sph: "",
+          cyl: "",
+          ax: "",
+          va: "",
+          pd: ""
+        }
+      ],
       health: {
         k1: "",
         k2: "",
@@ -573,9 +481,8 @@ export default {
         k4: "",
         k5: ""
       },
-      prescriptionsCopy:null,
       prescriptions: {
-        health: "",
+        health:"",
         createEndTime: "",
         createStartTime: "",
         createTime: "",
@@ -606,70 +513,58 @@ export default {
         status: "",
         stereopsis: "",
         subjective: "",
-        worth4: "",
-        yyyw:'',
-        jyyw:'',
-        jzR:'',
-        jzL:''
+        worth4: ""
       }
     };
   },
   methods: {
-    getPrivateSelect(type, options) {
+
+    getPrivateSelect(type,options){
       var that = this;
-      that
-        .$axios({
-          url: "http://myc.qineasy.cn/cas-api/user/getUserByOrg",
-          method: "post",
+      that.$axios({
+          url: 'http://myc.qineasy.cn/cas-api/user/getUserByOrg',
+          method: 'post',
           params: {
-            jsonObject: {
-              orgId: "",
-              userType: "9"
-              //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
-            },
-            keyParams: {
-              weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
-            }
+              jsonObject: {
+                 "orgId":"",
+                 "userType":"9"
+                  //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
+              },
+              keyParams: {
+                  weChat: true,
+                  userId: JSON.parse(localStorage.getItem("userData")).userId,
+                  orgId: JSON.parse(localStorage.getItem("userData")).orgId,
+              }
           }
-        })
-        .then(function(response) {
-          that.options = response.data.data.list;
-        });
+      })
+      .then(function (response) {
+          that.options=response.data.data.list;
+      })
     },
-    closeEyesModel(){
-      const _this = this;
-      this.cleardata();
-      _this.$emit('closeEyesModel')
-    },
-    getPublicSelect(type, options) {
+    getPublicSelect(type,options) {
       var that = this;
-      that
-        .$axios({
-          url: "http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList",
-          method: "post",
+      that.$axios({
+          url: 'http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList',
+          method: 'post',
           params: {
-            jsonObject: {
-              pid: "",
-              id: "",
-              type: type
-              //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
-            },
-            keyParams: {
-              weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
-            }
+              jsonObject: {
+                  pid:'',
+                  id:'',
+                  type: type
+                  //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
+              },
+              keyParams: {
+                  weChat: true,
+                  userId: JSON.parse(localStorage.getItem("userData")).userId,
+                  orgId: JSON.parse(localStorage.getItem("userData")).orgId,
+              }
           }
-        })
-        .then(function(response) {
-          that.options = response.data.data.list;
-        });
+      })
+      .then(function (response) {
+          that.options=response.data.data.list;
+      })
     },
     searchUser() {
-      console.log(3)
-      
       var that = this;
       if (this.ruleForm.telphone.length == 11) {
         that
@@ -683,8 +578,8 @@ export default {
               },
               keyParams: {
                 weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                userId:JSON.parse(localStorage.getItem("userData")).userId,
+                orgId:JSON.parse(localStorage.getItem("userData")).orgId,
               }
             }
           })
@@ -696,8 +591,7 @@ export default {
                     response.data.data.memberList[0][trait];
                 }
               });
-              that.prescriptions.memberId =
-                response.data.data.memberList[0].memberId;
+              that.prescriptions.memberId = response.data.data.memberList[0].memberId;
               that.ruleForm.hasMember = true;
               that.needReg = false;
             } else {
@@ -711,27 +605,24 @@ export default {
           });
       }
     },
-    validationStart(formName) {
-      var flag = false;
-      if (
-        this.$refs[formName] instanceof Array &&
-        this.$refs[formName].length > 0
-      ) {
-        this.$refs[formName].forEach((obj, index) => {
-          obj.validate(valid => {
-            if (valid) {
-              flag = true;
-              return true;
-            } else {
-              flag = false;
-              return false;
-            }
+    validationStart(formName){
+      var flag=false;
+        if (this.$refs[formName] instanceof Array && this.$refs[formName].length > 0) {
+            this.$refs[formName].forEach((obj, index) => {
+              obj.validate((valid) => {
+                if (valid) {
+                  flag=true;
+                  return true;
+                } else {
+                  flag=false;
+                  return false;
+                }
+              });
           });
-        });
-        return flag;
-      }
+          return flag;
+        }
     },
-    validation() {
+    validation(){
       var canNext = false;
       if(this.prescription.isDistance){
         canNext=this.validationStart('distanceData');
@@ -739,51 +630,22 @@ export default {
       if(this.prescription.isNigh){
         canNext=this.validationStart('nighData');
       }
-      // if(this.prescription.isContact){
-      //   canNext=this.validationStart('contactData');
-      // }
-      // if(this.prescription.isGradually){
-      //   canNext=this.validationStart('graduallyData');
-      // }
+      if(this.prescription.isContact){
+        canNext=this.validationStart('contactData');
+      }
+      if(this.prescription.isGradually){
+        canNext=this.validationStart('graduallyData');
+      }
       return canNext;
     },
-    cleardata(){
-      const _this  = this;
-      this.ruleForm.telphone = '';
-      function clear(target){
-        for(var i=0;i<target.length;i++){
-          for(var key in target[i]) {
-            if(key != 'leftRight'){
-              target[i][key] = ''
-            }
-          }
-        }
-      }
-      clear(_this.distanceData);
-      clear(_this.nighData);
-      clear(_this.skiascopyData);
-      clear(_this.subjectivityData);
-      for(var key in _this.prescriptions) {
-        if(key != 'leftRight'){
-          _this.prescriptions[key] = ''
-        }
-      }
-      for(var key in _this.health) {
-        if(key != 'leftRight'){
-          _this.health[key] = ''
-        }
-      }
-  },
     submitThisModal() {
-      console.log(1)
       var that = this;
-      console.log(!this.validation())
-      if (!this.validation()) {
+      if(!this.validation()){
         that.$message({
-          showClose: true,
-          message: "请填写配镜处方！",
-          type: "error"
-        });
+            showClose: true,
+            message: '请填写配镜处方！',
+            type: 'error'
+        })
         return false;
       }
       var memberId;
@@ -804,8 +666,8 @@ export default {
               },
               keyParams: {
                 weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                userId:JSON.parse(localStorage.getItem("userData")).userId,
+                orgId:JSON.parse(localStorage.getItem("userData")).orgId,
               }
             }
           })
@@ -816,17 +678,16 @@ export default {
           });
       }
       var eyes = [];
-      eyes.push({ key: 2, value: that.skiascopyData });
-      eyes.push({ key: 3, value: that.subjectivityData });
-      eyes.push({ key: 0, value: that.distanceData });
-      eyes.push({ key: 1, value: that.nighData });
-      // eyes.push({ key: 4, value: that.contactData });
-      // eyes.push({ key: 5, value: that.graduallyData });
+      eyes.push({ key: 0, value: that.skiascopyData });
+      eyes.push({ key: 1, value: that.subjectivityData });
+      eyes.push({ key: 2, value: that.distanceData });
+      eyes.push({ key: 3, value: that.nighData });
+      eyes.push({ key: 4, value: that.contactData });
+      eyes.push({ key: 5, value: that.graduallyData });
       that.prescriptions.memberName = that.ruleForm.name;
       that.prescriptions.customerName = that.ruleForm.name;
       that.prescriptions.sex = that.ruleForm.sex;
-      that.prescriptions.health = JSON.stringify(that.health);
-      that.prescriptions.appKey = that.prescription.isDistance?'0':'1';
+      that.prescriptions.health=JSON.stringify(that.health);
       //   that.prescriptions.nub=that.ruleForm.memberCardNo;
       var jsonObject = {
         eyes: eyes,
@@ -841,54 +702,38 @@ export default {
               jsonObject: jsonObject,
               keyParams: {
                 weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                userId:JSON.parse(localStorage.getItem("userData")).userId,
+                orgId:JSON.parse(localStorage.getItem("userData")).orgId,
               }
             }
           })
           .then(function(response) {
             if (response.data.code == 1) {
               jsonObject.prescriptions.prescriptionId = response.data.data.id;
-              that.cleardata();
               that.$emit("getNewoptometry", jsonObject);
               that.$message({
-                showClose: true,
-                message: "新增成功！",
-                type: "success"
-              });
-            } else {
-              console.log(response);
+                  showClose: true,
+                  message: '新增成功！',
+                  type: 'success'
+              })
+            }else{
+              console.log(response)
               that.$message({
-                showClose: true,
-                message: "新增失败，请联系管理人员！",
-                type: "error"
-              });
+                  showClose: true,
+                  message: '新增失败，请联系管理人员！',
+                  type: 'error'
+              })
             }
           });
       }, 100);
     }
   },
-  mounted() {
+  mounted(){
     // this.defaultValue = allDate.TimeToDay(Date.parse(new Date()))
   },
-  
-  created: function() {
-    let nums = -5;
-    for(var i =0;i<20;i++){
-      this.selectOpt.push({
-        value:parseFloat(nums).toFixed(2)
-      })
-      nums+=0.5;
-    }
-      this.healthCopy = this.health;
-      this.distanceDataCopy = this.distanceData;
-      this.nighDataCopy = this.nighData;
-      this.skiascopyDataCopy = this.skiasData;
-      this.subjectivityDataCopy = this.subjectivityData;
-      this.prescriptionsCopy = this.prescriptions;
-    if (this.memberInfo) {
-      this.ruleForm.telphone = this.memberInfo.telphone;
-      console.log(2)
+  created:function(){
+    if(this.memberInfo){
+      this.ruleForm.telphone=this.memberInfo.telphone;
       this.searchUser();
     }
   },
@@ -898,11 +743,8 @@ export default {
         this.submitThisModal();
       }
     },
-    showNewOptometry: function() {
-      if(this.memberInfo.telphone){
-        this.ruleForm.telphone = this.memberInfo.telphone;
-      }
-      console.log(1)
+    "showNewOptometry":function(){
+      this.ruleForm.telphone=this.memberInfo.telphone;
       this.searchUser();
     }
   }
@@ -911,19 +753,14 @@ export default {
 
 <style lang="scss">
 .newOptometry {
-  .w74 {
-    width: 74px !important;
-  }
-  .glass_combination_table {
-    .el-form-item__content::after,
-    .el-form-item__content::before {
-      display: none;
+  .glass_combination_table{
+    .el-form-item__content::after, .el-form-item__content::before {
+        display: none;
     }
-    .el-form-item::after,
-    .el-form-item::before {
-      display: none;
+    .el-form-item::after, .el-form-item::before {
+        display: none;
     }
-    .el-form {
+    .el-form{
       position: relative;
       font-size: 14px;
       display: inline-block;
@@ -932,7 +769,7 @@ export default {
       line-height: 40px;
     }
   }
-  .mgl450 {
+  .mgl450{
     margin-left: 450px;
   }
   .el-dialog__body {
@@ -947,10 +784,6 @@ export default {
     margin-bottom: 5px;
     font-weight: 700;
     text-align: center;
-  }
-  .packageDetailButtonGroup{
-    margin: 15px 0 -15px -15px !important;
-    width: 950px;
   }
   .newOptometry {
     background: #f8f8f8;
@@ -1021,16 +854,6 @@ export default {
       }
     }
   }
-  .miniBtn {
-    background-color: #00afe4;
-    border-color: #00afe4;
-    color: #fff;
-  }
-  .el-button-Mini {
-    padding: 5px 11px !important;
-    font-size: 12px;
-    border-radius: 3px;
-  }
   .w10 {
     width: 10px !important;
   }
@@ -1047,8 +870,8 @@ export default {
 
   .glass_table_head {
     // width: 850px;
-    height: 22px;
-    line-height: 22px;
+    height: 30px;
+    line-height: 30px;
     font-weight: bold;
     text-align: center;
     font-size: 12px;
@@ -1187,11 +1010,7 @@ export default {
     color: #333333;
     padding: 0 3px;
   }
-  .selectOption{
-    .el-input__inner{
-        padding:0 5px !important;
-    }
-  }
+
   .optometry_origin,
   .optometrist {
     color: #666666;

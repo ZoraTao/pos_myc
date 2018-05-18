@@ -48,23 +48,22 @@
         size: 10
       }
     },
-    props:['memberInfo'],
     created: function () {
       this.getMemberPoints()
     },
     methods: {
       //查询积分明细
       getMemberPoints(){
-        var _this = this;
-        _this.$axios({
+        var that = this;
+        that.$axios({
           url: 'http://myc.qineasy.cn/points-api/pointsFlow/getMemberPointLow',
           method: 'post',
           params: {
             jsonObject: {
-              memberCardId: _this.memberInfo.memberCardId,
-              memberId: _this.memberInfo.memberId,
-              nub: (_this.nub==0?0:(_this.nub-1)*_this.size),
-              size: _this.size
+              memberCardId: this.$route.params.data.memberCardId,
+              memberId: this.$route.params.data.memberId,
+              nub: (this.nub==0?0:(this.nub-1)*this.size),
+              size: this.size
             },
             keyParams: {
               weChat: true,
@@ -75,8 +74,8 @@
         })
           .then(function (response) {
             // console.info(response.data.data)
-            _this.pointsList = response.data.data.pointList;
-            _this.count = parseInt(response.data.data.count);
+            that.pointsList = response.data.data.pointList;
+            that.count = parseInt(response.data.data.count);
           })
           .catch(function (error) {
             // console.info(error)

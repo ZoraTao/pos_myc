@@ -39,13 +39,6 @@
             'name': 'inventory-check-index'
           },
           {
-            'src':'https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_pdbuping.png',
-            'link':'/commodity/unevenness-order',
-            'line':true,
-            'text':'盘点不平处理',
-            'name': 'unevenness-order-index'
-          },
-          {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_linshipd.png',
             'link':'/commodity/inventory-temporary',
             'line':true,
@@ -65,8 +58,7 @@
             'line':true,
             'text':'申调单',
             'name': 'application-order-index'
-          }
-          ]
+          }]
       }
     },
     methods: {
@@ -82,7 +74,7 @@
 <style scoped lang="scss">
   .member-menus{
     .member-menus-items{
-      width: calc(16% + 7px);
+      width: 20%;
     }
   }
 </style>

@@ -35,15 +35,6 @@
                 <li class="fn-left">
                     <button class="find_btn" @click="nub=1;getOrderList()">查询</button>
                 </li>
-                <li class="fn-right mgright13" >
-                    <el-input
-                    class="scan-btn"
-                    placeholder="物流码"
-                    v-model="input1">
-                    </el-input>
-                    <el-button class="scan-btn2" type="primary"><img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_saoma.png"/>
-                    </el-button>
-                </li>
             </ul>
         <!-- 待发出 -->
             <div class="content am-bg-white" v-if="srcNum==='1'||srcNum==='2'">
@@ -101,7 +92,7 @@
                                 </td>
                                 <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                                     <el-button type="primary" v-if="searchForm.status=='51'" @click="showReceiveFn(order)">扫码装袋</el-button>
-                                    <el-button type="primary" v-if="searchForm.status=='56'" @click="openDialog(order);">确认收件</el-button>
+                                    <el-button type="primary" v-if="searchForm.status=='56'" @click="sureGetProduct(order)">确认收件</el-button>
                                 </td>
                             </tr>
                             <div class="gekai"> </div>
@@ -185,15 +176,12 @@
     <el-dialog title="扫码装袋" :visible.sync="showReceive">
         <ReceiveModal :showReceive="showReceive" :receiveData="receiveData" v-on:hideReceive="hideReceive"></ReceiveModal>
     </el-dialog>
-    <el-dialog title="收件检验" :visible.sync="dialog" width="1074px">
-        <collectionModel :datas="datas" ref="qualified" @closedialog="closeModel"></collectionModel>
-    </el-dialog>
 </section>
 </template>
 
 <script>
 import ReceiveModal from '../ReceiveModal/receive-modal.vue'
-import collectionModel from '../collection/collection.vue'
+
 export default {
   name: 'ReceiveList',
   data () {
@@ -214,8 +202,6 @@ export default {
           label: '黄金糕'
         }],
         value: '',
-        input1:'',
-        dialog:false,
         showReceive:false,
         orderTempList: [],
         srcNum:'1',
@@ -237,7 +223,6 @@ export default {
             'srcNum':'3',
             'status':"51,52,53,54,55,56"
         }],
-        datas:null,
         data : []
     }
   },
@@ -282,22 +267,10 @@ export default {
             console.info(error);
           });
     },
-    openDialog(data){
-        const _this = this;
-        _this.dialog = true;
-        _this.datas = data;
-        console.log(data.prescriptionsId)
-        _this.$nextTick(()=>{
-            _this.$refs.qualified.searchPrescriptions()
-        })
-    },
     showReceiveFn:function(value){
         var _this=this;
         _this.receiveData=value;
         _this.showReceive=true;
-    },
-    closeModel(){
-        this.dialog = false;
     },
     hideReceive(value){
         this.getOrderList();
@@ -376,7 +349,7 @@ export default {
       this.getOrderList();
   },
   components:{
-      ReceiveModal,collectionModel
+      ReceiveModal
   }
 }
 </script>
@@ -540,9 +513,7 @@ export default {
     font-size: 12px;
     line-height: 24px;
 }
-.mgright13{
-    margin-right: 13px;
-}
+
 .orders_tbody .rowspan_td button {
     font-size: 14px;
     font-weight: bold;
@@ -571,15 +542,7 @@ export default {
 .look_d {
     cursor: pointer;
 }
-.scan-btn2{
-    padding: 6px 10px !important;
-    margin-left: -6px;
-    position: relative;
-    border-radius: 0 4px 4px 0;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    vertical-align: -2px;
-}
+
 .sign_orange {
     border: 1px solid #FF6600;
     border-radius: 0 10px 10px 0;

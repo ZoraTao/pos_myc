@@ -5,7 +5,7 @@
             <div class="salesclerkInfo">
                 <el-form ref="form">
                     <el-form-item label="销售员 :">
-                        <el-select size="mini" class="placeHolder" v-model="shopMember" placeholder="请选择" @visible-change="getPrivateSelect()">
+                        <el-select size="mini" class="placeHolder express inputPl0" v-model="shopMember" placeholder="请选择" @visible-change="getPrivateSelect()">
                             <el-option
                             v-for="item in options"
                             :key="item.userId"
@@ -34,8 +34,8 @@
             </div>
             <div class="salesclerkParam">
                 <el-form ref="form">
-                   <el-form-item class="ParamInput">
-                        <el-select v-model="selectBrand.varieties" placeholder="类别"  @change="changesSelect(2)">
+                   <el-form-item class="ParamInput w80">
+                        <el-select v-model="selectBrand.varieties" placeholder="类别" @change="changesSelect(2)">
                          <el-option 
                          v-for="item in varietiesArr"
                          :key="item.classCode"
@@ -44,7 +44,7 @@
                          </el-option>
                        </el-select>
                     </el-form-item>
-                    <el-form-item  class="ParamInput">
+                    <el-form-item  class="ParamInput w80">
                        <el-select v-model="selectBrand.brand" placeholder='品牌'>
                          <el-option 
                          v-for="item in brandArr"
@@ -231,7 +231,7 @@
                         <el-form-item>
                             <el-checkbox v-model="orderTemp.urgent">是否加急单</el-checkbox>
                         </el-form-item>
-                        <el-form-item label="取镜时间 :" >
+                        <el-form-item label="取镜时间：" >
                             <el-date-picker
                             v-model="orderTemp.glassesTime"
                             value-format="yyyy-MM-dd"
@@ -242,8 +242,8 @@
                             placeholder="选择日期">
                             </el-date-picker>
                         </el-form-item>
-                        <el-form-item label="取镜方式 :">
-                            <el-select size="mini" class="shopexpress"  v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
+                        <el-form-item label="取镜方式：">
+                            <el-select size="mini" style="width:95px;"  v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
                                 <el-option
                                 v-for="item in selectOptions"
                                 :key="item.id"
@@ -252,8 +252,8 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="取镜公司 :" v-show="publicSelcet.glassesTypeModel=='2'">
-                            <el-select size="mini" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()">
+                        <el-form-item label="取镜公司：" v-show="publicSelcet.glassesTypeModel=='2'">
+                            <el-select size="mini"  style="width:160px;" v-model="publicSelcet.comTypeModel" placeholder="请选择" @visible-change="getCompanyList()">
                                 <el-option
                                 v-for="item in publicSelcet.comTypeOptions"
                                 :key="item.shopId"
@@ -263,7 +263,7 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="取镜地点 :"  v-show="publicSelcet.glassesTypeModel=='2'">
+                        <el-form-item label="取镜地点："  v-show="publicSelcet.glassesTypeModel=='2'">
                             <p style="width:150px;" :title="orderTemp.glassesAddress">{{orderTemp.glassesAddress||'--'}}</p>
                         </el-form-item>
                         <div class="ov">
@@ -2650,6 +2650,60 @@ export default {
   .el-input__inner{
     width: 90%;
     max-width: 400px !important;
+  }
+}
+
+.salesSuggest {
+  .el-table {
+    margin-bottom: 0 !important;
+    th {
+      background-color: #b3e3f6 !important;
+      text-align: center;
+      padding: 11px 8px !important;
+    }
+    td {
+      text-align: center;
+      padding: 4px 8px;
+    }
+    tr:nth-of-type(even) {
+      background: rgba(246, 246, 246, 0.50);
+    }
+    tr td:first-child,
+    tr th:first-child {
+      text-align: left;
+      padding-left: 18px;
+    }
+  }
+  .settleAccounts {
+    height: 67px;
+    background: #fff;
+    padding: 0 18px;
+    text-align: right;
+    p {
+      line-height: 30px;
+      span {
+        margin-right: 10px;
+        color: #666666;
+      }
+      b {
+        font-weight: bold;
+        font-size: 12px;
+        color: #000;
+        margin-left: 5px;
+      }
+    }
+  }
+}
+
+@media only screen and (min-height: 790px) {
+  .salesSuggest .el-table {
+    max-height: 300px !important;
+    overflow-y: scroll;
+  }
+} //modal
+.inputPl0{
+  input{
+    padding: 0;
   }
 }
 </style>

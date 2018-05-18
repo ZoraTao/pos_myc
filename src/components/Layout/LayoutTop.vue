@@ -196,7 +196,7 @@ export default {
         }
       }
       // console.log("触发了添加函数");
-      if(_this.items.length>8) return
+
       _this.items.push({
         text: data.text,
         name: data.name,

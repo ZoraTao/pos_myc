@@ -91,7 +91,7 @@
 }
 
 .billing.content_box {
-  // height: calc(100% - 30px) !important;
+  height: calc(100% - 30px) !important;
   width: 100%;
   padding: 15px;
   display: flex;
@@ -173,6 +173,7 @@
     .addMember {
       max-height: 280px;
       flex: 1;
+      overflow: hidden;
       .memberBottom {
         background: #fff;
         padding-bottom: 15px;
@@ -340,7 +341,7 @@
 
 .salesclerkParam .ParamInput {
   float: left;
-  margin-right: 5px;
+  margin-right: 10px;
   margin-bottom: 0;
   &:first-child {
     margin-left: 10px;
@@ -396,7 +397,30 @@
     }
   }
 }
-
+.salesclerkParam{
+  .el-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .el-form-item{
+      display: flex;
+      justify-content: center;
+      align-items: center;      
+      .el-form-item__content{
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;   
+      }
+    }
+  }
+  .ParamInput.w80{
+    input{
+      width: 80px !important;
+      border-right: 1px solid #E1E1E1;
+    }
+  }
+}
 .salesclerkParam .ParamButton {
   button {
     padding-left: 4px;
@@ -408,50 +432,8 @@
   }
 }
 
-.salesSuggest {
-  .el-table {
-    margin-bottom: 0 !important;
-  }
-  th {
-    background: #b3e3f6;
-    text-align: center;
-    padding: 11px 8px !important;
-  }
-  td {
-    text-align: center;
-    padding: 4px 8px;
-  }
-  tr:nth-of-type(even) {
-    background: rgba(246, 246, 246, 0.50);
-  }
-  tr td:first-child,
-  tr th:first-child {
-    text-align: left;
-    padding-left: 18px;
-  }
-  .settleAccounts {
-    height: 67px;
-    background: #fff;
-    padding: 0 18px;
-    text-align: right;
-    p {
-      line-height: 30px;
-      span {
-        margin-right: 10px;
-        color: #666666;
-      }
-      b {
-        font-weight: bold;
-        font-size: 12px;
-        color: #000;
-        margin-left: 5px;
-      }
-    }
-  }
-}
-
 .salesDiscount {
-  padding: 8px 18px;
+  padding: 8px 10px;
   height: 65px;
   max-height: 65px;
   background: #FAFAFA;
@@ -517,13 +499,13 @@
 }
 
 .orderType {
-  padding: 14px 18px;
+  padding: 14px 10px;
   max-height: 100px;
   height: 100px;
   background: #fff;
   .el-form-item {
     float: left;
-    margin-right: 10px;
+    margin-right: 15px;
     margin-bottom: 0;
     height: 40px;
     .el-form-item__label {
@@ -532,7 +514,7 @@
       margin-bottom: 0;
       font-weight: 400;
       float: left;
-      margin-right: 10px;
+      // margin-right: 10px;
     }
     .el-form-item__content {
       line-height: 40px;
@@ -584,9 +566,9 @@
     height: 100%;
     button {
       height: 60px;
-      width: 120px;
-      margin-right: 5px;
-      padding: 0 15px;
+      width: 80px !important;
+      font-size: 16px !important;
+      padding: 0;
       &:not(:last-child) {
         background: #FFFFFF;
         border: 1px solid #C7C7C7;
@@ -614,7 +596,6 @@
 }
 .el-table__empty-block{
   width: auto !important;
-  background: rgb(246, 246, 246);
 }
 .memberInfo {
   .selectEyeglass {
@@ -685,6 +666,7 @@
     .fn-left {
       button {
         padding: 0 10px;
+        margin-left: 5px;
       }
     }
     .fn-right {
@@ -695,14 +677,11 @@
       }
     }
   }
+  .el-badge{
+    margin-left: 0;
+  }
 }
 
-@media only screen and (min-height: 790px) {
-  .salesSuggest .el-table {
-    max-height: 300px !important;
-    overflow-y: scroll;
-  }
-} //modal
 .comfirmModal {
   .el-dialog__body {
     padding: 0;

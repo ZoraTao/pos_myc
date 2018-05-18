@@ -275,8 +275,8 @@ export default {
   methods: {
     memberModify(data){
       let _this = this;
-      _this.modifyMessage = data;
       _this.memberModifys = true
+      _this.modifyMessage = data;
     },
     memberModifySubmit(){
       this.memberModifys = false;
@@ -397,11 +397,11 @@ export default {
     },
     //查看详情
     checkDetail(data) {
-      console.log(data.memberId,data.telphone);
+      // console.log(data);
       this.$router.push({
         // path: "/member/memberDetail",
         name: "member-detail",
-        params: { memberId:data.memberId,tel:data.telphone }
+        params: { data }
       });
     },
     //查询会员汇总数量

@@ -112,8 +112,7 @@
               <td>{{parseInt(list.quantity)||'--'}}</td>
               <td>{{parseFloat(list.listPrice)||(list.productMold == '2'?'--':'0')}}</td>
               <td>
-                <strong v-if="list.productMold !='4'">{{parseFloat(list.money)||(list.productMold == '3'?parseFloat(order.extraMoney):(list.productMold == '2'?'--':'0'))}}</strong>
-                <strong v-if="list.productMold =='4'">--</strong>
+                <strong>{{parseFloat(list.money)||(list.productMold == '3'?parseFloat(order.extraMoney):(list.productMold == '2'?'--':'0'))}}</strong>
               </td>
               <td>{{list.warehouseName}}</td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
