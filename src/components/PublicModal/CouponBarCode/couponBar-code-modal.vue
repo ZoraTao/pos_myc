@@ -1,5 +1,5 @@
 <template>
-<div id="CouponBarCode">
+<div id="CouponBarCode" v-if="conponContent!==null">
     <!--body-content-->
     <div class="clearfix">
         <div class="CouponBarContent">
@@ -9,76 +9,34 @@
                     <el-button type="primary">
                         <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_saoyisao.png">
                     </el-button>
-                    <el-input placeholder=""></el-input>
+                    <el-input placeholder="" v-model="searchConponId" @keyup.enter.native="searchConpon(searchConponId)" ></el-input>
                 </div>
                 <div class="CouponBarCard">
-                    <p class="memberInfo"><span>张丽丽</span>有3张优惠券可用：</p>
-                    <div class="CouponBarItemBox">
-                        <div class="CouponBarItem blueStatus">
+                    <p class="memberInfo"><span>会员</span>有{{conponContent.userCouponCount}}张优惠券可用：</p>
+                    <div class="CouponBarItemBox" v-for="item in conponContent.canUserCoupon" :key="item.couponNo">
+                        <div class="CouponBarItem blueStatus" :style="{'background-color':item.colorValue,'border-color':item.colorValue}">
                             <div class="cardConstBox">
                                 <div class="cardConst">
-                                    <p><span>¥</span>100</p>
+                                    <p v-show="item.couponModality == '0'">{{parseFloat(item.discount)}}折</p>
+                                    <p v-show="item.couponModality == '1'"><span>¥</span>{{parseFloat(item.amount)}}</p>
                                 </div>
                                 <div class="cardInfo">
                                     <div class="cardInfoBox">
-                                        <p>新品优惠券</p>
-                                        <span>满1000使用</span>
+                                        <p>{{item.couponName}}</p>
+                                        <span v-if="item.fullAmount>0">满{{item.fullAmount}}使用</span>
+                                        <span v-else>无门槛</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="CouponBarTime">
-                                <p>2016-07-10  00:00 至 2016-07-16  24:00</p>
+                            <div class="CouponBarTime" style="background:rgba(0,0,0,0.1);">
+                                <p>{{item.activeTime.substring(0,16)}} 至 {{item.lapsedTime.substring(0,16)}}</p>
                             </div>
                             <div class="whiteBox"></div>
-                        </div>    
+                        </div>
                         <div class="userThisCard">
-                            <span>使用</span>
-                        </div>                                    
+                            <span @click="receive(item)">使用</span>
+                        </div>
                     </div>
-                    <div class="CouponBarItemBox">
-                        <div class="CouponBarItem greenStatus">
-                            <div class="cardConstBox">
-                                <div class="cardConst">
-                                    <p><span>¥</span>100</p>
-                                </div>
-                                <div class="cardInfo">
-                                    <div class="cardInfoBox">
-                                        <p>新品优惠券</p>
-                                        <span>满1000使用</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="CouponBarTime">
-                                <p>2016-07-10  00:00 至 2016-07-16  24:00</p>
-                            </div>
-                            <div class="whiteBox"></div>
-                        </div>   
-                        <div class="userThisCard">
-                            <span>使用</span>
-                        </div>                                            
-                    </div>    
-                    <div class="CouponBarItemBox">
-                        <div class="CouponBarItem yellowStatus">
-                            <div class="cardConstBox">
-                                <div class="cardConst">
-                                    <p><span>¥</span>100</p>
-                                </div>
-                                <div class="cardInfo">
-                                    <div class="cardInfoBox">
-                                        <p>新品优惠券</p>
-                                        <span>满1000使用</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="CouponBarTime">
-                                <p>2016-07-10  00:00 至 2016-07-16  24:00</p>
-                            </div>
-                            <div class="whiteBox"></div>
-                        </div>  
-                        <div class="userThisCard">
-                            <span>使用</span>
-                        </div>                                              
-                    </div>                                                                    
                 </div>
             </div>
         </div>
@@ -91,9 +49,20 @@
 export default {
   name: 'CouponBarCodeModal',
   data () {
-    return { 
-
+    return {
+        searchConponId:'',
+        conponContent:null,
     }
+  },
+  props:{
+      conponData:{
+          type:Object,
+          default:null
+      },
+      memberMessage:{
+          type:Object,
+          default:null
+      }
   },
   methods:{
         objectSpanMethod({ row, column, rowIndex, columnIndex }) {
@@ -110,7 +79,60 @@ export default {
                     };
                 }
             }
-        }
+        },
+        receive(value){
+            console.log(value);
+            this.$emit('receiveconpon',value)
+        },
+        // 查找优惠券
+            searchConpon(id){
+                let _this = this;
+                let memberCardNo=_this.memberMessage.memberCardNo;
+                _this.$axios({
+                    url:'http://myc.qineasy.cn/coupon-api/newCouponMsg/getMyAllCoupon',
+                    method:'post',
+                    params:{
+                        jsonObject:{
+                        memberCardNo:memberCardNo,//会员卡号
+                        // orgScope:'',//适用门店编号
+                        // couponMsgId:'',//优惠券信息Id
+                        couponNo:id,//优惠券编号
+                        // fullAmount:'',//满额条件 0没有门槛
+                        // couponState:'',//卡券状态
+                        // activeTime:'',//当天时间，是否当天可用
+                        // nub:'',//分页起始位
+                        // size:'',//每页条数
+                        },
+                    keyParams: {
+                        weChat: true
+                    }
+                }
+                })
+                .then(function(res){
+                    if(res.data.code == 1){
+                        console.log(res.data.data)
+                        _this.conponContent = res.data.data;
+                    }else{
+                         _this.$message({
+                                showClose: true,
+                                message: '请求数据出问题喽，请重试！',
+                                type: 'error'
+                            })
+                    }
+
+                }).catch(function(err){
+                    _this.$message({
+                                showClose: true,
+                                message: '请求数据出问题喽，请重试！',
+                                type: 'error'
+                            })
+                })
+            },
+  },
+  mounted(){
+      this.conponContent = this.conponData;
+      console.log(this.conponData)
+    //   console.log(1111,this.conponData)
   }
 }
 </script>
@@ -121,7 +143,7 @@ export default {
         background: #fff;
     }
     .el-dialog__header .el-dialog__headerbtn i {
-        color: #909399; 
+        color: #909399;
     }
     .el-dialog__body {
         padding: 0 10px !important;
@@ -168,9 +190,10 @@ export default {
                 min-height: 100%;
                 .CouponBarCard{
                     .memberInfo{
+                        height: auto;
                         font-size: 13px;
                         color: #666666;
-                        width: 230px;
+                        width: 280px;
                         margin: 0 auto;
                         text-align: left;
                         margin-top: 24px;
@@ -182,6 +205,7 @@ export default {
                     .CouponBarItemBox{
                         margin: 0 auto;
                         margin-bottom: 8px;
+                        width: 290px;
                         overflow: hidden;
                         display: flex;
                         justify-content: center;
@@ -191,7 +215,7 @@ export default {
                             border-width: 1px;
                             border-style: solid;
                             color: #fff;
-                            width: 220px;
+                            width: 280px;
                             float: left;
                             .cardConstBox{
                                 height: 54px;
@@ -201,6 +225,7 @@ export default {
                                 .cardConst{
                                     width: 83px;
                                     float: left;
+                                    font-weight: 300;
                                     p{
                                         font-size: 30px;
                                         span{
@@ -213,11 +238,23 @@ export default {
                                     float: left;
                                     line-height: 20px;
                                     border-left: 1px solid #FFFFFF40;
+
                                     .cardInfoBox{
                                         text-align: left;
                                         margin-left: 5px;
                                         overflow: hidden;
+                                        p{
+                                        font-family: MicrosoftYaHei;
+                                        font-size: 14px;
+                                        color: #FFFFFF;
                                     }
+                                        span{
+                                            font-family: MicrosoftYaHei;
+                                            font-size: 10px;
+                                            color: #FFFFFF;
+                                        }
+                                    }
+
                                 }
                             }
                         }
@@ -235,6 +272,13 @@ export default {
                                 background: #7DB6CB;
                                 height: 24px;
                                 line-height: 24px;
+                                white-space: nowrap;
+                                p{
+                                    font-family: MicrosoftYaHei;
+                                    font-size: 12px;
+                                    color: #FFFFFF;
+                                }
+
                             }
                         }
                         .greenStatus{

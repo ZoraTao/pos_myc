@@ -179,8 +179,6 @@
       padding-bottom: 5px;
     }
   }
-</style>
-<style>
 .el-input--suffix .el-input__inner{
  background-color:#F8F8F8;
  padding-right: 0;

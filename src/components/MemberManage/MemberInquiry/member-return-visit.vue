@@ -40,7 +40,7 @@
         label="操作"
         width="200">
         <template slot-scope="scope">
-          <a href="javascript:;" @click="checkDet(scope.row)">查看</a>
+          <a href="javascript:;" @click="checkDet(scope.row)">查111看</a>
           <a href="javascript:;" class="mgl20" v-if="scope.row.f == '待回访'">回访登记</a>
         </template>
       </el-table-column>

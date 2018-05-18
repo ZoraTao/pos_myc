@@ -53,10 +53,10 @@
           },
           {
             'src':'http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_hyquanyi.png',
-            'link':'/',
+            'link':'/member/memberRights',
             'line':true,
             'text':'会员权益',
-            'name': ''
+            'name': 'member-rights'
           }]
       }
     },

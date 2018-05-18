@@ -1,97 +1,98 @@
 <template>
   <div>
     <el-table
-      :data="tableData6"
+      :data="codeStockData"
       size="small"
       stripe
+      max-height="400"
       :summary-method="getSummaries"
       show-summary
       style="width: 100%;">
       <el-table-column
-        prop="a"
+        prop="classCode"
         label="类别代码"
         width="120">
       </el-table-column>
       <el-table-column
-        prop="b"
+        prop="className"
         label="类别名称"
         width="100">
       </el-table-column>
       <el-table-column
-        prop="c"
+        prop="brandCode"
         label="品牌代码">
       </el-table-column>
       <el-table-column
-        prop="d"
+        prop="brandName"
         label="品牌名称">
       </el-table-column>
       <el-table-column
-        prop="e"
+        prop="varietyCode"
         label="品种代码">
       </el-table-column>
       <el-table-column
-        prop="f"
+        prop="varietyName"
         label="品种名称">
       </el-table-column>
       <el-table-column
-        prop="g"
+        prop="sku"
         label="商品编码">
       </el-table-column>
       <el-table-column
-        prop="h"
+        prop="skuName"
         label="商品名称"
         width="200">
       </el-table-column>
       <el-table-column
-        prop="i"
+        prop="validity"
         label="有效期">
       </el-table-column>
       <el-table-column
-        prop="j"
+        prop="batchNo"
         label="批号">
       </el-table-column>
       <el-table-column
-        prop="k"
+        prop="registerCode"
         label="注册证号">
       </el-table-column>
       <el-table-column
-        prop="l"
+        prop="batchCode"
         label="批次码">
       </el-table-column>
       <el-table-column
-        prop="m"
+        prop="costType"
         label="结算方式">
       </el-table-column>
       <el-table-column
-        prop="n"
+        prop="redemptionPeriod"
         label="赎期天数">
       </el-table-column>
       <el-table-column
-        prop="o"
+        prop="barcode"
         label="条码">
       </el-table-column>
       <el-table-column
-        prop="p"
+        prop="orgName"
         label="单位">
       </el-table-column>
       <el-table-column
-        prop="q"
+        prop="totalCount"
         label="库存数量">
       </el-table-column>
       <el-table-column
-        prop="r"
+        prop="avgPrice"
         label="不含税零售均价">
       </el-table-column>
       <el-table-column
-        prop="s"
+        prop="avgTaxPrice"
         label="含税零售均价">
       </el-table-column>
       <el-table-column
-        prop="t"
+        prop="totalPrice"
         label="不含税零售价合计">
       </el-table-column>
       <el-table-column
-        prop="u"
+        prop="totalTaxPrice"
         label="含税零售价合计">
       </el-table-column>
     </el-table>
@@ -100,11 +101,11 @@
       <el-pagination
         class="am-ft-right"
         background
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :page-size="15"
         layout="total, prev, pager, next"
-        :total="10">
+        :total="counts"
+        :current-page.sync="nub">
       </el-pagination>
     </div>
   </div>
@@ -114,40 +115,71 @@
   export default {
     name: "mix-inventory-det",
     components: {},
+    props: ['formInline','categoryLevelInfo'],
     data() {
       return {
-        tableData6: [{
-          a: 'PL1230001',
-          b: '镜架',
-          c: 'PP1230001',
-          d: '卡尔丹尼',
-          e: 'gxj',
-          f: '光学架',
-          g: 'BM12340001',
-          h: '卡尔丹尼光学架（配镜盒）691-6062',
-          i: '2017-09-21',
-          j: '20161234',
-          k: '10000000001',
-          l: '10000000001',
-          m: '现金',
-          n: ' ',
-          o: ' ',
-          p: ' ',
-          q: ' ',
-          r: ' ',
-          s: ' ',
-          t: ' ',
-          u: ' ',
-        }]
+        codeStockData: [],
+        nub: 0,//起始条数
+        size: 2,//每页显示数据条数
+        counts: 0,//总条数-库存明细类别数量
+        loading: true
       }
     },
+    created(){
+
+    },
     methods: {
-      //分页
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+      closeLoading(){
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000);
       },
+      //查询库存明细--编码列表
+      getCodeStockList(){
+        var that = this;
+        let setData = that.formInline;
+        setData.size = that.size;
+        setData.nub = that.nub;
+
+        setData.categoryCode = [that.categoryLevelInfo.category1,that.categoryLevelInfo.category2,that.categoryLevelInfo.category3];
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/stock/getCodeStockList',
+          method: 'post',
+          params: {
+            jsonObject: that.formInline,
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            }else {
+              // console.info(response.data.data)
+              that.codeStockData = response.data.data.list;
+              that.codeStockCount = parseInt(response.data.data.count);
+              that.closeLoading();
+            }
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
+      },
+      //分页
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.nub = (`${val}`-1) * this.size;
+        this.getCodeStockList();
       },
       //合计
       getSummaries(param) {
@@ -158,23 +190,23 @@
             sums[index] = '合计';
             return;
           }
-          if (index === 1 ) {
-            sums[index] = ' ';
+          if (index <= 15) {
+            sums[index] = '--';
             return;
           }
           const values = data.map(item => Number(item[column.property]));
-          // if (!values.every(value => isNaN(value))) {
-          //   sums[index] = values.reduce((prev, curr) => {
-          //     const value = Number(curr);
-          //     if (!isNaN(value)) {
-          //       return prev + curr;
-          //     } else {
-          //       return prev;
-          //     }
-          //   }, 0);
-          // } else {
-          //   sums[index] = ' ';
-          // }
+          if (!values.every(value => isNaN(value))) {
+            sums[index] = values.reduce((prev, curr) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return prev + curr;
+              } else {
+                return prev;
+              }
+            }, 0);
+          } else {
+            sums[index] = ' ';
+          }
         });
         return sums;
       }

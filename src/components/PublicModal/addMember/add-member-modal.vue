@@ -4,12 +4,12 @@
       <el-row :gutter="20">
         <el-col :span="6">
           <el-form-item style="margin-left:10px;" label="类型：" prop="type">
-            <el-select v-model="addMemberForm.type" placeholder="请选择" style="width: 100px">
+            <el-select v-model="addMemberForm.type" filterable placeholder="请选择" style="width: 120px">
               <el-option
                 v-for="item in memberType"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.cardId"
+                :label="item.memberCardName"
+                :value="item.cardId">
               </el-option>
             </el-select>
           </el-form-item>
@@ -41,24 +41,25 @@
             prop="sex"
             :rules="{required: true}">
             <el-radio-group v-model="addMemberForm.sex">
-              <el-radio label="1">男</el-radio>
-              <el-radio label="2">女</el-radio>
+              <el-radio label="M">男</el-radio>
+              <el-radio label="F">女</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="20">
+      <el-row>
         <el-col :span="6">
           <el-form-item
             label="出生日期："
+            style="margin-left:10px;"
             prop="birthday"
             :rules="{required: true, message: '请选择出生日期', trigger: 'blur'}">
             <el-date-picker
-              style="margin-left:10px;width: 120px"
+              style="width: 120px"
               type="date"
               placeholder="选择日期"
               v-model="addMemberForm.birthday"
-              format="yyyy 年 MM 月 dd 日"
+              format="yyyy-MM-dd"
               value-format="yyyy-MM-dd">
             </el-date-picker>
           </el-form-item>
@@ -67,7 +68,7 @@
         <!--<span class="addMemberInfo">如:19880901</span>-->
         <!--</el-col>-->
         <el-col :span="6">
-          <el-form-item style="margin-left:10px;" label="职业：" prop="job">
+          <el-form-item style="margin-left:15px;" label="职业：" prop="job">
             <el-select v-model="addMemberForm.job" placeholder="请选择">
               <el-option
                 v-for="item in options"
@@ -81,9 +82,10 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="20">
-          <el-form-item label="联系地址：">
+          <el-form-item label="联系地址：" style="margin-left:10px;">
             <template>
-              <area-select style="margin-top: 5px;margin-bottom: -10px;" :level='2' type='text' v-model='addMemberForm.adr'></area-select>
+              <area-select style="margin-top: 5px;margin-bottom: -10px;" :level='2' type='text'
+                           v-model='addMemberForm.adr'></area-select>
             </template>
           </el-form-item>
           <el-col :span="18">
@@ -94,16 +96,16 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-form-item label="备注：" prop="note">
+        <el-form-item label="备注：" prop="note" style="margin-left:10px;">
           <el-col :span="18">
-            <el-input v-model="addMemberForm.note" style="margin-left:10px;width: 100%"></el-input>
+            <el-input v-model="addMemberForm.note" style="width: 100%"></el-input>
           </el-col>
         </el-form-item>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="7">
-          <el-form-item label="会员来源：" prop="memberFrom">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.memberFrom" placeholder="请选择">
+        <el-col :span="6">
+          <el-form-item label="会员来源：" prop="memberFrom" style="margin-left:10px;">
+            <el-select style="width:120px;" v-model="addMemberForm.memberFrom" filterable placeholder="请选择">
               <el-option
                 v-for="item in memberFrom"
                 :key="item.value"
@@ -115,7 +117,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item style="margin-left:10px;" label="会员状态：" prop="status">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.status" placeholder="请选择">
+            <el-select style="width:120px;" v-model="addMemberForm.status" placeholder="请选择">
               <el-option
                 v-for="item in memberStatus"
                 :key="item.value"
@@ -127,7 +129,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item style="margin-left:10px;" label="会员属性：" prop="attributes">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.attributes" placeholder="请选择">
+            <el-select style="" v-model="addMemberForm.attributes" placeholder="请选择">
               <el-option
                 v-for="item in memberAttributes"
                 :key="item.value"
@@ -139,9 +141,9 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="7">
-          <el-form-item label="负责部门：" prop="resDepartment">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.resDepartment" placeholder="请选择">
+        <el-col :span="6">
+          <el-form-item label="负责部门：" prop="orgName" style="margin-left:10px;">
+            <el-select style="width:120px;" v-model="addMemberForm.orgName" placeholder="请选择">
               <el-option
                 label="毛源昌杭州西湖店"
                 value="0">
@@ -151,7 +153,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item style="margin-left:10px;" label="负责员工：" prop="resEmployees">
-            <el-select style="margin-left:10px;" v-model="addMemberForm.resEmployees" placeholder="请选择">
+            <el-select style="width:120px;" v-model="addMemberForm.resEmployees" placeholder="请选择">
               <el-option
                 label="白小亭"
                 value="0">
@@ -173,44 +175,84 @@
     data() {
       return {
         isSubmit: '',
-        memberType: [
+        memberType: [],//会员类型
+        memberFrom: [ //会员来源
           {
             value: '0',
-            label: '普通客户'
-          }
-        ],
-        memberFrom: [
+            label: '门店扫码'
+          },
           {
-            value: '0',
-            label: '门店正常扫码'
-          }
+            value: '1',
+            label: '冲广告'
+          },
+          {
+            value: '2',
+            label: '冲品牌'
+          },
+          {
+            value: '3',
+            label: '冲服务'
+          },
+          {
+            value: '4',
+            label: '朋友介绍'
+          },
+          {
+            value: '5',
+            label: '偶然路过'
+          },
+          {
+            value: '6',
+            label: '宣传单'
+          },
         ],
-        memberStatus: [
+        memberStatus: [ //会员状态
           {
             value: '0',
             label: '正式客户'
-          }
+          },
+          {
+            value: '1',
+            label: '前期会员'
+          },
+          {
+            value: '2',
+            label: '预登记会员'
+          },
         ],
-        memberAttributes: [
+        memberAttributes: [ //负责员工
           {
             value: '0',
             label: '个人'
+          },
+          {
+            value: '1',
+            label: '企业'
           }
         ],
-        options: [{
+        options: [{ //职业
           value: '0',
-          label: '选项1'
+          label: 'IT'
         },
-        {
-          value: '1',
-          label: '选项2'
-        }],
+          {
+            value: '1',
+            label: '教师'
+          },
+          {
+            value: '2',
+            label: '自由职业'
+          },
+          {
+            value: '3',
+            label: '其他'
+          }
+        ],
         addMemberForm: {
           name: '',//姓名
-          type: '',//类型
+          cardId: '',//类型id
           telphone: '',//电话
           birthday: '',//生日
-          sex: '',//性别
+          sex: 'M',//性别
           district: '',//区域
           job: '',//职业
           userId: '',
@@ -221,26 +263,66 @@
           memberFrom: '',//会员来源
           status: '',//会员状态
           attributes: '',//会员属性
-          resDepartment: '',//负责部门
+          orgName: '',//负责部门
           resEmployees: ''//负责员工
         }
       }
     },
     props: ['submit'],
     created: function () {
+      this.getMemberCard();
     },
-    beforeUpdate:function(){
-      this.isSubmit=this.submit;
+    beforeUpdate: function () {
+      this.isSubmit = this.submit;
     },
     methods: {
       //向父组件传送的数据
-      sendToParent(){
-        this.$emit('listenToChild',this.addMemberForm)
+      sendToParent() {
+        console.log('准备接受啦',this.addMemberForm)
+        if(this.addMemberForm.name != ''){
+        this.$emit('listenToChild', this.addMemberForm)
+        }
+      },
+      //取会员类型
+      getMemberCard(){
+        var that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/member-api/card/getCardList',
+          method: 'post',
+          params: {
+            jsonObject: {},
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if(response.data.code != '1'){
+              that.$message({
+                showClose: true,
+                message: response.data.msg,
+                type: 'error'
+              })
+              return false;
+            }else {
+              console.info(response.data.data)
+              that.memberType = response.data.data.cardList;
+            }
+
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
       }
     },
     watch: {
       isSubmit: function (val) {
-        if(val==true){
+        if (val == true) {
           this.sendToParent()
         }
       }
@@ -253,6 +335,9 @@
 
   .addMember {
     .addMemberContent {
+      .el-form-item__content {
+          line-height: 40px;
+      }
       padding-top: 20px;
       .addMemberRow {
         padding: 20px;

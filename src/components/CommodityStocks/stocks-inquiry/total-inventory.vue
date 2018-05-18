@@ -4,7 +4,7 @@
       :data="totalStocksData"
       size="small"
       stripe
-      :summary-method="getSummaries"
+      max-height="400"
       show-summary
       style="width: 100%;">
       <el-table-column
@@ -13,7 +13,7 @@
         width="130">
       </el-table-column>
       <el-table-column
-        prop="quantity"
+        prop="totalCount"
         label="库存数量"
         width="100">
       </el-table-column>
@@ -37,18 +37,7 @@
         label="含税零售价合计">
       </el-table-column>
     </el-table>
-    <!--分页-->
-    <div class="block mgt10">
-      <el-pagination
-        class="am-ft-right"
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :page-size="15"
-        layout="total, prev, pager, next"
-        :total="totalStocksData.count">
-      </el-pagination>
-    </div>
+
   </div>
 </template>
 
@@ -66,42 +55,7 @@
       }
     },
     methods: {
-      //分页
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
-      //合计
-      getSummaries(param) {
-        const { columns, data } = param;
-        const sums = [];
-        columns.forEach((column, index) => {
-          if (index === 0) {
-            sums[index] = '合计';
-            return;
-          }
-          if (index === 2 || index === 3) {
-            sums[index] = ' ';
-            return;
-          }
-          const values = data.map(item => Number(item[column.property]));
-          if (!values.every(value => isNaN(value))) {
-            sums[index] = values.reduce((prev, curr) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                return prev + curr;
-              } else {
-                return prev;
-              }
-            }, 0);
-          } else {
-            sums[index] = 'N/A';
-          }
-        });
-        return sums;
-      }
+
     }
   }
 </script>

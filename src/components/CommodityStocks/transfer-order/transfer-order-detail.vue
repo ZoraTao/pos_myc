@@ -3,28 +3,28 @@
     <!--top-->
     <el-row class="inquiry-row top-box mgt20">
       <el-col :span="24" class="titl">
-        <h3>调拨单号：R00031612060001 <span class="am-ft-orange mgl30">调拨待审核</span></h3>
-        <el-button type="primary" plain @click="goEdit">修改</el-button>
+        <h3>调拨单号：{{detailData.requisitionNo}} <span class="am-ft-orange mgl30">{{detailData.statusName}}</span></h3>
+        <el-button type="primary" plain @click="goEdit(detailData)">修改</el-button>
       </el-col>
 
       <el-col :span="24">
           <p>
-            <span><em>制单日期：</em>2017-11-06 11:26:19</span>
-            <span><em>制单人：</em>张三</span>
-            <span><em>调拨部门：</em>总仓库</span>
+            <span><em>制单日期：</em>{{detailData.createTime}}</span>
+            <span><em>制单人：</em>{{detailData.makingP}}</span>
+            <span><em>调拨部门：</em>{{detailData.requisitionOrgName}}</span>
           </p>
         <p>
-          <span><em>经办日期：</em>2017-11-06 11:26:19</span>
-          <span><em>调拨人：</em>张三</span>
-          <span><em>调出仓库：</em>总仓库</span>
-          <span><em>调入仓库：</em>总仓库</span>
-          <span><em>调拨级别：</em>正常</span>
+          <span><em>经办日期：</em>{{detailData.handleTime}}</span>
+          <span><em>调拨人：</em>{{detailData.requisitionP}}</span>
+          <span><em>调出仓库：</em>{{detailData.outWarehName}}</span>
+          <span><em>调入仓库：</em>{{detailData.inWarehName}}</span>
+          <span><em>调拨级别：</em>{{detailData.level}}</span>
         </p>
         <p>
-          <span><em>承运类型：</em>承运人</span>
-          <span><em>承运人：</em>15803427765</span>
-          <span><em>运费：</em>0</span>
-          <span><em>备注：</em>备注内容</span>
+          <span><em>承运类型：</em>{{detailData.carrierType}}</span>
+          <span><em>承运人：</em>{{detailData.carrierP}}</span>
+          <span><em>运费：</em>{{detailData.freight}}</span>
+          <span><em>备注：</em>{{detailData.memo}}</span>
         </p>
       </el-col>
     </el-row>
@@ -34,75 +34,60 @@
       </el-col>
       <el-col :span="24">
         <el-table
-          :data="tableData"
+          :data="detailList"
           stripe
           size="small"
           align="left"
+          max-height="300"
           style="width: 100%">
           <el-table-column
-            prop="a"
+            prop="sku"
             label="商品编码"
             width="120">
           </el-table-column>
           <el-table-column
-            prop="b"
+            prop="skuName"
             label="商品名称"
             width="150">
           </el-table-column>
           <el-table-column
-            prop="c"
+            prop="unit"
             label="单位"
             width="50">
           </el-table-column>
           <el-table-column
-            prop="d"
+            prop="registrationNo"
             label="注册证号">
           </el-table-column>
           <el-table-column
-            prop="e"
+            prop="batch"
             label="批次号">
           </el-table-column>
           <el-table-column
-            prop="f"
-            label="制单时间"
-            width="140">
-          </el-table-column>
-          <el-table-column
-            prop="g"
+            prop="validrtyDate"
             label="有效期">
           </el-table-column>
           <el-table-column
-            prop="h"
+            prop="count"
             label="调拨数量">
           </el-table-column>
           <el-table-column
             label="调出库库存"
-            prop="i">
-          </el-table-column>
-          <el-table-column
-            label="调出库库存"
-            prop="i">
+            prop="utWarehStk">
           </el-table-column>
           <el-table-column
             label="调入库库存"
-            prop="j">
+            prop="inWaregStk">
           </el-table-column>
           <el-table-column
             label="公司库存"
-            prop="k">
+            prop="allStk">
           </el-table-column>
           <el-table-column
             label="零售价"
-            prop="l">
+            prop="price">
           </el-table-column>
         </el-table>
-        <!--分页-->
-        <el-pagination
-          background
-          class="am-ft-right mgt10"
-          layout="prev, pager, next"
-          :total="10">
-        </el-pagination>
       </el-col>
     </el-row>
   </div>
@@ -114,29 +99,65 @@
     component: {},
     data() {
       return {
-        tableData: [{
-          a: 'BH00001',
-          b: '湿乐光学架6670-6054',
-          c: '副',
-          d: ' ',
-          e: ' ',
-          f: ' ',
-          g: '1',
-          h: '1',
-          i: '1',
-          j: '1',
-          k: '1',
-          l: '618.00',
-        }]
+        detailData: {},
+        requisitionId: '',//调拨单id
+        orderDet: {},//详情
+        detailList: [],//子商品列表
       }
     },
+    created(){
+      //调拨单id
+      this.requisitionId = this.$route.params.requisitionId;
+      this.getDRequisition();
+    },
     methods: {
+      //修改
       goEdit() {
         this.$router.push({
           path: '/commodity/transfer-order-add',
           name: 'transfer-order-add',
-          params: {}
+          params: this.detData
         })
+      },
+      //查询调拨单详情
+      getDRequisition(){
+        const that = this;
+        that.$axios({
+          url: 'http://myc.qineasy.cn/pos-api/dRequisition/getDRequisition',
+          method: 'post',
+          params: {
+            jsonObject: {
+              requisitionId: that.requisitionId
+            },
+            keyParams: {
+              weChat: true
+            }
+          }
+        })
+          .then(function (response) {
+            if (response.data.code != '1') {
+              that.$message({
+                showClose: true,
+                message: '请求数据出问题喽，请重试！',
+                type: 'error'
+              })
+              return false;
+            } else {
+              // console.info(response.data.data);
+              that.detData = response.data.data;
+              that.detailData = response.data.data.dRequisition;
+              that.detailList = response.data.data.detailList;
+            }
+
+          })
+          .catch(function (error) {
+            console.info(error);
+            that.$message({
+              showClose: true,
+              message: '请求数据失败，请联系管理员',
+              type: 'error'
+            })
+          })
       }
     }
   }

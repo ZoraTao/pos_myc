@@ -1,438 +1,271 @@
 <template>
-  <section class=" content_box">
+  <section class=" content_box" >
     <div class="am-bg-white cashier_box">
       <ul class="cashier_tab">
         <li v-for="item in tabs" :key="item.value" :class="{'on':item.isActived}" @click="changeTab(item)">
           {{item.value}}
         </li>
       </ul>
+      <ul class="clearfix cashier_top">
+        <li class="fn-left">
+          <span class="member">零售单号&nbsp;:&nbsp;</span>
+          <input type="text" class="cashier_input" v-model="searchForm.orderNo"/>
+        </li>
+        <li class="fn-left">
+          <span class="member">会员&nbsp;:&nbsp;</span>
+          <input type="text" class="cashier_input" v-model="searchForm.name"/>
+        </li>
+        <li class="fn-left">
+          <span class="member">订单类型&nbsp;:&nbsp;</span>
+            <el-select prop="adr.district" v-model="searchForm.orderType" placeholder="请选择"
+                        style="width:120px;">
+              <el-option label="普通订单" value="1"></el-option>
+              <el-option label="定做单" value="2"></el-option>
+            </el-select>
+        </li>
+        <li class="fn-left">
+          <span class="member">零售时间&nbsp;:&nbsp;</span>
+          <el-date-picker
+            style="width:130px"
+            type="date"
+            v-model="searchForm.saleTimeStart"
+            placeholder="选择日期">
+          </el-date-picker>
+          <span>-</span>
+          <el-date-picker
+            style="width:130px"
+            type="date"
+            v-model="searchForm.saleTimeEnd"
+            placeholder="选择日期">
+          </el-date-picker>
+        </li>
 
+        <li class="fn-left">
+          <button class="find_btn" @click="nub=0;getOrderList()">查询</button>
+        </li>
+      </ul>
       <!-- 代发货 -->
       <div class="content am-bg-white" v-if="srcNum==='1'">
-        <ul class="clearfix cashier_top">
-          <li class="fn-left">
-            <span class="member">零售单号&nbsp;:&nbsp;</span>
-            <input type="text" class="cashier_input"/>
-          </li>
-          <li class="fn-left">
-            <span class="member">会员&nbsp;:&nbsp;</span>
-            <input type="text" class="cashier_input"/>
-          </li>
-          <li class="fn-left">
-            <span class="member">订单类型&nbsp;:&nbsp;</span>
-            <el-select style="width:70px" v-model="value" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </li>
-          <li class="fn-left">
-            <span class="member">零售时间&nbsp;:&nbsp;</span>
-            <el-date-picker
-              style="width:120px"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-            <span>-</span>
-            <el-date-picker
-              style="width:120px"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-          </li>
-
-          <li class="fn-left">
-            <button class="find_btn">查询</button>
-          </li>
-        </ul>
         <div class="orders">
           <table class="orders_table">
             <thead>
             <tr>
-              <th width="">商品编码</th>
-              <th width="">商品名称</th>
+              <th width="230px">商品编码</th>
+              <th width="400px">商品名称</th>
               <th width="">数量</th>
               <th width="">原单价</th>
               <th width="">实售单价</th>
               <th width="">出货仓库</th>
-              <th width="">取件时间</th>
+              <!-- <th width="">取件时间</th> -->
               <th width="">订单金额</th>
               <th width="">订单状态</th>
+              <th width="">操作</th>
             </tr>
             </thead>
-            <tbody class="orders_tbody">
+            <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
             <tr class="order_header">
+              <!-- <td colspan="10"> -->
               <td colspan="9">
-                <div class=" img_b" style="position: absolute;top:0;left:0;"><img
+                <div class=" img_b" v-cloak style="position: absolute;top:0;left:0;" v-show="order.orderType=='1'"><img
                   src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ding_icon.png"/></div>
                 <div class=" fn-left">
-                  <span class="order_id mgl30">20170909000000001</span>
-                  <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
+                  <span class="order_id mgl30">{{order.orderNo}}</span>
+                  <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
                 </div>
                 <div class=" fn-right">
                   <span class="msg">销售&nbsp;&nbsp;</span>
-                  <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
+                  <span class="msg">{{order.userName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
                 </div>
 
               </td>
             </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-              <td rowspan="5" class="rowspan_td order_price">
+            <tr v-for="(list,index) in order.orderItems" :key="list.name">
+              <td>{{list.itemNo}}</td>
+              <td>{{list.itemName||'商品名'}}</td>
+              <td>{{parseInt(list.quantity)}}</td>
+              <td>{{parseFloat(list.price)||'商品原单价'}}</td>
+              <td><span class="ft_bold">{{parseFloat(list.money)}}</span></td>
+              <td>{{order.shopName}}</td>
+              <!-- <td>{{order.receiveTime}}</td> -->
+              <td  v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
-                  <div class="priceAll">1299.00</div>
-                  <div>商品合计：<strong>1389.00</strong></div>
-                  <div>卡券：<strong>-20</strong></div>
-                  <div>折扣：<strong>-50</strong></div>
-                  <div>活动：<strong>-20</strong></div>
+                  <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
+                  <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
+                  <div v-if="order.couponMoney>0">卡券：<strong>{{parseFloat(order.couponMoney).toFixed(2)}}</strong></div>
+                  <div v-if="order.discountMoney>0">折扣：<strong>{{parseFloat(order.discountMoney).toFixed(2)}}</strong></div>
+                  <div v-if="order.activityMoney>0">活动：<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
                 </div>
 
               </td>
-              <td rowspan="5" class="rowspan_td">
-                <div class="am-ft-gray9">完成</div>
-                <div class="look_d" @click="goDetail('1')">查看详情</div>
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                <div class="am-ft-gray9"  v-if="srcNum==='1'">已完成</div>
+                <div class="am-ft-gray9"  v-if="srcNum==='2'">退货</div>
+                <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
+              </td>
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                <div class="look_d am-ft-gray9">换货</div>
+                <div class="look_d am-ft-gray9">申请退货</div>
+                <div class="look_d am-ft-gray9">补打销售单</div>
               </td>
 
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>
-                <p>左镜片：毛源昌1.55非球面防辐射远+1.50</p>
-                <p><span class=" am-ft-blue"><a>定做 DZ12340001</a></span> - 柱镜0.5 球镜0.5 下加光0.3 </p>
-                <p> 定做需求：需求内容需求内容 </p>
-              </td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
             </tr>
             <div class="gekai"></div>
             </tbody>
           </table>
         </div>
       </div>
-
-      <!-- 退货 -->
-      <div class="content am-bg-white" v-if="srcNum==='2'">
-        <ul class="clearfix cashier_top">
-          <li class="fn-left">
-            <span class="member">零售单号&nbsp;:&nbsp;</span>
-            <input type="text" class="cashier_input"/>
-          </li>
-          <li class="fn-left">
-            <span class="member">会员&nbsp;:&nbsp;</span>
-            <input type="text" class="cashier_input"/>
-          </li>
-          <li class="fn-left">
-            <span class="member">订单类型&nbsp;:&nbsp;</span>
-            <el-select style="width:70px" v-model="value" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </li>
-          <li class="fn-left">
-            <span class="member">零售时间&nbsp;:&nbsp;</span>
-            <el-date-picker
-              style="width:120px"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-            <span>-</span>
-            <el-date-picker
-              style="width:120px"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-          </li>
-
-          <li class="fn-left">
-            <button class="find_btn">查询</button>
-          </li>
-        </ul>
+      <div class="content am-bg-white" v-if="srcNum==='2'" >
         <div class="orders">
-          <table class="orders_table">
+          <table class="orders_table" v-loading="orderTempListBool">
             <thead>
             <tr>
-              <th width="">商品编码</th>
-              <th width="">商品名称</th>
+              <th width="230px">商品编码</th>
+              <th width="400px">商品名称</th>
               <th width="">数量</th>
               <th width="">原单价</th>
               <th width="">实售单价</th>
               <th width="">出货仓库</th>
-              <th width="">取件时间</th>
+              <!-- <th width="">取件时间</th> -->
               <th width="">订单金额</th>
               <th width="">订单状态</th>
+              <th width="">操作</th>
             </tr>
             </thead>
-            <tbody class="orders_tbody">
-            <tr class="order_header">
+            <tbody class="orders_tbody" v-for="order in orderTempList" :key="order.orderId">
+            <tr :class="{'order_header':order.orderType!=2&&order.orderType!=3,'replaceBack':(order.orderType==2||order.orderType==3)}">
+              
+              <!-- <td colspan="10"> -->
               <td colspan="9">
-                <div class=" img_b" style="position: absolute;top:0;left:0;"><img
-                  src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ding_icon.png"/></div>
+                <img v-cloak class="tag" :src="order.orderType==3?'https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_ztui.png':'https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_zhuan.png'" alt="" >
                 <div class=" fn-left">
-                  <span class="order_id mgl30">20170909000000001</span>
-                  <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
+                  <span class="order_id mgl30 font-weight_Bold font-size_18 font-family-bold color_555555">{{order.orderNo}}</span>
+                  <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone}}</span>
+                  <span class="msg">&nbsp; &nbsp;原订单号： <strong>{{order.pOrderId}}</strong></span>
                 </div>
                 <div class=" fn-right">
                   <span class="msg">销售&nbsp;&nbsp;</span>
-                  <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
+                  <span class="msg">{{order.userName}}：&nbsp;&nbsp;{{order.orderTime}}</span>
                 </div>
 
               </td>
             </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-              <td rowspan="5" class="rowspan_td order_price">
+            <tr v-for="(list,index) in order.orderItems" :key="list.name">
+              <td><div class="tagShop" >
+                <img v-show="list.type == '1'" src="https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_huan.png" alt="">
+                <img v-show="list.type == '-1'" src="https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_tui.png" alt="">
+                </div>{{list.itemNo}}</td>
+              <td>{{list.itemName}}</td>
+              <td>{{parseInt(list.quantity)}}</td>
+              <td>{{parseFloat(list.price)||'--'}}</td>
+              <td><span class="ft_bold">{{list.status == 3?parseFloat(list.money):(list.status == 2?'--':parseFloat(list.price))||'--'}}</span></td>
+              <td>{{order.shopName}}</td>
+              <!-- <td>{{order.receiveTime}}</td> -->
+              <td  v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                 <div class="order_price_box">
-                  <div class="priceAll">1299.00</div>
-                  <div>商品合计：<strong>1389.00</strong></div>
-                  <div>卡券：<strong>-20</strong></div>
-                  <div>折扣：<strong>-50</strong></div>
-                  <div>活动：<strong>-20</strong></div>
+                  <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
+                  <div>商品合计：<strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong></div>
+                  <div v-if="order.couponMoney>0">卡券：<strong>{{parseFloat(order.couponMoney).toFixed(2)}}</strong></div>
+                  <div v-if="order.discountMoney>0">折扣：<strong>{{parseFloat(order.discountMoney).toFixed(2)}}</strong></div>
+                  <div v-if="order.activityMoney>0">活动：<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
                 </div>
 
               </td>
-              <td rowspan="5" class="rowspan_td">
-                <div class="am-ft-gray9">退货</div>
-                <div class="look_d" @click="goDetail('1')">查看详情</div>
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                <div class="color_backBtn" >{{list.status=='12'?'申请退货':list.statusName}}</div>
+                <div class="color_readDetail" @click="toOrderDetail(order)">查看详情</div>
+              </td>
+              <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
+                <div class="color_cancalBackShop" @click="toCancalBackOrReplaceShop(0,order)">{{order.orderType==3?'取消退货':'取消换货'}}</div>
               </td>
 
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>
-                <p>左镜片：毛源昌1.55非球面防辐射远+1.50</p>
-                <p><span class=" am-ft-blue"><a>定做 DZ12340001</a></span> - 柱镜0.5 球镜0.5 下加光0.3 </p>
-                <p> 定做需求：需求内容需求内容 </p>
-              </td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
             </tr>
             <div class="gekai"></div>
             </tbody>
           </table>
         </div>
       </div>
-
-      <!-- 全部 -->
-      <div class="content am-bg-white" v-if="srcNum==='3'">
-        <ul class="clearfix cashier_top">
-          <li class="fn-left">
-            <span class="member">零售单号&nbsp;:&nbsp;</span>
-            <input type="text" class="cashier_input"/>
-          </li>
-          <li class="fn-left">
-            <span class="member">会员&nbsp;:&nbsp;</span>
-            <input type="text" class="cashier_input"/>
-          </li>
-          <li class="fn-left">
-            <span class="member">订单类型&nbsp;:&nbsp;</span>
-            <el-select style="width:70px" v-model="value" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </li>
-          <li class="fn-left">
-            <span class="member">零售时间&nbsp;:&nbsp;</span>
-            <el-date-picker
-              style="width:120px"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-            <span>-</span>
-            <el-date-picker
-              style="width:120px"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-          </li>
-
-          <li class="fn-left">
-            <button class="find_btn">查询</button>
-          </li>
-        </ul>
+      <div class="content am_bg_white" v-if="srcNum==='3'">
         <div class="orders">
-          <table class="orders_table">
-            <thead>
-            <tr>
-              <th width="">商品编码</th>
-              <th width="">商品名称</th>
-              <th width="">数量</th>
-              <th width="">原单价</th>
-              <th width="">实售单价</th>
-              <th width="">出货仓库</th>
-              <th width="">取件时间</th>
-              <th width="">订单金额</th>
-              <th width="">订单状态</th>
-            </tr>
-            </thead>
-            <tbody class="orders_tbody">
-            <tr class="order_header">
-              <td colspan="9">
-                <div class=" img_b" style="position: absolute;top:0;left:0;"><img
-                  src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ding_icon.png"/></div>
-                <div class=" fn-left">
-                  <span class="order_id mgl30">20170909000000001</span>
-                  <span class="msg">&nbsp; &nbsp;会员： <strong>张三</strong>&nbsp;&nbsp;15757489764</span>
-                </div>
-                <div class=" fn-right">
-                  <span class="msg">销售&nbsp;&nbsp;</span>
-                  <span class="msg">王二：&nbsp;&nbsp;2017-12-22 22:10:09</span>
-                </div>
-
-              </td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-              <td rowspan="5" class="rowspan_td order_price">
-                <div class="order_price_box">
-                  <div class="priceAll">1299.00</div>
-                  <div>商品合计：<strong>1389.00</strong></div>
-                  <div>卡券：<strong>-20</strong></div>
-                  <div>折扣：<strong>-50</strong></div>
-                  <div>活动：<strong>-20</strong></div>
-                </div>
-
-              </td>
-              <td rowspan="5" class="rowspan_td">
-                <div class="am-ft-gray9">退货</div>
-                <div class="look_d" @click="goDetail('1')">查看详情</div>
-              </td>
-
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>
-                <p>左镜片：毛源昌1.55非球面防辐射远+1.50</p>
-                <p><span class=" am-ft-blue"><a>定做 DZ12340001</a></span> - 柱镜0.5 球镜0.5 下加光0.3 </p>
-                <p> 定做需求：需求内容需求内容 </p>
-              </td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-            </tr>
-            <tr>
-              <td>BH00003</td>
-              <td>右镜片：毛源昌1.55非球面防辐射远+1.50</td>
-              <td>1盒</td>
-              <td>230.00</td>
-              <td><span class="ft_bold">134.00</span></td>
-              <td>天一恒泰店</td>
-              <td>2017-10-22 13:23:45</td>
-            </tr>
-            <div class="gekai"></div>
-            </tbody>
-          </table>
-        </div>
+        <el-table
+            :data="orderTempList"
+            size="small"
+            align="left"
+            style="width: 100%;margin-bottom:10px;">
+            <el-table-column
+            label="订单号"
+            width="400">
+            <template slot-scope="scope">
+                <!-- <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
+                <span v-if="scope.row.statusCode=='4'" class="am-bg-orange icon">欠</span>
+                <span v-if="scope.row.statusCode=='10'" class="am-bg-red icon">退</span>
+                <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
+                <span v-if="scope.row.source=='0'" class="sign_blue">本店签批</span>
+                <span v-else class="sign_orange">跨店签批</span> -->
+                <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
+            </template>
+            </el-table-column>
+            <el-table-column
+            prop="name"
+            label="会员姓名"
+            width="180">
+            </el-table-column>
+            <el-table-column
+            prop="telphone"
+            label="会员手机号">
+            </el-table-column>
+            <el-table-column
+            prop="moneyPaid"
+            label="金额">
+            <template slot-scope="scope">
+                <span class="am-ft-bold">{{scope.row.moneyAmount}}</span>
+            </template>
+            </el-table-column>
+            <el-table-column
+            prop="orderTime"
+            width="160"
+            label="下单时间">
+            </el-table-column>
+            <el-table-column
+            prop="shopName"
+            label="销售门店">
+            </el-table-column>
+            <el-table-column
+            prop="statusName"
+            label="状态">
+            <template slot-scope="scope">
+                <span
+                :class="{'am-ft-aa': scope.row.statusCode==='3'||scope.row.statusCode==='6','am-ft-orange':scope.row.statusCode==='4'||scope.row.statusCode==='5','am-ft-red': scope.row.statusCode==='10'}">{{scope.row.statusName}}</span>
+            </template>
+            </el-table-column>
+            <el-table-column
+            label="操作">
+            <template slot-scope="scope">
+                <span class="am-ft-blue" @click="toOrderDetail(scope.row)">查看详情</span>
+            </template>
+            </el-table-column>
+          </el-table>
+          </div>
       </div>
-    </div>
+      <el-pagination
+      class="am-ft-right"
+      background
+      layout="prev, pager, next"
+      :page-size="15"
+      :total="count"
+      @current-change="getOrderList"
+      :current-page.sync="nub">
+      </el-pagination> 
+      <el-dialog
+      title="提示"
+      :visible.sync="cancalBackOrReplaceOrder"
+      width="500px">
+      <div class="closeContent">你确定要关闭售后订单吗？</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancalBackOrReplaceOrder = false">取 消</el-button>
+        <el-button type="danger" @click="toCancalBackOrReplaceShop(1,true)">确 定</el-button>
+      </span>
+    </el-dialog>
+    </div>      
   </section>
 </template>
 
@@ -442,28 +275,40 @@
     name: 'ServiceAfterList',
     data() {
       return {
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }],
-        value: '',
+        searchForm: {
+          orderNo: "",
+          name: "",
+          orderType: "",
+          saleTimeStart: "",
+          saleTimeEnd: "",
+        },
+        orderTempList: [],
+        nub: 1,
+        orderTempListBool:true,
+        size: 15,
+        closeOrderData:null,
+        cancalBackOrReplaceOrder:false,
+        count: 0,
         showModal: false,
         srcNum: '1',
         tabs: [{
           'value': '已完成',
           'isActived': true,
-          'srcNum': '1'
+          'srcNum': '1',
+          'status':"6"
         },
-          {
-            'value': '退货',
-            'isActived': false,
-            'srcNum': '2'
-          },
-          {
-            'value': '全部',
-            'isActived': false,
-            'srcNum': '3'
-          }],
+        {
+          'value': '退换货',
+          'isActived': false,
+          'srcNum': '2',
+          'status':"10"
+        },
+        {
+          'value': '全部',
+          'isActived': false,
+          'srcNum': '3',
+          'status':"6,10"
+        }],
         data: [
           {
             'id': '20170909000000001',
@@ -479,6 +324,7 @@
     },
     methods: {
       changeTab: function (item) {
+        this.orderTempListBool = true;
         this.srcNum = item.srcNum;
         this.tabs.forEach(function (element) {
           element.isActived = false;
@@ -486,10 +332,104 @@
             element.isActived = true;
           }
         })
+        this.getOrderList();
+      },
+      toCancalBackOrReplaceShop(num,order){
+        // 取消退换货
+        const _this = this;
+        if(num == 0){
+          _this.cancalBackOrReplaceOrder = true;
+          _this.closeOrderData = order;
+          return
+        }else if(num == 1){
+          _this.$myAjax({
+            url:'pos-api/orderTemp/orderTempRefund/update',
+            data:{
+              orderId:_this.closeOrderData.orderId,
+              type:'3'
+            },
+            success:function(res){
+              if(res.code == 1){
+          _this.cancalBackOrReplaceOrder = false;
+                console.log(res)
+                _this.$message({
+                  message:'申请取消成功',
+                  showClose:true,
+                  type:'success'
+                })
+              }else{
+                _this.$message({
+                  message:'申请取消失败',
+                  showClose:true,
+                  type:'error'
+                })
+              }
+            },error:function(err){
+
+            }
+          })
+        }
       },
       showModalMiddle: function () {
         this.showCashier = true;
+      },
+      toOrderDetail(data){
+        let _this = this;
+        _this.$router.push({path:'/cashier/orderDetail',query:{orderId:data.orderId}})
+      },
+      //获取列表
+      getOrderList: function() {
+        var _this = this;
+        let status;
+        _this.tabs.forEach(function(element){
+            if(element.isActived==true){
+              _this.searchForm.status = element.status;
+            }
+        })
+        setTimeout(() => {
+          _this.$axios({
+              url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
+              method: "post",
+              params: {
+                jsonObject: {
+                  orderNo: _this.searchForm.orderNo,
+                  name: _this.searchForm.name,
+                  saleTimeStart: _this.searchForm.saleTimeStart,
+                  saleTimeEnd: _this.searchForm.saleTimeEnd,
+                  status:_this.searchForm.status,
+                  orderType:_this.searchForm.orderType,
+                  nub: _this.nub == 1 ? 0 : (_this.nub - 1) * _this.size,
+                  size: _this.size
+                },
+                keyParams: {
+                  weChat: true
+                }
+              }
+            })
+            .then(function(res) {
+              // console.info(res.data.data)
+              _this.orderTempListBool = false;
+              if(res.data.code == 1){
+                _this.count = res.data.data.count;
+                _this.orderTempList = [];
+                _this.orderTempList = res.data.data.orderTempList;
+              }else{
+                _this.$message({
+                  showClose: true,
+                  message: '请求数据失败，请联系管理员',
+                  type: 'error'
+                })
+              }
+              
+            })
+            .catch(function(error) {
+              console.info(error);
+            });
+        }, 100);
       }
+    },
+    created:function(){
+        this.getOrderList();
     },
     components: {}
   }
@@ -498,6 +438,9 @@
 <style scoped lang="scss">
   @import "../../../../reset";
 
+  .content_box{
+      height: calc(100% - 100px);
+  }
   .cashier_box {
     width: 100%;
     height: 100%;
@@ -558,7 +501,18 @@
   .cashier_top li {
     margin-left: 30px;
   }
-
+  .replaceBack{
+    background: #FFF3F3 !important;
+    border:0;
+    text-align: left;
+    position: relative;
+    .tag{
+         float: left;
+          position: absolute;
+          top: 0;
+          left: 0;
+    }
+  }
   .find_btn {
     display: inline-block;
     width: 70px;
@@ -574,7 +528,9 @@
   .orders {
     padding: 9px;
   }
-
+  [v-cloak] {
+      display: none !important;
+  }
   .orders_table {
     width: 100%;
   }
@@ -582,7 +538,19 @@
   .orders_table thead tr {
     height: 40px;
   }
-
+  .color_backBtn{
+    font-size: 13px;
+    color: #DB5858 !important;
+  }
+  .color_cancalBackShop{
+    font-size: 13px;
+    color: #00AFE4 !important;
+    cursor: pointer;
+  }
+  .color_readDetail{
+    font-size: 13px;
+    color: #333333 !important;
+  }
   .orders_table thead tr th {
     background: #F4F4F4;
     font-weight: bold;
@@ -592,6 +560,7 @@
     padding: 0 2px;
     line-height: 40px;
     border-bottom: 10px solid #fff;
+    white-space: nowrap;
   }
 
   .orders_table tr td {
@@ -603,6 +572,10 @@
     position: relative;
   }
 
+  .orders_table tr td:nth-child(1) {
+    text-align: left;
+  }
+
   .orders_table tr td:nth-child(2) {
     text-align: left;
   }
@@ -611,6 +584,7 @@
     background: #F4F4F4 !important;
     border: 0px;
     text-align: left;
+    position: relative;
   }
 
   .orders_table .order_header .order_id {
@@ -631,7 +605,9 @@
     font-size: 12px;
     color: #555555;
   }
-
+  .orders_tbody{
+    position: relative;
+  }
   .orders_tbody tr {
     /* display: inline-block; */
     height: 40px;
@@ -661,7 +637,10 @@
   .orders_tbody .rowspan_td strong {
     color: #000;
   }
-
+  .closeContent{
+    margin: 30px 0;
+    text-align: center;
+  }
   .orders_tbody .rowspan_td .priceAll {
     font-weight: bold;
     font-size: 16px;
@@ -677,7 +656,9 @@
   .look_d {
     cursor: pointer;
   }
-
+  .look_d:hover{
+    color: #00AFE4 !important;
+  }
   .sign_orange {
     border: 1px solid #FF6600;
     border-radius: 0 10px 10px 0;
@@ -699,7 +680,23 @@
     text-align: left;
     padding: 0 10px;
   }
-
+  .tagShop{
+    height: 100%;
+    display:inline-block;
+    width: 40px;
+  }
+  .font-family-bold{
+    font-family: MicrosoftYaHei-Bold;
+  }
+  .font-weight_Bold{
+    font-weight: bold;
+  }
+  .color_555555{
+    color:#555555;
+  }
+  .font-size_18{
+    font-size: 18px;
+  }
   /* 全部 */
   .orderList_table tbody tr:nth-child(2n) {
     background: rgba(246, 246, 246, 0.50);

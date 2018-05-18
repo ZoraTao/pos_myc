@@ -44,41 +44,42 @@
       return {
         pointsList: [], //积分明细列表
         count: 0,
-        nub: 0,
-        size: 5
+        nub: 1,
+        size: 10
       }
     },
+    props:['memberInfo'],
     created: function () {
       this.getMemberPoints()
     },
     methods: {
       //查询积分明细
       getMemberPoints(){
-        var that = this;
-        that.$axios({
+        var _this = this;
+        _this.$axios({
           url: 'http://myc.qineasy.cn/points-api/pointsFlow/getMemberPointLow',
           method: 'post',
           params: {
             jsonObject: {
-              memberCardId: '2054440',
-              memberId: '2222767',
-              nub: (this.nub==0?0:(this.nub-1)*this.size),
-              size: this.size
+              memberCardId: _this.memberInfo.memberCardId,
+              memberId: _this.memberInfo.memberId,
+              nub: (_this.nub==0?0:(_this.nub-1)*_this.size),
+              size: _this.size
             },
             keyParams: {
               weChat: true,
-              userId: '8888',
-              orgId: '11387'
+              userId: JSON.parse(localStorage.getItem("userData")).userId,
+              orgId: JSON.parse(localStorage.getItem("userData")).orgId,
             }
           }
         })
           .then(function (response) {
-            console.info(response.data.data)
-            that.pointsList = response.data.data.pointList;
-            that.count = parseInt(response.data.data.count);
+            // console.info(response.data.data)
+            _this.pointsList = response.data.data.pointList;
+            _this.count = parseInt(response.data.data.count);
           })
           .catch(function (error) {
-            console.info(error)
+            // console.info(error)
           })
       },
       handleCurrentChange:function(){

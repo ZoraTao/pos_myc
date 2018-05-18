@@ -1,25 +1,36 @@
 <template>
-<div class="textCenter newOptometryBody">
+<div class="textCenter newOptometryBody reprint">
     <div class="newOptometryPhone">
         <div class="fn-left">
             <span class="am-ft-red mgr5">*</span>
             <label>手机号:</label>
+            <el-input v-model="telphone" @keyup.native.enter="searchTelphone()"></el-input>
             <!-- <nz-input [ngModel]=""></nz-input> -->
         </div>
         <!-- <div class="fn-left">
             <label>零售单号:</label><nz-input [ngModel]=""></nz-input>
         </div> -->
         <div class="fn-left">
-            <label>性名:</label><span class="nopText">张三</span>
+            <label>零售单号:</label>
+            <el-select v-model="orderId" placeholder="请选择" class="selectOrder" @change="searchOrderDetail()">
+                <el-option v-for="item in selectOrder"
+                :key="item.orderId"
+                :label="item.orderId"
+                :value="item.orderId">
+                        <span style="float:left;">{{ item.orderId }}</span>
+                        <span style="float: right; color: #8492a6; font-size: 13px">{{ (item.createTime).substring(0,10) }}</span>
+                </el-option>
+            </el-select>
         </div>
-        <div class="fn-left">
-            <label>会员卡号:</label><span class="nopText">HY12340001</span>
+        <div class="fn-left" v-if="orderDetail">
+            <label>姓名:</label><span class="nopText">{{orderDetail.name}}</span>
         </div>
-        <div class="fn-right">
-            <label>零售单号:</label><span class="nopText">HY12340001</span>
+        <div class="fn-left"  v-if="orderDetail">
+            <label>会员卡号:</label><span class="nopText">{{orderDetail.memberId}}</span>
         </div>
+        
     </div>                   
-    <div class="reprintContent">
+    <div class="reprintContent" v-if="orderDetail">
         <div class="reprintBasicInfo">
             <div class=""><span>产品名称：装配眼镜(定配眼镜)</span></div>
             <div class=""><span>检验合格</span></div>
@@ -29,17 +40,17 @@
             <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ewm.png"/>
         </div>
         <div class="reprintShopNameTime">
-            <h2>湖滨店</h2>
-            <p>配镜日期：<span>2017-12-13</span></p>
-            <p>取镜日期：<span>2017-12-13</span></p>
-            <h3>R00031712130001</h3>
+            <h2>{{orderDetail.shopName}}</h2>
+            <p>配镜日期：<span>{{(orderDetail.createTime).substring(0,10)}}}</span></p>
+            <p>取镜日期：<span>{{(orderDetail.glassesTime).substring(0,10)}}</span></p>
+            <h3>{{orderDetail.orderId}}</h3>
         </div>
         <div class="reprintMemberInfo">
-            <p>姓名：<span>张三</span></p>
-            <p>性别：<span>女</span></p>
-            <p>生日：<span>2017-09-21</span></p>
-            <p>手机：<span>13546574624</span></p>
-            <p>地址：<span>杭州市西湖区文二西路11111号</span></p>
+            <p>姓名：<span>{{eyes.member.name}}</span></p>
+            <p>性别：<span>{{eyes.member.sex=='M'?'男':'女'}}</span></p>
+            <p>生日：<span>{{eyes.member.birthday}}</span></p>
+            <p>手机：<span>{{eyes.member.telphone}}}</span></p>
+            <p>地址：<span>{{eyes.member.address}}</span></p>
         </div>
         <div class="prescriptionTable">
             <el-table
@@ -97,68 +108,68 @@
         </div>
         <div class="receiptsInfo">
             <p>手工单：<span></span></p>
-            <p>验光单：<span>OPT00011709280067</span></p>
+            <p>验光单：<span>{{orderDetail.prescriptionsId}}</span></p>
             <p>卡号：<span></span></p>
-            <p>远瞳距：<span>64</span></p>
-            <p>远瞳距：<span></span></p>
+            <p>远瞳距：<span>{{eyes.eyes[0].value[0].pd}} {{eyes.eyes[0].value[1].pd}}</span></p>
+            <p>远瞳距：<span>{{eyes.eyes[1].value[0].pd}} {{eyes.eyes[1].value[1].pd}}</span></p>
         </div>
         <div class="receiptsSalesTable">
             <el-table
             size="small"
-            :data="data2"
+            :data="orderList"
             align="center"
             style="width: 100%">
                 <el-table-column
-                    prop="suggest"
+                    prop="itemName"
                     width="500px"
                     label="商品名称">
                 </el-table-column>
                 <el-table-column
-                    prop="num"
+                    prop="quantity"
                     align="center"
                     label="数量">
                 </el-table-column>
                 <el-table-column
-                    prop="originalCost"
+                    prop="listPrice"
                     align="center"
                     label="原单价">
                 </el-table-column>
                 <el-table-column
-                    prop="discount"
+                    prop="discountRate"
                     align="center"
                     label="折扣">
                 </el-table-column>
                 <el-table-column
-                    prop="discount"
+                    prop="money"
                     align="center"
                     label="实售单价">
                 </el-table-column>
             </el-table>
         </div>
         <div class="receiptsRemark">
-            <p>销售备注：<span>销售备注销售备注销售备注销售备注</span></p>
+            <p>销售备注：<span>{{orderDetail.saleMemo}}</span></p>
         </div>
         <div class="receiptsRemark">
-            <p>验光备注：<span>验光备注内容验光备注内容验光备注内容验光备注内容</span></p>
+            <p>验光备注：<span>{{orderDetail.specialMemo}}</span></p>
         </div>
         <div class="receiptsRemark">
-            <p>加工备注：<span>加工备注内容加工备注内容</span></p>
+            <p>加工备注：<span>{{orderDetail.processMemo}}</span></p>
         </div>
         <div class="receiptsOtherRemark">
-            <p>其他费用：<span>490.00</span></p>
-            <p>配镜金额：<span>490.00</span></p>
-            <p>实收金额：<span>490.00</span></p>
-            <p>欠款金额：<span>490.00</span></p>
+            <p>其他费用：<span>{{orderDetail.extraMoney}}</span></p>
+            <p>配镜金额：<span></span></p>
+            <p>实收金额：<span>{{orderDetail.moneyAmount}}</span></p>
+            <p>欠款金额：<span>{{(orderDetail.moneyAmount - orderDetail.moneyPaid).toFixed(2)}}</span></p>
         </div>
         <div class="receiptsCompanyInfo">
-            <p class="receiptsCompanySales">验光：<span>hz3036</span></p>
-            <p class="receiptsCompanySales">顾问：<span>hz3066</span></p>
-            <p class="receiptsCompanySales">签批：<span>hz3046</span></p>
-            <p class="receiptsCompanySales">收银：<span>hz3046</span></p>
-            <p class="receiptsCompanySales">检验：<span>hz3046</span></p>
+            <p class="receiptsCompanySales">验光：<span>{{eyes.rescriptions.optometrist}}</span></p>
+            <p class="receiptsCompanySales">顾问：<span>{{eyes.prescriptions.createUserName}}</span></p>
+            <p class="receiptsCompanySales">签批：<span></span></p>
+            <p class="receiptsCompanySales">收银：<span></span></p>
+            <p class="receiptsCompanySales">检验：<span></span></p>
             <p class="receiptsCompany30days">请在30日内开发票</p>
             <p class="receiptsCompanySales">门店电话：<span>5079334</span></p>
-            <p class="receiptsCompanySales">生产商：<span>毛源昌眼镜有限公司</span></p>
+            <p class="receiptsCompanySales">生产商：<span>{{orderDetail.shopName}}</span></p>
             <p class="receiptsCompanySales">生产地址：<span>杭州市上城区南山路新民村3号</span></p>
             <p class="receiptsCompanySales">联系电话：<span>0571-2888555</span></p>
         </div>
@@ -195,6 +206,12 @@ export default {
             HPD:"",
             ADD:""
         }],
+        telphone:'',
+        selectOrder:[],
+        orderDetail:null,
+        orderId:'',
+        orderList:null,
+        eyes:null,
         data2:[
             {
                 suggest    : '右镜片：毛源昌1.55非球面防辐射远+1.50',
@@ -207,6 +224,65 @@ export default {
     }
   },
   methods:{
+      searchTelphone(){
+          const _this =this;
+          _this.$myAjax({
+              url:'pos-api/orderTemp/getOrderTempList',
+              data:{
+                telphone:_this.telphone
+              },success:function(res){
+                  console.log(res)
+                  if(res.code == 1){
+                      _this.selectOrder = res.data.orderTempList;
+                  }
+              },error:function(err){
+                  console.log(err)
+              }
+          })
+      },
+      searchOrgAttr(){
+          const _this =this ;
+          _this.$myAjax({
+              url:"pos-api/shopBy/getShopByList",
+              data:{
+                //   shopId:
+              },success:function(res){
+
+              },error:function(err){
+
+              }
+          })
+      },
+      searchOrderDetail(){
+          const _this  = this;
+          _this.$myAjax({
+              url:'pos-api/orderTemp/getOrderTemp',
+              data:{
+                  orderId:_this.orderId
+              },
+              success:function(res){
+                  if(res.code == 1){
+                    console.log(res.data)
+                    _this.orderDetail = res.data.ordertemp;
+                    _this.orderList = res.data.orderItemsList;
+                    _this.eyes = res.data.prescription;
+                  }else{
+                      _this.$message({
+                        showClose: true,
+                        message: res.msg,
+                        type: "error"
+                        });
+                  }
+              },error:function(err){
+                  console.log(err)
+                  _this.$message({
+                    showClose: true,
+                    message: err,
+                    type: "error"
+                    });
+              }
+          })
+      },
       objectSpanMethod({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0) {
           if (rowIndex % 2 === 0) {
@@ -226,7 +302,11 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import '../../../reset.scss';
+.newOptometryBody{
+        min-height:520px;
+}
 .reprint{
     .el-dialog__body {
     }
@@ -242,6 +322,7 @@ export default {
         margin-bottom: 5px;
         font-weight: 700;
     }
+    
     .newOptometryPhone{
         overflow: hidden;
         border-bottom: 1px solid #d8d8d8;
@@ -472,4 +553,5 @@ export default {
         }
     }   
 }
+
 </style>

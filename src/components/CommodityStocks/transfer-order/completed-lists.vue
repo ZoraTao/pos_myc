@@ -1,62 +1,67 @@
 <template>
   <div>
     <el-table
-      :data="tableData"
+      :data="listData"
       stripe
       size="small"
       align="left"
       style="width: 100%">
       <el-table-column
-        prop="a"
+        prop="requisitionNo"
         label="调拨单号"
         width="120">
       </el-table-column>
       <el-table-column
-        prop="b"
+        prop="sourceType"
         label="来源类型"
         width="100">
       </el-table-column>
       <el-table-column
-        prop="c"
+        prop="requisitionOrgName"
         label="调拨部门">
       </el-table-column>
       <el-table-column
-        prop="d"
+        prop="outWarehName"
         label="调出仓库">
       </el-table-column>
       <el-table-column
-        prop="e"
+        prop="inWarehName"
         label="调入仓库">
       </el-table-column>
       <el-table-column
-        prop="f"
+        prop="makingP"
         label="制单人">
       </el-table-column>
       <el-table-column
-        prop="g"
+        prop="createTime"
         label="制单日期"
         width="140">
       </el-table-column>
       <el-table-column
         label="调拨单状态">
         <template slot-scope="scope">
-          <p class="am-ft-orange">{{scope.row.h}}</p>
+          <p class="am-ft-orange">{{scope.row.statusName}}</p>
         </template>
       </el-table-column>
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <a href="javascript:;" @click="goDetail">查看详情</a>
+          <a href="javascript:;" @click="goDetail(scope.$index,scope.row)">查看详情</a>
         </template>
       </el-table-column>
     </el-table>
     <!--分页-->
-    <el-pagination
-      background
-      class="am-ft-right mgt10"
-      layout="prev, pager, next"
-      :total="10">
-    </el-pagination>
+    <div class="block mgt10">
+      <el-pagination
+        class="am-ft-right"
+        background
+        @current-change="handleCurrentChange"
+        :page-size="10"
+        layout="total, prev, pager, next"
+        :total="listCounts"
+        :current-page.sync="nub">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -66,6 +71,9 @@
     component: {},
     data() {
       return {
+        nub: 0,//起始条数
+        size: 10,//每页显示数据条数
+        counts: this.listCounts,//总条数
         tableData: [{
           a: '12340002',
           b: '手工添加',
@@ -78,12 +86,22 @@
         }]
       }
     },
+    props: ['listData','listCounts', 'mypagination'],
+    created() {
+
+    },
     methods: {
-      goDetail() {
+      //分页
+      handleCurrentChange(val) {
+        this.nub = (`${val}`-1) * this.size;
+        this.mypagination(this.nub);
+      },
+      //查看详情
+      goDetail(index,data) {
         this.$router.push({
           path: '/commodity/transfer-order-detail',
           name: 'transfer-order-detail',
-          params: {}
+          params: data
         })
       }
     }

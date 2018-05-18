@@ -4,7 +4,9 @@
           <LayoutNav></LayoutNav>
       </header>
       <article class="mg10">
+        <keep-alive>
           <router-view></router-view>
+        </keep-alive>
       </article>
     </main>
 </template>
@@ -26,7 +28,7 @@ export default {
       ]),
       ...mapState([
       ])
-      
+
   },
   methods:{
     ...mapMutations([

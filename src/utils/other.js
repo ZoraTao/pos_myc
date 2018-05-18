@@ -1,5 +1,5 @@
 const removeAllSpace = function (str, is_global = '') {
-  /* 去掉空格方法 
+  /* 去掉空格方法
    * 参数 str:字符串 is_global:'g' 是否去掉所有空格
    * 第二个参数不填默认只去除前后
    */
@@ -11,11 +11,46 @@ const removeAllSpace = function (str, is_global = '') {
   console.log(result)
   return result;
 }
+// 将Object的属性输出成Array
+const objToPropertyToArr = function (object) {
+  var arr = [];
+  var i = 0;
+  for (var item in object) {
+      arr[i] = item;
+      i++;
+  }
+  return arr;
+}
+
+// 将Object的属性值输出成Array
+const objToValueToArr = function (object) {
+  var arr = [];
+  var i = 0;
+  for (var item in object) {
+      arr[i] = object[item];
+      i++;
+  }
+  return arr;
+}
+
+//将Object 转化成 Array
+const objToArr = function (object) {
+  var arr = [];
+  for(var key in object){
+      if(!object.hasOwnProperty(key)){
+          continue;
+      }
+      var item = {};
+      item[key] = object[key];
+      arr.push(item);
+  }
+  return arr
+}
 
 const randomNum = function (maxNum, minNum) {
-  /* 产生范围内随机整数 
+  /* 产生范围内随机整数
    * 参数 maxNum:最大数  minNum:最小数  参数可不分前后 parseInt绝对值处理
-   * 不适用于验证码 
+   * 不适用于验证码
    */
   switch (arguments.length) {
     case 1:
@@ -132,6 +167,13 @@ const judgeCode = {
       return JSON.stringify(target).indexOf(JSON.stringify(source))!=-1
     }
 }
+const unicode = function (str) {
+  var res = [];
+  for ( var i=0; i<str.length; i++ ) {
+  res[i] = ( "00" + str.charCodeAt(i).toString(16) ).slice(-4);
+  }
+  return "\\u" + res.join("\\u");
+}
 const bindEvent = function (elem, type, selector, fn) {
   // 事件代理
   // 这样处理，可接收两种调用方式 bindEvent(div1, 'click', 'a', function () {...}) 和 bindEvent(div1, 'click', function () {...}) 这两种
@@ -163,5 +205,9 @@ export {
   getQueryString,
   agetQueryString,
   calcu,
-  judgeCode
+  judgeCode,
+  unicode,
+  objToPropertyToArr,
+  objToValueToArr,
+  objToArr
 }

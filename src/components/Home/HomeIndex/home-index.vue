@@ -11,35 +11,35 @@
       </div>
       <div class="hcBottom">
         <div class="hcNumItem" >
-          <h3>120</h3>
+          <h3>{{todoInfo.toPickup}}</h3>
           <p>待取件(单)</p>
         </div>
         <div class="hcNumItem">
-          <h3>120</h3>
+          <h3>{{todoInfo.todayPickup}}</h3>
           <p>今日待取件(单)</p>
         </div>
         <div class="hcNumItem" v-on:click="goBills(1)">
-          <h3 class="am-ft-red">6</h3>
+          <h3 class="am-ft-red">{{todoInfo.outPickup}}</h3>
           <p>超期单据(单)</p>
         </div>
         <div class="hcNumItem" v-on:click="goBills(2)">
-          <h3>12</h3>
+          <h3>{{todoInfo.expiringLens}}</h3>
           <p>即将到期隐形镜(盒)</p>
         </div>
         <div class="hcNumItem">
-          <h3>9</h3>
+          <h3>{{todoInfo.notSaleLens}}</h3>
           <p>将到期不可售隐形镜(盒)</p>
         </div>
         <div class="hcNumItem">
-          <h3>21</h3>
+          <h3>{{todoInfo.toCustomer}}</h3>
           <p>待回访客户(个)</p>
         </div>
         <div class="hcNumItem" v-on:click="goBills(3)">
-          <h3>9</h3>
+          <h3>{{todoInfo.prescriptionPlans}}</h3>
           <p>验光预约(人)</p>
         </div>
         <div class="hcNumItem" @click="dialogAptitudeDue = true">
-          <h3>120</h3>
+          <h3>{{todoInfo.expirQualified}}</h3>
           <p>资质即将到期</p>
         </div>
       </div>
@@ -50,29 +50,13 @@
         <h5>公告</h5>
       </div>
       <div class="hcBottom">
-          <div class="hcGgItem">
-            <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/logo1.png" class="fn-left"/>
+          <div class="hcGgItem" v-for="(i,index) in news" :key="i.names">
+            <img v-if="index==0" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/logo1.png" class="fn-left"/>
             <div class="fn-left">
-              <p>毛源昌眼镜门店销售管理系统全面升级</p>
-              <span>2017-12-08 09:09:12</span>
-            </div>
-          </div>
-          <div class="hcGgItem">
-            <div class="fn-left">
-              <p>毛源昌眼镜门店销售管理系统全面升级</p>
-              <span>2017-12-08 09:09:12</span>
-            </div>
-          </div>
-          <div class="hcGgItem">
-            <div class="fn-left">
-              <p>毛源昌眼镜门店销售管理系统全面升级</p>
-              <span>2017-12-08 09:09:12</span>
-            </div>
-          </div>
-          <div class="hcGgItem">
-            <div class="fn-left">
-              <p>毛源昌眼镜门店销售管理系统全面升级</p>
-              <span>2017-12-08 09:09:12</span>
+              <p @click="detailPanel(i,index)">{{i.title}}</p>
+              <!--<p class="news-detail" v-if="openPanel">{{i.announceDescription}}</p>-->
+              <p class="news-detail" ref="open">{{i.announceDescription}}</p>
+              <span>{{i.createTime}}</span>
             </div>
           </div>
       </div>
@@ -83,40 +67,14 @@
         <h5>促销活动</h5>
       </div>
       <div class="hcBottom">
-          <div class="hcCxItem">
+          <div class="hcCxItem" v-for="n in promotionList" :key="n.salesId">
             <div class="hcCxLeft">
-              <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_manjian.png">
+              <img v-if="n.salesType=='1'" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_manjian.png" />
+              <img v-if="n.salesType=='2'" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_te.png">
             </div>
             <div class="hcCxRight">
-              <h4>满减活动</h4>
-              <p>满200减20，满500减50，满1000减150</p>
-            </div>
-          </div>
-          <div class="hcCxItem">
-            <div class="hcCxLeft">
-              <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_te.png">
-            </div>
-            <div class="hcCxRight">
-              <h4>满减活动</h4>
-              <p>满200减20，满500减50，满1000减150</p>
-            </div>
-          </div>
-          <div class="hcCxItem">
-            <div class="hcCxLeft">
-              <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_cu.png">
-            </div>
-            <div class="hcCxRight">
-              <h4>满减活动</h4>
-              <p>满200减20，满500减50，满1000减150</p>
-            </div>
-          </div>
-          <div class="hcCxItem">
-            <div class="hcCxLeft">
-              <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_manjian.png">
-            </div>
-            <div class="hcCxRight">
-              <h4>满减活动</h4>
-              <p>满200减20，满500减50，满1000减150</p>
+              <h4>{{n.title}}</h4>
+              <p>{{n.description}}</p>
             </div>
           </div>
       </div>
@@ -136,10 +94,21 @@ export default {
   data () {
     return {
       dialogAptitudeDue: false,
+      todoInfo: {},
+      userId: '',
+      orgId: '',
+      news: [],
+      promotionList: [],
+      openPanel: false,
     }
   },
   components: {
     AptitudeDue
+  },
+  created(){
+    this.getTodoItems();
+    this.getNewsList();
+    this.getPromotionList();
   },
   methods:{
     goBills(type){
@@ -154,12 +123,144 @@ export default {
           this.$router.push('/bills/optometryAppointmentBill')
         break;
       }
+    },
+    //待办事项
+    getTodoItems(){
+      const that = this;
+      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      this.orgId = ueserInfo.orgId;
+      that.$axios({
+        url: 'http://myc.qineasy.cn/pos-api/toDo/getToDoDetail',
+        method: 'post',
+        params: {
+          jsonObject: {},
+          keyParams: {
+            weChat: true,
+            orgId: that.orgId
+          }
+        }
+      })
+        .then(function (response) {
+          if (response.data.code != '1') {
+            that.$message({
+              showClose: true,
+              message: '请求数据出问题喽，请重试！',
+              type: 'error'
+            })
+            return false;
+          } else {
+            // console.info(response.data.data);
+            that.todoInfo = response.data.data.todo;
+          }
+        })
+        .catch(function (error) {
+          console.info(error);
+          that.$message({
+            showClose: true,
+            message: '请求数据失败，请联系管理员',
+            type: 'error'
+          })
+        })
+    },
+    //获取公告列表
+    getNewsList(){
+      const that = this;
+      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      this.orgId = ueserInfo.orgId;
+      that.$axios({
+        url: 'http://myc.qineasy.cn/pos-api/announcement/getAnnouncementList',
+        method: 'post',
+        params: {
+          jsonObject: {
+            status: '1'
+          },
+          keyParams: {
+            weChat: true,
+            orgId: that.orgId
+          }
+        }
+      })
+        .then(function (response) {
+          if (response.data.code != '1') {
+            that.$message({
+              showClose: true,
+              message: '请求数据出问题喽，请重试！',
+              type: 'error'
+            })
+            return false;
+          } else {
+            // console.info(response.data.data);
+            that.news = response.data.data.list;
+          }
+        })
+        .catch(function (error) {
+          console.info(error);
+          that.$message({
+            showClose: true,
+            message: '请求数据失败，请联系管理员',
+            type: 'error'
+          })
+        })
+    },
+    //查看公告详情
+    detailPanel(val,index){
+      const block = this.$refs.open[index].style.display;
+      if(block=='block'){
+        this.$refs.open[index].style.display = 'none';
+      }else{
+        this.$refs.open[index].style.display = 'block';
+      }
+    },
+    //获取促销活动列表
+    getPromotionList(){
+      const that = this;
+      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      this.userId = ueserInfo.userId;
+      this.orgId = ueserInfo.orgId;
+      that.$axios({
+        url: 'http://myc.qineasy.cn/pos-api/salesPromotion/getSalesPromotion',
+        method: 'post',
+        params: {
+          jsonObject: {
+            status: '1'
+          },
+          keyParams: {
+            weChat: true,
+            userId: that.userId,
+            orgId: that.orgId
+          }
+        }
+      })
+        .then(function (response) {
+          if (response.data.code != '1') {
+            that.$message({
+              showClose: true,
+              message: '请求数据出问题喽，请重试！',
+              type: 'error'
+            })
+            return false;
+          } else {
+            // console.info(response.data.data);
+            that.promotionList = response.data.data.list;
+          }
+        })
+        .catch(function (error) {
+          console.info(error);
+          that.$message({
+            showClose: true,
+            message: '请求数据失败，请联系管理员',
+            type: 'error'
+          })
+        })
     }
-  }
+  },
 }
 </script>
 
 <style scoped lang="scss">
+  .am-ft-red{
+    color: #F58B8B !important;
+  }
 .homeImg {
     flex: 68;
     max-height: 279px;
@@ -181,16 +282,47 @@ export default {
         width: 27.5%;
         float: left;
         background: #fff;
-        height: 100%;
+        height: 350px;
+        overflow-y: auto;
+        &::-webkit-scrollbar{
+          width: 8px;
+          height: 6px;
+        }
+        &::-webkit-scrollbar-track{
+          background: #d4d2d2;
+          border-radius: 4px;
+        }
+        &::-webkit-scrollbar-thumb{
+          background: #999999;
+          border-radius: 4px;
+        }
+        &::-webkit-scrollbar-corner{
+          background: #E6E6E6;
+        }
     }
     .homeMid {
         width: 43.5%;
         float: left;
         background: #fff;
         margin: 0 0.7%;
-        height: 100%;
+        height: 350px;
         .hcBottom {
             padding-top: 0;
+            &::-webkit-scrollbar{
+              width: 8px;
+              height: 6px;
+            }
+            &::-webkit-scrollbar-track{
+              background: #d4d2d2;
+              border-radius: 4px;
+            }
+            &::-webkit-scrollbar-thumb{
+              background: #999999;
+              border-radius: 4px;
+            }
+            &::-webkit-scrollbar-corner{
+              background: #E6E6E6;
+            }
             .hcGgItem {
                 height: 77px;
                 box-sizing: border-box;
@@ -204,15 +336,23 @@ export default {
                     width: 56px;
                     height: 56px;
                     float: left;
+                    object-fit: contain;
                 }
                 div {
                     text-align: left;
                     line-height: 28px;
                     overflow: hidden;
+                  cursor: pointer;
                     p {
                         font-size: 16px;
                         color: #333333;
                         letter-spacing: -0.69px;
+                    }
+                    p.news-detail{
+                      font-weight: normal;
+                      font-size: 12px;
+                      color: #555555;
+                      display: none;
                     }
                     span {
                         font-size: 12px;
@@ -265,14 +405,18 @@ export default {
             width: 33%;
             float: left;
             height: 60px;
+          cursor: pointer;
             h3 {
                 font-size: 32px;
                 color: #00A2DE;
                 font-weight: 500;
+                min-height: 48px;
             }
             p {
                 font-size: 13px;
                 color: #666666;
+                width: 80px;
+                margin: 0 auto;
             }
             &:nth-of-type(n+4) {
                 margin-top: 30px;
@@ -290,7 +434,8 @@ export default {
                 margin: 0 10px;
                 width: 18px;
                 height: 18px;
-                vertical-align: top;
+                vertical-align: middle;
+                margin-left: 20px;
             }
         }
         .hcCxRight {
@@ -299,6 +444,7 @@ export default {
                 font-size: 16px;
                 color: #333333;
                 margin-bottom: 5px;
+                font-weight: 400;
             }
             p {
                 font-size: 13px;

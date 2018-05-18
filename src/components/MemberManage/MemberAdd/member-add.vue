@@ -22,7 +22,7 @@
     methods: {
       //从子组件取到的数据
       showData(data){
-        console.info(data)
+        // console.info(data)
         var that = this;
 
         if(data.name!='' && data.telphone!='' && data.birthday!='' && data.sex!=''){
@@ -33,8 +33,8 @@
               jsonObject: data,
               keyParams: {
                 weChat: true,
-                userId: "8888",
-                orgId: "11387"
+                userId:JSON.parse(localStorage.getItem("userData")).userId,
+                orgId:JSON.parse(localStorage.getItem("userData")).orgId,
               }
             }
           })
@@ -45,6 +45,12 @@
                 message: '新增会员成功',
                 type: 'success'
               });
+              setTimeout(() => {
+                that.$router.push({
+                  name: 'memberIndex',
+                  path: '/base/memberIndex'
+                })
+              }, 2000)
             })
             .catch(function (error) {
               console.info(error)

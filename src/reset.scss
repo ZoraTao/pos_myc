@@ -1,10 +1,10 @@
 $red: #F56C6C;
 $dark-red: #D0021B;
 $white: #FFFFFF;
-$blue: #00A2DE;
+$blue: #009fcf;
 $yellow: #EA9100;
 $orange: #FF6600;
-
+$night: #999999;
 $gary-import: #303133;
 $gary-normal: #606266;
 $gary-secondary: #909399;
@@ -32,13 +32,18 @@ $radius3: $h3 solid #E1E1E1;
 .am-ft-red {
     color: $red !important;
 }
-
+.am-ft-night{
+    color: $night important;
+}
 .am-ft-darkred {
     color: $dark-red !important;
 }
 
 .am-ft-blue {
     color: $blue !important;
+}
+.am-ft-black {
+    color: #000 !important;
 }
 .am-ft-aa{
     color: #aaaaaa !important;
@@ -444,3 +449,10 @@ i,em{
   height: 1px;
   border-bottom: 1px dashed #E1E1E1;
 }
+.el-pager li{
+    font-weight: 200;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: #00a2de!important;
+}
+

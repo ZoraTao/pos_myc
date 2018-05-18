@@ -9,27 +9,31 @@
         <h5>V 1.0.0</h5>
         <div class="formGroup">
           <div class="formItem">
-            <input type="text" value="" v-model="LoginData.user" placeholder="用户名13777822654 "/>
+            <input type="text" value="" v-model="LoginData.user" placeholder="用户名"/>
           </div>
           <div class="formItem">
-            <input type="password" value="" v-model="LoginData.pass" placeholder="密码123456"/>
+            <input type="password" value="" v-model="LoginData.pass" placeholder="密码"/>
           </div>
           <div class="formItem">
-            <select class="form-control">
-              <option>公司</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
+            <select class="form-control" v-model="LoginData.company">
+              <option>毛源昌西湖区分公司</option>
+              <option>毛源昌余杭区分公司</option>
+              <option>毛源昌萧山区分公司</option>
+              <option>毛源昌滨江区分公司</option>
             </select>
           </div>
           <div class="formItem">
-            <select class="form-control">
-              <option>部门</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
+            <select class="form-control" v-model="LoginData.department">
+              <option>销售部</option>
+              <option>市场部</option>
+              <option>运营部</option>
+              <option>事业部</option>
+            </select>
+          </div>
+          <div class="formItem">
+            <select class="form-control" @change="replace()" v-model="LoginSystem">
+              <option value="0">毛源昌登录系统</option>
+              <option value="1">毛源昌管理系统</option>
             </select>
           </div>
           <div class="formItem">
@@ -58,19 +62,26 @@
 </template>
 
 <script>
+import store from '../vuex/store'
 export default {
   name: 'login',
   data () {
     return {
       LoginData:{
-        user:'',
-        pass:''
+        user:'13777822654',
+        pass:'123456',
+        company:'毛源昌西湖区分公司',
+        department:'销售部'
       },
+      LoginSystem:'0',
       dialogVisible:false,
       errorTitle:'密码错误，登录失败！'
     }
   },
+  computed:{
+  },
   methods:{
+    
     toLogin(){
       var _this = this;
       this.$axios({
@@ -88,9 +99,9 @@ export default {
       }).then((res)=>{
         if(res.status == '200'){
           if(res.data.code ==  1 && res.data.msg == "登录成功"){
-              
+            console.log(res.data.data)
+              _this.$store.commit('LOGIN_LOCAL_STORAGE',res.data.data.user);
               _this.goHome();
-              console.log(res)
           }else{
               _this.dialogVisible = true
               console.log(res)
@@ -102,9 +113,26 @@ export default {
         _this.dialogVisible = true
       })
     },
+    replace(){
+      if(this.LoginSystem == 1){
+        location.href="http://myc.qineasy.cn/oms_myc/login.jsp"
+      }
+    },
     goHome(){
       this.$router.push('/base/homeIndex')
+    },
+    isLogin(){
+       return !!localStorage.token
+    },
+    userAccessKeyLogin(){
+        let _this = this;
+        if(localStorage.getItem('token')){//有用户秘钥直接登录,未进行MD5解密
+          _this.goHome();
+        }
     }
+  },
+  beforemounted(){
+    // this.userAccessKeyLogin();
   }
 }
 </script>
