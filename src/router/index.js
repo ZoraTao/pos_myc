@@ -13,6 +13,7 @@ const router = new Router({
         },
         {
             path: '/login',
+            name:'login',
             component: resolve => require(['../components/Login.vue'], resolve)
         },
         {
@@ -293,30 +294,18 @@ const router = new Router({
         }
     ]
 })
-// 重新刷新页面拦截器
-// const reloadInterceptor = (to, from) =>{
-//     if(from.name == 'cashierList' && to.name == 'orderDetail'){
-//         let isRefresh = sessionStorage.getItem('isRefresh');
-//         console.log('isRefresh:'+isRefresh);
-//         if(isRefresh == '0'){
-//             sessionStorage.setItem('isRefresh',null)
-//             window.location.reload();
-//         }else {
-//             sessionStorage.setItem('isRefresh',0)
-//         }
-//     }else if(from.name == 'cashierList' && to.name =='orderDetail'){
-//         sessionStorage.setItem('isRefresh',0)
-//     }
-// }
+
+router.beforeEach((to, from, next) => {
+    const userInfo = JSON.parse(sessionStorage.getItem('userData'));
+    if(userInfo&&userInfo.token){
+      next();
+    }else{
+      if(to.path=='/login'){//如果是登录页面路径，就直接next()
+        next();
+      }else{//不然就跳转到登录；
+        next('/login');
+      }
+    }
+  });
 export default router
-// router.beforeEach((transition) => {
-//   if (transition.to.auth) {
-//        //判断是否登录，（可以通过接口，Vuex状态 token）
-//        //没有登录走下面逻辑
-//        let redirect = encodeURIComponent(transition.to.path);
-//        transition.redirect('/logon?redirect=' + redirect);
-//        //redirect 作为参数，登录之后跳转回来
-//   } else {
-//       transition.next();
-//   }
-// });
+

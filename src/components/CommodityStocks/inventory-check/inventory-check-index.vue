@@ -5,7 +5,7 @@
       <el-form :inline="true"  class="demo-form-inline am-ft-left">
         <el-col :span="21">
           <el-form-item label="仓库：">
-            <el-select v-model="selectBase" placeholder="请选择" style="width: 130px">
+            <el-select v-model="selectBase" clearable placeholder="请选择" style="width: 130px">
               <el-option 
               v-for="item in baseList"
               :key="item.warehouseId"
@@ -13,10 +13,9 @@
               :value="item.warehouseId"
               ></el-option>
               </el-select>
-            </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" plain @click="onSubmit">查询</el-button>
+            <el-button type="primary" plain @click="clickTab">查询</el-button>
           </el-form-item>
           <el-form-item>
             <el-checkbox v-model="check"><span class="am-ft-12">只显示不平纪录</span></el-checkbox>
@@ -41,14 +40,14 @@
         <!--/无数据时缺省显示-->
 
         <!--有数据时显示-->
-        <not-check ref="notcheck"></not-check>
+        <not-check ref="notcheck" :selectBase="selectBase" :check="check"></not-check>
         <!--/有数据时显示-->
       </el-tab-pane>
       <el-tab-pane label="盘点中"  name="ing">
-        <check-ing ref="checking"></check-ing>
+        <check-ing ref="checking" :selectBase="selectBase" :check="check"></check-ing>
       </el-tab-pane>
       <el-tab-pane label="已完成"  name="end">
-        <check-ed ref="checked"></check-ed>
+        <check-ed ref="checked" :selectBase="selectBase" :check="check"></check-ed>
       </el-tab-pane>
     </el-tabs>
 
@@ -110,10 +109,7 @@
               })
             }
           })
-        },
-      onSubmit() {
-        console.log('submit!');
-      }
+        }
     },
     created(){
       this.searchBase();

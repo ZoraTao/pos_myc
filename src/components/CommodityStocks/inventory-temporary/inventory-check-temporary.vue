@@ -157,7 +157,7 @@
         _this.$myAjax({
           url:'pos-api/warehouseCheck/getWarehouseCheckList',
           data:{
-            // status:id,
+            status:'-1',
             checkStart:_this.selectData.startTime,
             checkEnd:_this.selectData.endTime,
             warehouseId:_this.selectData.base,//仓库ID
