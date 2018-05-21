@@ -1,8 +1,8 @@
 <template>
-<div id="endorsement" class="clearfix modal-content-center">
+<div id="endorsement" class="clearfix modal-content-center" v-loading="!list">
     <div class="modalContent endorsementContent">
         <div class="endorsementItem">
-            <div class="endorsementItemLeft">
+            <!-- <div class="endorsementItemLeft">
                 <div class="">
                     <b>张丽丽</b>
                     <p>共3件商品 <span>合计:<b>1125.00</b></span></p>
@@ -16,60 +16,20 @@
                 <span class="am-ft-success">签批通过</span>
                 <p>张三  2017-12-23 10:20:23 审批</p>
                 <b>整单折扣: 8折</b>
-            </div>
+            </div> -->
+           <p v-show="list == null||list.length == 0" 
+           style="text-align:center;color:#dcdcdc;padding-top:100px;">暂无数据</p> 
         </div>
-        <div class="endorsementItem">
-            <div class="endorsementItemLeft">
-                <div class="">
-                    <b>张丽丽</b>
-                    <p>共3件商品 <span>合计:<b>1125.00</b></span></p>
-                </div>
-                <div class="">
-                    <a>0006262626</a>
-                    <p>创建人：张三 <span>2017-12-11 16:40</span></p>
-                </div>
-            </div>
-            <div class="endorsementItemRight">
-                <span class="am-ft-warn">签批通过</span>
-                <p>张三  2017-12-23 10:20:23 审批</p>
-                <b>整单折扣: 8折</b>
-            </div>
-        </div>    
-        <div class="endorsementItem">
-            <div class="endorsementItemLeft">
-                <div class="">
-                    <b>张丽丽</b>
-                    <p>共3件商品 <span>合计:<b>1125.00</b></span></p>
-                </div>
-                <div class="">
-                    <a>0006262626</a>
-                    <p>创建人：张三 <span>2017-12-11 16:40</span></p>
-                </div>
-            </div>
-            <div class="endorsementItemRight">
-                <span class="am-ft-error">签批通过</span>
-                <p>张三  2017-12-23 10:20:23 审批</p>
-                <b>整单折扣: 8折</b>
-            </div>
-        </div>    
-        <div class="endorsementItem">
-            <div class="endorsementItemLeft">
-                <div class="">
-                    <b>张丽丽</b>
-                    <p>共3件商品 <span>合计:<b>1125.00</b></span></p>
-                </div>
-                <div class="">
-                    <a>0006262626</a>
-                    <p>创建人：张三 <span>2017-12-11 16:40</span></p>
-                </div>
-            </div>
-            <div class="endorsementItemRight">
-                <span class="am-ft-warn">签批通过</span>
-                <p>张三  2017-12-23 10:20:23 审批</p>
-                <b>整单折扣: 8折</b>
-            </div>
-        </div>                            
     </div>
+    <el-pagination
+      background
+      class="am-ft-right mgt10"
+      layout=" prev, pager, next"
+      :page-size="4"
+      :total="Number(count)"
+      @current-change="requestOrder"
+      :current-page.sync="nub">
+    </el-pagination>
 </div>
 </template>
 
@@ -79,14 +39,38 @@ export default {
   name: 'EndorsementModal',
   data () {
     return { 
+        nub:1,
+        size:4,
+        count:0,
+        list:null,
     }
   },
   methods:{
+      requestOrder(){
+          const _this = this;
+          _this.$myAjax({
+              url:'pos-api/orderTemp/getOrderTempList',
+              data:{
+                nub: (_this.nub - 1) * _this.size,
+                  size:5,
+                  status:'1,2',
+                  salesId:JSON.parse(localStorage.getItem("userData")).userId
+              },success:function(res){
+                    _this.count = res.data.count;
+                    _this.list = res.data.orderTempList;
+              },error:function(err){
+                  console.log(err)
+              }
+          })
+      }
+  },
+  created(){
+
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
 .endorsement{
     .el-dialog__body {
         padding: 0;
@@ -112,6 +96,7 @@ export default {
         .endorsementContent{
             padding: 5px 30px;
             overflow: hidden;
+        height: 413px !important;
             background: #fff;
             .endorsementItem{
                 .am-ft-success{

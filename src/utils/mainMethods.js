@@ -6,6 +6,11 @@ Vue.prototype.$myAjax = function (opt) {
     let successCallback = Object.assign({}, opt).success;
     let errorCallback = Object.assign({}, opt).error;
     let type = opt.method || 'post';
+    let keyParams = Object.assign({},{
+      weChat: true,
+      userId: JSON.parse(localStorage.getItem("userData")).userId,
+      orgId: JSON.parse(localStorage.getItem("userData")).orgId,
+    },opt.keyParams)
     let urlName = 'http://myc.qineasy.cn/';
     const defaults = Object.assign({}, opt.data, {
         // access_token: window.localStorage.getItem('access_token') || "",
@@ -18,11 +23,7 @@ Vue.prototype.$myAjax = function (opt) {
       method: type,
       params: {
         jsonObject: defaults,
-        keyParams: {
-          weChat: true,
-          userId: JSON.parse(localStorage.getItem("userData")).userId,
-          orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-        }
+        keyParams:keyParams
       }
     })
       .then(function (res) {

@@ -13,7 +13,6 @@ import VueAreaLinkage from 'vue-area-linkage'
 import VueContextMenu from 'vue-contextmenu'
 import 'vue-contextmenu/style/css/font-awesome.min.css'
 import globaMethods from './utils/mainMethods.js'
-import $ from 'zepto'
 
 Vue.prototype.$axios = axios
 

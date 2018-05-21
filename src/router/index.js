@@ -13,6 +13,7 @@ const router = new Router({
         },
         {
             path: '/login',
+            name:'login',
             component: resolve => require(['../components/Login.vue'], resolve)
         },
         {
@@ -94,7 +95,7 @@ const router = new Router({
                     // meta:{keepAlive:true}
                 },
                 {
-                    path: 'optometryOrderCu/:data',
+                    path: 'optometryOrderCu',
                     name: 'optometryOrderCu',
                     component: resolve => require(['../components/Bills/optometryOrder/optometryOrderCu/optometry-order-cu.vue'], resolve)
                 },
@@ -187,7 +188,7 @@ const router = new Router({
                     path: 'memberDetail',
                     name: 'member-detail',
                     component: resolve => require(['../components/MemberManage/MemberInquiry/member-detail.vue'], resolve),
-                    meta:{keepAlive:true}
+                    // meta:{keepAlive:true}
                 },
                 {
                     path: 'memberComplaints',
@@ -253,6 +254,12 @@ const router = new Router({
                     name: 'inventory-check-temporary',
                     component: resolve => require(['../components/CommodityStocks/inventory-temporary/inventory-check-temporary'], resolve)
                 },
+                //盘点不平处理
+                {
+                    path: 'unevenness-order',
+                    name: 'unevenness-order-index',
+                    component: resolve => require(['../components/CommodityStocks/unevenness/unevenness.vue'], resolve)
+                },
                 // 添加临时盘点单
                 {
                     path: 'add-temporary',
@@ -288,34 +295,17 @@ const router = new Router({
     ]
 })
 
-
-// router.afterEach((to, from) => {
-//     console.log(store.state)
-// })
-// 重新刷新页面拦截器
-// const reloadInterceptor = (to, from) =>{
-//     if(from.name == 'cashierList' && to.name == 'orderDetail'){
-//         let isRefresh = sessionStorage.getItem('isRefresh');
-//         console.log('isRefresh:'+isRefresh);
-//         if(isRefresh == '0'){
-//             sessionStorage.setItem('isRefresh',null)
-//             window.location.reload();
-//         }else {
-//             sessionStorage.setItem('isRefresh',0)
-//         }
-//     }else if(from.name == 'cashierList' && to.name =='orderDetail'){
-//         sessionStorage.setItem('isRefresh',0)
-//     }
-// }
+router.beforeEach((to, from, next) => {
+    const userInfo = JSON.parse(sessionStorage.getItem('userData'));
+    if(userInfo&&userInfo.token){
+      next();
+    }else{
+      if(to.path=='/login'){//如果是登录页面路径，就直接next()
+        next();
+      }else{//不然就跳转到登录；
+        next('/login');
+      }
+    }
+  });
 export default router
-// router.beforeEach((transition) => {
-//   if (transition.to.auth) {
-//        //判断是否登录，（可以通过接口，Vuex状态 token）
-//        //没有登录走下面逻辑
-//        let redirect = encodeURIComponent(transition.to.path);
-//        transition.redirect('/logon?redirect=' + redirect);
-//        //redirect 作为参数，登录之后跳转回来
-//   } else {
-//       transition.next();
-//   }
-// });
+

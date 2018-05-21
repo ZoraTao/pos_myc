@@ -73,6 +73,7 @@
     <el-dialog
       title="回访登记_待回访"
       :visible.sync="isShowNewComplaints"
+      :before-close="clearAll"
       width="900px">
       <div id="newOptometry" class="newOptometry">
         <div class="textCenter newOptometryBody">
@@ -369,6 +370,20 @@
               })
           }
         })
+      },
+      clearAll(){
+        this.visitContent.person ='';
+        this.visitContent.time='';
+        this.visitContent.style='',
+        this.visitContent.message='';
+        this.isShowNewComplaints = false;      
+        this.tableData=[{
+                        bigClass: '',
+                        smallClass:'',
+                        personInCharge:'',
+                        satisfaction:''
+                      }]
+        
       },
       submit(){
         const _this = this;

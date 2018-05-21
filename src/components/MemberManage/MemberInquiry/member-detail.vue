@@ -1,5 +1,5 @@
 <template>
-  <div class="content-out-wrapper content-out-wrapper-md">
+  <div class="content-out-wrapper content-out-wrapper-md" v-if="memberInfo!=null" >
     <!--top-->
     <div class="member-info-base">
       <img v-if="memberInfo.headpicpath==''" class="member-logo" src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_huiyuangl.png"/>
@@ -27,7 +27,8 @@
         <member-base-info :memberBaseInfo="memberInfo"></member-base-info>
       </el-tab-pane>
       <el-tab-pane label="验光记录">
-        <member-optometry-record :memberBaseInfo="memberInfo"></member-optometry-record>
+        <optometryOrderList :memberDet="'detail'" :memberInfos="memberInfo"></optometryOrderList>
+        <!-- <member-optometry-record :memberBaseInfo="memberInfo"></member-optometry-record> -->
       </el-tab-pane>
       <el-tab-pane :label="'订单记录('+orderTempList.length+')'" v-if="orderTempList!=null">
         <member-order-record :orderTempList="orderTempList"></member-order-record>
@@ -39,7 +40,7 @@
         <member-return-visit></member-return-visit>
       </el-tab-pane>
       <el-tab-pane label="积分明细">
-        <member-integral-details></member-integral-details>
+        <member-integral-details :memberInfo="memberInfo"></member-integral-details>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -48,31 +49,33 @@
 <script>
   import ElRow from "element-ui/packages/row/src/row";
   import MemberBaseInfo from "./member-base-info";
-  import MemberOptometryRecord from "./member-optometry-record";
+  // import MemberOptometryRecord from "./member-optometry-record";
   import MemberOrderRecord from "./member-order-record";
   import MemberComplaintsRecord from "./member-complaints-record";
   import MemberReturnVisit from "./member-return-visit";
   import MemberIntegralDetails from "./member-integral-details";
+  import optometryOrderList from '../../Bills/optometryOrder/optometryOrderList/optometry-order-list'
 
   export default {
     components: {
       ElRow,
       MemberBaseInfo,
-      MemberOptometryRecord,
+      // MemberOptometryRecord,
       MemberOrderRecord,
       MemberComplaintsRecord,
       MemberReturnVisit,
-      MemberIntegralDetails
+      MemberIntegralDetails,
+      optometryOrderList
     },
     name: "member-detail",
     data() {
       return {
-        memberInfo: {},
+        memberInfo: null,
         orderTempList:null,
       }
     },
     methods:{
-      initMemberOrder(){//根据手机号查订单
+      initMemberOrder(tel){//根据手机号查订单
         let _this = this ;
         // _this.$myAjax({
         //   url:'member-api/member/getMemberListByTel',
@@ -87,19 +90,60 @@
         _this.$myAjax({
           url:'pos-api/orderTemp/getOrderTempList',
           data:{
-            searchCode:_this.memberInfo.telphone
+            searchCode:tel
           }, success:function(res){
             console.log(res)
-            _this.orderTempList = res.data.orderTempList;
+            if(res.code == 1){
+              _this.orderTempList = res.data.orderTempList;
+            }else{
+              _this.$message({
+                showClose: true,
+                message: res.msg,
+                type: 'error'
+              })
+            }
           },error:function(err){
             // console.log(log)
+            _this.$message({
+                showClose: true,
+                message: err,
+                type: 'error'
+              })
+          }
+        })
+      },
+      searchMemberId(id){
+        const _this = this;
+        _this.$myAjax({
+          url:'member-api/member/getMemberListByBoYang',
+          data:{
+            memberId:id
+          },
+          success:function(res){
+            console.log(res)
+            if(res.code == 1){
+              _this.memberInfo = res.data.memberList[0];
+            }else{
+              _this.$message({
+                showClose: true,
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          },error:function(err){
+            console.log(err)
+            _this.$message({
+                showClose: true,
+                message: err,
+                type: 'error'
+              })
           }
         })
       }
     },
     created: function () {
-      this.memberInfo = this.$route.params.data;
-      this.initMemberOrder();
+      this.searchMemberId(this.$route.params.memberId)
+      this.initMemberOrder(this.$route.params.tel);
     }
   }
 </script>
