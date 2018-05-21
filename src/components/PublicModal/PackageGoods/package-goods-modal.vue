@@ -101,7 +101,7 @@
                                                         </template>
                                                     </el-autocomplete> -->
                                                     <el-autocomplete
-                                                      popper-class="my-autocomplete"
+                                                    popper-class="my-autocomplete"
                                                     v-if="scope.row.level>1"
                                                     @focus="toCopyValue(scope.row,scope.$index)"
                                                     class="inline-input"

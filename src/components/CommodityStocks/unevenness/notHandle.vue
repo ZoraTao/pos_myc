@@ -85,6 +85,9 @@
           count:0,
         }
       },methods:{
+        goCheck(data){
+          
+        },
         requestOrder(id){
           if(!id){
             id = 0;

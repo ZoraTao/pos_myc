@@ -86,6 +86,9 @@
       }
     },
     methods:{
+      goCheck(data){
+
+      },
       requestOrder(id){
         const _this = this;
         _this.$myAjax({

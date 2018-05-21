@@ -77,6 +77,16 @@
         nub:1,
       }
     },
+    props:{
+      selectBase:{
+        type:String,
+        default:''
+      },
+      check:{
+        type:Boolean,
+        defalut:false
+      }
+    },
     methods: {
       requestOrder(){
         const _this = this;
@@ -84,6 +94,8 @@
           url:'pos-api/warehouseCheck/getWarehouseCheckList',
           data:{
             status:0,
+            flag:_this.check?'1':'',
+            warehouseId:_this.selectBase,
             nub:_this.nub == 1?'0':_this.nub*_this.size,
             size:10,
           },
@@ -101,7 +113,8 @@
       goCheck(data){
         this.$router.push({
           name: 'check-inventory',
-          params: {data:data}
+          query: {id:data.warehouseCheckCode},
+          params:{data: data}
         })
       }
     }
