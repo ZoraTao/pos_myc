@@ -316,7 +316,7 @@ export default {
         }
       }
       _this.customContent.price = parseFloat(_this.customContent.price);
-      let users =  JSON.parse(localStorage.getItem("userData"));
+      let users =  JSON.parse(sessionStorage.getItem("userData"));
       console.log(1,_this.orgData)
       _this.$myAjax({
           url:'pos-api/customize/addCustomize',
@@ -346,7 +346,7 @@ export default {
                 // {"customizeDemand":"1111","count":"1","customizeOrgName":"毛源昌商城","customizeOrgId":"11387","customizeShopName":"天一恒泰店","customizeShopId":"11387","customizePerson":"陈中床"}
           },
           keyParams:{
-            corporationId:JSON.parse(localStorage.getItem("userData")).corporationId,
+            corporationId:JSON.parse(sessionStorage.getItem("userData")).corporationId,
           },
           success:function(res){
               if(res.code == 1){

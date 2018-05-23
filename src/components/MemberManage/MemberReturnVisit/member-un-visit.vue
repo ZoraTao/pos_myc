@@ -444,7 +444,7 @@
         _this.$myAjax({
           url:'cas-api/user/getUsersByOrgId',
           data:{
-            orgId:JSON.parse(localStorage.getItem("userData")).orgId
+            orgId:JSON.parse(sessionStorage.getItem("userData")).orgId
           },success:function(res){
             if(res.code ==1){
               _this.ShopPerson = res.data.userList;

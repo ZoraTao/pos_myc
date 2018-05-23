@@ -68,6 +68,10 @@ const allDate = {
         console.log(end - start)
         return end - start
     },
+    timeTodayTime(times = new Data()){
+        console.log(times)
+        return times.toLocaleDateString().replace(/\//g, "-") + " " + times.toTimeString().substr(0, 8)
+    },
     TimeToDate(uTime = Date.parse(new Date())) {
         /* 参数 时间戳毫秒 
          * 返回 2018/3/14 下午12:26:03
@@ -96,7 +100,7 @@ const allDate = {
          * 不传 返回当前时分
         */
         uTime = uTime.toString().length === 13 ? uTime / 1000 : uTime
-        let myDate = new Date(nuuTime * 1000);
+        let myDate = new Date(uTime * 1000);
         let hours = myDate.getHours();
         let minutes = myDate.getMinutes();
         console.log(hours + ':' + minutes)

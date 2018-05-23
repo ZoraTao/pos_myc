@@ -81,7 +81,7 @@ export default {
             }
         },
         receive(value){
-            console.log(value);
+            // console.log(value);
             this.$emit('receiveconpon',value)
         },
         // 查找优惠券

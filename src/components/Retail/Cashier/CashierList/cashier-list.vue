@@ -49,7 +49,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="开始日期"
                     v-model="searchForm.saleTimeStart"
-                    style="width: 120px;"></el-date-picker>
+                    style="width: 130px;"></el-date-picker>
               </div>
               <div class="fn-line-block am-ft-center">-</div>
               <div class="fn-line-block">
@@ -60,7 +60,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="结束日期"
                     v-model="searchForm.saleTimeEnd"
-                    style="width: 120px;"></el-date-picker>
+                    style="width: 130px;"></el-date-picker>
               </div>
             </el-form-item>
           </li>

@@ -276,6 +276,18 @@
       this.isSubmit = this.submit;
     },
     methods: {
+      cleandata(){
+        const _this = this;
+        for(var key in _this.addMemberForm){
+          if(key === 'adr'){
+            _this.addMemberForm[key] = [];
+          }else if(key ==='sex'){
+            _this.addMemberForm[key] = 'M';
+          }else{
+            _this.addMemberForm[key] = '';
+          }
+        }
+      },
       //向父组件传送的数据
       sendToParent() {
         console.log('准备接受啦',this.addMemberForm)

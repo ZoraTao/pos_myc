@@ -27,7 +27,7 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="会员 :" class="memberInput">
-                        <el-input class="" v-model="selectMember.selectM" placeholder="输入会员卡号/手机号" @keyup.enter.native="key13GetMemberInfo"></el-input>
+                        <el-input class="" v-model.trim="selectMember.selectM" placeholder="输入会员卡号/手机号" @keyup.enter.native="key13GetMemberInfo"></el-input>
                         <el-button  @click="showSelectMember=true">最近会员</el-button>
                     </el-form-item>
                 </el-form>
@@ -116,7 +116,9 @@
                             <span class="am-ft-bold am-ft-black">
                                 <el-input 
                                 v-model="tableData[scope.$index].nums"
-                                :disabled = "tableData[scope.$index].status == '2' || tableData[scope.$index].status == '3'|| tableData[scope.$index].status == '4'"
+                                type="number"
+                                min='1'
+                                :disabled="tableData[scope.$index].status == '2' || tableData[scope.$index].status == '3'|| tableData[scope.$index].status == '4'"
                                 @change="changeNums(scope.row,scope.$index);"
                                 ></el-input>
                             </span>
@@ -135,11 +137,14 @@
                     label="折扣"
                     width="140px">
                         <template slot-scope="scope">
-                            <el-input class=""
+                            <el-input 
+                            v-show="alldiscountBool"
                             placeholder=""
-                            :disabled="tableData[scope.$index].status == '2' ||tableData[scope.$index].status == '3'||tableData[scope.$index].status == '4'"
+                            :disabled="tableData[scope.$index].status == '2' || tableData[scope.$index].status == '3'|| tableData[scope.$index].status == '4'"
+                            @change="changeShopDiscount(scope.$index)"
                             v-model="tableData[scope.$index].discount"
-                            @change="changePrice(scope.row,1,scope.$index);"></el-input>
+                           ></el-input>
+                           <span v-show="!alldiscountBool">{{(tableData[scope.$index].discount*10).toFixed(2)}}</span>
                         </template>
                     </el-table-column>
                     <!-- <el-table-column
@@ -173,7 +178,7 @@
                 <div class="settleAccounts">
                     <p>
                         <span>共计 :<b>{{numCount}}件</b></span>
-                        <span>合计 :<b v-show="amountSale!=''&amountSale!=0">{{(parseFloat(amountSale)+parseFloat(actionCost.discountMoney||actionCost.money||0)).toFixed(2)}}</b><b v-show="amountSale==0">0.00</b></span>
+                        <span>合计 :<b v-show="amountSale!=''&amountSale!=0">{{parseFloat(amountSale).toFixed(2)}}</b><b v-show="amountSale==0">0.00</b></span>
                     </p>
                     <p>
                         <span v-show="!actionCost.actionId">促销活动:无</span>
@@ -187,14 +192,19 @@
                         <span v-show="conponResponse.amount>0 || conponResponse.discount > 0">
                             折扣券 : {{conponResponse.couponName}}
                             <i v-show="conponResponse.discount>0">
-                                (<b>{{parseFloat(conponResponse.discount)}}折</b> <b>-{{conponDiscountMoney}}元</b>)
+                                (<b>{{parseFloat(conponResponse.discount)}}折</b> <b>-{{(conponDiscountMoney).toFixed(2)}}元</b>)
                             </i>
-                            <i v-show="conponResponse.amount>0">(<b>-{{conponDiscountMoney}}元</b>)</i>
+                            <i v-show="conponResponse.amount>0">(<b>-{{conponResponse.amount}}元</b>)</i>
                         </span>
                         <span v-show=" allDisCount == 0">折扣 : 无</span>
-                        <span v-show="parseFloat(allDisCount) > 0">折扣 : {{allDisCount}}折(-{{discountSale}}元)</span>
-                        <span v-show="memberShipDisCount==10">无会员折扣</span>
-                        <span v-show="memberShipDisCount<10">会员折扣 : {{parseFloat(memberShipDisCount*10).toFixed(2)}}折  <b v-show="memberShipDisCountSale!= '' &memberShipDisCountSale!= '0'">(-{{parseFloat(memberShipDisCountSale).toFixed(2)}}元)</b></span>
+                        <span v-show="parseFloat(allDisCount) > 0">折扣 : <span v-show="alldiscountNumsBool">{{allDisCount}}折</span>(-{{discountSale}}元)</span>
+                        <span v-show="!memberShipDisCount||alldiscountBool">无会员折扣</span>
+                        <span v-show="memberShipDisCount<1&&memberShipDisCount!==''&&!alldiscountBool">
+                          会员折扣 : {{parseFloat(memberShipDisCount*10).toFixed(2)}}折  
+                          <b v-show="memberShipDisCountSale!= '' &memberShipDisCountSale!= '0'">
+                            (-{{parseFloat(memberShipDisCountSale).toFixed(2)}}元)
+                          </b>
+                        </span>
                     </p>
                 </div>
             </div>
@@ -211,8 +221,8 @@
                 </el-form>
             </div>
             <div class="fn-left singleDiscount">
-                <p><span>整单折扣 :</span>
-                <el-input class="" placeholder="" v-model="allDisCount" @change="afterDiscount()"/> 折
+                <p><span><el-checkbox v-model="alldiscountBool" @change="changeDiscountModel()"/>店员折扣 :</span>
+                <el-input class="" placeholder="" v-model="allDisCount" :disabled="!alldiscountBool" @change="computedPay('alldiscount')"/> 折
                 </p>
             </div>
             <div class="fn-right singleDiscount">
@@ -242,6 +252,13 @@
                             placeholder="选择日期">
                             </el-date-picker>
                         </el-form-item>
+                        <!-- <el-form-item label="取镜时间：" >
+                            <el-select v-model="glassesTimeValue" style="width:130px">
+                              <el-option label="24小时" value="1"></el-option>
+                              <el-option label="48小时" value="2"></el-option>
+                              <el-option label="72小时" value="3"></el-option>
+                            </el-select>
+                        </el-form-item> -->
                         <el-form-item label="取镜方式：">
                             <el-select size="mini" style="width:95px;"  v-model="publicSelcet.glassesTypeModel" @visible-change="getPublicSelect(5,publicSelcet.glassesTypeOptions)" placeholder="请选择">
                                 <el-option
@@ -325,7 +342,7 @@
         <div class="addMember borderfff">
             <div class="memberTop">
                 <label>会员</label>
-                <el-button type="primary" @click="addMember=true">添加会员</el-button>
+                <el-button type="primary" @click="alreadyAddMember">添加会员</el-button>
             </div>
             <div class="memberBottom">
                 <div class="memberName">
@@ -463,7 +480,7 @@
         <withShopModal v-on:commitMessage="withShopCommit"></withShopModal>
     </el-dialog>
     <el-dialog class="endorsement" title="选择促销活动" :visible.sync="cuActions" width="500px">
-        <cuActions :numCount='numCount' @closeShow="openConpon(false)" :saleCount='saleCount' @actionMessage="actionComputed"></cuActions>
+        <cuActions :numCount='numCount' @actionData="actionDataFn" @closeShow="openConpon(false)" :saleCount='saleCount' @actionMessage="actionComputed"></cuActions>
     </el-dialog>
     <el-dialog class="packageGoods" title="选择套餐" :visible.sync="packageGoods" width="800px">
         <PackageGoodsModal @toHidePackageModel="closePackage" ></PackageGoodsModal>
@@ -539,7 +556,7 @@
         center>
         <div class="textCenter mgt30 permissionBox">
             <h4 class="am-ft-gray6 am-ft-16 mgb20 ft_bold">您没有以下折扣权限，是否申请签批？</h4>
-            <p><span>BM12340002 : {{allDisCount}}折</span></p>
+            <p><span>整单折扣 : {{allDisCount}}折</span></p>
             <p v-for="item in strlist" :key="item"><span>{{item}}</span></p>
             <p class="textareaBox">
                 <i class="am-ft-red">*</i>
@@ -553,7 +570,7 @@
         </div>
         <div slot="footer" class="dialog-footer">
             <div class="mgt10">
-                <el-button @click="permission = false;confirmAllDiscount(false);">取消</el-button>
+                <el-button @click="permission = false;">取消</el-button>
                 <el-button type="primary" @click="loginUserPermission = true;">直接签批</el-button>
                 <el-popover
                 ref="popover"
@@ -593,7 +610,17 @@
     <el-dialog class="endorsement" title="签批" :visible.sync="endorsement" width="600px">
         <EndorsementModal ref="endorsement"></EndorsementModal>
     </el-dialog>
-
+<el-dialog
+  :visible.sync="alldisCountModel"
+  width="360px"  center
+  custom-class="noheader am-ft-center"
+  :before-close = "cancalClickDiscount"
+  :show-close='false'>
+  <span class="confirmTitle">确定使用店员折扣吗？</span>
+  <p>使用店员折扣后，会员折扣将不可使用</p>
+    <el-button @click="changeDiscountModel('false')">取 消</el-button>
+    <el-button type="primary" @click="changeDiscountModel('true')">确 定</el-button>
+</el-dialog>
     <el-dialog class="reprint" title="补打" :visible.sync="reprint" width="900px">
         <ReprintModal></ReprintModal>
         <!-- <div class="receiptsData">
@@ -607,7 +634,7 @@
         </span>
     </el-dialog>
     <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
-      <AddMember :submit="isSubmit" v-on:listenToChild="memberAddSubmit"></AddMember>
+      <AddMember :submit="isSubmit" ref="addMembers" v-on:listenToChild="memberAddSubmit"></AddMember>
       <div class="packageDetailButtonGroup">
         <el-button @click="addMember = false">取消</el-button>
         <el-button type="primary" @click="isSubmit=true">确定</el-button>
@@ -700,7 +727,7 @@ export default {
         memberId: "",
         prescriptionsId: "",
         urgent: false,
-        glassesTime: new Date(),
+        glassesTime: new Date(Date.parse(new Date())+86400000*3),
         glassesType: "",
         glassesCompany: "",
         glassesAddress: "",
@@ -720,8 +747,9 @@ export default {
       },
       orgPeople:[],//本店员工
       optometryId: "",
-      defaultTimes: new Date(),
+      defaultTimes: new Date(Date.parse(new Date())+86400000*3),
       type: "",
+      actionData:null,
       optometryTime: "",
       optometryDetail:null,
       // submitNewOptometry: false, //控制 提交验光单子组件传值
@@ -731,7 +759,7 @@ export default {
       optometryList: null, //验光单列表数据
       selectMember: {
         //选择会员数据集合
-        selectM: "",
+        selectM: "17607096437",
         memberInfo: null //会员信息
       },
       extraMoney: 0, //其他费用
@@ -740,14 +768,16 @@ export default {
       actionSale: 0, //活动金额
       numCount: 0, //件数
       allDisCount: "", //整单折扣
-      memberShipDisCount: "10", //会员折扣
+      memberShipDisCount: "", //会员折扣
       memberShipDisCountSale: 0, //会员折扣抵扣金额
       discountFlag: 1,
+      alldiscountBool:false,
       packagePrice:0,//套餐金额
       discountSale: 0, //优惠券折扣金额
-      conponDiscountMoney: "", //优惠券折扣金额
+      conponDiscountMoney: 0, //优惠券折扣金额
       actionCost: {}, //促销活动信息
       conponResponse: {},
+      glassesTimeValue:'3',//取镜时间
       timeDefaultShow: "", //当前日期默认值
       express: {
         //快递方式
@@ -776,7 +806,6 @@ export default {
       orgDatas: null,
       tableData: [], //用户保存商品信息
       where: "", //左右镜片
-      addShop: false,
       //以下为控制modal弹框变量,
       conponData: null,
       isSubmit: false,
@@ -785,6 +814,7 @@ export default {
       loginUserPermission: false,
       permission: false,
       pendingOrders: false,
+      alldisCountModel:false,
       CouponBarCode: false,
       otherExpense: false,
       packageGoods: false,
@@ -801,6 +831,7 @@ export default {
       isOptometryDialogVisible: false,
       showSelectMember: false,
       cuActions: false,
+      alldiscountNumsBool:false,
       selectBrand:{
         varieties:'',
         brand:'',
@@ -842,10 +873,26 @@ export default {
     },
     // 促销活动、
     openConpon(data) {
+      if(this.alldiscountBool){
+        this.$message({
+          message:'你已参加整单折扣,不可共享其他优惠',
+          showClose:true,
+          type:'warning'
+        })
+        return
+      }
       this.cuActions = data;
+    },
+    alreadyAddMember(){
+      this.addMember = true;
+      const _this  = this;
+      _this.$nextTick(()=>{
+        _this.$refs.addMembers.cleandata();
+      })
     },
     //促销活动计算方案
     actionComputed(data) {
+      console.log(data)
       let _this = this;
       _this.actionCost = data;
       _this.computedPay();
@@ -864,6 +911,14 @@ export default {
     },
     //打开优惠券
     openCouponBarCode() {
+      if(this.alldiscountBool){
+        this.$message({
+          message:'你已参加整单折扣,不可共享其他优惠',
+          showClose:true,
+          type:'warning'
+        })
+        return
+      }
       if (this.selectMember.memberInfo) {
         this.CouponBarCode = true;
       } else {
@@ -902,6 +957,32 @@ export default {
         }
       }
     },
+    //整单折扣改变
+    changeDiscountModel(bool){
+      if(this.alldiscountBool&&!bool){
+        this.alldisCountModel = true;
+      }else{
+        this.allDisCount = '';
+        this.computedPay();
+      }
+      if(bool == 'true'){
+        this.alldisCountModel = false;
+        this.allDisCount = '10.00';
+        this.computedPay('alldiscount');
+      }else if(bool== 'false'){
+        this.alldisCountModel = false;
+        this.alldiscountBool = false;
+        this.allDisCount = '';
+      }
+    },
+    actionDataFn(data){
+      this.actionData = data;
+    },
+    cancalClickDiscount(){
+        this.alldisCountModel = false;
+        this.alldiscountBool = false;
+        this.allDisCount = ''
+    },
     //自带商品添加
     withShopCommit(data) {
       this.selectSku(data, data.nums);
@@ -916,14 +997,14 @@ export default {
           method: "post",
           params: {
             jsonObject: {
-              // orgId: JSON.parse(localStorage.getItem("userData")).orgId,
+              // orgId: JSON.parse(sessionStorage.getItem("userData")).orgId,
               // orgId:'11387',
               //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
             },
             keyParams: {
               weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
             }
           }
         })
@@ -1049,8 +1130,8 @@ export default {
             jsonObject: {},
             keyParams: {
               weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
             }
           }
         })
@@ -1094,8 +1175,8 @@ export default {
             },
             keyParams: {
               weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
             }
           }
         })
@@ -1122,7 +1203,7 @@ export default {
       this.selectProductSku.cylinder = "";
       this.selectProductSku.productSkuData = "";
       this.selectProductSku.product = "";
-      console.log(this.optometryData);
+      // console.log(this.optometryData);
       let appkey =''
       if(_this.appkey == '0'){//如果是0，筛选远用
           appkey = 1
@@ -1186,7 +1267,7 @@ export default {
         _this.searchStr = degress;
       } else if (degress == undefined && bool == undefined) {
         //如果不是镜片度数搜索
-        console.log(2,degress,bool)
+        // console.log(2,degress,bool)
         _this.searchStr = "";
       }
       let code = [];
@@ -1199,7 +1280,7 @@ export default {
           code = ["C001", "", ""];
         }
       }
-      console.log(_this.eyesdata)
+      // console.log(_this.eyesdata)
       setTimeout(() => {
         _this
           .$axios({
@@ -1226,8 +1307,8 @@ export default {
               },
               keyParams: {
                 weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+                orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
               }
             }
           })
@@ -1285,8 +1366,8 @@ export default {
               },
               keyParams: {
                 weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+                orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
               }
             }
           })
@@ -1505,160 +1586,323 @@ export default {
           }
       }
       console.log("渲染后的value", value);
-      let alldis = _this.allDisCount;
-      if (alldis != "" && typeof parseFloat(alldis) == "number") {
-        value.realSale = (value.discount * value.price / 10).toFixed(2);
-      }
+      // if(value.status == '0'||value.status == '1')
+      // if (_this.allDisCount != "" && alldiscountBool) {
+      //   value.discount = _this.allDiscount;
+      //   value
+      // }
       if (!nums&&name!='package') {
         // if (value.status != 3) {
           value.nums = 1;
         // }
       }
-      if (this.allDisCount > 0) {
-        //添加商品的时候如果有整单折扣
-        this.addShop = true;
+      if(this.alldiscountBool){
+        value.discount = parseFloat(_this.allDisCount).toFixed(2);
       }
       if(name != 'package'){
+        
         _this.tableData.push(value);
       }
       _this.showSelectRH = false;
       _this.customizeRH = false;
       _this.showSelectShop = false;
-      _this.computedPay();
+      if(this.alldiscountBool){
+          _this.computedPay('shopModefly');
+      }else{
+        _this.computedPay();
+      }
+    },
+    //修改商品折扣
+    changeShopDiscount(index){
+      let data = this.tableData[index]
+      console.warn(data)
+      if(data.discount>10){
+        data.discount = 10
+      }else if(data.discount<0){
+        data.discount = 1
+      }
+        data.discount = parseFloat(data.discount).toFixed(2);
+        data.realSale = (data.price*data.discount/10).toFixed(2);
+        this.tableData.splice(index,1,data);
+        this.computedPay('shopModefly')
+    },
+    //定义统一修改折扣
+    changeDiscount(){
+        const _this = this;
+        let discount = 1;//折扣
+        let coupon = 0;//折扣券固定减额
+        let n = 0;//受到优惠的数量
+        let memberShipDisCountSale = 0;//会员优惠金额
+        let conponDiscountMoney = 0;//折扣券优惠金额
+        let discountMoney = 0;//折扣券打折金额
+        let actionMoney = 0;
+        let actionDiscount = 1;
+        let money = 0;
+        for(var i=0;i<_this.tableData.length;i++){//获取每列商品总金额
+            if(_this.tableData[i].status == 0||_this.tableData[i].status == 1){
+              _this.tableData[i].coupon = 0;
+              _this.tableData[i].actionMoney = 0;
+              _this.tableData[i].cMoney=_this.tableData[i].nums*_this.tableData[i].price;
+              money+=_this.tableData[i].cMoney;
+            }
+        }
+        for(var i=0;i<_this.tableData.length;i++){//获取每个商品总占比
+            if(_this.tableData[i].status == 0||_this.tableData[i].status == 1){
+                  _this.tableData[i].cli=_this.tableData[i].cMoney/money;
+            }
+        }
+        if(_this.memberShipDisCount*10<10&&_this.memberShipDisCount!=''){//如果有会员折扣
+          discount = _this.memberShipDisCount;
+        }
+        if(_this.actionData){//促销活动
+          if(_this.actionData.cashFlag=='1'){
+            for(var i=0;i<_this.tableData.length;i++){//每列商品现金流 占比
+              _this.tableData[i].actionMoney = _this.actionData.cashAmount* _this.tableData[i].cli;
+            }
+          }
+          // console.log(_this.actionData)
+           if(_this.actionData.discountFlag=='1'){//促销活动打折
+              actionDiscount = _this.actionData.discountAmount;
+              discount = discount*parseFloat(actionDiscount)/10;
+              if(_this.actionData.cashFlag=='1'){
+                discountMoney=money-_this.actionData.cashAmount;
+              }
+                discountMoney=(1-actionDiscount/10)*money;
+          }
+        }        
+     
+        if(_this.conponResponse.couponModality === '0'){//如果有折扣券打折
+            discount = discount * (_this.conponResponse.discount/10);
+        }
+        if(_this.conponResponse.couponModality === '1'){//如果有减额券
+            for(var i=0;i<_this.tableData.length;i++){//每列商品现金流 占比
+            _this.tableData[i].coupon = _this.conponResponse.amount*_this.tableData[i].cli;
+            }
+        }
+        for(var i=0;i<_this.tableData.length;i++){
+          if(_this.tableData[i].status == '0' || _this.tableData[i].status == '1'){
+            let data = _this.tableData[i];
+            
+            if(_this.conponResponse.couponModality === '0'){//如果有折扣券打折
+              if(_this.memberShipDisCount*10<10&&_this.memberShipDisCount!=''){//如果有会员折扣
+                conponDiscountMoney+=(_this.memberShipDisCount-(_this.memberShipDisCount*_this.conponResponse.discount/10))*data.price;
+              }else{
+                conponDiscountMoney+=_this.conponResponse.discount;
+                // discountMoney+=_this.conponResponse.discount
+              }
+            }
+            
+            // if(_this.memberShipDisCount*10<10&&_this.memberShipDisCount!=''){
+            //     memberShipDisCountSale+=(1-_this.memberShipDisCount)*data.nums*(data.price-data.coupon-data.actionMoney);
+            // }
+            console.warn('数量',data.nums,'价格'+data.price,'合计占比'+data.cli,'优惠金额'+data.coupon,'活动金额'+data.actionMoney,'折扣'+discount)
+            data.realSale = (((data.nums*data.price)-data.coupon-data.actionMoney)*discount).toFixed(2);
+            data.discount = (data.realSale/data.price/data.nums);
+            console.warn('该商品折扣计算后'+data.discount,'最终价格'+data.realSale)
+            _this.tableData.splice(i,1,data);
+          }
+          
+        }
+         if(_this.actionData){
+           if(_this.actionData.discountFlag=='1'){//促销活动打折
+              actionDiscount = _this.actionData.discountAmount;
+              if(_this.actionData.cashFlag=='1'){
+                discountMoney=money-_this.actionData.cashAmount-conponDiscountMoney;
+              }
+                discountMoney=(1-actionDiscount/10)*money;
+          }
+         }
+        this.actionCost.discountMoney = (discountMoney).toFixed(2);
+        this.conponDiscountMoney = conponDiscountMoney;
     },
     //计算价格区域
-    computedPay(alldiscount) {
+    computedPay(status) {
       let _this = this;
       let countSale = 0;
+      let realCount = 0;
+      let discountSale = 0;
+      let cuMoney = 0;//促销活动金额
+      let disMoney = 0;//折扣券金额
+      let memberShipDisCountSale = 0;//会员优惠金额
+      if(_this.actionData){
+        if(_this.actionData.discountFlag=='1'){
+          if(this.actionCost.cashFlag == '1'){
+            cuMoney = this.actionCost.money;
+          }
+        cuMoney+=this.actionCost.discountMoney;
+        }
+      }
+      if(_this.conponResponse.couponModality === '0'){
+        disMoney+=this.conponDiscountMoney
+      }
+      if(_this.conponResponse.couponModality === '1'){
+        disMoney+=this.conponResponse.amount
+      }
+      
       // let packagePrice = 0;
-      let n = 0;
+      let n = 0;//件数
       // _this.allDisCount = '';
       // console.log(_this.tableData)
       _this.extraMoney = 0;
+      if(status === 'alldiscount'){
+        this.afterDiscount();
+      }else if(status ==='shopModefly'){
+          for(var i=0;i<_this.tableData.length;i++){
+            let data = _this.tableData[i];
+            data.realSale = (data.nums*data.discount*data.price/10).toFixed(2);
+            _this.tableData.splice(i,1,data)
+          }
+          this.alldiscountNumsBool = false;
+      }else{
+        this.changeDiscount();
+      }
       for (let i = 0; i < _this.tableData.length; i++) {
         //循环计算价格
+          countSale += parseFloat(_this.tableData[i].price*parseInt(_this.tableData[i].nums));
+          n += parseInt(_this.tableData[i].nums);
+          realCount += parseFloat(_this.tableData[i].realSale);
+          discountSale+=parseFloat(parseFloat(_this.tableData[i].price*parseInt(_this.tableData[i].nums))-parseFloat(_this.tableData[i].realSale));
         if (
           _this.tableData[i].status != "2" &&
           _this.tableData[i].status != "3" &&
           _this.tableData[i].status != "4"
         ) {
-          let thisSale = parseFloat(_this.tableData[i].realSale);
-          countSale = countSale + thisSale;
-        }
-        if (_this.tableData[i].status != "3") {
-          n += parseInt(_this.tableData[i].nums);
+          
         }
         if (_this.tableData[i].status == "3") {
           //其他费用
           _this.extraMoney += parseFloat(_this.tableData[i].realSale);
         }
+        
         // if(_this.tableData[i].status == '4'){
         //   //套餐
         //   packagePrice += parseFloat(_this.tableData[i].price);
         // }
       }
-      if (_this.actionCost.actionId) {
-        if (_this.actionCost.money) {
-          countSale = countSale - _this.actionCost.money; //优惠金额后
-        } else if (_this.actionCost.discount) {
-          countSale = parseFloat(
-            countSale * _this.actionCost.discount / 10
-          ).toFixed(2); //打折后价格
-          _this.actionCost.discountMoney = (
-            (1 - parseFloat(_this.actionCost.discount) / 10) *
-            countSale
-          ).toFixed(2); //打折优惠金额
+      // if (_this.actionCost.actionId) {
+      //   if (_this.actionCost.money) {
+      //     countSale = countSale - _this.actionCost.money; //优惠金额后
+      //   } else if (_this.actionCost.discount) {
+      //     countSale = parseFloat(
+      //       countSale * _this.actionCost.discount / 10
+      //     ).toFixed(2); //打折后价格
+      //     _this.actionCost.discountMoney = (
+      //       (1 - parseFloat(_this.actionCost.discount) / 10) *
+      //       countSale
+      //     ).toFixed(2); //打折优惠金额
+      //   }
+      // }
+      if(_this.memberShipDisCount*10<10&&_this.memberShipDisCount!=''){
+            memberShipDisCountSale=countSale-realCount-disMoney-cuMoney;
         }
-      }
-      this.amountSale = parseFloat(countSale).toFixed(2); //原价合计
-
-      if (
-        _this.conponResponse.amount > 0 ||
-        _this.conponResponse.discount > 0
-      ) {
-        //如果有优惠券
-        // 金额||折扣
-        if (_this.conponResponse.amount > 0) {
-          //按固定金额算
-          _this.conponDiscountMoney = _this.conponResponse.amount;
-          countSale = countSale - _this.conponResponse.amount; //优惠价 = 无折扣前 - 优惠价↓
-        } else if (_this.conponResponse.discount > 0) {
-          //按折扣算
-          let conpon = parseFloat(
-            countSale * _this.conponResponse.discount / 10
-          ).toFixed(2);
-          _this.conponDiscountMoney = (parseFloat(countSale) - conpon).toFixed(
-            2
-          );
-          countSale = conpon;
-        }
-      }
-      if (_this.selectMember.memberInfo != null) {
-        //如果有会员id
-        if (_this.selectMember.memberInfo.discount < 1) {
-          _this.discountFlag = 0;
-        }
-        var difference = (_this.memberShipDisCount * countSale).toFixed(2); //会员价 = 会员价格 * 总价
-        let memberDisCount = (countSale - difference).toFixed(2); //会员折扣差价 = 总金额 - 会员价
-        _this.memberShipDisCountSale = memberDisCount;
-        countSale = countSale - parseFloat(memberDisCount); //会员价
-      }
+      _this.memberShipDisCountSale = parseFloat(memberShipDisCountSale).toFixed(2);//会员优惠金额
+      _this.amountSale = parseFloat(countSale).toFixed(2); //原价合计
+      _this.saleCount = parseFloat(realCount).toFixed(2); //应付合计
+      _this.discountSale = parseFloat(discountSale).toFixed(2)
+      // if (
+      //   _this.conponResponse.amount > 0 ||
+      //   _this.conponResponse.discount > 0
+      // ) {
+      //   //如果有优惠券
+      //   // 金额||折扣
+      //   if (_this.conponResponse.amount > 0) {
+      //     //按固定金额算
+      //     _this.conponDiscountMoney = _this.conponResponse.amount;
+      //     countSale = countSale - _this.conponResponse.amount; //优惠价 = 无折扣前 - 优惠价↓
+      //   } else if (_this.conponResponse.discount > 0) {
+      //     //按折扣算
+      //     let conpon = parseFloat(
+      //       countSale * _this.conponResponse.discount / 10
+      //     ).toFixed(2);
+      //     _this.conponDiscountMoney = (parseFloat(countSale) - conpon).toFixed(
+      //       2
+      //     );
+      //     countSale = conpon;
+      //   }
+      // }
+      // if (_this.selectMember.memberInfo != null) {
+      //   //如果有会员id
+      //   if (_this.selectMember.memberInfo.discount < 1) {
+      //     _this.discountFlag = 0;
+      //   }
+      //   var difference = (_this.memberShipDisCount * countSale).toFixed(2); //会员价 = 会员价格 * 总价
+      //   let memberDisCount = (countSale - difference).toFixed(2); //会员折扣差价 = 总金额 - 会员价
+      //   _this.memberShipDisCountSale = memberDisCount;
+      //   countSale = countSale - parseFloat(memberDisCount); //会员价
+      // }
       _this.numCount = n;
-      _this.saleCount = Math.round(parseFloat(countSale) * 100) / 100; //无整单折扣情况下
+      // _this.saleCount = Math.round(parseFloat(countSale) * 100) / 100; //无整单折扣情况下
 
-      if (_this.addShop || alldiscount == "alldiscount") {
-        if (_this.allDisCount > 0) {
-          _this.discountSale = parseFloat(_this.saleCount - _this.allDisCount * _this.saleCount / 10).toFixed(2);
-          //最后价格 = 整单折扣前 * 折扣 ↓
-          _this.saleCount = (_this.allDisCount / 10 * _this.saleCount).toFixed(2);
-        }
-      }
-        _this.amountSale = (parseFloat(_this.amountSale)+parseFloat(_this.packagePrice)).toFixed(2);
-        _this.saleCount = (parseFloat(_this.saleCount)+parseFloat(_this.packagePrice)).toFixed(2);
+      // if (_this.addShop || alldiscount == "alldiscount") {
+      //   if (_this.allDisCount > 0) {
+      //     _this.discountSale = parseFloat(_this.saleCount - _this.allDisCount * _this.saleCount / 10).toFixed(2);
+      //     //最后价格 = 整单折扣前 * 折扣 ↓
+      //     _this.saleCount = (_this.allDisCount / 10 * _this.saleCount).toFixed(2);
+      //   }
+      // }
+      //   _this.amountSale = (parseFloat(_this.amountSale)+parseFloat(_this.packagePrice)).toFixed(2);
+      //   _this.saleCount = (parseFloat(_this.saleCount)+parseFloat(_this.packagePrice)).toFixed(2);
       
     },
     changeNums(value,index){
-      console.log(value)
-      value.realSale = parseFloat(value.price * value.discount/10 * value.nums).toFixed(2);
-      this.tableData.splice(index, 1, value);
-      this.computedPay("alldiscount");
-    },
-    //商品折扣发生变化
-    changePrice(value, type, index) {
-      // console.log(value,type,index)
-      // this.allDisCount = '';
-      this.discountSale = "";//优惠券优惠金额
-      if (type == 1) {//正常都是1，8折计算为*0.8
-        value.realSale = parseFloat(value.price * value.discount / 10 * value.nums).toFixed(2);
-      } else {
-        value.realSale = parseFloat(value.price / value.discount * 10 * value.nums).toFixed(2);
-      }
-      this.tableData.splice(index, 1, value);
-      this.computedPay("alldiscount");
-    },
-    confirmAllDiscount(value) {
-      console.log(value,'触发整单折扣计算')
-      if (value && parseFloat(this.allDisCount) > 0) {
-          //有整单折扣
-          this.addShop = false;
-          this.computedPay();
-          // //整单折扣金额差价 = 折扣前 - 折扣后↓
-          this.discountSale = parseFloat(
-            this.saleCount - this.allDisCount * this.saleCount / 10
-          ).toFixed(2);
-          //最后价格 = 整单折扣前 * 折扣 ↓
-          this.saleCount = (this.allDisCount / 10 * this.saleCount).toFixed(2);
-      } else {
-        this.allDisCount = "";
-        this.discountSale = "";
+      // value.realSale = parseFloat(value.price * value.discount/10 * value.nums).toFixed(2);
+      // this.tableData.splice(index, 1, value);
+      if(this.alldiscountBool){
+        this.computedPay('shopModefly');
+      }else{
         this.computedPay();
       }
     },
+    // //商品折扣发生变化
+    // changePrice(value, type, index) {
+    //   // console.log(value,type,index)
+    //   // this.allDisCount = '';
+    //   this.discountSale = "";//优惠券优惠金额
+    //   if (type == 1) {//正常都是1，8折计算为*0.8
+    //     value.realSale = parseFloat(value.price * value.discount / 10 * value.nums).toFixed(2);
+    //   } else {
+    //     value.realSale = parseFloat(value.price / value.discount * 10 * value.nums).toFixed(2);
+    //   }
+    //   this.tableData.splice(index, 1, value);
+    //   this.computedPay("alldiscount");
+    // },
+    confirmAllDiscount(value) {
+      // console.log(value,'触发整单折扣计算')
+      // if (value && parseFloat(this.allDisCount) > 0) {
+      //     //有整单折扣
+      //     this.computedPay();
+      //     // //整单折扣金额差价 = 折扣前 - 折扣后↓
+      //     this.discountSale = parseFloat(
+      //       this.saleCount - this.allDisCount * this.saleCount / 10
+      //     ).toFixed(2);
+      //     //最后价格 = 整单折扣前 * 折扣 ↓
+      //     this.saleCount = (this.allDisCount / 10 * this.saleCount).toFixed(2);
+      // } else {
+      //   this.allDisCount = "";
+      //   this.discountSale = "";
+      //   this.computedPay();
+      // }
+
+    },
     //整单折扣
     afterDiscount() {
-      let _this = this;
-      // _this.permission = true;
-      _this.confirmAllDiscount(true);
+      const _this = this;
+      let discount = parseFloat(_this.allDisCount).toFixed(2);
+      console.log(discount)
+      this.conponResponse = {};
+      this.actionData = null;
+      this.actionCost= {};
+      for(var i=0;i<_this.tableData.length;i++){
+            let data = _this.tableData[i];
+          if(data.status == '0' || data.status == '1'){
+            data.realSale = data.price;
+            data.discount = discount;
+            data.realSale = (data.nums*discount*data.price/10).toFixed(2);
+            console.error('数量',data.nums,'价格'+data.price,'合计占比'+data.cli,'优惠金额'+data.coupon,'活动金额'+data.actionMoney,'折扣'+data.discount)
+            _this.tableData.splice(i,1,data);
+          }
+        }
+      this.alldiscountNumsBool = true;
     },
     //获取用户验光单列表
     getOptometryRecordList(memberId) {
@@ -1774,7 +2018,7 @@ export default {
         })
         .then(function(response) {
           if (response.data.code == 1 && response.data.data.eyes.length > 0) {
-            console.log(1,response.data.data)
+            // console.log(1,response.data.data)
             _this.showSelectMember = false;
             _this.isOptometryDialogVisible = true;
             _this.optometryData = response.data.data.eyes;
@@ -1815,8 +2059,8 @@ export default {
                 },
                 keyParams: {
                   weChat: true,
-                  userId: JSON.parse(localStorage.getItem("userData")).userId,
-                  orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                  userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+                  orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
                 }
               }
             })
@@ -1840,6 +2084,7 @@ export default {
     //选择会员子组件返回函数 获取用户信息
     getMemberInfo(value, bool) {
       //bool作为挂单直接导入，
+      // console.log(value)
       this.selectMember.memberInfo = value;
       this.memberShipDisCount = this.selectMember.memberInfo.discount;
       this.conpon(); //选择用户后，获取优惠券信息
@@ -1923,7 +2168,7 @@ export default {
     //录入验光单信息
     includeOptometry() {
       var _this = this;
-      console.log("录入验光单信息", _this.optometryData);
+      // console.log("录入验光单信息", _this.optometryData);
       if (_this.optometryData != null) {
         var tableArr = [];
         _this.optometryData.forEach(element => {
@@ -1984,7 +2229,7 @@ export default {
           // }
         });
         if (tableArr) _this.includeOptometryData = tableArr;
-        console.log(_this.includeOptometryData)
+        // console.log(_this.includeOptometryData)
       }
     },
     //刷新页面
@@ -2105,8 +2350,8 @@ export default {
               jsonObject: formdata,
               keyParams: {
                 weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+                orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
               }
             }
           })
@@ -2182,8 +2427,8 @@ export default {
             },
             keyParams: {
               weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
             }
           }
         })
@@ -2327,12 +2572,13 @@ export default {
           BorderType = "1";
         }
       }
-      this.orderTemp.glassesTime = allDate.TimetoDateDay(
-        Date.parse(this.orderTemp.glassesTime)
-      );
-      // if(this.publicSelcet.glassesTypeModel == '1'){
-      //     this.express  快递信息
-      // }
+      let times = 0;
+      if(_this.glassesTimeValue<4){
+        times = 86400000*_this.glassesTimeValue;
+        let nowTimes = allDate.nowTime();
+       this.orderTemp.glassesTime = allDate.TimetoDateDay(nowTimes+times)+' '+allDate.timetoDateClock(nowTimes+times);
+      }
+     
       var jsonObject = {
         memberId: memberId, //会员id
         prescriptionsId: _this.optometryId, //验光单id
@@ -2354,7 +2600,7 @@ export default {
             ? ""
             : _this.actionCost.money || _this.actionCost.discountMoney, //活动优惠金额,
         discountMoney: _this.memberShipDisCountSale, //折扣优惠金额,会员
-        cardDiscount: _this.memberShipDisCount>1?(_this.memberShipDisCount/10):_this.memberShipDisCount, //会员折扣
+        cardDiscount: _this.memberShipDisCount, //会员折扣
         discountFlag: _this.discountFlag, //是否使用会员折扣
         roundOffFlag: "1", //取整标识 0使用 1不用
         decimal: memberDiscount, //会员卡折扣
@@ -2446,7 +2692,7 @@ export default {
       _this.$myAjax({
           url:'cas-api/user/getUsersByOrgId',
           data:{
-            orgId:JSON.parse(localStorage.getItem("userData")).orgId
+            orgId:JSON.parse(sessionStorage.getItem("userData")).orgId
           },success:function(res){
             if(res.code ==1){
               _this.ShopPerson = res.data.userList;
@@ -2544,7 +2790,7 @@ export default {
   },
   mounted() {
     let _this = this;
-    _this.users = JSON.parse(localStorage.getItem("userData"));
+    _this.users = JSON.parse(sessionStorage.getItem("userData"));
     if (_this.$route.params.datas) {
       console.log("重新开单参数", _this.$route.params.datas);
       _this.openOrder(_this.$route.params.datas);
@@ -2571,6 +2817,7 @@ export default {
     -moz-appearance: textfield;
   }
 }
+
 .placeHolder {
   input::input-placeholder {
     color: #606266 !important;
@@ -2707,4 +2954,5 @@ export default {
     padding: 0;
   }
 }
+
 </style>

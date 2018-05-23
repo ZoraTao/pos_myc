@@ -1,4 +1,4 @@
-c<template>
+<template>
   <div class="content-out-wrapper">
     <!------part1 top------>
     <el-row class="inquiry-row" v-if="memberCount">
@@ -51,9 +51,8 @@ c<template>
         <el-form :inline="true" :model="sreen" class="demo-form-inline am-ft-left">
           <el-col :span="24">
             <el-form-item label="卡类型：">
-              <el-select v-model="sreen.cardType" placeholder="请选择"  style="width: 100px">
-                <el-option label="普卡" value="1"></el-option>
-                <el-option label="金卡" value="2"></el-option>
+              <el-select v-model="sreen.cardId" placeholder="请选择"  style="width: 100px">
+                <el-option v-for="item in cardIdArr" :key="item.cardId" label="item.memberCardName" value="item.cardId"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="会员分类：" >
@@ -245,6 +244,7 @@ export default {
       memberModifys:false,
       isSubmit:false,
       searchStr: "",
+      cardIdArr:[],
       normalsearch: true,
       moresearch: false,
       sreen: {
@@ -281,7 +281,37 @@ export default {
     memberModifySubmit(){
       this.memberModifys = false;
     },
-
+    initData(){
+      const _this = this;
+      let user = JSON.parse(sessionStorage.getItem("userData"));
+      _this.$myAjax({
+        url:'member-api/card/getCardList',
+        data:{},
+        keyParams:{
+          appKey:user.appKey,
+          brandId:user.brandId,
+          duid:user.duid,
+          token:user.token,
+          timestamp:user.timestamp
+        },
+        success:function(res){
+          if(res.code == 1){
+            _this.cardIdArr = res.data.cardList;
+          }else{
+            _this.message({
+              type:'warning',
+              message:res.msg,
+              showClose:true})
+           }
+        },error:function(err){
+          _this.message({
+            type:'error',
+            message:err,
+            showClose:true})
+          }
+      });
+      
+    },
     //查询会员列表
     getMemberList(type) {
       var that = this;
@@ -356,8 +386,8 @@ export default {
               jsonObject: formdata,
               keyParams: {
                 weChat: true,
-                userId:JSON.parse(localStorage.getItem("userData")).userId,
-                orgId:JSON.parse(localStorage.getItem("userData")).orgId,
+                userId:JSON.parse(sessionStorage.getItem("userData")).userId,
+                orgId:JSON.parse(sessionStorage.getItem("userData")).orgId,
               }
             }
           })
@@ -415,8 +445,8 @@ export default {
             jsonObject: {},
             keyParams: {
               weChat: true,
-              userId:JSON.parse(localStorage.getItem("userData")).userId,
-              orgId:JSON.parse(localStorage.getItem("userData")).orgId,
+              userId:JSON.parse(sessionStorage.getItem("userData")).userId,
+              orgId:JSON.parse(sessionStorage.getItem("userData")).orgId,
             }
           }
         })
@@ -431,6 +461,9 @@ export default {
           console.info(error);
         });
     },
+  },
+  created(){
+    this.initData();
   }
 };
 </script>

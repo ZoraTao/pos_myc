@@ -70,13 +70,14 @@
                                   </el-form-item>
                                 </el-form>
                                 </td>
-                                <td class="w74">
+                                <!-- <td class="w74">
                                   <el-form :model="item" :rules="rules" ref="distanceData">
                                     <el-form-item prop="sph">
                                       <el-input v-model="item.cyl"></el-input>
                                     </el-form-item>
                                   </el-form>
-                                </td>
+                                </td> -->
+                                <td class="w74"><el-input v-model="item.cyl"></el-input></td>
                                 <td class="w74"><el-input v-model="item.ax"></el-input></td>
                                 <td class="w74"><el-input v-model="item.va"></el-input></td>
                                 <td class="w74"><el-input v-model="item.lj"></el-input></td>
@@ -129,13 +130,14 @@
                                       </el-form-item>
                                     </el-form>
                                   </td>
-                                  <td class="w74">
+                                  <!-- <td class="w74">
                                     <el-form :model="item" :rules="rules" ref="nighData">
                                       <el-form-item prop="sph">
                                         <el-input v-model="item.cyl"></el-input>
                                       </el-form-item>
                                     </el-form>
-                                  </td>
+                                  </td> -->
+                                  <td class="w74"><el-input v-model="item.cyl"></el-input></td>
                                   <td class="w74"><el-input v-model="item.ax"></el-input></td>
                                   <td class="w74"><el-input v-model="item.va"></el-input></td>
                                   <td class="w74"><el-input v-model="item.lj"></el-input></td>
@@ -596,7 +598,7 @@ export default {
         prescriptionEndTime: "",
         prescriptionId: "",
         prescriptionStartTime: "",
-        prescriptionTime: "",
+        prescriptionTime: new Date(),
         retinoscopy: "",
         sex: "",
         shopId: "",
@@ -629,8 +631,8 @@ export default {
             },
             keyParams: {
               weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
             }
           }
         })
@@ -658,8 +660,8 @@ export default {
             },
             keyParams: {
               weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
             }
           }
         })
@@ -683,8 +685,8 @@ export default {
               },
               keyParams: {
                 weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+                orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
               }
             }
           })
@@ -804,8 +806,8 @@ export default {
               },
               keyParams: {
                 weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+                orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
               }
             }
           })
@@ -841,8 +843,8 @@ export default {
               jsonObject: jsonObject,
               keyParams: {
                 weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId
+                userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+                orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
               }
             }
           })

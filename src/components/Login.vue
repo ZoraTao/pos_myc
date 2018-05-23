@@ -120,15 +120,6 @@ export default {
     },
     goHome(){
       this.$router.push('/base/homeIndex')
-    },
-    isLogin(){
-       return !!localStorage.token
-    },
-    userAccessKeyLogin(){
-        let _this = this;
-        if(localStorage.getItem('token')){//有用户秘钥直接登录,未进行MD5解密
-          _this.goHome();
-        }
     }
   },
   beforemounted(){

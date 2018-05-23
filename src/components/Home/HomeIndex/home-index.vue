@@ -127,7 +127,7 @@ export default {
     //待办事项
     getTodoItems(){
       const that = this;
-      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
       this.orgId = ueserInfo.orgId;
       that.$axios({
         url: 'http://myc.qineasy.cn/pos-api/toDo/getToDoDetail',
@@ -165,7 +165,7 @@ export default {
     //获取公告列表
     getNewsList(){
       const that = this;
-      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
       this.orgId = ueserInfo.orgId;
       that.$axios({
         url: 'http://myc.qineasy.cn/pos-api/announcement/getAnnouncementList',
@@ -214,7 +214,7 @@ export default {
     //获取促销活动列表
     getPromotionList(){
       const that = this;
-      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
       this.userId = ueserInfo.userId;
       this.orgId = ueserInfo.orgId;
       that.$axios({

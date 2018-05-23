@@ -54,7 +54,7 @@ export default {
                 nub: (_this.nub - 1) * _this.size,
                   size:5,
                   status:'1,2',
-                  salesId:JSON.parse(localStorage.getItem("userData")).userId
+                  salesId:JSON.parse(sessionStorage.getItem("userData")).userId
               },success:function(res){
                     _this.count = res.data.count;
                     _this.list = res.data.orderTempList;
