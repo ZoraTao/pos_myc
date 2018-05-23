@@ -21,7 +21,23 @@ const objToPropertyToArr = function (object) {
   }
   return arr;
 }
-
+/**
+ * 防抖函数
+ * @param method 事件触发的操作
+ * @param delay 多少毫秒内连续触发事件，不会执行
+ * @returns {Function}
+ */
+const debounce = function (method,delay) {
+  let timer = null;
+  return function () {
+      let self = this,
+          args = arguments;
+      timer && clearTimeout(timer);
+      timer = setTimeout(function () {
+          method.apply(self,args);
+      },delay);
+  }
+}
 // 将Object的属性值输出成Array
 const objToValueToArr = function (object) {
   var arr = [];
@@ -209,5 +225,6 @@ export {
   unicode,
   objToPropertyToArr,
   objToValueToArr,
-  objToArr
+  objToArr,
+  debounce
 }

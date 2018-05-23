@@ -83,35 +83,37 @@ export default {
   methods:{
     
     toLogin(){
-      var _this = this;
-      this.$axios({
-        url:'http://myc.qineasy.cn/cas-api/user/userlogin',
-        method:'post',
-        params:{
-          jsonObject:{
-            userName:_this.LoginData.user,
-            passWord:_this.LoginData.pass
-          },
-          keyParams:{
-              weChat: true
-          }
-        }
-      }).then((res)=>{
-        if(res.status == '200'){
-          if(res.data.code ==  1 && res.data.msg == "登录成功"){
-            console.log(res.data.data)
-              _this.$store.commit('LOGIN_LOCAL_STORAGE',res.data.data.user);
+      const _this = this;
+      _this.$myAjax({
+        url:'cas-api/user/userlogin',
+        data:{
+          userName:_this.LoginData.user,
+          passWord:_this.LoginData.pass
+        },
+        keyParams:{
+          orgId:'',userId:'',
+        },
+        success:function(res){
+          if(res.code == 1){
+             _this.$store.commit('LOGIN_LOCAL_STORAGE',res.data.data.user);
               _this.goHome();
           }else{
-              _this.dialogVisible = true
-              console.log(res)
-          }
+             _this.dialogVisible = true
+            _this.$message({
+              type:'warning',
+              message:res.msg,
+              showClose:true})
+           }
+        },error:function(err){
+          _this.errorTitle = '通信错误，请重试';
+          _this.dialogVisible = true
+           _this.$message({
+            type:'error',
+             message:err,
+            showClose:true
+          })
         }
-      }).catch((err)=>{
-        console.log(err)
-        _this.errorTitle = '通信错误，请重试';
-        _this.dialogVisible = true
-      })
+      });
     },
     replace(){
       if(this.LoginSystem == 1){
@@ -123,7 +125,6 @@ export default {
     }
   },
   beforemounted(){
-    // this.userAccessKeyLogin();
   }
 }
 </script>

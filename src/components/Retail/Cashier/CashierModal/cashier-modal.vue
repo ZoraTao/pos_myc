@@ -220,40 +220,34 @@
           payMessage.push(obj)
         }
         console.log(payMessage);
-        _this.$axios({
-          url:'http://myc.qineasy.cn/pos-api/orderTemp/updateCashierStatus',
-          method:'post',
-          params:{
-            jsonObject:{
-              orderId:this.datas.orderId,
-              paymentFlowList:payMessage
-            },
-            keyParams:{
-              weChat: true,
-              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
-              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId,
-            }
+        _this.$myAjax({
+          url:'pos-api/orderTemp/updateCashierStatus',
+          data:{
+            orderId:this.datas.orderId,
+            paymentFlowList:payMessage
+          },
+          success:function(res){
+            if(res.code == 1){
+              _this.$message({
+                  showClose: true,
+                  message: '收款成功!',
+                  type: 'success'
+              })
+              _this.$emit('closePayMoney',)
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
           }
-        })
-        .then((res)=>{
-          console.log(res)
-          if(res.data.code==1){
-                    _this.$message({
-                        showClose: true,
-                        message: '收款成功!',
-                        type: 'success'
-                    })
-                    _this.$emit('closePayMoney',)
-          }else{
-                    _this.$message({
-                        showClose: true,
-                        message: res.data.msg,
-                        type: 'error'
-                    })
-          }
-        }).catch((err)=>{
-          console.log(err)
-        })
+        });
       }
     },
     watch:{

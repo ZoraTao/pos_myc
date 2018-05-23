@@ -319,13 +319,13 @@
             if(res.code == 1){
 
             }else{
-              _this.message({
+              _this.$message({
                 type:'warning',
                 message:res.msg,
                 showClose:true})
               }
           },error:function(err){
-          _this.message({
+          _this.$message({
             type:'error',
              message:err,
             showClose:true})

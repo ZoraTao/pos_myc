@@ -575,34 +575,31 @@ export default {
     },
     orderDetail(id) {
       let _this = this;
-      _this
-        .$axios({
-          url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTemp",
-          method: "post",
-          params: {
-            jsonObject: {
-              orderId: id
-            },
-            keyParams: {
-              weChat: true
+      _this.$myAjax({
+        url:'pos-api/orderTemp/getOrderTemp',
+        data:{
+        orderId: id
+        },
+        success:function(res){
+          if(res.code == 1){
+              if(res.data.prescription){
+              _this.eyesDate(res.data.prescription.eyes);
             }
-          }
-        })
-        .then((res) => {
-          if (res.data.code == 1) {
-            if(res.data.data.prescription){
-              _this.eyesDate(res.data.data.prescription.eyes);
-            }
-            _this.orderData = res.data.data;
-
-          } else {
+            _this.orderData = res.data;
+          }else{
             _this.$message({
-              showClose: true,
-              message: "查询失败",
-              type: "error"
-            });
-          }
-        })
+              type:'warning',
+              message:res.msg,
+              showClose:true})
+           }
+        },error:function(err){
+           _this.$message({
+            type:'error',
+             message:err,
+            showClose:true
+          })
+        }
+      });
     },
     goback(){
       this.$router.go(-1)

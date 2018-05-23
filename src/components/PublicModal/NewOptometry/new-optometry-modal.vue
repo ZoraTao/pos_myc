@@ -4,7 +4,7 @@
         <div class="newOptometryPhone">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
                 <el-form-item label="手机号:" prop="telphone">
-                    <el-input v-model="ruleForm.telphone" @input="searchUser" style="width:110px"></el-input>
+                    <el-input v-model.trim="ruleForm.telphone" @input="searchUser" style="width:110px"></el-input>
                 </el-form-item>
                 <el-form-item label="姓名:" v-show="ruleForm.telphone.length==11">
                     <el-input  v-if="!ruleForm.hasMember" v-model="ruleForm.name"></el-input>

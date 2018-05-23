@@ -169,12 +169,12 @@ export default {
       toHidePackageModel(bool){
           const _this = this;
           let times = Date.parse(new Date());
-          console.log(times)
+          _this.packageCreate.times = times;
           for(var i=0,datas = _this.packageDetails;i<datas.length;i++){
-              _this.packageDetails[i].status = '4'
-              _this.packageDetails[i].dataTimt = times
+              _this.packageDetails[i].status = '4';
+              _this.packageDetails[i].times = times
           }
-          console.log(_this.packageDetails)
+        //   console.log(_this.packageDetails)
           if(bool){
               for(var i=0,datas = _this.packageDetails;i<datas.length;i++){
                   if(datas[i].farSearchCode == ''&&datas[i].modelName == ''){
@@ -187,8 +187,8 @@ export default {
                   }
               }
             let obj = {
-                data:_this.packageDetails,
-                package:_this.packageCreate
+                data: _this.packageDetails,
+                package: _this.packageCreate,
             }
             _this.$emit('toHidePackageModel',obj);
           }else{

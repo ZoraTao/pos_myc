@@ -61,7 +61,7 @@ export default {
       this.$emit('closeShow')
     },
     //请求活动
-    requestAction(data){
+    requestAction(){
       let _this = this;
       // console.log(_this.nowAction)
       if(_this.nowAction == null || _this.nowAction.checked == 0){
@@ -92,11 +92,11 @@ export default {
                       closeShow:true
                     })
                 }else if(res.data.join == true){
-                  _this.$message({
-                      type:'success',
-                      message:'成功参加活动',
-                      closeShow:true
-                    })
+                    // _this.$message({
+                    //   type:'success',
+                    //   message:'成功参加活动',
+                    //   closeShow:true
+                    // })
                     if(res.data.detail.cashFlag == 1){//优惠现金
                         _this.flag.money = res.data.detail.cashAmount;//优惠金额
                     }else if(res.data.detail.discountFlag ==1 ){//优惠打折
