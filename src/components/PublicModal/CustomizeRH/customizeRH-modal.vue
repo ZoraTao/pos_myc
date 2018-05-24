@@ -143,7 +143,7 @@ export default {
         customMessage: "",
         price: "", //原价
         nums: "1", //数量
-        discount: "10", //折扣
+        discount: "", //折扣
         realSale: "", //实售
         status: "1",
         classid:'',//类别
@@ -174,14 +174,17 @@ export default {
       default:null
     },
     memberShipDisCount:{
-      type:Number,
-      default:10
+      type:String,
+      default:'1'
     }
   },
   methods: {
+    firstDiscount(){
+      console.log('触发')
+      this.customContent.discount = this.memberShipDisCount==''?'10':parseFloat(this.memberShipDisCount*10).toFixed(2);
+    },
     aler(name,data){
       console.log(name,data)
-      console.log(this.memberShipDisCount)
       if(name == 'classid'){
         this.customContent.classid = data;
       }else if(name == 'varietyid'){
@@ -194,6 +197,7 @@ export default {
     },
     initSelect(type){
             var _this = this;
+            
           var id = '';
           switch ((type).toString()) {
             case '1'://类别默认
@@ -369,7 +373,7 @@ export default {
                             _this.customContent[key] = "";
                         }
                         _this.customContent.nums = "1";
-                        _this.customContent.discount = "10";
+                        _this.customContent.discount = '';
                         _this.customContent.status = "1";
                     }, 1000);
               }else{

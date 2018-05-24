@@ -1078,10 +1078,7 @@ export default {
       var _this = this;
       this.tableData.forEach(function(element, index) {
         if (element == _this.contextMenuData.row) {
-          if (this.tableData[index].status == "4") {
-          } else {
             this.tableData.splice(index, 1);
-          }
         }
       }, this);
       _this.computedPay();
@@ -1510,7 +1507,6 @@ export default {
           _this.tableData.push(obj);
         }
       } else {
-        
         if (value.status == "1") {
           let title = "";
           if (this.custom == "right") {
@@ -1538,6 +1534,7 @@ export default {
           value.brandid != ""? (value.skuName2 += value.brandid + " "): value.skuName2;
           value.specificationid != ""? (value.skuName2 += value.specificationid): value.skuName2;
           value.sku = "--";
+          value.discount = value.discount/10;
           // value.orderPromotionId='';
         } else if (value.status == "2") {
           let title = "自带";
@@ -1734,11 +1731,12 @@ export default {
           //   "活动金额" + data.actionMoney,
           //   "折扣" + discount
           // );
-          data.realSale = (
-            (data.nums * data.price - data.coupon - data.actionMoney) *
-            discount
-          ).toFixed(2);
-          data.discount = data.realSale / data.price / data.nums;
+          if(data.status !='1'){
+              data.realSale = ((data.nums * data.price - data.coupon - data.actionMoney) *discount).toFixed(2);
+              data.discount = data.realSale / data.price / data.nums;
+          }else{
+
+          }
           console.warn(
             "该商品折扣计算后" + data.discount,
             "最终价格" + data.realSale
@@ -1777,7 +1775,6 @@ export default {
       let n = 0; //件数
       let packageNum = 0;
       _this.extraMoney = 0;
-      
       if (status === "alldiscount") {
         this.afterDiscount();
       } else if (status === "shopModefly") {
@@ -2305,18 +2302,21 @@ export default {
         _this.customText = "定做-左镜片";
         _this.$nextTick(() => {
           _this.$refs.customs.initSelect(2);
+          _this.$refs.customs.firstDiscount();
         });
       } else if (value == "right") {
         _this.custom = "right";
         _this.customText = "定做-右镜片";
         _this.$nextTick(() => {
           _this.$refs.customs.initSelect(2);
+          _this.$refs.customs.firstDiscount();
         });
       } else if (value == "shop") {
         _this.custom = "shop";
         _this.customText = "定做-商品";
         _this.$nextTick(() => {
           _this.$refs.customs.initSelect(1);
+          _this.$refs.customs.firstDiscount();
         });
       }
     },
