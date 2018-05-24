@@ -169,6 +169,9 @@
       //添加结算方式
       addBilling(i,index) {
         var that = this;
+        console.log(this.datas)
+        console.log(i.moneyAmount)
+        i.money=(parseFloat(this.datas.moneyAmount)-parseFloat(this.datas.moneyPaid))-this.received;
         i.check = true;
             that.itemSource.push({
               money: i.money,
@@ -177,12 +180,14 @@
               name: i.name,
               num:i.num,
             });
+            this.computedMoney();
     },
       //删除结算方式
       closeBilling(i,index) {
         let _this = this;
         _this.itemSource.splice(index,1);
         _this.AmountOfMoney.splice(index,1);
+        console.log(_this.itemData)
         for(var i=0;i<_this.itemData.length;i++){
             _this.itemData[i].check = false
         }
@@ -190,8 +195,8 @@
         for(var i=0;i<_this.itemSource.length;i++){
             arrs.add(_this.itemSource[i].id)
         }
-        for(let i of arrs ) {
-          console.log(i)
+        for(var i=0;i<arrs.length;i++ ) {
+          console.log(_this.itemData[i-1])
             _this.itemData[i-1].check = true;
         }
       },

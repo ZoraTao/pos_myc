@@ -8,9 +8,9 @@ Vue.prototype.$myAjax = function (opt) {
     let type = opt.method || 'post';
     let keyParams = Object.assign({},{
       weChat: true,
-      userId: JSON.parse(sessionStorage.getItem("userData")).userId,
-      orgId: JSON.parse(sessionStorage.getItem("userData")).orgId,
-      corporationId: JSON.parse(sessionStorage.getItem("userData")).corporationId
+      userId: JSON.parse(sessionStorage.getItem("userData")).userId||'',
+      orgId: JSON.parse(sessionStorage.getItem("userData")).orgId||'',
+      corporationId: JSON.parse(sessionStorage.getItem("userData")).corporationId||'',
     },opt.keyParams)
     let urlName = 'http://myc.qineasy.cn/';
     const defaults = Object.assign({}, opt.data||{}, {

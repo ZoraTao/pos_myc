@@ -314,47 +314,42 @@ export default {
     },
     //查询会员列表
     getMemberList(type) {
-      var that = this;
+      const _this = this;
       var jsonObject={};
       if(type){
-        that.sreen.nub=1;
+        _this.sreen.nub=1;
       }
       setTimeout(function(){
-        if(that.normalsearch){
-          jsonObject.seachCode=that.searchStr;
-          jsonObject.nub=(that.sreen.nub==1?0:(that.sreen.nub-1)*that.sreen.size);
-          jsonObject.size=that.sreen.size;
+        if(_this.normalsearch){
+          jsonObject.seachCode=_this.searchStr;
+          jsonObject.nub=(_this.sreen.nub==1?0:(_this.sreen.nub-1)*_this.sreen.size);
+          jsonObject.size=_this.sreen.size;
         }
-        if(that.moresearch){
-          jsonObject=that.sreen;
+        if(_this.moresearch){
+          jsonObject=_this.sreen;
         }
-        that.$axios({
-            url: "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
-            method: "post",
-            params: {
-              jsonObject: jsonObject,
-              keyParams: {
-                weChat: true
-              }
-            }
-          })
-          .then(function(response) {
-            if(response.data.code != '1'){
-              that.$message({
-                showClose: true,
-                message: '请求数据出问题喽，请重试！',
-                type: 'error'
-              })
-              return false;
-            }else {
-              // console.info(response.data.data)
-              that.memberList = response.data.data.memberList;
-              that.counts = parseInt(response.data.data.count);
-            }
-          })
-          .catch(function(error) {
-            console.info(error);
-          });
+        _this.$myAjax({
+          url:'member-api/member/getMemberListByBoYang',
+          data:jsonObject,
+          success:function(res){
+            if(res.code == 1){
+               _this.memberList = res.data.memberList;
+              _this.counts = parseInt(res.data.count);
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
+        
       },0)
     },
     //切换搜索模式
@@ -376,49 +371,37 @@ export default {
       //data为从子组件取到的数据
       // console.log(formdata)
       // return false
-        var that = this;
-        that.isSubmit = !that.isSubmit;
+          const _this = this;
+        _this.isSubmit = !_this.isSubmit;
         if (formdata.name != '' && formdata.telphone != '' && formdata.birthday != '' && formdata.sex != '') {
-          that.$axios({
-            url: 'http://myc.qineasy.cn/member-api/member/addMember',
-            method: 'post',
-            params: {
-              jsonObject: formdata,
-              keyParams: {
-                weChat: true,
-                userId:JSON.parse(sessionStorage.getItem("userData")).userId,
-                orgId:JSON.parse(sessionStorage.getItem("userData")).orgId,
-              }
-            }
-          })
-            .then(function (response) {
-              if (response.data.code != '1') {
-                that.$message({
-                  showClose: true,
-                  message: '请求数据出问题喽，请重试！',
-                  type: 'error'
-                })
-                return false;
-              } else {
-                that.addMember = false;
+          _this.$myAjax({
+            url:'member-api/member/addMember',
+            data:formdata,
+            success:function(res){
+              if(res.code == 1){
+                  _this.addMember = false;
                 // console.info(response.data.data)
-                that.$message({
+                _this.$message({
                   showClose: true,
                   message: '新增会员成功',
                   type: 'success'
                 });
-              }
-            })
-            .catch(function (error) {
-              console.info(error)
-              that.$message({
-                showClose: true,
-                message: error,
-                type: 'error'
+              }else{
+                _this.$message({
+                  type:'warning',
+                  message:res.msg,
+                  showClose:true})
+               }
+            },error:function(err){
+               _this.$message({
+                type:'error',
+                 message:err,
+                showClose:true
               })
-            })
+            }
+          });
         } else {
-          that.$message({
+          _this.$message({
             showClose: true,
             message: '请输入完整信息',
             type: 'error'
@@ -436,30 +419,30 @@ export default {
     },
     //查询会员汇总数量
     getMemberCount() {
-      var that = this;
-      that
-        .$axios({
-          url: "http://myc.qineasy.cn/member-api/member/getMemberCount ",
-          method: "post",
-          params: {
-            jsonObject: {},
-            keyParams: {
-              weChat: true,
-              userId:JSON.parse(sessionStorage.getItem("userData")).userId,
-              orgId:JSON.parse(sessionStorage.getItem("userData")).orgId,
-            }
-          }
-        })
-        .then(function(response) {
-          // console.info(response.data.data)
-          if(response.data.code == 1){
-            that.memberCount = response.data.data;
-            that.cardNumList = response.data.data.cardNumList;
-          }
-        })
-        .catch(function(error) {
-          console.info(error);
-        });
+      const _this = this;
+      _this.$myAjax({
+        url:'member-api/member/getMemberCount',
+        data:{
+        
+        },
+        success:function(res){
+          if(res.code == 1){
+             _this.memberCount = res.data;
+            _this.cardNumList = res.data.cardNumList;
+          }else{
+            _this.$message({
+              type:'warning',
+              message:res.msg,
+              showClose:true})
+           }
+        },error:function(err){
+           _this.$message({
+            type:'error',
+             message:err,
+            showClose:true
+          })
+        }
+      });
     },
   },
   created(){

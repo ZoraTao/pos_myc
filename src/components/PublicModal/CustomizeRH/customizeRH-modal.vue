@@ -172,11 +172,16 @@ export default {
     orgData:{
       type:Object,
       default:null
+    },
+    memberShipDisCount:{
+      type:Number,
+      default:10
     }
   },
   methods: {
     aler(name,data){
       console.log(name,data)
+      console.log(this.memberShipDisCount)
       if(name == 'classid'){
         this.customContent.classid = data;
       }else if(name == 'varietyid'){

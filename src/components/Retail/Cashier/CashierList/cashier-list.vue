@@ -159,6 +159,76 @@
       <!-- 欠还款 -->
       <div class="content am_bg_white" v-if="srcNum==='2'">
         <div class="orders">
+          <el-table
+            :data="orderTempList"
+            size="small"
+            align="left"
+            style="width: 100%;margin-bottom:10px;">
+            <el-table-column
+              label="订单号"
+              width="200">
+              <template slot-scope="scope">
+                <!-- <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
+                <span v-if="scope.row.statusCode=='4'" class="am-bg-orange icon">欠</span>
+                <span v-if="scope.row.statusCode=='10'" class="am-bg-red icon">退</span>
+                <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
+                <span v-if="scope.row.source=='0'" class="sign_blue">本店签批</span>
+                <span v-else class="sign_orange">跨店签批</span> -->
+                <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="name"
+              label="会员姓名"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              prop="telphone"
+              label="会员手机号">
+            </el-table-column>
+            <el-table-column
+              prop="moneyPaid"
+              label="金额">
+              <template slot-scope="scope">
+                <span class="am-ft-bold">{{scope.row.price}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="orderTime"
+              label="下单时间"
+              width="200px">
+            </el-table-column>
+            <el-table-column
+              prop="shopName"
+              label="销售门店"
+              width="150px">
+            </el-table-column>
+            <el-table-column
+              prop="statusName"
+              label="状态">
+              <template slot-scope="scope">
+                <span
+                  :class="{'am-ft-aa': scope.row.statusCode==='3'||scope.row.statusCode==='6','am-ft-orange':scope.row.statusCode==='4'||scope.row.statusCode==='5','am-ft-red': scope.row.statusCode==='10'}">{{scope.row.statusName=='记账'?'待付款':scope.row.statusName}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作">
+              <template slot-scope="scope">
+                <span class="am-ft-blue" @click="toOrderDetail(scope.row)">查看详情</span>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            class="am-ft-right"
+            background
+            layout="prev, pager, next"
+            :page-size="15"
+            :total="Number(count)"
+            @current-change="getOrderList(4)"
+            :current-page.sync="nub">
+          </el-pagination>
+        </div>
+        <!-- <div class="orders">
           <table class="orders_table">
             <thead>
             <tr>
@@ -177,12 +247,12 @@
                 <tr class="order_header">
                   <td colspan="9">
                     <div class="fn-left">
+                      <span class="order_id">{{order.orderNo}}</span> -->
                       <!-- <span v-if="order.statusCode=='3'" class="am-bg-blue icon">定</span>
-                      <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span> -->
-                      <span class="order_id">{{order.orderNo}}</span>
-                      <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
-                      <!-- <span v-else class="sign_orange">跨店签批</span> -->
-                      <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone != '18754923321' ? order.telphone:''}}</span>
+                      <span v-if="order.statusCode=='4'" class="am-bg-orange icon">欠</span>
+                      <span v-if="order.source=='0'" class="sign_blue">本店签批</span>
+                      <span v-else class="sign_orange">跨店签批</span> -->
+                      <!-- <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone != '18754923321' ? order.telphone:''}}</span>
                     </div>
                     <div class=" fn-right">
                       <span class="msg">销售：&nbsp;</span>
@@ -202,7 +272,6 @@
                   <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td order_price">
                     <div class="order_price_box">
                       <div class="priceAll">{{parseFloat(order.moneyAmount).toFixed(2)}}</div>
-                        <!-- <small v-if="order.roundOffFlag == '0' && typeof parseFloat(list.discountRate) == 'number' && parseFloat(list.discountRate) < 10 ">({{parseFloat(list.discountRate)}}折)</small> -->
                       <div>商品合计：
                         <strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong>
                         </div>
@@ -237,7 +306,7 @@
             @current-change="getOrderList(4)"
             :current-page.sync="nub">
           </el-pagination>
-        </div>
+        </div> -->
       </div>
       <!-- 关闭 -->
       <div class="content am_bg_white" v-if="srcNum==='4'">
@@ -245,14 +314,14 @@
           <table class="orders_table">
             <thead>
             <tr>
-              <th width="">商品编码</th>
-              <th width="">商品名称</th>
-              <th width="">数量</th>
-              <th width="">原单价</th>
-              <th width="">实售单价</th>
-              <th width="">出货仓库</th>
-              <th width="">订单金额</th>
-              <th width="">订单状态</th>
+              <th style="width:200px">商品编码</th>
+              <th style="width:400px">商品名称</th>
+              <th style="width:100px">数量</th>
+              <th style="width:100px">原单价</th>
+              <th style="width:100px">实售单价</th>
+              <th style="width:100px">出货仓库</th>
+              <th style="width:170px">订单金额</th>
+              <th style="width:100px">订单状态</th>
             </tr>
             </thead>
 
@@ -459,25 +528,29 @@ export default {
           value: "收银",
           isActived: true,
           srcNum: "1",
-          status: "3"
+          status: "3",
+          size:5
         },
         {
           value: "欠还款",
           isActived: false,
           srcNum: "2",
-          status: "4"
+          status: "4",
+          size:15
         },
         {
           value: "关闭",
           isActived: false,
           srcNum: "4",
-          status: "7"
+          status: "7",
+          size:5
         },
         {
           value: "全部",
           isActived: false,
           srcNum: "3",
-          status: "'3','4','51','7'"
+          status: "'3','4','51','7'",
+          size:15
         },
 
       ],
@@ -574,6 +647,10 @@ export default {
     },
     changeTab: function(item) {
       this.srcNum = item.srcNum;
+      this.size = item.size;
+      this.nub = 1;
+      this.count = 0;
+      this.srcNum = item.srcNum;
       this.tabs.forEach(function(element) {
         element.isActived = false;
         if (element == item) {
@@ -597,68 +674,57 @@ export default {
       var _this = this;
       _this.status = value;
       let status = _this.status;
-      if (value == "'3','4','51','7'"){
+      if (value == "'3','4','51','7'" || value=='4'){
         if(!_this.initAllSearch){
           _this.orderTempList = [];
           _this.count = 0;
           _this.initAllSearch =  true;
+          if(value == "'3','4','51','7'")
           return
         }
-        _this.size = 15;
-        if(!bool){
+        if(value == "'3','4','51','7'"&&!bool){
           _this.orderTempList = [];
           _this.count = 0;
         }
       }
-      if (value == 3 || value == 4 || value == 7) {
-        status = value;
-        value == 3 ?_this.status = 3 : (value == 7 ? _this.status =7:_this.status = 4);
-        _this.size = 5;
-        if(bool){
+      if ((value == 3 || value == 7)&&bool) {
           _this.searchForm.orderNo = '';
           _this.searchForm.name = '';
           _this.searchForm.orderType = '';
           _this.searchForm.saleTimeStart = '';
           _this.searchForm.saleTimeEnd = '';
-        }
       }
       setTimeout(() => {
-        _this.$axios({
-            url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
-            method: "post",
-            params: {
-              jsonObject: {
-                orderNo: _this.searchForm.orderNo,
-                searchCode: _this.searchForm.name,
-                orderType: _this.searchForm.orderType,
-                saleTimeStart: _this.searchForm.saleTimeStart,
-                saleTimeEnd: _this.searchForm.saleTimeEnd,
-                nub: _this.nub == 1 ? 0 : (_this.nub - 1) * _this.size,
-                size: _this.size,
-                status: status
-              },
-              keyParams: {
-                weChat: true
-              }
-            }
-          })
-          .then(function(res) {
-            // console.info(res.data.data)
-            if(res.data.code == 1){
-              _this.count = res.data.data.count;
-              _this.orderTempList = res.data.data.orderTempList;
+        _this.$myAjax({
+          url:'pos-api/orderTemp/getOrderTempList',
+          data:{
+            orderNo: _this.searchForm.orderNo,
+            searchCode: _this.searchForm.name,
+            orderType: _this.searchForm.orderType,
+            saleTimeStart: _this.searchForm.saleTimeStart,
+            saleTimeEnd: _this.searchForm.saleTimeEnd,
+            nub: _this.nub == 1 ? 0 : (_this.nub - 1) * _this.size,
+            size: _this.size,
+            status: status
+          },
+          success:function(res){
+            if(res.code == 1){
+               _this.count = res.data.count;
+              _this.orderTempList = res.data.orderTempList;
             }else{
-               _this.$message({
-                showClose: true,
-                message: '请求数据失败，请联系管理员',
-                type: 'error'
-              })
-            }
-
-          })
-          .catch(function(error) {
-            console.info(error);
-          });
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
       }, 100);
     },
     toOrderDetail(data){
@@ -667,34 +733,30 @@ export default {
       _this.$router.push({path:'/cashier/orderDetail',query:{orderId:data.orderId}})
     },
     searchOrder(orderId){
-      let _this = this;
+      const _this = this;
       setTimeout(() => {
-      this.$axios({
-            url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
-            method: "post",
-            params: {
-              jsonObject: {
+        _this.$myAjax({
+          url:'pos-api/orderTemp/getOrderTempList',
+          data:{
                 orderNo: orderId,
-              },
-              keyParams: {
-                weChat: true
-              }
-            }
-          })
-          .then(function(res) {
-            if(res.data.code == 1){
-              _this.changePay(res.data.data.orderTempList[0])
+          },
+          success:function(res){
+            if(res.code == 1){
+              _this.changePay(res.data.orderTempList[0])
             }else{
-               _this.$message({
-                showClose: true,
-                message: '请求数据失败，请联系管理员',
-                type: 'error'
-              })
-            }
-          })
-          .catch(function(error) {
-            console.info(error);
-          });
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
       }, 100);
 
     }
