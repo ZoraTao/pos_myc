@@ -1478,7 +1478,6 @@ export default {
       }
     },
     checkItem(data,index){
-      console.log(data.replaceStatus)
       let _this = this;
       data.replaceStatus = false;
       let thisdata = _.clone(data);
@@ -1486,6 +1485,7 @@ export default {
       _this.newtableData.push(thisdata);
       _this.tableData[index].replaceStatus = false;
       _this.computedPay();
+      
     },
     //取单操作
     openOrder(data) {
