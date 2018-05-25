@@ -290,9 +290,10 @@
       },
       //向父组件传送的数据
       sendToParent() {
-        console.log('准备接受啦',this.addMemberForm)
-        if(this.addMemberForm.name != ''){
-        this.$emit('listenToChild', this.addMemberForm)
+        const _this = this;
+        console.log('准备接受啦1',_this.addMemberForm)
+        if(_this.addMemberForm.name != ''){
+        _this.$emit('listenToChild', _this.addMemberForm)
         }
       },
       //取会员类型

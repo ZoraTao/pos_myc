@@ -166,7 +166,7 @@
             style="width: 100%;margin-bottom:10px;">
             <el-table-column
               label="订单号"
-              width="200">
+              width="120">
               <template slot-scope="scope">
                 <!-- <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
                 <span v-if="scope.row.statusCode=='4'" class="am-bg-orange icon">欠</span>
@@ -180,17 +180,32 @@
             <el-table-column
               prop="name"
               label="会员姓名"
-              width="180">
+              width="120">
             </el-table-column>
             <el-table-column
               prop="telphone"
-              label="会员手机号">
+              label="会员手机号"
+              width="120px">
             </el-table-column>
             <el-table-column
               prop="moneyPaid"
-              label="金额">
+              label="应收金额">
               <template slot-scope="scope">
-                <span class="am-ft-bold">{{scope.row.price}}</span>
+                <span class="am-ft-bold">{{parseFloat(scope.row.moneyAmount)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="moneyPaid"
+              label="已收金额">
+              <template slot-scope="scope">
+                <span class="am-ft-bold">{{parseFloat(scope.row.moneyPaid)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="moneyPaid"
+              label="待收金额">
+              <template slot-scope="scope">
+                <span class="am-ft-bold">{{parseFloat(scope.row.moneyAmount-scope.row.moneyPaid).toFixed(2)}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -214,7 +229,13 @@
             <el-table-column
               label="操作">
               <template slot-scope="scope">
-                <span class="am-ft-blue" @click="toOrderDetail(scope.row)">查看详情</span>
+                <span class="am-ft-blue" style="cursor:pointer;" @click="toOrderDetail(scope.row)">查看详情</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作">
+              <template slot-scope="scope">
+                <span class="am-ft-blue" style="cursor:pointer;" v-on:click="changePay(scope.row)">收银</span>
               </template>
             </el-table-column>
           </el-table>
@@ -462,7 +483,7 @@
 
     <!--收银弹窗-->
     <el-dialog title="收银" :visible.sync="showCashier">
-      <CashierModal :datas="payData" :status = "status" @closePayMoney="resetPage"></CashierModal>
+      <CashierModal :datas="payData" :status="status" @closePayMoney="resetPage"></CashierModal>
     </el-dialog>
     <!--打印取货单弹窗-->
     <el-dialog custom-class="noheader" title="" :visible.sync="consoleCashier">

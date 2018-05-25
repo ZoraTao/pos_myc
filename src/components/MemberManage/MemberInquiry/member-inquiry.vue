@@ -211,7 +211,7 @@
 
     <!--新增会员弹窗-->
     <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
-      <AddMember :submit="isSubmit" :listenToChild="memberAddSubmit"></AddMember>
+      <AddMember :submit="isSubmit" ref="addMembers" @listenToChild="memberAddSubmit"></AddMember>
       <div class="packageDetailButtonGroup">
         <el-button @click="addMember = false">取消</el-button>
         <el-button type="primary" @click="memberAddSubmit">确定</el-button>
@@ -278,6 +278,7 @@ export default {
       _this.modifyMessage = data;
       _this.memberModifys = true
     },
+    
     memberModifySubmit(){
       this.memberModifys = false;
     },
@@ -365,9 +366,14 @@ export default {
     //新增会员
     memberAdd() {
       this.addMember = true;
+      const _this = this;
+      _this.$nextTick(() => {
+        _this.$refs.addMembers.cleandata();
+      });
     },
     //保存新增
     memberAddSubmit(formdata) {
+      console.log(formdata)
       //data为从子组件取到的数据
       // console.log(formdata)
       // return false

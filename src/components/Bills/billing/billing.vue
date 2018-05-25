@@ -230,8 +230,8 @@
                 <p >
                     <span>应收 :</span>
                     <!-- <el-input class="setNum" placeholder='' type="number"  v-model.number="receivable" /> -->
-                    <span class="ant_text" v-show="extraMoney">{{(parseFloat(saleCount)+parseFloat(extraMoney)).toFixed(2)}}</span>
-                    <span class="ant_text" v-show="!extraMoney">{{saleCount || '0'}}</span>
+                    <span class="ant_text">{{(parseFloat(saleCount)+parseFloat(extraMoney)).toFixed(2)}}</span>
+                    <!-- <span class="ant_text" v-show="!extraMoney">{{saleCount || '0'}}</span> -->
                 </p>
             </div>
         </div>
@@ -465,7 +465,7 @@
         <SelectMemberModal :selectM="selectMember.selectM" v-on:memberInfo="getMemberInfo"></SelectMemberModal>
     </el-dialog>
     <el-dialog class="newOptometry" title="新增验光单" :visible.sync="showNewOptometry" width="950px">
-        <NewOptometryModal  ref="addOptometry" :memberInfo="selectMember.memberInfo"  v-on:getNewoptometry="getNewoptometry" @closeEyesModel="closeEyesModel"></NewOptometryModal>
+        <NewOptometryModal  ref="addOptometry" :memberInfo="selectMember.memberInfo"  @getNewoptometry="getNewoptometry" @closeEyesModel="closeEyesModel"></NewOptometryModal>
     </el-dialog>
     <el-dialog class="selectRH" :title="selectProductSku.title" :visible.sync="showSelectRH" width="870px" :before-close="cleanSelectRHModal">
         <SelectRHModal :where="where" ref="SelectRHModal"  v-on:getProductSku="getProductSku" v-on:rhtWareHouse="rhtWareHouse" :selectProductSku="selectProductSku" v-on:selectSku="selectSku" :selectBrand="selectBrand" ></SelectRHModal>
@@ -1078,7 +1078,10 @@ export default {
       var _this = this;
       this.tableData.forEach(function(element, index) {
         if (element == _this.contextMenuData.row) {
+          if (this.tableData[index].status == "4") {
+          } else {
             this.tableData.splice(index, 1);
+          }
         }
       }, this);
       _this.computedPay();
@@ -1507,6 +1510,7 @@ export default {
           _this.tableData.push(obj);
         }
       } else {
+        
         if (value.status == "1") {
           let title = "";
           if (this.custom == "right") {
@@ -1534,7 +1538,6 @@ export default {
           value.brandid != ""? (value.skuName2 += value.brandid + " "): value.skuName2;
           value.specificationid != ""? (value.skuName2 += value.specificationid): value.skuName2;
           value.sku = "--";
-          value.discount = value.discount/10;
           // value.orderPromotionId='';
         } else if (value.status == "2") {
           let title = "自带";
@@ -1554,20 +1557,11 @@ export default {
           value.realSale = "0";
         }
         if (value.status == "0") {
-          console.log("点击类型status", value.status);
-          this.where == "shop"
-            ? (value.skuName2 = value.skuName)
-            : this.where == "left"
-              ? (value.skuName2 =
-                  "左" +
-                  (value.classId == "C004"
-                    ? "隐形眼镜" + value.skuName.substr(5)
-                    : value.skuName))
-              : (value.skuName2 =
-                  "右" +
-                  (value.classId == "C004"
-                    ? "隐形眼镜" + value.skuName.substr(5)
-                    : value.skuName));
+          // console.log("点击类型status", value.status);
+          value.where = this.where;
+          this.where == "shop"? (value.skuName2 = value.skuName): this.where == "left"
+              ? (value.skuName2 ="左" +(value.classId == "C004"? "隐形眼镜" + value.skuName.substr(5): value.skuName))
+              : (value.skuName2 ="右" +(value.classId == "C004"? "隐形眼镜" + value.skuName.substr(5): value.skuName));
         }
       }
       console.warn("渲染后的value", value);
@@ -1578,6 +1572,31 @@ export default {
         value.discount = parseFloat(_this.allDisCount).toFixed(2);
       }
       if (name != "package") {
+        
+        if(value.where =='left'){
+            for(var i=0;i<_this.tableData.length;i++){
+                if(_this.tableData[i].where == 'left'){
+                  _this.$message({
+                    type:'warning',
+                    message:'不可同时购买2个相同位置的镜片',
+                    closeShow:true
+                  })
+                  return false
+              }
+            }
+          }
+          if(value.where =='right'){
+            for(var i=0;i<_this.tableData.length;i++){
+                if(_this.tableData[i].where == 'right'){
+                  _this.$message({
+                    type:'warning',
+                    message:'不可同时购买2个相同位置的镜片',
+                    closeShow:true
+                  })
+                  return false
+              }
+            }
+          }
           if(value.classId =='C001'){
             for(var i=0;i<_this.tableData.length;i++){
                 if(_this.tableData[i].classId == 'C004'){
@@ -1589,7 +1608,19 @@ export default {
                   return false
               }
             }
-          }  
+          }
+          if(value.classId =='C002'){
+            for(var i=0;i<_this.tableData.length;i++){
+                if(_this.tableData[i].classId == 'C002'){
+                  _this.$message({
+                    type:'warning',
+                    message:'不可同时购买2个镜架',
+                    closeShow:true
+                  })
+                  return false
+              }
+            }
+          }
           if(value.classId =='C004'){
             for(var i=0;i<_this.tableData.length;i++){
                 if(_this.tableData[i].classId == 'C001'){
@@ -1731,12 +1762,11 @@ export default {
           //   "活动金额" + data.actionMoney,
           //   "折扣" + discount
           // );
-          if(data.status !='1'){
-              data.realSale = ((data.nums * data.price - data.coupon - data.actionMoney) *discount).toFixed(2);
-              data.discount = data.realSale / data.price / data.nums;
-          }else{
-
-          }
+          data.realSale = (
+            (data.nums * data.price - data.coupon - data.actionMoney) *
+            discount
+          ).toFixed(2);
+          data.discount = data.realSale / data.price / data.nums;
           console.warn(
             "该商品折扣计算后" + data.discount,
             "最终价格" + data.realSale
@@ -1775,6 +1805,7 @@ export default {
       let n = 0; //件数
       let packageNum = 0;
       _this.extraMoney = 0;
+      
       if (status === "alldiscount") {
         this.afterDiscount();
       } else if (status === "shopModefly") {
@@ -1800,7 +1831,7 @@ export default {
         }else{
           packageNum+=parseInt(_this.tableData[i].nums);
         }
-        if (_this.tableData.status == "3") {//其他费用
+        if (_this.tableData[i].status == "3") {//其他费用
           _this.extraMoney += parseFloat(_this.tableData[i].realSale);
         }
       }
@@ -1963,11 +1994,11 @@ export default {
           }else{
             _this.$message({
               type:'warning',
-              message:'res.msg',
+              message:res.msg,
               showClose:true})
            }
         },error:function(err){
-          console.log(err)
+          console.error(err)
            _this.$message({
             type:'error',
              message:err,
@@ -2076,10 +2107,7 @@ export default {
       console.log(value);
       const _this = this;
       _this.showNewOptometry = false;
-      // _this.$nextTick(()=>{
-      //   _this.$refs.addOptometry.cleardata();
-      // })
-      _this.getPrescriptions(value.prescriptions.prescriptionId);
+      _this.getPrescriptions(value);
       // this.optometryData=value.eyes;
       // this.optometryId=value.prescriptions.prescriptionId;
       // this.optometryTime=value.prescriptions.prescriptionTime;
@@ -2269,7 +2297,7 @@ export default {
           success:function(res){
             if(res.code == 1){
                _this.addMember = false;
-              _this.MemberInfoForAdd(response.data.data.memberId);
+              _this.MemberInfoForAdd(res.data.memberId);
               _this.$message({
                 showClose: true,
                 message: "新增会员成功",
@@ -2283,6 +2311,7 @@ export default {
                 return
              }
           },error:function(err){
+            console.log(err)
              _this.$message({
               type:'error',
                message:err,
@@ -2302,21 +2331,18 @@ export default {
         _this.customText = "定做-左镜片";
         _this.$nextTick(() => {
           _this.$refs.customs.initSelect(2);
-          _this.$refs.customs.firstDiscount();
         });
       } else if (value == "right") {
         _this.custom = "right";
         _this.customText = "定做-右镜片";
         _this.$nextTick(() => {
           _this.$refs.customs.initSelect(2);
-          _this.$refs.customs.firstDiscount();
         });
       } else if (value == "shop") {
         _this.custom = "shop";
         _this.customText = "定做-商品";
         _this.$nextTick(() => {
           _this.$refs.customs.initSelect(1);
-          _this.$refs.customs.firstDiscount();
         });
       }
     },

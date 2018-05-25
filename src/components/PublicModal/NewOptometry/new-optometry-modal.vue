@@ -428,7 +428,19 @@ export default {
         sex: "",
         birthday: ""
       },
-      selectOpt:[],
+      selectOpt:[{
+        value:'BU',
+        label:'BU'
+      },{
+        value:'BD',
+        label:'BD'
+      },{
+        value:'BI',
+        label:'BI'
+      },{
+        value:'BO',
+        label:'BO'
+      }],
       rules: {
         telphone: [{ required: true, message: "请输入", trigger: "blur" }],
         sph: [{ required: true, message: " ", trigger: "blur" }],
@@ -446,7 +458,7 @@ export default {
           return time.getTime() > Date.now() - 8.64e6;
         }
       },
-      defaultValue: allDate.TimeToDay(),
+      defaultValue: new Date(),
       distanceData: [
         {
           leftRight:'1',
@@ -618,27 +630,32 @@ export default {
   },
   methods: {
     getPrivateSelect(type, options) {
-      var that = this;
-      that
-        .$axios({
-          url: "http://myc.qineasy.cn/cas-api/user/getUserByOrg",
-          method: "post",
-          params: {
-            jsonObject: {
-              orgId: "",
+      const _this = this;
+      _this.$myAjax({
+        url:'cas-api/user/getUserByOrg',
+        data:{
+           orgId: "",
               userType: "9"
               //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
-            },
-            keyParams: {
-              weChat: true,
-              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
-              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
-            }
-          }
-        })
-        .then(function(response) {
-          that.options = response.data.data.list;
-        });
+        },
+        success:function(res){
+          if(res.code == 1){
+          _this.options = res.data.list;
+          }else{
+            _this.$message({
+              type:'warning',
+              message:res.msg,
+              showClose:true})
+           }
+        },error:function(err){
+           console.error(err);
+           _this.$message({
+            type:'error',
+             message:err,
+            showClose:true
+          })
+        }
+      });
     },
     closeEyesModel(){
       const _this = this;
@@ -646,71 +663,75 @@ export default {
       _this.$emit('closeEyesModel')
     },
     getPublicSelect(type, options) {
-      var that = this;
-      that
-        .$axios({
-          url: "http://myc.qineasy.cn/cas-api/systemConfig/getSystemConfigList",
-          method: "post",
-          params: {
-            jsonObject: {
-              pid: "",
+      const _this = this;
+      _this.$myAjax({
+        url:'cas-api/systemConfig/getSystemConfigList',
+        data:{
+           pid: "",
               id: "",
               type: type
               //参数类型（1:订单类型;2:订单状态;3:加工备注;4:特殊备注;5:取镜方式,6费用）
-            },
-            keyParams: {
-              weChat: true,
-              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
-              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
-            }
-          }
-        })
-        .then(function(response) {
-          that.options = response.data.data.list;
-        });
+        },
+        success:function(res){
+          if(res.code == 1){
+          _this.options = res.data.list;
+          }else{
+            _this.$message({
+              type:'warning',
+              message:res.msg,
+              showClose:true})
+           }
+        },error:function(err){
+           console.error(err);
+           _this.$message({
+            type:'error',
+             message:err,
+            showClose:true
+          })
+        }
+      });
     },
     searchUser() {
-      console.log(3)
-      
-      var that = this;
+        const _this = this;
       if (this.ruleForm.telphone.length == 11) {
-        that
-          .$axios({
-            url:
-              "http://myc.qineasy.cn/member-api/member/getMemberListByBoYang",
-            method: "post",
-            params: {
-              jsonObject: {
+        _this.$myAjax({
+          url:'member-api/member/getMemberListByBoYang',
+          data:{
                 telphone: this.ruleForm.telphone
-              },
-              keyParams: {
-                weChat: true,
-                userId: JSON.parse(sessionStorage.getItem("userData")).userId,
-                orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
-              }
-            }
-          })
-          .then(function(response) {
-            if (response.data.code == "1") {
-              Object.keys(that.ruleForm).forEach(function(trait) {
+          },
+          success:function(res){
+            if(res.code == 1){
+                Object.keys(_this.ruleForm).forEach(function(trait) {
                 if (trait != "telphone") {
-                  that.ruleForm[trait] =
-                    response.data.data.memberList[0][trait];
+                  _this.ruleForm[trait] =
+                    res.data.memberList[0][trait];
                 }
               });
-              that.prescriptions.memberId =
-                response.data.data.memberList[0].memberId;
-              that.ruleForm.hasMember = true;
-              that.needReg = false;
-            } else {
-              Object.keys(that.ruleForm).forEach(function(trait) {
+              _this.prescriptions.memberId =
+                res.data.memberList[0].memberId;
+              _this.ruleForm.hasMember = true;
+              _this.needReg = false;
+            }else{
+              Object.keys(_this.ruleForm).forEach(function(trait) {
                 if (trait != "telphone") {
-                  that.ruleForm[trait] = "";
+                  _this.ruleForm[trait] = "";
                 }
               });
-              that.needReg = true;
-            }
-          });
+              _this.needReg = true;
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             console.error(err);
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
       }
     },
     validationStart(formName) {
@@ -777,11 +798,10 @@ export default {
       }
   },
     submitThisModal() {
-      console.log(1)
-      var that = this;
-      console.log(!this.validation())
+        const _this = this;
+      // console.log(!this.validation())
       if (!this.validation()) {
-        that.$message({
+        _this.$message({
           showClose: true,
           message: "请填写配镜处方！",
           type: "error"
@@ -789,85 +809,82 @@ export default {
         return false;
       }
       var memberId;
-      if (that.needReg) {
-        that
-          .$axios({
-            url: "http://myc.qineasy.cn/member-api/member/addMember",
-            method: "post",
-            params: {
-              jsonObject: {
-                name: that.ruleForm.name,
-                telphone: that.ruleForm.telphone,
-                birthday: that.ruleForm.birthday,
-                sex: that.ruleForm.sex,
+      if (_this.needReg) {
+        _this.$myAjax({
+          url:'member-api/member/addMember',
+          data:{
+            name: _this.ruleForm.name,
+                telphone: _this.ruleForm.telphone,
+                birthday: _this.ruleForm.birthday,
+                sex: _this.ruleForm.sex,
                 district: "",
                 address: "",
                 email: ""
-              },
-              keyParams: {
-                weChat: true,
-                userId: JSON.parse(sessionStorage.getItem("userData")).userId,
-                orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
-              }
-            }
-          })
-          .then(function(response) {
-            if (response.data.code == "1") {
-              that.prescriptions.memberId = response.data.data.memberId;
-            }
-          });
+          },
+          success:function(res){
+            if(res.code == 1){
+              _this.prescriptions.memberId = res.data.memberId;
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             console.error(err);
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
       }
       var eyes = [];
-      eyes.push({ key: 2, value: that.skiascopyData });
-      eyes.push({ key: 3, value: that.subjectivityData });
-      eyes.push({ key: 0, value: that.distanceData });
-      eyes.push({ key: 1, value: that.nighData });
-      // eyes.push({ key: 4, value: that.contactData });
-      // eyes.push({ key: 5, value: that.graduallyData });
-      that.prescriptions.memberName = that.ruleForm.name;
-      that.prescriptions.customerName = that.ruleForm.name;
-      that.prescriptions.sex = that.ruleForm.sex;
-      that.prescriptions.health = JSON.stringify(that.health);
-      that.prescriptions.appKey = that.prescription.isDistance?'0':'1';
-      //   that.prescriptions.nub=that.ruleForm.memberCardNo;
+      eyes.push({ key: 2, value: _this.skiascopyData });
+      eyes.push({ key: 3, value: _this.subjectivityData });
+      eyes.push({ key: 0, value: _this.distanceData });
+      eyes.push({ key: 1, value: _this.nighData });
+      // eyes.push({ key: 4, value: _this.contactData });
+      // eyes.push({ key: 5, value: _this.graduallyData });
+      _this.prescriptions.memberName = _this.ruleForm.name;
+      _this.prescriptions.customerName = _this.ruleForm.name;
+      _this.prescriptions.sex = _this.ruleForm.sex;
+      _this.prescriptions.health = JSON.stringify(_this.health);
+      _this.prescriptions.appKey = _this.prescription.isDistance?'0':'1';
+      //   _this.prescriptions.nub=_this.ruleForm.memberCardNo;
       var jsonObject = {
         eyes: eyes,
-        prescriptions: that.prescriptions
+        prescriptions: _this.prescriptions
       };
-      setTimeout(() => {
-        that
-          .$axios({
-            url: "http://myc.qineasy.cn/pos-api/prescriptions/addPrescriptions",
-            method: "post",
-            params: {
-              jsonObject: jsonObject,
-              keyParams: {
-                weChat: true,
-                userId: JSON.parse(sessionStorage.getItem("userData")).userId,
-                orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
-              }
-            }
-          })
-          .then(function(response) {
-            if (response.data.code == 1) {
-              jsonObject.prescriptions.prescriptionId = response.data.data.id;
-              that.cleardata();
-              that.$emit("getNewoptometry", jsonObject);
-              that.$message({
+      _this.$myAjax({
+        url:'pos-api/prescriptions/addPrescriptions',
+        data:jsonObject,
+        success:function(res){
+          if(res.code == 1){
+              jsonObject.prescriptions.prescriptionId = res.data.id;
+              _this.cleardata();
+              _this.$emit("getNewoptometry", res.data.id);
+              _this.$message({
                 showClose: true,
                 message: "新增成功！",
                 type: "success"
               });
-            } else {
-              console.log(response);
-              that.$message({
-                showClose: true,
-                message: "新增失败，请联系管理人员！",
-                type: "error"
-              });
-            }
-          });
-      }, 100);
+          }else{
+            _this.$message({
+              type:'warning',
+              message:res.msg,
+              showClose:true})
+           }
+        },error:function(err){
+           console.error(err);
+           _this.$message({
+            type:'error',
+             message:err,
+            showClose:true
+          })
+        }
+      });
     }
   },
   mounted() {
@@ -875,13 +892,13 @@ export default {
   },
   
   created: function() {
-    let nums = -5;
-    for(var i =0;i<20;i++){
-      this.selectOpt.push({
-        value:parseFloat(nums).toFixed(2)
-      })
-      nums+=0.5;
-    }
+    // let nums = -5;
+    // for(var i =0;i<20;i++){
+    //   this.selectOpt.push({
+    //     value:parseFloat(nums).toFixed(2)
+    //   })
+    //   nums+=0.5;
+    // }
       this.healthCopy = this.health;
       this.distanceDataCopy = this.distanceData;
       this.nighDataCopy = this.nighData;

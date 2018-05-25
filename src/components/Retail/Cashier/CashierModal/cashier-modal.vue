@@ -23,7 +23,7 @@
             <td>{{index+1}}</td>
             <td>{{item.type}}</td>
             <td>
-              <el-input type="text"  v-model="item.money" @change="computedMoney();"   class="payType"  style="width: 100px;"></el-input>
+              <el-input type="text"  v-model="item.money" @change="computedMoney();" @focus="selectFocus"   class="payType"  style="width: 100px;"></el-input>
             </td>
             <td v-if="item.type=='代价券'">
               <a v-if="acPrice=='0'" href="javascript:;">扫一扫</a>
@@ -157,14 +157,7 @@
         itemSource: [],
       }
     },
-    props:{
-      datas:{
-        type:Object,
-      },
-      status:{
-        type:Number
-      }
-    },
+    props:['datas','status'],
     methods:{
       //添加结算方式
       addBilling(i,index) {
@@ -183,7 +176,7 @@
             this.computedMoney();
     },
       //删除结算方式
-      closeBilling(i,index) {
+      closeBilling(data,index) {
         let _this = this;
         _this.itemSource.splice(index,1);
         _this.AmountOfMoney.splice(index,1);
@@ -195,9 +188,8 @@
         for(var i=0;i<_this.itemSource.length;i++){
             arrs.add(_this.itemSource[i].id)
         }
-        for(var i=0;i<arrs.length;i++ ) {
-          console.log(_this.itemData[i-1])
-            _this.itemData[i-1].check = true;
+        for(let item of arrs){
+            _this.itemData[item-1].check = true;
         }
       },
       computedMoney(){
@@ -211,6 +203,9 @@
          }
        }
        _this.received = money;
+      },
+      selectFocus(event){
+        event.currentTarget.select();
       },
       //结算
       payMoneyToServer(){
@@ -256,9 +251,7 @@
       }
     },
     watch:{
-      AmountOfMoney(newValue,oldValue){
-        // console.log(newValue,oldValue)
-      }
+      
     },
     mounted(){
   }
