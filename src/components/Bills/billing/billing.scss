@@ -736,7 +736,7 @@
 }
 .replaceShop{
     .el-input__inner{
-        width: 120px !important;
+        width: 110px !important;
     }
     .el-form-item__label{
         margin-right: 10px !important;
@@ -1116,6 +1116,7 @@
       background: #FFFFFF;
       min-height: 36px;
       line-height: 36px;
+      overflow: hidden;
       div {
         float: left;
       }
@@ -1227,7 +1228,7 @@
     }
   }
   .tbody {
-    max-height: 230px;
+    max-height: 210px;
     overflow-y: auto;
     .checkstatus{
         background: rgba(246, 246, 246, 0.50);
@@ -1237,6 +1238,7 @@
       border-bottom: 1px solid #EFEFEF;
       min-height: 36px;
       line-height: 36px;
+      overflow: hidden;
       div {
         float: left;
         font-size: 13px;

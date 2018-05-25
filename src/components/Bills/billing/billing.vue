@@ -1429,7 +1429,7 @@ export default {
           if (res.code != "1") {
             _this.$message({
               showClose: true,
-              message: "请求数据出问题喽，请重试！",
+              message: res.msg,
               type: "error"
             });
             return false;
@@ -1811,9 +1811,11 @@ export default {
       } else if (status === "shopModefly") {
         for (var i = 0; i < _this.tableData.length; i++) {
           let data = _this.tableData[i];
-          data.realSale = (data.nums * data.discount * data.price / 10).toFixed(
-            2
-          );
+          if(data.discount>1){
+            data.realSale = (data.nums * data.discount * data.price / 10).toFixed(2);
+          }else{
+            data.realSale = (data.nums * data.discount * data.price).toFixed(2);
+          }
           _this.tableData.splice(i, 1, data);
         }
         this.alldiscountNumsBool = false;
@@ -2250,13 +2252,9 @@ export default {
         obj.skuName2 = data.orderItems[i].itemName;
         obj.skuName = data.orderItems[i].itemName;
         obj.nums = data.orderItems[i].quantity;
-        obj.price = parseFloat(data.orderItems[i].price) || "0";
-        obj.discount = data.orderItems[i].discountRate;
-        obj.realSale =
-          data.orderItems[i].status == 3
-            ? data.orderItems[i].price
-            : data.orderItems[i].money;
-        obj.status = data.orderItems[i].productMold;
+        obj.price = parseFloat(data.orderItems[i].listPrice);
+        obj.discount = data.orderItems[i].discountRate/10;
+        obj.realSale = data.orderItems[i].money;
         if (data.orderItems[i].productMold == "0") {
           obj.productId = data.orderItems[i].itemId;
           obj.sku = data.orderItems[i].itemNo;
@@ -2271,15 +2269,19 @@ export default {
           obj.classId = data.orderItems[i].productType;
         } else if (data.orderItems[i].productMold == "2") {
           //自带
-          delete obj.discount;
+          // obj.discount = '1';
         } else if (data.orderItems[i].productMold == "3") {
           //其他
-          delete obj.discount;
+          // obj.discount = '1';
+        }else if(data.orderItems[i].productMold =='4'){
+          //套餐
+          //处理套餐包
+          obj.discount = '1'
         }
         _this.tableData.push(obj);
+        _this.computedPay();
       }
       console.log("取单、重新开单商品列表", _this.tableData);
-      _this.computedPay();
     },
     //添加会员 子组件返回事件 提交表单信息，data为从子组件取到的数据
     memberAddSubmit: function(formdata) {
@@ -2515,11 +2517,11 @@ export default {
         urgent: _this.orderTemp.urgent.toString(), //是否加急
         glassesTime: _this.orderTemp.glassesTime, //取镜时间
         glassesType: _this.orderTemp.glassesTypeModel, //取镜类别
-        glassesCompany: _this.publicSelcet.comTypeModel || "取镜公司", //取镜公司
-        glassesAddress: _this.orderTemp.glassesAddress || "无", //取镜地址
-        saleMemo: _this.orderTemp.saleMemo || "销售备注", //销售备注
-        processMemo: _this.publicSelcet.processMemo || "加工备注", //加工备注
-        specialMemo: _this.publicSelcet.specialMemo || "特殊备注", //特殊备注
+        glassesCompany: _this.publicSelcet.comTypeModel , //取镜公司
+        glassesAddress: _this.orderTemp.glassesAddress , //取镜地址
+        saleMemo: _this.orderTemp.saleMemo ||'', //销售备注
+        processMemo: _this.publicSelcet.processMemo ||'', //加工备注
+        specialMemo: _this.publicSelcet.specialMemo ||'', //特殊备注
         couponDetailId: types == "-1" ? "" : _this.orderTemp.couponDetailId, //优惠券id
         moneyProduct: parseFloat(_this.amountSale).toFixed(2), //原价合计
         moneyAmount: parseFloat(_this.saleCount).toFixed(2), //应付
@@ -2558,7 +2560,7 @@ export default {
           if (res.code != "1") {
             _this.$message({
               showClose: true,
-              message: "请求数据出问题喽，请重试！",
+              message: res.msg,
               type: "error"
             });
             return;

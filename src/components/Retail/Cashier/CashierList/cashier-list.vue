@@ -72,7 +72,7 @@
       </div>
 
       <!-- 代收银 -->
-      <div class="content am_bg_white" v-if="srcNum==='1'">
+      <div class="content am_bg_white" v-if="srcNum==='1'" v-loading="showBool">
         <div class="orders">
           <table class="orders_table">
             <thead>
@@ -102,7 +102,7 @@
                 </div>
                 <div class=" fn-right">
                   <span class="msg">销售&nbsp;&nbsp;</span>
-                  <span class="msg">{{order.salesName}}&nbsp;&nbsp;&nbsp;{{order.orderTime}}</span>
+                  <span class="msg">{{order.salesName}}&nbsp;&nbsp;&nbsp;{{(order.orderTime).substring(0,19)}}</span>
                 </div>
               </td>
             </tr>
@@ -124,7 +124,7 @@
                     <strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong>
                   </div>
                   <div v-show="order.couponMoney>0">卡券：<strong>-{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
-                  <div v-show="order.discountMoney>0">折扣：<strong>-{{order.discountMoney}}</strong></div>
+                  <div v-show="order.discountMoney>0">总折扣：<strong>-{{order.discountMoney}}</strong></div>
                   <div v-show="order.activityMoney>0">活动：-<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
                 </div>
               </td>
@@ -157,7 +157,7 @@
       </div>
 
       <!-- 欠还款 -->
-      <div class="content am_bg_white" v-if="srcNum==='2'">
+      <div class="content am_bg_white" v-if="srcNum==='2'"  v-loading="showBool">
         <div class="orders">
           <el-table
             :data="orderTempList"
@@ -168,12 +168,6 @@
               label="订单号"
               width="120">
               <template slot-scope="scope">
-                <!-- <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
-                <span v-if="scope.row.statusCode=='4'" class="am-bg-orange icon">欠</span>
-                <span v-if="scope.row.statusCode=='10'" class="am-bg-red icon">退</span>
-                <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
-                <span v-if="scope.row.source=='0'" class="sign_blue">本店签批</span>
-                <span v-else class="sign_orange">跨店签批</span> -->
                 <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
               </template>
             </el-table-column>
@@ -330,7 +324,7 @@
         </div> -->
       </div>
       <!-- 关闭 -->
-      <div class="content am_bg_white" v-if="srcNum==='4'">
+      <div class="content am_bg_white" v-if="srcNum==='4'"  v-loading="showBool">
         <div class="orders">
           <table class="orders_table">
             <thead>
@@ -381,7 +375,7 @@
                     <strong>{{parseFloat(order.moneyProduct).toFixed(2)}}</strong>
                   </div>
                   <div v-show="order.couponMoney>0">卡券：<strong>-{{parseFloat(order.couponMoney)>0?parseFloat(order.couponMoney).toFixed(2):'0.00'}}</strong></div>
-                  <div v-show="order.discountMoney>0">折扣：<strong>-{{order.discountMoney}}</strong></div>
+                  <div v-show="order.discountMoney>0">总折扣：<strong>-{{order.discountMoney}}</strong></div>
                   <div v-show="order.activityMoney>0">活动：-<strong>{{parseFloat(order.activityMoney).toFixed(2)}}</strong></div>
                 </div>
               </td>
@@ -407,7 +401,7 @@
       </div>
 
       <!-- 全部 -->
-      <div class="content am_bg_white" v-if="srcNum==='3'">
+      <div class="content am_bg_white" v-if="srcNum==='3'"  v-loading="showBool">
         <div class="orders">
           <el-table
             :data="orderTempList"
@@ -416,31 +410,40 @@
             style="width: 100%;margin-bottom:10px;">
             <el-table-column
               label="订单号"
-              width="200">
+              width="120">
               <template slot-scope="scope">
-                <!-- <span v-if="scope.row.statusCode=='3'" class="am-bg-blue icon">定</span>
-                <span v-if="scope.row.statusCode=='4'" class="am-bg-orange icon">欠</span>
-                <span v-if="scope.row.statusCode=='10'" class="am-bg-red icon">退</span>
-                <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
-                <span v-if="scope.row.source=='0'" class="sign_blue">本店签批</span>
-                <span v-else class="sign_orange">跨店签批</span> -->
                 <span class="order_id"> <a href="javascript:;">{{scope.row.orderNo}}</a></span>
               </template>
             </el-table-column>
             <el-table-column
               prop="name"
               label="会员姓名"
-              width="180">
+              width="120">
             </el-table-column>
             <el-table-column
               prop="telphone"
-              label="会员手机号">
+              label="会员手机号"
+              width="120px">
             </el-table-column>
             <el-table-column
               prop="moneyPaid"
-              label="金额">
+              label="应收金额">
               <template slot-scope="scope">
-                <span class="am-ft-bold">{{scope.row.price}}</span>
+                <span class="am-ft-bold">{{parseFloat(scope.row.moneyAmount)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="moneyPaid"
+              label="已收金额">
+              <template slot-scope="scope">
+                <span class="am-ft-bold">{{parseFloat(scope.row.moneyPaid)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="moneyPaid"
+              label="待收金额">
+              <template slot-scope="scope">
+                <span class="am-ft-bold">{{parseFloat(scope.row.moneyAmount-scope.row.moneyPaid).toFixed(2)}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -464,10 +467,17 @@
             <el-table-column
               label="操作">
               <template slot-scope="scope">
-                <span class="am-ft-blue" @click="toOrderDetail(scope.row)">查看详情</span>
+                <span class="am-ft-blue" style="cursor:pointer;" @click="toOrderDetail(scope.row)">查看详情</span>
               </template>
             </el-table-column>
+            <!-- <el-table-column
+              label="操作">
+              <template slot-scope="scope">
+                <span class="am-ft-blue" style="cursor:pointer;" v-on:click="changePay(scope.row)">收银</span>
+              </template>
+            </el-table-column> -->
           </el-table>
+          
           <el-pagination
             class="am-ft-right"
             background
@@ -532,6 +542,7 @@ export default {
       },
       RemoveOrder:false,
       nub: 1,
+      showBool:true,
       againOrderData:null,
       status:'3',// 当前栏 3收银  4欠还  5全部
       size: 5,
@@ -595,35 +606,39 @@ export default {
         _this.againOrderData = data;
       }else{
         _this.againOrderBool = false;
-        _this.$myAjax({//先核销该订单
-          url:'pos-api/orderTemp/updateOrderTempStatus',
-          data:{
-            orderId:_this.againOrderData.orderId,
-            status:'11'
-          },
-          success:function(res){
-              if(res.code == 1){
-                _this.$router.push({
+        _this.$router.push({
                 name:'billing'
               ,params:{datas:_this.againOrderData}})
-              }else{
-                _this.$message({
-                  type:'error',
-                  message:'重新开单失败',
-                  showClose:true
-                })
-              }
-          },error:function(err){
-             _this.$message({
-                  type:'error',
-                  message:'网络连接失败',
-                  showClose:true
-                })
-          }
-        })
-         _this.$router.push({
-                name:'billing'
-              ,params:{datas:_this.againOrderData}})
+        // _this.$myAjax({//先核销该订单
+        //   url:'pos-api/orderTemp/updateOrderTempStatus',
+        //   data:{
+        //     orderId:_this.againOrderData.orderId,
+        //     status:'11'
+        //   },
+        //   success:function(res){
+        //       if(res.code == 1){
+        //         _this.$router.push({
+        //         name:'billing'
+        //       ,params:{datas:_this.againOrderData}})
+        //       }else{
+        //         _this.$message({
+        //           type:'error',
+        //           message:'重新开单失败',
+        //           showClose:true
+        //         })
+        //       }
+        //   },error:function(err){
+        //      _this.$message({
+        //           type:'error',
+        //           message:'网络连接失败',
+        //           showClose:true
+        //         })
+        //   }
+        // })
+        // ？？？
+        //  _this.$router.push({
+        //         name:'billing'
+        //       ,params:{datas:_this.againOrderData}})
       }
     },
     closeOrder(data,bool){
@@ -688,14 +703,15 @@ export default {
       this.payData = data;
       this.showCashier = true;
     },
-    //开启弹窗
-    openDialog() {},
     //获取列表
     getOrderList(value,bool) {
       var _this = this;
+      if(value ==  '3' || value == '4' || value =="7"){
+        this.showBool = true
+      }
       _this.status = value;
       let status = _this.status;
-      if (value == "'3','4','51','7'" || value=='4'){
+      if (value == "'3','4','51','7'"){
         if(!_this.initAllSearch){
           _this.orderTempList = [];
           _this.count = 0;
@@ -703,8 +719,7 @@ export default {
           if(value == "'3','4','51','7'")
           return
         }
-        if(value == "'3','4','51','7'"&&!bool){
-          _this.orderTempList = [];
+        if(!bool){
           _this.count = 0;
         }
       }
@@ -732,6 +747,7 @@ export default {
             if(res.code == 1){
                _this.count = res.data.count;
               _this.orderTempList = res.data.orderTempList;
+              _this.showBool = false;
             }else{
               _this.$message({
                 type:'warning',
