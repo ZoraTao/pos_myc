@@ -84,7 +84,7 @@
         <el-col :span="20">
           <el-form-item label="联系地址：" style="margin-left:10px;">
             <template>
-              <area-select style="margin-top: 5px;margin-bottom: -10px;" :level='2' type='text'
+              <area-select class="sel-mgl0" style="margin-top: 5px;margin-bottom: -10px;" :level='2' type='text'
                            v-model='addMemberForm.adr'></area-select>
             </template>
           </el-form-item>
@@ -404,8 +404,15 @@
   }
 
 </style>
-<style scoped>
+<style lang="scss" scoped>
   .el-form-item.el-form-item--feedback {
     margin-bottom: 10px !important;
+  }
+  /deep/ .area-select-wrap.sel-mgl0{
+    .area-select{
+      &:first-child{
+      margin-left: 0 !important;
+      }
+    }
   }
 </style>
