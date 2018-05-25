@@ -791,6 +791,7 @@ export default {
           _this.prescriptions[key] = ''
         }
       }
+      _this.prescriptions.prescriptionTime = new Date()
       for(var key in _this.health) {
         if(key != 'leftRight'){
           _this.health[key] = ''

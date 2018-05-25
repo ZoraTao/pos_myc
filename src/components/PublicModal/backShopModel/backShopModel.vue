@@ -92,22 +92,38 @@ export default {
             url:'pos-api/orderTemp/getOrderTempList',
             data:{
               orderNo:_this.orderId,
+              searchCode:'',orderType:'',saleTimeStart:'',saleTimeEnd:'',
+              status:'4',nub:0,size:5,
             },
             success:function(res){
               if(res.code == 1){
                 console.log(res.data.orderTempList[0])
-                _this.$router.push({
+                if(res.data.orderTempList.length>0){
+                  _this.$router.push({
                   name:_this.nowPage.name
                 ,params:{datas:res.data.orderTempList[0],reason:_this.reason,desc:_this.message,order:res.data.orderTempList[0].orderId}});
                 _this.$bus.$emit('createTab', _this.nowPage);
+                }else{
+                    _this.$message({
+                      showClose:true,
+                      type:'warning',
+                      message:'没有查到到该订单'
+                    })
+                }
+              }else{
+              this.$message({
+                showClose:true,
+                type:'warning',
+                message:res.msg
+              })
               }
             },
             error:function(err){
               console.log(err)
               _this.$message({
                 showClose:true,
-                type:"error",
-                message:'网络请求失败'
+                type:'error',
+                message:err
               })
             }
           })

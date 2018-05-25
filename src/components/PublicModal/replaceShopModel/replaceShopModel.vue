@@ -92,6 +92,8 @@ export default {
             url:'pos-api/orderTemp/getOrderTempList',
             data:{
               orderNo:_this.orderId,
+              searchCode:'',orderType:'',saleTimeStart:'',saleTimeEnd:'',
+              status:"'3','4','51'",nub:0,size:5,
             },
             success:function(res){
               if(res.code == 1){
