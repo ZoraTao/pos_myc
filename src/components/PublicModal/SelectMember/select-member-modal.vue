@@ -93,35 +93,32 @@ export default {
   },
   methods:{
       getList(){
-        var that=this;
+        const _this = this;
         setTimeout(() => {
-            that.$axios({
-                url: 'http://myc.qineasy.cn/member-api/member/getMemberListByBoYang',
-                method: 'post',
-                params: {
-                    jsonObject: {
+            _this.$myAjax({
+              url:'member-api/member/getMemberListByBoYang',
+              data:{
                         orderBy:'2',
-                        nub: that.nub==1?0:(that.nub-1)*that.size,
-                        size: that.size
-                    },
-                    keyParams: {
-                        weChat: true,
-                        userId: JSON.parse(localStorage.getItem("userData")).userId,
-                        orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-                    }
-                }
-            })
-            .then(function (response) {
-                if(response.data.code==1){
-                    that.data=response.data.data;
+                        nub: _this.nub==1?0:(_this.nub-1)*_this.size,
+                        size: _this.size
+              },
+              success:function(res){
+                if(res.code == 1){
+                    _this.data=res.data;
                 }else{
-                    that.$message({
-                        showClose: true,
-                        message: '会员信息获取失败',
-                            type: 'error'
-                    })
-                }
-            })
+                  _this.$message({
+                    type:'warning',
+                    message:res.msg,
+                    showClose:true})
+                 }
+              },error:function(err){
+                 _this.$message({
+                  type:'error',
+                   message:err,
+                  showClose:true
+                })
+              }
+            });
         },0)
       },
       selectThis(value){

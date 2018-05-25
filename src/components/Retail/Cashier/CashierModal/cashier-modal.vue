@@ -23,7 +23,7 @@
             <td>{{index+1}}</td>
             <td>{{item.type}}</td>
             <td>
-              <el-input type="text"  v-model="item.money" @change="computedMoney();"   class="payType"  style="width: 100px;"></el-input>
+              <el-input type="text"  v-model="item.money" @change="computedMoney();" @focus="selectFocus"   class="payType"  style="width: 100px;"></el-input>
             </td>
             <td v-if="item.type=='代价券'">
               <a v-if="acPrice=='0'" href="javascript:;">扫一扫</a>
@@ -157,18 +157,14 @@
         itemSource: [],
       }
     },
-    props:{
-      datas:{
-        type:Object,
-      },
-      status:{
-        type:Number
-      }
-    },
+    props:['datas','status'],
     methods:{
       //添加结算方式
       addBilling(i,index) {
         var that = this;
+        console.log(this.datas)
+        console.log(i.moneyAmount)
+        i.money=(parseFloat(this.datas.moneyAmount)-parseFloat(this.datas.moneyPaid))-this.received;
         i.check = true;
             that.itemSource.push({
               money: i.money,
@@ -177,12 +173,14 @@
               name: i.name,
               num:i.num,
             });
+            this.computedMoney();
     },
       //删除结算方式
-      closeBilling(i,index) {
+      closeBilling(data,index) {
         let _this = this;
         _this.itemSource.splice(index,1);
         _this.AmountOfMoney.splice(index,1);
+        console.log(_this.itemData)
         for(var i=0;i<_this.itemData.length;i++){
             _this.itemData[i].check = false
         }
@@ -190,9 +188,8 @@
         for(var i=0;i<_this.itemSource.length;i++){
             arrs.add(_this.itemSource[i].id)
         }
-        for(let i of arrs ) {
-          console.log(i)
-            _this.itemData[i-1].check = true;
+        for(let item of arrs){
+            _this.itemData[item-1].check = true;
         }
       },
       computedMoney(){
@@ -207,6 +204,9 @@
        }
        _this.received = money;
       },
+      selectFocus(event){
+        event.currentTarget.select();
+      },
       //结算
       payMoneyToServer(){
         let _this = this;
@@ -220,46 +220,38 @@
           payMessage.push(obj)
         }
         console.log(payMessage);
-        _this.$axios({
-          url:'http://myc.qineasy.cn/pos-api/orderTemp/updateCashierStatus',
-          method:'post',
-          params:{
-            jsonObject:{
-              orderId:this.datas.orderId,
-              paymentFlowList:payMessage
-            },
-            keyParams:{
-              weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-            }
+        _this.$myAjax({
+          url:'pos-api/orderTemp/updateCashierStatus',
+          data:{
+            orderId:this.datas.orderId,
+            paymentFlowList:payMessage
+          },
+          success:function(res){
+            if(res.code == 1){
+              _this.$message({
+                  showClose: true,
+                  message: '收款成功!',
+                  type: 'success'
+              })
+              _this.$emit('closePayMoney',)
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
           }
-        })
-        .then((res)=>{
-          console.log(res)
-          if(res.data.code==1){
-                    _this.$message({
-                        showClose: true,
-                        message: '收款成功!',
-                        type: 'success'
-                    })
-                    _this.$emit('closePayMoney',)
-          }else{
-                    _this.$message({
-                        showClose: true,
-                        message: res.data.msg,
-                        type: 'error'
-                    })
-          }
-        }).catch((err)=>{
-          console.log(err)
-        })
+        });
       }
     },
     watch:{
-      AmountOfMoney(newValue,oldValue){
-        // console.log(newValue,oldValue)
-      }
+      
     },
     mounted(){
   }

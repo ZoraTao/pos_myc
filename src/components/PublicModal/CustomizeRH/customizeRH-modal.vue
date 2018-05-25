@@ -143,7 +143,7 @@ export default {
         customMessage: "",
         price: "", //原价
         nums: "1", //数量
-        discount: "10", //折扣
+        discount: "", //折扣
         realSale: "", //实售
         status: "1",
         classid:'',//类别
@@ -172,9 +172,17 @@ export default {
     orgData:{
       type:Object,
       default:null
+    },
+    memberShipDisCount:{
+      type:String,
+      default:'1'
     }
   },
   methods: {
+    firstDiscount(){
+      console.log('触发')
+      this.customContent.discount = this.memberShipDisCount==''?'10':parseFloat(this.memberShipDisCount*10).toFixed(2);
+    },
     aler(name,data){
       console.log(name,data)
       if(name == 'classid'){
@@ -189,6 +197,7 @@ export default {
     },
     initSelect(type){
             var _this = this;
+            
           var id = '';
           switch ((type).toString()) {
             case '1'://类别默认
@@ -316,7 +325,7 @@ export default {
         }
       }
       _this.customContent.price = parseFloat(_this.customContent.price);
-      let users =  JSON.parse(localStorage.getItem("userData"));
+      let users =  JSON.parse(sessionStorage.getItem("userData"));
       console.log(1,_this.orgData)
       _this.$myAjax({
           url:'pos-api/customize/addCustomize',
@@ -346,7 +355,7 @@ export default {
                 // {"customizeDemand":"1111","count":"1","customizeOrgName":"毛源昌商城","customizeOrgId":"11387","customizeShopName":"天一恒泰店","customizeShopId":"11387","customizePerson":"陈中床"}
           },
           keyParams:{
-            corporationId:JSON.parse(localStorage.getItem("userData")).corporationId,
+            corporationId:JSON.parse(sessionStorage.getItem("userData")).corporationId,
           },
           success:function(res){
               if(res.code == 1){
@@ -364,7 +373,7 @@ export default {
                             _this.customContent[key] = "";
                         }
                         _this.customContent.nums = "1";
-                        _this.customContent.discount = "10";
+                        _this.customContent.discount = '';
                         _this.customContent.status = "1";
                     }, 1000);
               }else{

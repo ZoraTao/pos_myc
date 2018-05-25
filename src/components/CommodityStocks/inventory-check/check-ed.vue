@@ -77,12 +77,24 @@
         nub:1,
       }
     },
+    props:{
+      selectBase:{
+        type:String,
+        default:''
+      },
+      check:{
+        type:Boolean,
+        defalut:false
+      }
+    },
     methods: {
       requestOrder(){
         const _this = this;
         _this.$myAjax({
           url:'pos-api/warehouseCheck/getWarehouseCheckList',
           data:{
+            warehouseId:_this.selectBase,
+            flag:_this.check?'1':'',
             status:2,
             nub:_this.nub == 1?'0':_this.nub*_this.size,
             size:10,
@@ -98,11 +110,11 @@
         })
       },
       //开始盘点
-      goCheck(){
+      goCheck(data){
         this.$router.push({
-          path: '/commodity/checkInventory',
           name: 'check-inventory',
-          params: {}
+          query: {id:data.warehouseCheckCode},
+          params:{data: data}
         })
       }
     }

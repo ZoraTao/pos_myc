@@ -240,7 +240,8 @@ export default {
                         orderItemId:element.orderItemId,
                         pickupQuantity:element.getProNum
                     })
-                }else{
+                }
+                else{
                     jsonObject.orderItemsList.push({
                         orderItemId:element.orderItemId,
                         pickupQuantity:'0'
@@ -248,36 +249,31 @@ export default {
                 }
             }
         })
-        _this.$axios({
-            url: "http://myc.qineasy.cn/pos-api/orderTemp/updatePickupStatus",
-            method: "post",
-            params: {
-              jsonObject: jsonObject,
-              keyParams: {
-                weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId,
-              }
-            }
-          })
-          .then(function(res) {
-            if(res.data.code == 1){
+        _this.$myAjax({
+          url:'pos-api/orderTemp/updatePickupStatus',
+          data:jsonObject,
+          success:function(res){
+            if(res.code == 1){
                 _this.showModal=true;
                 setTimeout(() => {
                     _this.showModal=false;
                     _this.getOrderList();
                 }, 1000);
             }else{
-               _this.$message({
-                showClose: true,
-                message: '请求数据失败，请联系管理员',
-                type: 'error'
-              })
-            }
-          })
-          .catch(function(error) {
-            console.info(error);
-          });
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+            console.error(err);
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
     },
     changeTab:function(item){
         this.srcNum=item.srcNum;

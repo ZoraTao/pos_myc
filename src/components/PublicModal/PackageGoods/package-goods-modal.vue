@@ -101,7 +101,7 @@
                                                         </template>
                                                     </el-autocomplete> -->
                                                     <el-autocomplete
-                                                      popper-class="my-autocomplete"
+                                                    popper-class="my-autocomplete"
                                                     v-if="scope.row.level>1"
                                                     @focus="toCopyValue(scope.row,scope.$index)"
                                                     class="inline-input"
@@ -169,12 +169,12 @@ export default {
       toHidePackageModel(bool){
           const _this = this;
           let times = Date.parse(new Date());
-          console.log(times)
+          _this.packageCreate.times = times;
           for(var i=0,datas = _this.packageDetails;i<datas.length;i++){
-              _this.packageDetails[i].status = '4'
-              _this.packageDetails[i].dataTimt = times
+              _this.packageDetails[i].status = '4';
+              _this.packageDetails[i].times = times
           }
-          console.log(_this.packageDetails)
+        //   console.log(_this.packageDetails)
           if(bool){
               for(var i=0,datas = _this.packageDetails;i<datas.length;i++){
                   if(datas[i].farSearchCode == ''&&datas[i].modelName == ''){
@@ -187,8 +187,8 @@ export default {
                   }
               }
             let obj = {
-                data:_this.packageDetails,
-                package:_this.packageCreate
+                data: _this.packageDetails,
+                package: _this.packageCreate,
             }
             _this.$emit('toHidePackageModel',obj);
           }else{
@@ -205,16 +205,14 @@ export default {
       },
       handleSelect(item) {
         //   console.log(this.packageDetails[this.nowIndex])
-            // console.log(item);
           this.packageDetails[this.nowIndex].farSearchCode = item.skuName;
-        //   this.packageDetails[this.nowIndex].item = item;
           this.packageDetails[this.nowIndex].farSearchCodeId = item.productId;
           this.packageDetails[this.nowIndex].sku = item.sku;
           this.packageDetails[this.nowIndex].warehouseId = item.warehouseId;
           this.packageDetails[this.nowIndex].stockId = item.stockId;
           this.packageDetails[this.nowIndex].quantity = item.quantity;
           this.packageDetails[this.nowIndex].allotQuantity = item.allotQuantity;
-          this.packageDetails[this.nowIndex].productCategoryId = item.productCategoryId;
+          this.packageDetails[this.nowIndex].productCategoryId = item.classId;
       },
       createFilter(queryString) {
         return (restaurant) => {
@@ -235,6 +233,7 @@ export default {
         //远程搜索
       farSearch(data){
           const _this = this;
+          console.log(data)
           _this.$myAjax({
               url:'pos-api/productSku/list',
               data:{

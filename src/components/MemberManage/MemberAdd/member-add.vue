@@ -33,8 +33,8 @@
               jsonObject: data,
               keyParams: {
                 weChat: true,
-                userId:JSON.parse(localStorage.getItem("userData")).userId,
-                orgId:JSON.parse(localStorage.getItem("userData")).orgId,
+                userId:JSON.parse(sessionStorage.getItem("userData")).userId,
+                orgId:JSON.parse(sessionStorage.getItem("userData")).orgId,
               }
             }
           })

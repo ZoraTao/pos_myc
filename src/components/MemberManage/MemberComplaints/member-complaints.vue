@@ -227,7 +227,7 @@
       //获取投诉列表
       getComplainsList() {
         var that = this;
-        const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+        const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
         that.orgId = ueserInfo.orgId;
         that.$set(that.form,'size',that.size);
         that.$set(that.form,'nub',that.nub);

@@ -257,8 +257,8 @@ export default {
               },
               keyParams: {
                 weChat: true,
-                userId: JSON.parse(localStorage.getItem("userData")).userId,
-                orgId: JSON.parse(localStorage.getItem("userData")).orgId,
+                userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+                orgId: JSON.parse(sessionStorage.getItem("userData")).orgId,
               }
             }
           })
@@ -325,7 +325,7 @@ export default {
     },
     //获取列表
     getOrderList: function() {
-      var _this = this;
+    const _this = this;
       let status;
       _this.tabs.forEach(function(element){
           if(element.isActived==true){
@@ -333,11 +333,9 @@ export default {
           }
       })
       setTimeout(() => {
-        _this.$axios({
-            url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTempList",
-            method: "post",
-            params: {
-              jsonObject: {
+          _this.$myAjax({
+            url:'pos-api/orderTemp/getOrderTempList',
+            data:{
                 orderNo: _this.searchForm.orderNo,
                 name: _this.searchForm.name,
                 saleTimeStart: _this.searchForm.saleTimeStart,
@@ -345,30 +343,28 @@ export default {
                 status:_this.searchForm.status,
                 nub: _this.nub == 1 ? 0 : (_this.nub - 1) * _this.size,
                 size: _this.size
-              },
-              keyParams: {
-                weChat: true
-              }
-            }
-          })
-          .then(function(res) {
-            // console.info(res.data.data)
-            if(res.data.code == 1){
-              _this.count = res.data.data.count;
-              _this.orderTempList = [];
-              _this.orderTempList = res.data.data.orderTempList;
-            }else{
+            },
+            success:function(res){
+              if(res.code == 1){
+                  _this.count = res.data.count;
+                    _this.orderTempList = [];
+                    _this.orderTempList = res.data.orderTempList;
+              }else{
+                _this.$message({
+                  type:'warning',
+                  message:res.msg,
+                  showClose:true})
+               }
+            },error:function(err){
+               console.error(err);
                _this.$message({
-                showClose: true,
-                message: '请求数据失败，请联系管理员',
-                type: 'error'
+                type:'error',
+                 message:err,
+                showClose:true
               })
             }
-
-          })
-          .catch(function(error) {
-            console.info(error);
           });
+         
       }, 100);
     }
   },

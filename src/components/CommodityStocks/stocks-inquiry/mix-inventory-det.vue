@@ -136,45 +136,33 @@
       },
       //查询库存明细--编码列表
       getCodeStockList(){
-        var that = this;
-        let setData = that.formInline;
-        setData.size = that.size;
-        setData.nub = that.nub;
-
-        setData.categoryCode = [that.categoryLevelInfo.category1,that.categoryLevelInfo.category2,that.categoryLevelInfo.category3];
-        that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/stock/getCodeStockList',
-          method: 'post',
-          params: {
-            jsonObject: that.formInline,
-            keyParams: {
-              weChat: true
-            }
-          }
-        })
-          .then(function (response) {
-            if(response.data.code != '1'){
-              that.$message({
-                showClose: true,
-                message: '请求数据出问题喽，请重试！',
-                type: 'error'
-              })
-              return false;
-            }else {
-              // console.info(response.data.data)
-              that.codeStockData = response.data.data.list;
-              that.codeStockCount = parseInt(response.data.data.count);
-              that.closeLoading();
-            }
-          })
-          .catch(function (error) {
-            console.info(error);
-            that.$message({
-              showClose: true,
-              message: '请求数据失败，请联系管理员',
-              type: 'error'
+        const _this = this;
+        let setData = _this.formInline;
+        setData.size = _this.size;
+        setData.nub = _this.nub;
+        setData.categoryCode = [_this.categoryLevelInfo.category1,_this.categoryLevelInfo.category2,_this.categoryLevelInfo.category3];
+        _this.$myAjax({
+          url:'pos-api/stock/getCodeStockList',
+          data:_this.formInline,
+          success:function(res){
+            if(res.code == 1){
+                _this.codeStockData = res.data.list;
+                _this.codeStockCount = parseInt(res.data.count);
+                _this.closeLoading();
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
             })
-          })
+          }
+        });
       },
       //分页
       handleCurrentChange(val) {

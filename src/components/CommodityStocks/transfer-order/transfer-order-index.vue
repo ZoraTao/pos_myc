@@ -20,7 +20,7 @@
           <el-form-item label="调出仓库：">
             <el-select v-model="formInline.outWarehId" filterable placeholder="请选择" style="width: 130px">
               <el-option
-                v-for="i in warehList"
+                v-for="i in warehListout"
                 :key="i.warehouseId"
                 :label="i.warehouseName"
                 :value="i.warehouseId">
@@ -121,6 +121,7 @@
         requisitionOrg: [],//调拨部门
         sourceType: [],//来源类型
         warehList: [],//仓库列表
+        warehListout:[],//调出仓库
         formInline: {
           sourceType: '',//来源类型
           requisitionNo: '',//调拨单编号
@@ -253,41 +254,52 @@
       },
       //查询仓库列表
       getWarehList() {
-        var that = this;
-        that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/warehouse/getWarehouseList',
-          method: 'post',
-          params: {
-            jsonObject: {
-              status: 0
-            },
-            keyParams: {
-              weChat: true
-            }
-          }
-        })
-          .then(function (response) {
-            if (response.data.code != '1') {
-              that.$message({
-                showClose: true,
-                message: '请求数据出问题喽，请重试！',
-                type: 'error'
-              })
-              return false;
-            } else {
-              // console.info(response.data.data);
-              that.warehList = response.data.data.list;
-            }
-
-          })
-          .catch(function (error) {
-            console.info(error);
-            that.$message({
-              showClose: true,
-              message: '请求数据失败，请联系管理员',
-              type: 'error'
+        const _this = this;
+        _this.$myAjax({//调入
+          url:'pos-api/warehouse/getWarehouseByOrgIds',
+          data:{
+              status: 1
+          },
+          success:function(res){
+            if(res.code == 1){
+              _this.warehList = res.data.list;
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
             })
-          })
+          }
+        });
+        _this.$myAjax({//调出
+          url:'pos-api/warehouse/getWarehouseByOrgId',
+          data:{
+              status: 1
+          },
+          success:function(res){
+            if(res.code == 1){
+              _this.warehListout = res.data.list;
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
+        
       },
       //查询来源类型列表
       getSourceType() {

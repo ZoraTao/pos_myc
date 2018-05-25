@@ -856,8 +856,8 @@ export default {
             },
             keyParams: {
               weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
             }
           }
         })
@@ -998,8 +998,8 @@ export default {
             jsonObject: jsonObject,
             keyParams: {
               weChat: true,
-              userId: JSON.parse(localStorage.getItem("userData")).userId,
-              orgId: JSON.parse(localStorage.getItem("userData")).orgId
+              userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+              orgId: JSON.parse(sessionStorage.getItem("userData")).orgId
             }
           }
         })
@@ -1040,7 +1040,7 @@ export default {
   created() {},
   mounted() {
     let _this = this;
-    _this.users = JSON.parse(localStorage.getItem("userData"));
+    _this.users = JSON.parse(sessionStorage.getItem("userData"));
     if (_this.$route.params.datas) {
       // {|} -i  -t 重新开单参数
       _this.$nextTick(()=>{

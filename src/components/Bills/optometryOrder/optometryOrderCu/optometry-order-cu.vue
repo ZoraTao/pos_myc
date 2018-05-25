@@ -343,31 +343,35 @@
         })
       },
       getOptometryRecord() {
-        var _this = this;
         console.log(_this.$route.params)
-        _this.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately',
-          method: 'post',
-          params: {
-            jsonObject: {
-              memberId: _this.$route.params.memberId.member
-            },
-            keyParams: {
-              weChat: true
-            }
+        const _this = this;
+        _this.$myAjax({
+          url:'pos-api/prescriptions/getPrescriptionsLately',
+          data:{
+            memberId: _this.$route.params.memberId.member
+          },
+          success:function(res){
+            if(res.code == 1){
+               _this.eyesData = res.data.eyes; //左右眼数据
+                _this.userInfo = res.data.prescriptions; //检查数据
+                _this.cpMemberInfo=res.data.member;
+                //检影数据
+                _this.setData()
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
           }
-        })
-          .then(function (response) {
-            console.info(response.data)
-            _this.eyesData = response.data.data.eyes; //左右眼数据
-            _this.userInfo = response.data.data.prescriptions; //检查数据
-            _this.cpMemberInfo=response.data.data.member;
-            //检影数据
-            _this.setData()
-          })
-          .catch(function (error) {
-            console.info(error)
-          })
+        });
+        
       },
       toback(index){
         const _this = this;

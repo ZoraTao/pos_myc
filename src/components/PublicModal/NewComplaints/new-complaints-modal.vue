@@ -364,7 +364,7 @@
       //新增投诉
       addComplain(formName){
         const that = this;
-        const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+        const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
         that.orgId = ueserInfo.orgId;
         that.userId = ueserInfo.userId;
         that.ruleForm.complaintCategoryList = that.tableData;
@@ -430,7 +430,7 @@
       //获取负责人、接待人员列表
       getReceptList(){
         const that = this;
-        const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+        const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
         that.orgId = ueserInfo.orgId;
         that.$axios({
           url: 'http://myc.qineasy.cn/cas-api/user/getUsersByOrgId',

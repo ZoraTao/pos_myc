@@ -88,13 +88,14 @@ export default {
   beforeMount() {},
   created() {
     this.$store.commit('LOGIN_GET');
-   this.showUser = JSON.parse(localStorage.getItem("userData"));
+   this.showUser = JSON.parse(sessionStorage.getItem("userData"));
 
   },
   methods: {
     //退出
     getout(data){
       if(data == 'goout'){
+        qineasyjsbridge.Close();
         this.$store.commit('CLEAR_LOCAL_STORAGE');
         this.$router.push({path:'/login'});
       }
@@ -116,11 +117,12 @@ export default {
         });
       }
     },
+    
     //关闭tab
     closeTab(index) {
       var _this = this;
       let arr = [];
-      let nowGetLocal = JSON.parse(localStorage.getItem("items"));
+      let nowGetLocal = JSON.parse(sessionStorage.getItem("items"));
       for (var key in nowGetLocal) {
         if (!nowGetLocal.hasOwnProperty(key)) {
           continue;
@@ -132,7 +134,7 @@ export default {
       arr[index - 1].isActive = true;
       arr.splice(index, 1);
       _this.items = arr;
-      localStorage.setItem("items", JSON.stringify(_this.items));
+      sessionStorage.setItem("items", JSON.stringify(_this.items));
       _this.toggle = false;
       setTimeout(function(){
         _this.toggle = true;
@@ -149,7 +151,7 @@ export default {
     items(newValue, oldValue) {},
     $route() {
       // console.log("触发Route", this.$route.path);
-      this.items = JSON.parse(localStorage.getItem("items")); //每次跳转路由都将目前的缓存赋值给items
+      this.items = JSON.parse(sessionStorage.getItem("items")); //每次跳转路由都将目前的缓存赋值给items
       let nowRoute = this.$route.path;
       let nowRouteName = this.$route.path;
       for (var i = 0; i < this.items.length; i++) {
@@ -160,15 +162,15 @@ export default {
           this.items[i].isActive = true;
         }
       }
-      localStorage.setItem("items", JSON.stringify(this.items));
+      sessionStorage.setItem("items", JSON.stringify(this.items));
     }
   },
 
   mounted() {
-    if (localStorage.getItem("items") == null) {
-      localStorage.setItem("items", JSON.stringify(this.BeforeShow));
+    if (sessionStorage.getItem("items") == null) {
+      sessionStorage.setItem("items", JSON.stringify(this.BeforeShow));
     }
-    this.items = JSON.parse(localStorage.getItem("items"));
+    this.items = JSON.parse(sessionStorage.getItem("items"));
     // console.log(this.items);
     
     //追加tab
@@ -203,7 +205,7 @@ export default {
         url: data.link,
         isActive: data.line
       });
-      localStorage.setItem("items", JSON.stringify(_this.items));
+      sessionStorage.setItem("items", JSON.stringify(_this.items));
     });
   }
 };

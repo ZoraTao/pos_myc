@@ -132,16 +132,19 @@ export default {
     }
   },
   methods:{
-      selectBuy(value){//双击选择
-          value.discount = 10;
-          value.realSale = value.price;
-          this.brandsValue = '';
-          this.varietysValue = '';
-          this.selectBrands(2);
-          this.$emit('setBuyShop',value)
-      },
+    //   selectBuy(value){//双击选择
+    //       value.discount = 1;
+    //       value.status = '0';
+    //       value.realSale = value.price;
+    //       this.brandsValue = '';
+    //       this.varietysValue = '';
+    //       this.selectBrands(2);
+    //       console.log(value)
+    //       this.$emit('setBuyShop',value)
+    //   },
       selectBuya(row,event){//单击选择
-          row.discount = 10;
+          row.discount = 1;
+          row.status = '0';
           row.realSale = row.price;
           this.brandsValue = '';
           this.varietysValue = '';
@@ -150,7 +153,7 @@ export default {
       },
       getProductSku(){
         this.cpSelectProductSku=this.selectProductSku;
-          this.cpSelectProductSku.type = '';
+        this.cpSelectProductSku.type = '';
         this.$emit('getProductSku', this.cpSelectProductSku);
       },
       getWareHouseList(){//查询仓库列表
@@ -164,8 +167,8 @@ export default {
                     },
                     keyParams: {
                         weChat: true,
-                        userId: JSON.parse(localStorage.getItem("userData")).userId,
-                        orgId: JSON.parse(localStorage.getItem("userData")).orgId,
+                        userId: JSON.parse(sessionStorage.getItem("userData")).userId,
+                        orgId: JSON.parse(sessionStorage.getItem("userData")).orgId,
                     }
                 }
             })
