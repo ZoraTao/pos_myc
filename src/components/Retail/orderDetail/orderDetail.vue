@@ -316,16 +316,16 @@
       <h3>收银记录</h3>
       <div class="Cashier">
             <div class="Cashier_title">
-              <span style="width:120px;text-indent:10px;">
+              <span style="width:120px;text-indent:15px;">
                 金额
               </span>
               <span style="width:100px">
                 结算方式
               </span>
-              <span style="width:100px;text-indent:20px;">
+              <span style="width:100px;">
                 操作人
               </span>
-              <span style="width:150px;text-indent:30px;">
+              <span style="width:150px;">
                 时间
               </span>
             </div>
@@ -333,35 +333,28 @@
             <el-table
               :data="tableData"
               :show-header = false
-              :span-method="objectSpanMethodOperation"
               align="left"
               size="small"
-              style="width: 100%;margin-left:26px;">
+              style="width: 100%;margin-left:6px;">
               <el-table-column
                 label="金额"
-                width="100px">
-                <template slot-scope="scope">
-                  <strong>金额:{{ scope.row.money}}</strong>
-                </template>
+                width="120px">
+                 <template slot-scope="scope">{{parseFloat(scope.row.amount)}}</template>
               </el-table-column>
               <el-table-column
                 label="结算方式"
                 width="100px">
                 <template slot-scope="scope">
-                  <ul>
-                    <li v-for="item in scope.row.type" :key="item.in">
-                        {{item.types}} {{item.moneys}}
-                    </li>
-                  </ul>
+                    {{scope.row.payTypeName}}
                 </template>
               </el-table-column>
               <el-table-column
-                prop="people"
+                prop="createUserName"
                 label="操作人"
                 width="120px">
               </el-table-column>
               <el-table-column
-                prop="time"
+                prop="payTime"
                 label="时间"
                 width="200px">
               </el-table-column>
@@ -435,42 +428,7 @@ export default {
       tableData2: [],
 
       tableData: [
-        {
-          money: "1200.00",
-          type: [{
-            types:'支付宝',
-            moneys:'300.00'
-          }],
-          time: "2018-04-11 17:07:02",
-          people: '某某'
-        },
-       {
-          money: "",
-          type: [{
-            types:'支付宝',
-            moneys:'300.00'
-          }],
-          time: "2018-04-11 17:07:02",
-          people: '某某'
-        },
-        {
-          money: "",
-          type: [{
-            types:'支付宝',
-            moneys:'300.00'
-          }],
-          time: "2018-04-11 17:07:02",
-          people: '某某'
-        },
-        {
-          money: "",
-          type: [{
-            types:'支付宝',
-            moneys:'300.00'
-          }],
-          time: "2018-04-11 17:07:02",
-          people: '某某'
-        },
+        
       ],
     };
   },
@@ -575,34 +533,32 @@ export default {
     },
     orderDetail(id) {
       let _this = this;
-      _this
-        .$axios({
-          url: "http://myc.qineasy.cn/pos-api/orderTemp/getOrderTemp",
-          method: "post",
-          params: {
-            jsonObject: {
-              orderId: id
-            },
-            keyParams: {
-              weChat: true
+      _this.$myAjax({
+        url:'pos-api/orderTemp/getOrderTemp',
+        data:{
+        orderId: id
+        },
+        success:function(res){
+          if(res.code == 1){
+              if(res.data.prescription){
+              _this.eyesDate(res.data.prescription.eyes);
             }
-          }
-        })
-        .then((res) => {
-          if (res.data.code == 1) {
-            if(res.data.data.prescription){
-              _this.eyesDate(res.data.data.prescription.eyes);
-            }
-            _this.orderData = res.data.data;
-
-          } else {
+            _this.orderData = res.data;
+            _this.tableData = res.data.paymentFlowList;
+          }else{
             _this.$message({
-              showClose: true,
-              message: "查询失败",
-              type: "error"
-            });
-          }
-        })
+              type:'warning',
+              message:res.msg,
+              showClose:true})
+           }
+        },error:function(err){
+           _this.$message({
+            type:'error',
+             message:err,
+            showClose:true
+          })
+        }
+      });
     },
     goback(){
       this.$router.go(-1)

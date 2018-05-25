@@ -121,43 +121,31 @@
       },
       //查询调拨单详情
       getDRequisition(){
-        const that = this;
-        that.$axios({
-          url: 'http://myc.qineasy.cn/pos-api/dRequisition/getDRequisition',
-          method: 'post',
-          params: {
-            jsonObject: {
-              requisitionId: that.requisitionId
-            },
-            keyParams: {
-              weChat: true
-            }
-          }
-        })
-          .then(function (response) {
-            if (response.data.code != '1') {
-              that.$message({
-                showClose: true,
-                message: '请求数据出问题喽，请重试！',
-                type: 'error'
-              })
-              return false;
-            } else {
-              // console.info(response.data.data);
-              that.detData = response.data.data;
-              that.detailData = response.data.data.dRequisition;
-              that.detailList = response.data.data.detailList;
-            }
-
-          })
-          .catch(function (error) {
-            console.info(error);
-            that.$message({
-              showClose: true,
-              message: '请求数据失败，请联系管理员',
-              type: 'error'
+        const _this = this;
+        _this.$myAjax({
+          url:'pos-api/dRequisition/getDRequisition',
+          data:{
+           requisitionId: that.requisitionId
+          },
+          success:function(res){
+            if(res.code == 1){
+                _this.detData = res.data;
+                _this.detailData = res.data.dRequisition;
+                _this.detailList = res.data.detailList;
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
             })
-          })
+          }
+        });
       }
     }
   }

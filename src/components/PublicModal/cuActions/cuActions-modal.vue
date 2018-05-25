@@ -17,7 +17,7 @@
        -->
        <ul>
          <li v-for="(v,index) in state" :key="v.fullActivityId">
-            <el-radio v-model="radio" :label="v.checked"  @change="changes(v,index,v.checked)">{{v.activityName}}
+            <el-radio v-model="radio" :label="v.checked"  @change="changes(v,index,v.checked)">{{v.activityName}}&nbsp;<span class="mount">{{v.activityFullDetailMemo}}</span>
               <span v-show="v.bool">
                 <span v-show="flag.money">
                     (此种优惠方案-{{flag.money}}元)
@@ -61,7 +61,7 @@ export default {
       this.$emit('closeShow')
     },
     //请求活动
-    requestAction(data){
+    requestAction(){
       let _this = this;
       // console.log(_this.nowAction)
       if(_this.nowAction == null || _this.nowAction.checked == 0){
@@ -92,16 +92,17 @@ export default {
                       closeShow:true
                     })
                 }else if(res.data.join == true){
-                  _this.$message({
-                      type:'success',
-                      message:'成功参加活动',
-                      closeShow:true
-                    })
+                    // _this.$message({
+                    //   type:'success',
+                    //   message:'成功参加活动',
+                    //   closeShow:true
+                    // })
                     if(res.data.detail.cashFlag == 1){//优惠现金
                         _this.flag.money = res.data.detail.cashAmount;//优惠金额
                     }else if(res.data.detail.discountFlag ==1 ){//优惠打折
                         _this.flag.discount = res.data.detail.discountAmount;//优惠折数
                     }
+                    _this.$emit('actionData',res.data.detail)
                     _this.flag.actionId = res.data.detail.fullActivityId;//优惠活动id
                     _this.$emit('actionMessage',_this.flag)
                     setTimeout(function(){
@@ -222,5 +223,8 @@ export default {
   width: 200px;
   float: right;
   .el-button{}
+}
+.mount{
+  color:#999;
 }
 </style>

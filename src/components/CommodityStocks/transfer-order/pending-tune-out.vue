@@ -134,7 +134,7 @@
     },
     props: ['listData','listCounts', 'mypagination', 'tabchange'],
     created() {
-      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
       this.ueserId = ueserInfo.userId;
       this.ueserOrgId = ueserInfo.orgId;
     },

@@ -93,8 +93,8 @@
         activeName: '1',
         showDiv: "2",
         options: [{
-          value: '选项1',
-          label: '黄金糕'
+          value: '0',
+          label: '选项1'
         }],
         value: "",
         data: [],
@@ -109,8 +109,11 @@
       AlreadyVisit
     },
     created: function () {
-      
+
       this.getVisitList();
+    },
+    beforeUpdate() {
+      console.log('updated')
     },
     methods: {
       //筛选调拨单列表
@@ -135,7 +138,7 @@
         _this.$myAjax({
           url:"pos-api/systemConfig/getSystemConfigList",
           data:{
-            
+
           },success:function(res){
             console.log(res)
           },error:function(err){

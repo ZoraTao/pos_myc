@@ -333,7 +333,7 @@
       this.getRequisitionP();
       this.getLevelList();
       this.getCarrierType();
-      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
       this.ueserName = ueserInfo.trueName;
       this.ueserId = ueserInfo.userId;
       this.ueserOrgName = ueserInfo.orgName;

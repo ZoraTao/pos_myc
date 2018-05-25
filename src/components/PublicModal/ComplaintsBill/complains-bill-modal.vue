@@ -203,7 +203,7 @@
     },
     props: ['tableData','proData','detAllData','editHandle'],
     created() {
-      const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+      const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
       this.orgId = ueserInfo.orgId;
       this.userId = ueserInfo.userId;
       this.getReceptList();
@@ -275,7 +275,7 @@
       //获取负责人、接待人员列表
       getReceptList() {
         const that = this;
-        const ueserInfo = JSON.parse(localStorage.getItem("userData"));
+        const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
         that.orgId = ueserInfo.orgId;
         that.$axios({
           url: 'http://myc.qineasy.cn/cas-api/user/getUsersByOrgId',
