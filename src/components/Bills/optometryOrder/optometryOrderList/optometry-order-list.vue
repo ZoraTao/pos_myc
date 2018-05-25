@@ -248,7 +248,7 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
     };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "../../../../reset";
 .optometry_list{
     .content_box{
@@ -357,7 +357,6 @@ import NewOptometryModal from '../../../PublicModal/NewOptometry/new-optometry-m
         line-height: 26px;
         color: #333333;
         letter-spacing: 0;
-        padding-left: 20px;
         margin-bottom: 5px;
         text-align: left;
     }

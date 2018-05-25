@@ -39,7 +39,7 @@
             <!-- <el-checkbox v-model="prescription.isGradually">渐进</el-checkbox>
             <el-checkbox v-model="prescription.isContact">隐形</el-checkbox> -->
         </div>
-        <ul class="glass_combination_table">
+        <ul class="glass_combination_table pt20">
             <li class="clearfix combination_table_list">
                 <ul class="glass_table_head">
                     <li class="wid80"> &nbsp;&nbsp;</li>
@@ -365,7 +365,7 @@
         <ul class="optometryMemo">
             <li class="fn-left glass_table_770">
                 <div class="labelInput lineHeightAuto">
-                    <label class="mgr10">验光来源：</label>
+                    <label class="" style="text-align:left !important;margin-right:2px;">验光来源：</label>
                     <el-select style="width:120px" v-model="prescriptions.source" placeholder="请选择" @visible-change="getPublicSelect(7,sourceOptions)">
                         <el-option
                         v-for="item in options"
@@ -928,7 +928,8 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../../../reset";
 .newOptometry {
   .w74 {
     width: 74px !important;
@@ -976,7 +977,7 @@ export default {
     padding: 15px;
     font-size: 12px;
     .newOptometryPhone {
-      .el-form-item {
+      /deep/ .el-form-item {
         float: left;
         margin: 0;
         height: 40px;
@@ -1022,6 +1023,7 @@ export default {
     }
     .newOptometryOptician {
       padding: 14px 10px;
+      padding-left: 0;
       text-align: left;
       label {
         margin: 0;
@@ -1052,6 +1054,7 @@ export default {
   }
   .w10 {
     width: 10px !important;
+    text-align: center !important;
   }
   .glass_combination_table {
     min-height: 100px;
@@ -1062,6 +1065,7 @@ export default {
       float: left;
       width: auto;
     }
+    
   }
 
   .glass_table_head {
@@ -1119,6 +1123,7 @@ export default {
   .combination_table_list {
     background: #fff;
     // margin-top: 13px;
+    
     &:last-child {
       padding-bottom: 10px;
     }
@@ -1130,6 +1135,8 @@ export default {
     height: 62px;
     label {
       min-width: 50px;
+      width: 65px;
+      text-align: right;
     }
     .el-input {
       width: 110px;
