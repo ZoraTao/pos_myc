@@ -175,7 +175,8 @@
                 <div class="color_readDetail" @click="toOrderDetail(order)">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="color_cancalBackShop" @click="toCancalBackOrReplaceShop(0,order)">{{order.orderType==3?'取消退货':'取消换货'}}</div>
+                <div class="color_cancalBackShop" v-if="order.status!='15'" @click="toCancalBackOrReplaceShop(0,order)">{{order.orderType==3?'取消退货':'取消换货'}}</div>
+                <div class="" v-if="order.status=='15'">{{order.orderType==3?'退货完成':'换货完成'}}</div>
               </td>
 
             </tr>

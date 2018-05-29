@@ -13,8 +13,9 @@
           {{i.text}}
           <i v-if="i.text != '首页'" class="el-icon-close"  @click="closeTab(index)" ></i>
         </li>
+        <li class="more" v-show="items.length==6">更多</li>
       </ul>
-      <div class="header-top-right">
+      <div class="header-top-right" >
         <a href="javascript:;" class="am-ft-FF2601">
           <!-- <i class="el-icon-bell"></i> -->
           <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img%2Ficon_xiaoxi.png"/>
@@ -34,8 +35,6 @@
           <span>
             {{showUser.trueName}}
           </span>
-
-
         <el-dropdown @command="getout">
             <a href="javascript:;" class="am-ft-white mgr15 el-dropdown-link">
               <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img%2Ficon_shezhi.png"/>
@@ -77,19 +76,10 @@ export default {
       ]
     };
   },
-  methods: {
-
-  },
-  computed:{
-
-  }
-  ,
-
   beforeMount() {},
   created() {
     this.$store.commit('LOGIN_GET');
-   this.showUser = JSON.parse(sessionStorage.getItem("userData"));
-
+    this.showUser = JSON.parse(sessionStorage.getItem("userData"));
   },
   methods: {
     //退出
@@ -167,7 +157,6 @@ export default {
       sessionStorage.setItem("items", JSON.stringify(this.items));
     }
   },
-
   mounted() {
     if (sessionStorage.getItem("items") == null) {
       sessionStorage.setItem("items", JSON.stringify(this.BeforeShow));
@@ -200,7 +189,9 @@ export default {
         }
       }
       // console.log("触发了添加函数");
-      if(_this.items.length>8) return
+      if(_this.items.length>5){
+          return
+      }
       _this.items.push({
         text: data.text,
         name: data.name,
@@ -236,6 +227,7 @@ export default {
 .tab-box {
   width: 100%;
   height: 30px;
+  position: relative;
   background: #001e3a;
 }
 .am-ft-FF2601 {
@@ -244,6 +236,8 @@ export default {
 .tab-box ul {
   height: 100%;
   float: left;
+  position: relative;
+  z-index: 99;
 }
 .tab-box ul .tab-item {
   min-width: 116px;
@@ -279,7 +273,10 @@ export default {
   vertical-align: top;
 }
 .header-top-right {
+  z-index: 1;
   overflow: hidden;
+  position: absolute;
+  right:0;top:0;
   height: 100%;
   text-align: right;
   color: #fff;
@@ -302,4 +299,13 @@ export default {
     line-height: 30px !important;
     font-size: 12px !important;
   }
+.more{
+  float: left;
+  line-height: 30px;
+  color:#ffffff;
+  text-align: center;
+  // display: inline-block;
+  width: 80px;
+  background-color:rgba(32, 202, 235, 0.5);
+}
 </style>

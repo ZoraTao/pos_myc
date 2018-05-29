@@ -99,6 +99,7 @@
                   <!-- <span v-if="order.source=='0'" class="sign_blue">本店签批</span> -->
                   <!-- <span v-else class="sign_orange">跨店签批</span> -->
                   <span class="msg">&nbsp; &nbsp;会员： <strong>{{order.name}}</strong>&nbsp;&nbsp;{{order.telphone != '18754923321' ? order.telphone:''}}</span>
+                  <span class="msg" v-if="order.pOrderId">&nbsp; &nbsp;原订单号：{{order.pOrderId}}</span>
                 </div>
                 <div class=" fn-right">
                   <span class="msg">销售&nbsp;&nbsp;</span>

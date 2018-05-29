@@ -363,7 +363,7 @@ export default {
                   _this.customContent.customId = res.data.customizeNo;
                     let commits = _.clone(_this.customContent);
                     //   console.log("子组件", commits);
-                    commits.discount = commit.discount/10;
+                    commits.discount = commits.discount/10;
                     _this.$emit("commitCustomMessage", commits);
                      _this.$message({
                         type: "success",

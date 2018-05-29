@@ -627,7 +627,7 @@
             <p>2017-12-15 15:34 hz3046 销售补打</p>
             <p>2017-12-15 15:34 hz3046 销售补打</p>
         </div> -->
-        <span slot="footer" class="dialog-footer">
+          <span slot="footer" class="dialog-footer">
             <el-button @click="reprint = false;">取消</el-button>
             <el-button type="primary" @click="reprint = false">打印</el-button>
         </span>
@@ -1662,7 +1662,8 @@ export default {
     },
     //修改商品折扣
     changeShopDiscount(index) {
-      let data = this.tableData[index];
+      const _this = this;
+      let data = _this.tableData[index];
       console.warn(data);
       if (typeof parseFloat(data.discount)!= 'number'||parseFloat(data.discount) > 10) {
         data.discount = 10;
@@ -1670,7 +1671,7 @@ export default {
         data.discount = 1;
       }
       data.discount = parseFloat(data.discount).toFixed(2);
-      data.realSale = (data.price * data.discount / 10).toFixed(_this.zero);
+      data.realSale = Math.floor((data.price * data.discount / 10)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);
       this.tableData.splice(index, 1, data);
       this.computedPay("shopModefly");
     },
@@ -1774,10 +1775,7 @@ export default {
           //   "活动金额" + data.actionMoney,
           //   "折扣" + discount
           // );
-          data.realSale = (
-            (data.nums * data.price - data.coupon - data.actionMoney) *
-            discount
-          ).toFixed(_this.zero);
+          data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMoney)*discount)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);
           data.discount = data.realSale / data.price / data.nums;
           console.warn(
             "该商品折扣计算后" + data.discount,
@@ -1802,7 +1800,7 @@ export default {
           }
         }
       }
-      this.actionCost.discountMoney = discountMoney.toFixed(_this.zero);
+      this.actionCost.discountMoney = discountMoney.toFixed(2);
       this.conponDiscountMoney = conponDiscountMoney;
     },
     //计算价格区域
@@ -1824,9 +1822,9 @@ export default {
         for (var i = 0; i < _this.tableData.length; i++) {
           let data = _this.tableData[i];
           if(data.discount>1){
-            data.realSale = (data.nums * data.discount * data.price / 10).toFixed(_this.zero);
+            data.realSale = Math.floor((data.nums * data.discount * data.price / 10)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);;
           }else{
-            data.realSale = (data.nums * data.discount * data.price).toFixed(_this.zero);
+            data.realSale = Math.floor((data.nums * data.discount * data.price)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);
           }
           _this.tableData.splice(i, 1, data);
         }
@@ -1889,17 +1887,15 @@ export default {
         console.warn('销售价格'+countSale,'应收金额'+realCount,'折扣金额'+disMoney,'促销活动'+cuMoney,)
         memberShipDisCountSale = countSale - realCount - disMoney - cuMoney;
       }
-      _this.extraMoney = (extraMoney).toFixed(_this.zero);
-      _this.memberShipDisCountSale = parseFloat(memberShipDisCountSale).toFixed(_this.zero); //会员优惠金额
+      _this.extraMoney = Math.floor((extraMoney)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero).toFixed(2);
+      _this.memberShipDisCountSale = parseFloat(memberShipDisCountSale).toFixed(2); //会员优惠金额
       _this.packageNum = packageNum;
-      _this.amountSale = parseFloat(countSale).toFixed(_this.zero); //原价合计
-      _this.saleCount = (parseFloat(realCount)+parseFloat(_this.extraMoney)).toFixed(_this.zero); //应付合计
-      _this.discountSale = parseFloat(discountSale).toFixed(_this.zero);
+      _this.amountSale = (Math.floor((countSale)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2); //原价合计
+      _this.saleCount = (Math.floor((parseFloat(realCount)+parseFloat(_this.extraMoney))*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2); //应付合计
+      _this.discountSale = (Math.floor((discountSale)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2);
       _this.numCount = n;
     },
     changeNums(value, index) {
-      // value.realSale = parseFloat(value.price * value.discount/10 * value.nums).toFixed(_this.zero);
-      // this.tableData.splice(index, 1, value);
       if (this.alldiscountBool) {
         this.computedPay("shopModefly");
       } else {
@@ -1919,7 +1915,7 @@ export default {
         if (data.status == "0" || data.status == "1") {
           data.realSale = data.price;
           data.discount = discount;
-          data.realSale = (data.nums * discount * data.price / 10).toFixed(_this.zero);
+          data.realSale = Math.floor((data.nums * discount * data.price / 10)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);
           // console.error(
           //   "数量",
           //   data.nums,
@@ -2774,12 +2770,11 @@ export default {
     if(zero == 0 ){//不抹零
         this.zero = 3;
     }else if(zero == 1){//抹分
-        this.zero = 2;
-    }else if(zero == 2){//抹角
         this.zero = 1;
-    }else if(zero == 3){//抹元
+    }else if(zero == 2){//抹角
         this.zero = 0;
     }
+    console.log(this.zero)
     let getTime= parseFloat(JSON.parse(sessionStorage.getItem('userData')).getTime);
     this.orderTemp.glassesTime = new Date(Date.parse(new Date())+getTime*3600000);
     this.defaultTimes = new Date(Date.parse(new Date())+getTime*3600000);
