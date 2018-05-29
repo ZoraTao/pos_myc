@@ -181,7 +181,8 @@ export default {
   methods: {
     firstDiscount(){
       console.log('触发')
-      this.customContent.discount = this.memberShipDisCount==''?'10':parseFloat(this.memberShipDisCount*10).toFixed(2);
+      console.log(this.memberShipDisCount)
+      this.customContent.discount = this.memberShipDisCount==''?'10':(this.memberShipDisCount>1?parseFloat(this.memberShipDisCount).toFixed(2):parseFloat(this.memberShipDisCount*10).toFixed(2));
     },
     aler(name,data){
       console.log(name,data)
@@ -362,6 +363,7 @@ export default {
                   _this.customContent.customId = res.data.customizeNo;
                     let commits = _.clone(_this.customContent);
                     //   console.log("子组件", commits);
+                    commits.discount = commit.discount/10;
                     _this.$emit("commitCustomMessage", commits);
                      _this.$message({
                         type: "success",

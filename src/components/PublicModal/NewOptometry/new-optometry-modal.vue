@@ -1,5 +1,5 @@
 <template>
-<div class="newOptometry pb10">
+<div class="newOptometry pb10" ref="newOptometry">
     <div class="textCenter newOptometryBody">
         <div class="newOptometryPhone">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
@@ -39,8 +39,71 @@
             <!-- <el-checkbox v-model="prescription.isGradually">渐进</el-checkbox>
             <el-checkbox v-model="prescription.isContact">隐形</el-checkbox> -->
         </div>
-        <ul class="glass_combination_table pt20">
-            <li class="clearfix combination_table_list">
+          <div  class="newBody">
+          <ul class="glass_combination_table pt20">
+              <li class="clearfix combination_table_list">
+                  <ul class="glass_table_head">
+                      <li class="wid80"> &nbsp;&nbsp;</li>
+                      <li class="w10"> &nbsp;&nbsp;</li>
+                      <li class="w74">球镜</li>
+                      <li class="w74">柱镜</li>
+                      <li class="w74">轴位</li>
+                      <li class="w74">矫正视力</li>
+                      <li class="w74">棱镜</li>
+                      <li class="w74">基底</li>
+                      <li class="w74">基弧</li>
+                      <li class="w74">远瞳距</li>
+                      <!-- <li class="w74">近瞳距</li> -->
+                      <li class="w74">瞳高</li>
+                      <li class="w74">总瞳距</li>
+                      <li class="w74">ADD</li>
+                  </ul>
+                  <ul>
+                      <li class="fn-left  msg_left"><el-button :class="{'el-button-Mini':true,'miniBtn':prescription.isDistance}" size="mini" @click="prescription.isDistance = true;prescription.isNigh = false">远用</el-button></li>
+                      <li class="fn-left glass_table_770 pb10">
+                          <table>
+                              <tr class="" v-for="(item,index) in distanceData" :key="index">
+                                  <td class="w10 ft_bold"><span v-html="index==0?'R':'L'"></span></td>
+                                  <td class="w74">
+                                  <el-form :model="item" :rules="rules" ref="distanceData">
+                                    <el-form-item prop="sph">
+                                      <el-input ref="inputs" v-model="item.sph"></el-input>
+                                    </el-form-item>
+                                  </el-form>
+                                  </td>
+                                  <!-- <td class="w74">
+                                    <el-form :model="item" :rules="rules" ref="distanceData">
+                                      <el-form-item prop="sph">
+                                        <el-input ref="inputs" v-model="item.cyl"></el-input>
+                                      </el-form-item>
+                                    </el-form>
+                                  </td> -->
+                                  <td class="w74"><el-input ref="inputs" v-model="item.cyl"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="item.ax"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="item.va"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="item.lj"></el-input></td>
+                                  <td class="w74">
+                                    <el-select v-model="item.jd" placeholder=''  class="selectOption">
+                                      <el-option
+                                        v-for="item in selectOpt"
+                                        :key="item.value"
+                                        :label="item.value"
+                                        :value="item.value">
+                                      </el-option>
+                                    </el-select>
+                                  </td>
+                                  <td class="w74"><el-input ref="inputs" v-model="item.jh"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="item.dpd"></el-input></td>
+                                  <!-- <td class="w74"><el-input ref="inputs" v-model="item.npd"></el-input></td> -->
+                                  <td class="w74"><el-input ref="inputs" v-model="item.hpd"></el-input></td>
+                                  <td class="w74 glass_table_2x" rowspan="2" v-if="index==0"><el-input ref="inputs" v-model="item.pd"></el-input></td>
+                                  <td class="w74 glass_table_2x" rowspan="2" v-if="index==0"><el-input ref="inputs" v-model="item.add"></el-input></td>
+                              </tr>
+                          </table>
+                      </li>
+                  </ul>
+              </li>
+              <li class="clearfix combination_table_list">
                 <ul class="glass_table_head">
                     <li class="wid80"> &nbsp;&nbsp;</li>
                     <li class="w10"> &nbsp;&nbsp;</li>
@@ -51,355 +114,294 @@
                     <li class="w74">棱镜</li>
                     <li class="w74">基底</li>
                     <li class="w74">基弧</li>
-                    <li class="w74">远瞳距</li>
-                    <!-- <li class="w74">近瞳距</li> -->
-                    <li class="w74">瞳高</li>
+                    <li class="w74">近瞳距</li>
                     <li class="w74">总瞳距</li>
-                    <li class="w74">ADD</li>
                 </ul>
-                <ul>
-                    <li class="fn-left  msg_left"><el-button :class="{'el-button-Mini':true,'miniBtn':prescription.isDistance}" size="mini" @click="prescription.isDistance = true;prescription.isNigh = false">远用</el-button></li>
-                    <li class="fn-left glass_table_770 pb10">
-                        <table>
-                            <tr class="" v-for="(item,index) in distanceData" :key="index">
-                                <td class="w10 ft_bold"><span v-html="index==0?'R':'L'"></span></td>
-                                <td class="w74">
-                                <el-form :model="item" :rules="rules" ref="distanceData">
-                                  <el-form-item prop="sph">
-                                    <el-input v-model="item.sph"></el-input>
-                                  </el-form-item>
-                                </el-form>
-                                </td>
-                                <!-- <td class="w74">
-                                  <el-form :model="item" :rules="rules" ref="distanceData">
+                <li class="clearfix combination_table_list">
+                  <ul>
+                        <li class="fn-left  msg_left"><el-button :class="{'el-button-Mini':true,'miniBtn':prescription.isNigh}" size="mini" @click="prescription.isDistance = false;prescription.isNigh = true">近用</el-button></li>
+                        <li class="fn-left glass_table_770 pb10">
+                            <table>
+                                <tr class="" v-for="(item,index) in nighData" :key="index">
+                                    <td class="w10 ft_bold"><span v-html="index==0?'R':'L'"></span></td>
+                                    <td class="w74">
+                                      <el-form :model="item" :rules="rules" ref="nighData">
+                                        <el-form-item prop="sph">
+                                          <el-input ref="inputs" v-model="item.sph"></el-input>
+                                        </el-form-item>
+                                      </el-form>
+                                    </td>
+                                    <!-- <td class="w74">
+                                      <el-form :model="item" :rules="rules" ref="nighData">
+                                        <el-form-item prop="sph">
+                                          <el-input ref="inputs" v-model="item.cyl"></el-input>
+                                        </el-form-item>
+                                      </el-form>
+                                    </td> -->
+                                    <td class="w74"><el-input ref="inputs" v-model="item.cyl"></el-input></td>
+                                    <td class="w74"><el-input ref="inputs" v-model="item.ax"></el-input></td>
+                                    <td class="w74"><el-input ref="inputs" v-model="item.va"></el-input></td>
+                                    <td class="w74"><el-input ref="inputs" v-model="item.lj"></el-input></td>
+                                    <td class="w74">
+                                      <el-select v-model="item.jd" placeholder='' class="selectOption">
+                                      <el-option
+                                        v-for="item in selectOpt"
+                                        :key="item.value"
+                                        :label="item.value"
+                                        :value="item.value">
+                                      </el-option>
+                                    </el-select>
+                                    </td>
+                                    <td class="w74"><el-input ref="inputs" v-model="item.jh"></el-input></td>
+                                    <td class="w74"><el-input ref="inputs" v-model="item.dpd"></el-input></td>
+                                  <td class="w74 glass_table_2x" rowspan="2" v-if="index==0"><el-input ref="inputs" v-model="item.pd"></el-input></td>
+                                </tr>
+                            </table>
+                        </li>
+                </ul>
+              </li>
+              <!-- <li class="clearfix combination_table_list" v-if="prescription.isContact">
+                  <ul>
+                      <li class="fn-left  msg_left">隐形</li>
+                      <li class="fn-left glass_table_770">
+                          <table>
+                              <tr class="" v-for="(item,index) in contactData" :key="index">
+                                  <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
+                                  <td class="w74">
+                                  <el-form :model="item" :rules="rules" ref="contactData">
                                     <el-form-item prop="sph">
-                                      <el-input v-model="item.cyl"></el-input>
+                                      <el-input ref="inputs" v-model="item.sph"></el-input>
                                     </el-form-item>
                                   </el-form>
-                                </td> -->
-                                <td class="w74"><el-input v-model="item.cyl"></el-input></td>
-                                <td class="w74"><el-input v-model="item.ax"></el-input></td>
-                                <td class="w74"><el-input v-model="item.va"></el-input></td>
-                                <td class="w74"><el-input v-model="item.lj"></el-input></td>
-                                <td class="w74">
-                                  <el-select v-model="item.jd" placeholder=''  class="selectOption">
-                                    <el-option
-                                      v-for="item in selectOpt"
-                                      :key="item.value"
-                                      :label="item.value"
-                                      :value="item.value">
-                                    </el-option>
-                                  </el-select>
-                                </td>
-                                <td class="w74"><el-input v-model="item.jh"></el-input></td>
-                                <td class="w74"><el-input v-model="item.dpd"></el-input></td>
-                                <!-- <td class="w74"><el-input v-model="item.npd"></el-input></td> -->
-                                <td class="w74"><el-input v-model="item.hpd"></el-input></td>
-                                <td class="w74 glass_table_2x" rowspan="2" v-if="index==0"><el-input v-model="item.pd"></el-input></td>
-                                <td class="w74 glass_table_2x" rowspan="2" v-if="index==0"><el-input v-model="item.add"></el-input></td>
-                            </tr>
-                        </table>
-                    </li>
-                </ul>
-            </li>
-            <li class="clearfix combination_table_list">
-              <ul class="glass_table_head">
-                  <li class="wid80"> &nbsp;&nbsp;</li>
-                  <li class="w10"> &nbsp;&nbsp;</li>
-                  <li class="w74">球镜</li>
-                  <li class="w74">柱镜</li>
-                  <li class="w74">轴位</li>
-                  <li class="w74">矫正视力</li>
-                  <li class="w74">棱镜</li>
-                  <li class="w74">基底</li>
-                  <li class="w74">基弧</li>
-                  <li class="w74">近瞳距</li>
-                  <li class="w74">总瞳距</li>
-              </ul>
-              <li class="clearfix combination_table_list">
-                <ul>
-                      <li class="fn-left  msg_left"><el-button :class="{'el-button-Mini':true,'miniBtn':prescription.isNigh}" size="mini" @click="prescription.isDistance = false;prescription.isNigh = true">近用</el-button></li>
-                      <li class="fn-left glass_table_770 pb10">
-                          <table>
-                              <tr class="" v-for="(item,index) in nighData" :key="index">
-                                  <td class="w10 ft_bold"><span v-html="index==0?'R':'L'"></span></td>
+                                  </td>
                                   <td class="w74">
-                                    <el-form :model="item" :rules="rules" ref="nighData">
+                                    <el-form :model="item" :rules="rules" ref="contactData">
                                       <el-form-item prop="sph">
-                                        <el-input v-model="item.sph"></el-input>
+                                        <el-input ref="inputs" v-model="item.cyl"></el-input>
                                       </el-form-item>
                                     </el-form>
                                   </td>
-                                  <!-- <td class="w74">
-                                    <el-form :model="item" :rules="rules" ref="nighData">
-                                      <el-form-item prop="sph">
-                                        <el-input v-model="item.cyl"></el-input>
-                                      </el-form-item>
-                                    </el-form>
-                                  </td> -->
-                                  <td class="w74"><el-input v-model="item.cyl"></el-input></td>
-                                  <td class="w74"><el-input v-model="item.ax"></el-input></td>
-                                  <td class="w74"><el-input v-model="item.va"></el-input></td>
-                                  <td class="w74"><el-input v-model="item.lj"></el-input></td>
-                                  <td class="w74">
-                                    <el-select v-model="item.jd" placeholder='' class="selectOption">
-                                    <el-option
-                                      v-for="item in selectOpt"
-                                      :key="item.value"
-                                      :label="item.value"
-                                      :value="item.value">
-                                    </el-option>
-                                  </el-select>
-                                  </td>
-                                  <td class="w74"><el-input v-model="item.jh"></el-input></td>
-                                  <td class="w74"><el-input v-model="item.dpd"></el-input></td>
-                                <td class="w74 glass_table_2x" rowspan="2" v-if="index==0"><el-input v-model="item.pd"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="item.ax"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="item.va"></el-input></td>
                               </tr>
                           </table>
                       </li>
-              </ul>
-            </li>
-            <!-- <li class="clearfix combination_table_list" v-if="prescription.isContact">
-                <ul>
-                    <li class="fn-left  msg_left">隐形</li>
-                    <li class="fn-left glass_table_770">
-                        <table>
-                            <tr class="" v-for="(item,index) in contactData" :key="index">
-                                <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
-                                <td class="w74">
-                                <el-form :model="item" :rules="rules" ref="contactData">
-                                  <el-form-item prop="sph">
-                                    <el-input v-model="item.sph"></el-input>
-                                  </el-form-item>
-                                </el-form>
-                                </td>
-                                <td class="w74">
-                                  <el-form :model="item" :rules="rules" ref="contactData">
-                                    <el-form-item prop="sph">
-                                      <el-input v-model="item.cyl"></el-input>
-                                    </el-form-item>
-                                  </el-form>
-                                </td>
-                                <td class="w74"><el-input v-model="item.ax"></el-input></td>
-                                <td class="w74"><el-input v-model="item.va"></el-input></td>
-                            </tr>
-                        </table>
-                    </li>
-                </ul>
-            </li> -->
-            <!-- <li class="clearfix combination_table_list" :class="{'mgl450':!prescription.isContact}" v-if="prescription.isGradually">
-                <ul>
-                    <li class="fn-left  msg_left">渐进</li>
-                    <li class="fn-left glass_table_770">
-                        <table>
-                            <tr class="" v-for="(item,index) in graduallyData" :key="index">
-                                <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
-                                <td class="w74">
-                                  <el-form :model="item" :rules="rules" ref="graduallyData">
-                                    <el-form-item prop="npd">
-                                      <el-input v-model="item.npd"></el-input>
-                                    </el-form-item>
-                                  </el-form>
-                                </td>
-                            </tr>
-                        </table>
-                    </li>
-                </ul>
-            </li> -->
-        </ul>
+                  </ul>
+              </li> -->
+              <!-- <li class="clearfix combination_table_list" :class="{'mgl450':!prescription.isContact}" v-if="prescription.isGradually">
+                  <ul>
+                      <li class="fn-left  msg_left">渐进</li>
+                      <li class="fn-left glass_table_770">
+                          <table>
+                              <tr class="" v-for="(item,index) in graduallyData" :key="index">
+                                  <td class="w10 ft_bold"><span v-html="index==0?'L':'R'"></span></td>
+                                  <td class="w74">
+                                    <el-form :model="item" :rules="rules" ref="graduallyData">
+                                      <el-form-item prop="npd">
+                                        <el-input ref="inputs" v-model="item.npd"></el-input>
+                                      </el-form-item>
+                                    </el-form>
+                                  </td>
+                              </tr>
+                          </table>
+                      </li>
+                  </ul>
+              </li> -->
+          </ul>
 
-        <div class="newOptometryOptician">
-                <label>检查数据：</label>
+          <div class="newOptometryOptician">
+                  <label>检查数据：</label>
+          </div>
+          <ul class="glass_combination_table">
+              <li class="clearfix combination_table_list">
+                  <ul>
+                      <li class="fn-left msg_left">旧镜</li>
+                      <li class="fn-left glass_table_770">
+                          <div class="labelInput">
+                              <label class="w10">R</label><el-input ref="inputs" style="width:80px" v-model="prescriptions.originalR"></el-input>
+                          </div>
+                          <div class="labelInput">
+                              <label class="w10">L</label><el-input ref="inputs" style="width:80px" v-model="prescriptions.originalL"></el-input>
+                          </div>
+                          <div class="labelInput">
+                              <label class="w10">PD</label><el-input ref="inputs" style="width:80px" v-model="prescriptions.originalPd"></el-input>
+                          </div>
+                      </li>
+                  </ul>
+                  <ul>
+                      <li class="fn-left msg_left breakMsg" style="margin-top:15px;">矫正<br/>视力</li>
+                      <li class="fn-left glass_table_770">
+                          <div class="labelInput">
+                              <label class="w10">R</label><el-input ref="inputs" style="width:80px" v-model="prescriptions.jzR"></el-input>
+                          </div>
+                          <div class="labelInput">
+                              <label class="w10">L</label><el-input ref="inputs" style="width:80px" v-model="prescriptions.jzL"></el-input>
+                          </div>
+                      </li>
+                  </ul>
+              </li>
+              <li class="clearfix combination_table_list">
+                  <ul>
+                      <li class="fn-left msg_left breakMsg" style="margin-top:15px;">眼部<br/>健康</li>
+                      <li class="fn-left glass_table_770">
+                          <div class="labelInput">
+                              <label>上下眼睑：</label><el-input ref="inputs" style="width:80px" v-model="health.k1"></el-input>
+                          </div>
+                          <div class="labelInput">
+                              <label>角膜：</label><el-input ref="inputs" style="width:80px" v-model="health.k2"></el-input>
+                          </div>
+                          <div class="labelInput">
+                              <label>结膜：</label><el-input ref="inputs" style="width:80px" v-model="health.k3"></el-input>
+                          </div>
+                          <div class="labelInput">
+                              <label>泪液：</label><el-input ref="inputs" style="width:80px" v-model="health.k4"></el-input>
+                          </div>
+                          <div class="labelInput">
+                              <label>其他：</label><el-input ref="inputs" style="width:80px" v-model="health.k5"></el-input>
+                          </div>
+                      </li>
+                  </ul>
+              </li>
+              <li class="clearfix combination_table_list">
+                  <ul class="glass_table_head">
+                      <li class="wid80"> &nbsp;&nbsp;</li>
+                      <li class="w10"> &nbsp;&nbsp;</li>
+                      <li class="w74">球镜</li>
+                      <li class="w74">柱镜</li>
+                      <li class="w74">轴位</li>
+                      <li class="w74">矫正视力</li>
+                      <li class="w74">瞳距</li>
+                      <li class="w74">ADD</li>
+                  </ul>
+                  <ul>
+                      <li class="fn-left  msg_left">主观</li>
+                      <li class="fn-left glass_table_770 pb10">
+                          <table>
+                              <tr class="">
+                                  <td class="w10 ft_bold">R</td>
+                                  <td class="w74"><el-input ref="inputs" v-model="skiascopyData[0].sph"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="skiascopyData[0].cyl"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="skiascopyData[0].ax"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="skiascopyData[0].va"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="skiascopyData[0].pd"></el-input></td>
+                                  <td class="w74 glass_table_2x" rowspan="2"><el-input ref="inputs" v-model="skiascopyData[0].add"></el-input></td>
+                              </tr>
+                              <tr class="">
+                                  <td class="w10 ft_bold">L</td>
+                                  <td class="w74"><el-input ref="inputs" v-model="skiascopyData[1].sph"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="skiascopyData[1].cyl"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="skiascopyData[1].ax"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="skiascopyData[1].va"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="skiascopyData[1].pd"></el-input></td>
+                              </tr>
+                          </table>
+                      </li>
+                  </ul>
+              </li>
+              <li class="clearfix combination_table_list pt10">
+                  <ul>
+                      <li class="fn-left  msg_left">客观</li>
+                      <li class="fn-left glass_table_770">
+                          <table>
+                              <tr class="">
+                                  <td class="w10 ft_bold">R</td>
+                                  <td class="w74"><el-input ref="inputs" v-model="subjectivityData[0].sph"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="subjectivityData[0].cyl"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="subjectivityData[0].ax"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="subjectivityData[0].va"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="subjectivityData[0].pd"></el-input></td>
+                                  <!-- <td class="w74 glass_table_2x" rowspan="2"><el-input ref="inputs" v-model="skiascopyData[0].add"></el-input></td> -->
+                              </tr>
+                              <tr class="">
+                                  <td class="w10 ft_bold">L</td>
+                                  <td class="w74"><el-input ref="inputs" v-model="subjectivityData[1].sph"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="subjectivityData[1].cyl"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="subjectivityData[1].ax"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="subjectivityData[1].va"></el-input></td>
+                                  <td class="w74"><el-input ref="inputs" v-model="subjectivityData[1].pd"></el-input></td>
+                              </tr>
+                          </table>
+                      </li>
+                  </ul>
+              </li>
+              <li class="clearfix combination_table_list">
+                  <ul>
+                      <li class="fn-left glass_table_770">
+                          <div class="labelInput mgl30">
+                              <label>WORTH4：</label><el-input ref="inputs" v-model="prescriptions.worth4"></el-input>
+                          </div>
+                          <div class="labelInput mgl30">
+                              <label>立体视：</label><el-input ref="inputs" v-model="prescriptions.stereopsis"></el-input>
+                          </div>
+                          <div class="labelInput mgl30">
+                              <label>NAR/PRA：</label><el-input ref="inputs" v-model="prescriptions.narpra"></el-input>
+                          </div>
+                      </li>
+                  </ul>
+              </li>
+              <li class="clearfix combination_table_list">
+                  <ul>
+                      <li class="fn-left glass_table_770">
+                          <div class="labelInput mgl30">
+                              <label>远用眼位：</label><el-input ref="inputs" v-model="prescriptions.yyyw"></el-input>
+                          </div>
+                          <div class="labelInput mgl30">
+                              <label>近用眼位：</label><el-input ref="inputs" v-model="prescriptions.jyyw"></el-input>
+                          </div>
+                      </li>
+                  </ul>
+              </li>
+          </ul>
+          <ul class="optometryMemo">
+              <li class="fn-left ft_bold mgr10">验光备注：</li>
+              <li class="fn-left glass_table_770">
+                  <el-input ref="inputs"
+                  v-model="prescriptions.memo"
+                  type="textarea"
+                  :rows="2"
+                  style="width:850px;"
+                  placeholder="请输入内容"></el-input>
+              </li>
+          </ul>
+          <ul class="optometryMemo">
+              <li class="fn-left glass_table_770">
+                  <div class="labelInput lineHeightAuto">
+                      <label class="" style="text-align:left !important;margin-right:2px;">验光来源：</label>
+                      <el-select style="width:120px" v-model="prescriptions.source" placeholder="请选择" @visible-change="getPublicSelect(7,sourceOptions)">
+                          <el-option
+                          v-for="item in options"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.name">
+                          </el-option>
+                      </el-select>
+                  </div>
+                  <div class="labelInput lineHeightAuto mgl30">
+                      <label class="mgr10">验光师：</label>
+                      <el-select style="width:120px" v-model="prescriptions.optometrist" placeholder="请选择" @visible-change="getPrivateSelect(4,optometristOptions)">
+                          <el-option
+                          v-for="item in options"
+                          :key="item.userId"
+                          :label="item.trueName"
+                          :value="item.trueName">
+                          </el-option>
+                      </el-select>
+                  </div>
+                  <div class="labelInput lineHeightAuto mgl30">
+                      <label class="mgr10" >验光日期 :</label>
+                      <el-date-picker
+                      style="width:180px"
+                      v-model="prescriptions.prescriptionTime"
+                      value-format="yyyy-MM-dd"
+                      type="date"
+                      :default-value="defaultValue"
+                      :picker-options="pickerOptions0"
+                      placeholder="选择日期">
+                      </el-date-picker>
+                  </div>
+              </li>
+          </ul>
         </div>
-        <ul class="glass_combination_table">
-            <li class="clearfix combination_table_list">
-                <ul>
-                    <li class="fn-left msg_left">旧镜</li>
-                    <li class="fn-left glass_table_770">
-                        <div class="labelInput">
-                            <label class="w10">R</label><el-input style="width:80px" v-model="prescriptions.originalR"></el-input>
-                        </div>
-                        <div class="labelInput">
-                            <label class="w10">L</label><el-input style="width:80px" v-model="prescriptions.originalL"></el-input>
-                        </div>
-                        <div class="labelInput">
-                            <label class="w10">PD</label><el-input style="width:80px" v-model="prescriptions.originalPd"></el-input>
-                        </div>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="fn-left msg_left breakMsg" style="margin-top:15px;">矫正<br/>视力</li>
-                    <li class="fn-left glass_table_770">
-                        <div class="labelInput">
-                            <label class="w10">R</label><el-input style="width:80px" v-model="prescriptions.jzR"></el-input>
-                        </div>
-                        <div class="labelInput">
-                            <label class="w10">L</label><el-input style="width:80px" v-model="prescriptions.jzL"></el-input>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <li class="clearfix combination_table_list">
-                <ul>
-                    <li class="fn-left msg_left breakMsg" style="margin-top:15px;">眼部<br/>健康</li>
-                    <li class="fn-left glass_table_770">
-                        <div class="labelInput">
-                            <label>上下眼睑：</label><el-input style="width:80px" v-model="health.k1"></el-input>
-                        </div>
-                        <div class="labelInput">
-                            <label>角膜：</label><el-input style="width:80px" v-model="health.k2"></el-input>
-                        </div>
-                        <div class="labelInput">
-                            <label>结膜：</label><el-input style="width:80px" v-model="health.k3"></el-input>
-                        </div>
-                        <div class="labelInput">
-                            <label>泪液：</label><el-input style="width:80px" v-model="health.k4"></el-input>
-                        </div>
-                        <div class="labelInput">
-                            <label>其他：</label><el-input style="width:80px" v-model="health.k5"></el-input>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <li class="clearfix combination_table_list">
-                <ul class="glass_table_head">
-                    <li class="wid80"> &nbsp;&nbsp;</li>
-                    <li class="w10"> &nbsp;&nbsp;</li>
-                    <li class="w74">球镜</li>
-                    <li class="w74">柱镜</li>
-                    <li class="w74">轴位</li>
-                    <li class="w74">矫正视力</li>
-                    <li class="w74">瞳距</li>
-                    <li class="w74">ADD</li>
-                </ul>
-                <ul>
-                    <li class="fn-left  msg_left">主观</li>
-                    <li class="fn-left glass_table_770 pb10">
-                        <table>
-                            <tr class="">
-                                <td class="w10 ft_bold">R</td>
-                                <td class="w74"><el-input v-model="skiascopyData[0].sph"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[0].cyl"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[0].ax"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[0].va"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[0].pd"></el-input></td>
-                                <td class="w74 glass_table_2x" rowspan="2"><el-input v-model="skiascopyData[0].add"></el-input></td>
-                            </tr>
-                            <tr class="">
-                                <td class="w10 ft_bold">L</td>
-                                <td class="w74"><el-input v-model="skiascopyData[1].sph"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[1].cyl"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[1].ax"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[1].va"></el-input></td>
-                                <td class="w74"><el-input v-model="skiascopyData[1].pd"></el-input></td>
-                            </tr>
-                        </table>
-                    </li>
-                </ul>
-            </li>
-            <li class="clearfix combination_table_list pt10">
-                <ul>
-                    <li class="fn-left  msg_left">客观</li>
-                    <li class="fn-left glass_table_770">
-                        <table>
-                            <tr class="">
-                                <td class="w10 ft_bold">R</td>
-                                <td class="w74"><el-input v-model="subjectivityData[0].sph"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[0].cyl"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[0].ax"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[0].va"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[0].pd"></el-input></td>
-                                <!-- <td class="w74 glass_table_2x" rowspan="2"><el-input v-model="skiascopyData[0].add"></el-input></td> -->
-                            </tr>
-                            <tr class="">
-                                <td class="w10 ft_bold">L</td>
-                                <td class="w74"><el-input v-model="subjectivityData[1].sph"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[1].cyl"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[1].ax"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[1].va"></el-input></td>
-                                <td class="w74"><el-input v-model="subjectivityData[1].pd"></el-input></td>
-                            </tr>
-                        </table>
-                    </li>
-                </ul>
-            </li>
-            <li class="clearfix combination_table_list">
-                <ul>
-                    <li class="fn-left glass_table_770">
-                        <div class="labelInput mgl30">
-                            <label>WORTH4：</label><el-input v-model="prescriptions.worth4"></el-input>
-                        </div>
-                        <div class="labelInput mgl30">
-                            <label>立体视：</label><el-input v-model="prescriptions.stereopsis"></el-input>
-                        </div>
-                        <div class="labelInput mgl30">
-                            <label>NAR/PRA：</label><el-input v-model="prescriptions.narpra"></el-input>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <li class="clearfix combination_table_list">
-                <ul>
-                    <li class="fn-left glass_table_770">
-                        <div class="labelInput mgl30">
-                            <label>远用眼位：</label><el-input v-model="prescriptions.yyyw"></el-input>
-                        </div>
-                        <div class="labelInput mgl30">
-                            <label>近用眼位：</label><el-input v-model="prescriptions.jyyw"></el-input>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        <ul class="optometryMemo">
-            <li class="fn-left ft_bold mgr10">验光备注：</li>
-            <li class="fn-left glass_table_770">
-                <el-input
-                v-model="prescriptions.memo"
-                type="textarea"
-                :rows="2"
-                style="width:850px;"
-                placeholder="请输入内容"></el-input>
-            </li>
-        </ul>
-        <ul class="optometryMemo">
-            <li class="fn-left glass_table_770">
-                <div class="labelInput lineHeightAuto">
-                    <label class="" style="text-align:left !important;margin-right:2px;">验光来源：</label>
-                    <el-select style="width:120px" v-model="prescriptions.source" placeholder="请选择" @visible-change="getPublicSelect(7,sourceOptions)">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.name">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class="labelInput lineHeightAuto mgl30">
-                    <label class="mgr10">验光师：</label>
-                    <el-select style="width:120px" v-model="prescriptions.optometrist" placeholder="请选择" @visible-change="getPrivateSelect(4,optometristOptions)">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.userId"
-                        :label="item.trueName"
-                        :value="item.trueName">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class="labelInput lineHeightAuto mgl30">
-                    <label class="mgr10" >验光日期 :</label>
-                    <el-date-picker
-                    style="width:180px"
-                    v-model="prescriptions.prescriptionTime"
-                    value-format="yyyy-MM-dd"
-                    type="date"
-                    :default-value="defaultValue"
-                    :picker-options="pickerOptions0"
-                    placeholder="选择日期">
-                    </el-date-picker>
-                </div>
-            </li>
-        </ul>
     </div>
     <div class="packageDetailButtonGroup">
           <el-button @click="closeEyesModel()">取 消</el-button>
@@ -886,10 +888,45 @@ export default {
           })
         }
       });
+    },
+    tofocus(){
+      const DOM = event.target
+      const nextDOM = DOM.nextElementSibling
+      nextDOM.focus();
     }
+    
   },
   mounted() {
     // this.defaultValue = allDate.TimeToDay(Date.parse(new Date()))
+    //  let newOptometry = this.$refs.newOptometry;
+      let newOptometry = document.getElementsByClassName('newBody')[0];
+      let arr1 = newOptometry.getElementsByClassName('el-input__inner');
+      let arr = [];
+      let index = 0;
+      for(var i=0;i<arr1.length;i++){
+          if(arr1[i].type=='text'&&arr1[i].parentNode.className =='el-input'&&arr1[i].parentNode.parentNode.className!='selectOption'){
+            arr1[i].setAttribute('data-n',index)
+            index++
+            arr.push(arr1[i])
+          }
+      }
+      function tofocus(i){
+        if(i>arr.length-1){
+          return
+        }
+        arr[i].focus();
+      }
+      this.$nextTick(()=>{
+        for(var i=0;i<arr.length;i++){
+            arr[i].addEventListener('keyup',function(){
+              if(event.keyCode == 13){
+                   tofocus(parseFloat(this.getAttribute('data-n'))+1);
+                }
+            })
+          }
+      })
+      
+     
   },
   
   created: function() {
@@ -908,9 +945,10 @@ export default {
       this.prescriptionsCopy = this.prescriptions;
     if (this.memberInfo) {
       this.ruleForm.telphone = this.memberInfo.telphone;
-      console.log(2)
       this.searchUser();
     }
+    
+     
   },
   watch: {
     submit: function(value) {

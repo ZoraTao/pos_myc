@@ -1,6 +1,6 @@
 <template>
 <div class="textCenter newOptometryBody reprint">
-    <div class="newOptometryPhone">
+    <div class="newOptometryPhone" v-if="!orderIdFromServerAfter">
         <div class="fn-left">
             <span class="am-ft-red mgr5">*</span>
             <label>手机号:</label>
@@ -41,68 +41,92 @@
         </div>
         <div class="reprintShopNameTime">
             <h2>{{orderDetail.shopName}}</h2>
-            <p>配镜日期：<span>{{(orderDetail.createTime).substring(0,10)}}}</span></p>
+            <p>配镜日期：<span>{{(orderDetail.createTime).substring(0,10)}}</span></p>
             <p>取镜日期：<span>{{(orderDetail.glassesTime).substring(0,10)}}</span></p>
             <h3>{{orderDetail.orderId}}</h3>
         </div>
         <div class="reprintMemberInfo">
-            <p>姓名：<span>{{eyes.member.name}}</span></p>
-            <p>性别：<span>{{eyes.member.sex=='M'?'男':'女'}}</span></p>
-            <p>生日：<span>{{eyes.member.birthday}}</span></p>
-            <p>手机：<span>{{eyes.member.telphone}}}</span></p>
-            <p>地址：<span>{{eyes.member.address}}</span></p>
+            <p>姓名：<span>{{memberInfo.name}}</span></p>
+            <p>性别：<span>{{memberInfo.sex=='M'?'男':'女'}}</span></p>
+            <p>生日：<span>{{memberInfo.birthday}}</span></p>
+            <p>手机：<span>{{memberInfo.telphone}}</span></p>
+            <p>地址：<span>{{memberInfo.address}}</span></p>
         </div>
-        <div class="prescriptionTable">
+        <div class="prescriptionTable" v-if="optometryData!=null&&optometryData.length>=0">
             <el-table
             size="small"
-            :data="data"
+            :data="optometryData"
             align="center"
             :span-method="objectSpanMethod"
             style="width: 100%">
                 <el-table-column
-                    prop="prescription"
                     align="center"
                     label="处方内容">
+                    <template slot-scope="scope">
+                            {{scope.$index%2?'':scope.row.key == 0?'远用':'近用'}}
+                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop="lr"
                     align="center"
                     label="LR">
+                     <template slot-scope="scope">
+                            {{(optometryData[parseInt(scope.$index/2)].value[scope.$index%2].leftRight)=='0'?'L':'R'}}
+                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop="SPH"
                     align="center"
                     label="SPH">
+                     <template slot-scope="scope">
+                            {{optometryData[parseInt(scope.$index/2)].value[scope.$index%2].sph}}
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="CYL"
                     align="center"
                     label="CYL">
+                     <template slot-scope="scope">
+                            {{optometryData[parseInt(scope.$index/2)].value[scope.$index%2].cyl}}
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="AX"
                     align="center"
                     label="AX">
+                     <template slot-scope="scope">
+                            {{optometryData[parseInt(scope.$index/2)].value[scope.$index%2].ax}}
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="DPD"
                     align="center"
                     label="DPD">
+                     <template slot-scope="scope">
+                            {{optometryData[parseInt(scope.$index/2)].value[scope.$index%2].dpd}}
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="NPD"
                     align="center"
                     label="NPD">
+                     <template slot-scope="scope">
+                            {{optometryData[parseInt(scope.$index/2)].value[scope.$index%2].npd}}
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="HPD"
                     align="center"
                     label="HPD">
+                     <template slot-scope="scope">
+                            {{optometryData[parseInt(scope.$index/2)].value[scope.$index%2].hpd}}
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="ADD"
                     align="center"
                     label="ADD">
+                     <template slot-scope="scope">
+                            {{optometryData[parseInt(scope.$index/2)].value[scope.$index%2].add}}
+                    </template>
                 </el-table-column>
             </el-table>
         </div>
@@ -110,8 +134,8 @@
             <p>手工单：<span></span></p>
             <p>验光单：<span>{{orderDetail.prescriptionsId}}</span></p>
             <p>卡号：<span></span></p>
-            <p>远瞳距：<span>{{eyes.eyes[0].value[0].pd}} {{eyes.eyes[0].value[1].pd}}</span></p>
-            <p>远瞳距：<span>{{eyes.eyes[1].value[0].pd}} {{eyes.eyes[1].value[1].pd}}</span></p>
+            <!-- <p>远瞳距：<span>{{optometryData[0].value[0].pd}} {{optometryData[0].value[1].pd}}</span></p>
+            <p>近瞳距：<span>{{optometryData[1].value[0].pd}} {{optometryData[1].value[1].pd}}</span></p> -->
         </div>
         <div class="receiptsSalesTable">
             <el-table
@@ -162,8 +186,8 @@
             <p>欠款金额：<span>{{(orderDetail.moneyAmount - orderDetail.moneyPaid).toFixed(2)}}</span></p>
         </div>
         <div class="receiptsCompanyInfo">
-            <p class="receiptsCompanySales">验光：<span>{{eyes.rescriptions.optometrist}}</span></p>
-            <p class="receiptsCompanySales">顾问：<span>{{eyes.prescriptions.createUserName}}</span></p>
+            <p class="receiptsCompanySales">验光：<span>{{optometrist}}</span></p>
+            <p class="receiptsCompanySales">顾问：<span>{{createUserName}}</span></p>
             <p class="receiptsCompanySales">签批：<span></span></p>
             <p class="receiptsCompanySales">收银：<span></span></p>
             <p class="receiptsCompanySales">检验：<span></span></p>
@@ -183,7 +207,13 @@ export default {
   name: 'ReprintModal',
   data () {
     return { 
-        data:[{
+        data:[
+            
+        ],
+        optometryData:null,
+        optometrist:'',
+        createUserName:'',
+        optometryDataArr:[{
             prescription:"远用",
             lr:"L",
             SPH:"＋1.75",
@@ -206,10 +236,13 @@ export default {
             HPD:"",
             ADD:""
         }],
+        memberInfo:{},
         telphone:'',
         selectOrder:[],
+        memberId:'',
         orderDetail:null,
         orderId:'',
+        prescriptions:null,
         orderList:null,
         eyes:null,
         data2:[
@@ -222,6 +255,12 @@ export default {
             }
         ]
     }
+  },
+  props:{
+      orderIdFromServerAfter:{
+          type:String,
+            default:null
+      }
   },
   methods:{
       searchTelphone(){
@@ -253,19 +292,92 @@ export default {
               }
           })
       },
-      searchOrderDetail(){
+      searchMember(memberId){
+          const _this = this;
+              _this.$myAjax({
+                url: "member-api/member/getMemberListByBoYang",
+                data: {
+                  memberId: memberId,
+                  size: 5,
+                  nub: 0
+                },
+                success: function(res) {
+                  if (res.code == 1) {
+                    // _this.getMemberInfo(res.data.memberList[0], true);
+                    if(res.data.memberList.length>0){
+                        _this.memberInfo = res.data.memberList[0];
+                    }else{
+                        _this.$message({
+                            showClose: true,
+                            message: "没有查找到该会员",
+                            type: "warning"
+                        });
+                    }
+                  } else {
+                    _this.$message({
+                      showClose: true,
+                      message: "会员信息获取失败",
+                      type: "error"
+                    });
+                  }
+                },
+                error: function(err) {
+                    console.log(err)
+                   _this.$message({
+                    type:'error',
+                    message:err,
+                    showClose:true
+                  })
+                }
+              });
+      },
+      getPrescriptions(id) {
+      const _this = this;
+      _this.$myAjax({
+        url:'pos-api/prescriptions/getPrescriptions',
+        data:{
+            prescriptionId: id || this.optometryId
+        },
+        success:function(res){
+          if(res.code == 1&& res.data.eyes.length > 0){
+             console.log("取验光单信息", res.data);
+             _this.optometryData = res.data.eyes;
+             _this.createUserName = res.data.prescriptions.createUserName;
+             _this.optometrist = res.data.prescriptions.optometrist;
+            //  _this.includeOptometry();
+          }else{
+            _this.$message({
+              type:'warning',
+              message:res.msg,
+              showClose:true})
+           }
+        },error:function(err){
+          console.error(err)
+           _this.$message({
+            type:'error',
+             message:err,
+            showClose:true
+          })
+        }
+      });
+    },
+      searchOrderDetail(orderId){
           const _this  = this;
           _this.$myAjax({
               url:'pos-api/orderTemp/getOrderTemp',
               data:{
-                  orderId:_this.orderId
+                  orderId:_this.orderId||orderId
               },
               success:function(res){
                   if(res.code == 1){
                     console.log(res.data)
                     _this.orderDetail = res.data.ordertemp;
                     _this.orderList = res.data.orderItemsList;
-                    _this.eyes = res.data.prescription;
+                    _this.memberId = res.data.ordertemp.memberId;
+                    _this.searchMember(res.data.ordertemp.memberId)
+                    if(res.data.ordertemp.prescriptionsId){
+                        _this.getPrescriptions(res.data.ordertemp.prescriptionsId)
+                    }
                   }else{
                       _this.$message({
                         showClose: true,

@@ -95,9 +95,11 @@ export default {
     //退出
     getout(data){
       if(data == 'goout'){
-        qineasyjsbridge.Close();
         this.$store.commit('CLEAR_LOCAL_STORAGE');
         this.$router.push({path:'/login'});
+        if(window.hasOwnProperty('qineasyjsbridge')){
+          qineasyjsbridge.Close();
+        }
       }
     },
     //切换tab

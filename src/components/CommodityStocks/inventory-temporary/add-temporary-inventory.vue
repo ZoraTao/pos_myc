@@ -73,7 +73,7 @@
               </el-select>
           </el-form-item>
           <el-form-item label="品种：">
-            <el-select v-model="select.brand" placeholder="请选择" style="width: 100px" @change="selectShop()">
+            <el-select v-model="select.brand" placeholder="请选择" style="width: 100px">
                 <el-option 
                 v-for="item in select.brandArr"
                 :key="item.productCategoryId"
@@ -265,7 +265,7 @@
               }else{
                   _this.$message({
                     showClose: true,
-                    message: '查找编码商品长度为'+res.data.list.length,
+                    message: '条件下未查找到该类商品',
                     type: "warning"
                   })
               }

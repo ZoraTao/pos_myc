@@ -5,20 +5,30 @@
         <!--top-->
         <div class="newOptometryPhone">
           <el-form-item label="投诉人联系手机号:" prop="complaintTelphone">
-            <el-input v-model="ruleForm.complaintTelphone" style="width: 120px;"></el-input>
+            <el-input v-model.trim="ruleForm.complaintTelphone" style="width: 120px;"></el-input>
           </el-form-item>
           <el-form-item label="零售单号:" prop="name" class="fn-right">
-            <el-select v-model="ruleForm.orderId" placeholder="请选择" @change="getOderPro">
+            <!-- <el-select v-model="ruleForm.orderId" placeholder="请选择" @change="getOderPro">
               <el-option
                 v-for="item in telList"
                 :key="item.orderId"
                 :label="item.orderId"
                 :value="item.orderId">
               </el-option>
-            </el-select>
+            </el-select> -->
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              v-model="ruleForm.orderId"
+              :fetch-suggestions="querySearch"
+              placeholder="请输入内容"
+              @select="handleSelect">
+              <template slot-scope="{ item }">
+                <div class="name">{{ item.orderId }}</div>
+              </template>
+            </el-autocomplete>
           </el-form-item>
           <el-form-item class="fn-right" label="会员手机号:" prop="telphone">
-            <el-input v-model="ruleForm.telphone" style="width: 120px;" @change="getOderList"></el-input>
+            <el-input v-model.trim="ruleForm.telphone" style="width: 120px;" @change="getOderList"></el-input>
           </el-form-item>
         </div>
         <!--商品信息-->
@@ -104,7 +114,7 @@
                       <el-option
                         v-for="item in memberList"
                         :key="item.userId"
-                        :label="item.userName"
+                        :label="item.trueName"
                         :value="item.userId">
                       </el-option>
                     </el-select>
@@ -159,7 +169,7 @@
                 <el-option
                   v-for="item in memberList"
                   :key="item.userId"
-                  :label="item.userName"
+                  :label="item.trueName"
                   :value="item.userId">
                 </el-option>
               </el-select>
@@ -281,6 +291,24 @@
       //删除回访信息
       deleteRow(index, rows) {
         rows.splice(index, 1);
+      },
+       querySearch(queryString, cb) {
+        var restaurants = this.telList;
+        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (restaurant) => {
+          return (restaurant.orderId.indexOf(queryString) != -1);
+        };
+      },
+       handleSelect(item) {
+         this.ruleForm.orderId = item.orderId;
+        console.log(item);
+      },
+      handleIconClick(ev) {
+        console.log(ev);
       },
       //根据会员手机号查询零售单号
       getOderList(){
@@ -433,10 +461,12 @@
         const ueserInfo = JSON.parse(sessionStorage.getItem("userData"));
         that.orgId = ueserInfo.orgId;
         that.$axios({
-          url: 'http://myc.qineasy.cn/cas-api/user/getUsersByOrgId',
+          url: 'http://myc.qineasy.cn/cas-api/user/getUserByOrg',
           method: 'post',
           params: {
-            jsonObject: {},
+            jsonObject: {
+              orgId: that.orgId
+            },
             keyParams: {
               weChat: true,
               orgId: that.orgId
@@ -453,7 +483,7 @@
               return false;
             }else {
               // console.info(response.data.data)
-              that.memberList = response.data.data.userList;
+              that.memberList = response.data.data.list;
             }
           })
           .catch(function (error) {

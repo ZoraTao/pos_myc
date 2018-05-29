@@ -76,6 +76,15 @@
       </el-col>
       <!--tab-->
       <el-col :span="24">
+        <div class="qrcode">
+          <el-input
+            class="scan-btn"
+            placeholder="调拨单号"
+            v-model="enterCode">
+            </el-input>
+            <el-button class="scan-btn2" type="primary"><img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_saoma.png"/>
+          </el-button>
+        </div>
         <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="调拨待审核" name="1">
             <pending-review :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></pending-review>
@@ -117,6 +126,7 @@
     data() {
       return {
         activeName: '1',
+        enterCode:'',
         dRequisitionList: [],//调拨单数据
         requisitionOrg: [],//调拨部门
         sourceType: [],//来源类型
@@ -347,4 +357,21 @@
   @import "../../MemberManage/MemberInquiry/member-public-css";
   @import "../../MemberManage/MemberInquiry/tabs-css";
 
+  
+  
+  .qrcode{
+    float: right;
+    margin:5px 20px 0 0;
+    position: relative;
+    z-index: 99;
+  }
+   .scan-btn2{
+      padding: 6px 10px !important;
+      margin-left: -6px;
+      position: relative;
+      border-radius: 0 4px 4px 0;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      vertical-align: -2px;
+  }
 </style>

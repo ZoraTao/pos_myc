@@ -35,10 +35,11 @@
       <el-table-column
         prop="createTime"
         label="制单日期"
-        width="140">
+        width="150">
       </el-table-column>
       <el-table-column
-        label="调拨单状态">
+        label="调拨单状态"
+        width="90">
         <template slot-scope="scope">
           <p class="am-ft-orange">{{scope.row.statusName}}</p>
         </template>

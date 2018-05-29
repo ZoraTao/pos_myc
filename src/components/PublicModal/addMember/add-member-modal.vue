@@ -72,9 +72,9 @@
             <el-select v-model="addMemberForm.job" placeholder="请选择">
               <el-option
                 v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -108,9 +108,9 @@
             <el-select style="width:120px;" v-model="addMemberForm.memberFrom" filterable placeholder="请选择">
               <el-option
                 v-for="item in memberFrom"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -120,9 +120,9 @@
             <el-select style="width:120px;" v-model="addMemberForm.status" placeholder="请选择">
               <el-option
                 v-for="item in memberStatus"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -132,9 +132,9 @@
             <el-select style="" v-model="addMemberForm.attributes" placeholder="请选择">
               <el-option
                 v-for="item in memberAttributes"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -145,8 +145,10 @@
           <el-form-item label="负责部门：" prop="orgName" style="margin-left:10px;">
             <el-select style="width:120px;" v-model="addMemberForm.orgName" placeholder="请选择">
               <el-option
-                label="毛源昌杭州西湖店"
-                value="0">
+                v-for="item in department"
+                :key="item.shopId"
+                :label="item.shopName"
+                :value="item.shopId">
               </el-option>
             </el-select>
           </el-form-item>
@@ -155,8 +157,10 @@
           <el-form-item style="margin-left:10px;" label="负责员工：" prop="resEmployees">
             <el-select style="width:120px;" v-model="addMemberForm.resEmployees" placeholder="请选择">
               <el-option
-                label="白小亭"
-                value="0">
+                v-for="item in people"
+                :key="item.userId"
+                :label="item.trueName"
+                :value="item.userId">
               </el-option>
             </el-select>
           </el-form-item>
@@ -176,77 +180,12 @@
       return {
         isSubmit: '',
         memberType: [],//会员类型
-        memberFrom: [ //会员来源
-          {
-            value: '0',
-            label: '门店扫码'
-          },
-          {
-            value: '1',
-            label: '冲广告'
-          },
-          {
-            value: '2',
-            label: '冲品牌'
-          },
-          {
-            value: '3',
-            label: '冲服务'
-          },
-          {
-            value: '4',
-            label: '朋友介绍'
-          },
-          {
-            value: '5',
-            label: '偶然路过'
-          },
-          {
-            value: '6',
-            label: '宣传单'
-          },
-        ],
-        memberStatus: [ //会员状态
-          {
-            value: '0',
-            label: '正式客户'
-          },
-          {
-            value: '1',
-            label: '前期会员'
-          },
-          {
-            value: '2',
-            label: '预登记会员'
-          },
-        ],
-        memberAttributes: [ //负责员工
-          {
-            value: '0',
-            label: '个人'
-          },
-          {
-            value: '1',
-            label: '企业'
-          }
-        ],
-        options: [{ //职业
-          value: '0',
-          label: 'IT'
-        },
-          {
-            value: '1',
-            label: '教师'
-          },
-          {
-            value: '2',
-            label: '自由职业'
-          },
-          {
-            value: '3',
-            label: '其他'
-          }
-        ],
+        memberFrom: [], //会员来源
+        memberStatus: [],//会员状态
+        department:[],//部门
+        memberAttributes: [], //负责员工
+        options: [],//职业
+        people:[],
         addMemberForm: {
           name: '',//姓名
           cardId: '',//类型id
@@ -295,6 +234,137 @@
         if(_this.addMemberForm.name != ''){
         _this.$emit('listenToChild', _this.addMemberForm)
         }
+      },
+      initData(){
+        const _this = this;
+        _this.$myAjax({
+          url:'cas-api/user/getUserByOrg',
+          data:{
+            orgId:JSON.parse(sessionStorage.getItem('userData')).orgId
+          },
+          success:function(res){
+            if(res.code == 1){
+                _this.people = res.data.list;
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             console.error(err);
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
+        _this.$myAjax({
+          url:'cas-api/systemConfig/getSystemConfigList',
+          data:{type:'29'},
+          success:function(res){
+            if(res.code == 1){
+               _this.memberFrom = res.data.list;
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             console.error(err);
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
+        _this.$myAjax({
+          url:'cas-api/systemConfig/getSystemConfigList',
+          data:{type:'30'},
+          success:function(res){
+            if(res.code == 1){
+               _this.memberStatus = res.data.list;
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             console.error(err);
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
+        _this.$myAjax({
+          url:'cas-api/systemConfig/getSystemConfigList',
+          data:{type:'31'},
+          success:function(res){
+            if(res.code == 1){
+               _this.memberAttributes = res.data.list;
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             console.error(err);
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
+        _this.$myAjax({
+          url:'cas-api/systemConfig/getSystemConfigList',
+          data:{type:'34'},
+          success:function(res){
+            if(res.code == 1){
+               _this.options = res.data.list;
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             console.error(err);
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
+        _this.$myAjax({
+          url:'pos-api/shopBy/getSeachShopByList',
+          data:{},
+          success:function(res){
+            if(res.code == 1){
+                _this.department= res.data.shopByList;
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             console.error(err);
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
       },
       //取会员类型
       getMemberCard(){

@@ -103,9 +103,9 @@
                 <div class="look_d" @click="toOrderDetail(order)">查看详情</div>
               </td>
               <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
-                <div class="look_d am-ft-gray9">换货</div>
-                <div class="look_d am-ft-gray9">申请退货</div>
-                <div class="look_d am-ft-gray9">补打销售单</div>
+                <div class="look_d am-ft-gray9" @click="toreplaceSHop(order)">换货</div>
+                <div class="look_d am-ft-gray9" @click="toBackSHop(order)">申请退货</div>
+                <div class="look_d am-ft-gray9" @click="consoleOrder(order)">补打销售单</div>
               </td>
 
             </tr>
@@ -265,12 +265,19 @@
         <el-button type="danger" @click="toCancalBackOrReplaceShop(1,true)">确 定</el-button>
       </span>
     </el-dialog>
-    </div>      
+    </div>   
+    <el-dialog class="reprint" title="补打" :visible.sync="reprint" width="900px">
+        <reprint ref="reprintModelRef" :orderIdFromServerAfter = 'orderId'></reprint>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="reprint = false;">取消</el-button>
+            <el-button type="primary" @click="reprint = false">打印</el-button>
+        </span>
+    </el-dialog>   
   </section>
 </template>
 
 <script>
-
+import reprint from "../../../PublicModal/Reprint/reprint-modal";
   export default {
     name: 'ServiceAfterList',
     data() {
@@ -284,8 +291,10 @@
         },
         orderTempList: [],
         nub: 1,
+        reprint:false,
         orderTempListBool:true,
         size: 15,
+        orderId:'',
         closeOrderData:null,
         cancalBackOrReplaceOrder:false,
         count: 0,
@@ -322,6 +331,9 @@
           }]
       }
     },
+  components:{
+    reprint,
+  },
     methods: {
       changeTab: function (item) {
         this.orderTempListBool = true;
@@ -333,6 +345,30 @@
           }
         })
         this.getOrderList();
+      },
+      consoleOrder(data){
+        const _this = this;
+        _this.orderId = data.orderId;
+        _this.reprint = true;
+        _this.$nextTick(()=>{
+          _this.$refs.reprintModelRef.searchOrderDetail(this.orderId);
+        })
+      },
+      toBackSHop(data){
+        this.$router.push({
+          name:'backShop',
+          params:{
+            datas:data
+          }
+        })
+      },
+       toreplaceSHop(data){
+        this.$router.push({
+          name:'replaceShop',
+          params:{
+            datas:data
+          }
+        })
       },
       toCancalBackOrReplaceShop(num,order){
         // 取消退换货
@@ -431,7 +467,6 @@
     created:function(){
         this.getOrderList();
     },
-    components: {}
   }
 </script>
 

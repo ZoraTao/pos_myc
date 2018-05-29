@@ -5,7 +5,7 @@
       <div class="item-top">
           <strong class="fn-left order-num">{{list.orderNo}}</strong>
           <span class="fn-left">会员：<strong class="mgr8">{{list.name}}</strong>{{list.telphone}}</span>
-          <span class="fn-right">销售：<em class="mgr8">{{list.saleId}}</em>{{list.orderTime}}</span>
+          <span class="fn-right">销售：<em class="mgr8">{{list.saleId}}</em>{{(list.orderTime).substring(0,19)}}</span>
       </div>
       <el-table
         :data="list.orderItems"
@@ -50,7 +50,7 @@
         <el-table-column
           label="取件">
           <template slot-scope="scope">
-            <strong>未取件</strong>
+            <strong>{{list.glassesTime?'已取件':'未取件'}}</strong>
           </template>
         </el-table-column>
         <!--/订单状态：待收银-->
@@ -58,7 +58,7 @@
         <el-table-column
           label="取件时间">
           <template slot-scope="scope">
-              {{list.glassesTime}}
+              {{list.glassesTime.substring(0,19)}}
           </template>
         </el-table-column>
         <!--/订单状态：已完成-->
@@ -198,7 +198,7 @@ CashierModal
   .el-table th div,
   .el-table--border td:first-child .cell,
   .el-table--border th:first-child .cell {
-    padding-left: 20px;
+    // padding-left: 20px;
   }
 }
 </style>

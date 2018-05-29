@@ -52,7 +52,7 @@
           <el-col :span="24">
             <el-form-item label="卡类型：">
               <el-select v-model="sreen.cardId" placeholder="请选择"  style="width: 100px">
-                <el-option v-for="item in cardIdArr" :key="item.cardId" label="item.memberCardName" value="item.cardId"></el-option>
+                <el-option v-for="item in cardIdArr" :key="item.cardId" :label="item.memberCardName" :value="item.cardId"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="会员分类：" >
@@ -285,19 +285,18 @@ export default {
     initData(){
       const _this = this;
       let user = JSON.parse(sessionStorage.getItem("userData"));
+      
       _this.$myAjax({
         url:'member-api/card/getCardList',
         data:{},
         keyParams:{
-          appKey:user.appKey,
-          brandId:user.brandId,
-          duid:user.duid,
-          token:user.token,
-          timestamp:user.timestamp
+          userId:'',
+          orgId:'',
+          corporationId:'',
         },
         success:function(res){
           if(res.code == 1){
-            _this.cardIdArr = res.data.cardList;
+             _this.cardIdArr = res.data.cardList;
           }else{
             _this.$message({
               type:'warning',
@@ -305,11 +304,13 @@ export default {
               showClose:true})
            }
         },error:function(err){
-          _this.$message({
+           console.error(err);
+           _this.$message({
             type:'error',
-            message:err,
-            showClose:true})
-          }
+             message:err,
+            showClose:true
+          })
+        }
       });
       
     },

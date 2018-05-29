@@ -93,7 +93,7 @@
                 </div>
                 <div class="apply">
                   <div>
-                    <em>应收：<i>{{(-saleCount).toFixed(2)}}<small style="font-size:14px;" v-show="$route.params.datas.moneyPaid>0">(已付{{$route.params.datas.moneyPaid}})</small></i></em>
+                    <em>应付：<i>{{(-$route.params.datas.moneyPaid).toFixed(2)}}</i></em>
                     <el-button @click="submitApply()">提交申请</el-button>
                   </div>
                 </div>
@@ -662,63 +662,20 @@ export default {
       
       
       for (let i = 0; i < _this.tableData.length; i++) {
-        //循环计算价格
-        // if (_this.tableData[i].status != "4") {
-          console.error('原价'+_this.tableData[i].price,'数量'+_this.tableData[i].nums,'实售'+_this.tableData[i].realSale)
+          // console.error('原价'+_this.tableData[i].price,'数量'+_this.tableData[i].nums,'实售'+_this.tableData[i].realSale)
           countSale += parseFloat(_this.tableData[i].price * parseInt(_this.tableData[i].nums));
           realCount += parseFloat(_this.tableData[i].realSale);
           n += parseInt(_this.tableData[i].nums);
           discountSale += parseFloat(parseFloat( _this.tableData[i].price * parseInt(_this.tableData[i].nums) ) - parseFloat(_this.tableData[i].realSale))
-        // }else{
-        //   packageNum+=parseInt(_this.tableData[i].nums);
-        // }
         if (_this.tableData[i].status == "3") {//其他费用
           _this.extraMoney += parseFloat(_this.tableData[i].realSale);
         }
       }
-      // if(_this.actionData&&_this.actionTime&&!_this.alldiscountBool){
-      //   _this.actionTime = false;
-      //     _this.$nextTick(()=>{
-      //       _this.$refs.ActionQualifying.requestAction();
-      //     })
-      //     setTimeout(function(){
-      //       _this.actionTime = true
-      //     },500)
-      // }
-      // if(_this.packageIdArr.length>0){
-      //   for(var i=0;i<_this.packageIdArr.length;i++){
-      //     countSale += _this.packageIdArr[i].packagePrice;
-      //     realCount += _this.packageIdArr[i].packagePrice;
-      //   }
-      // }
-      // if (_this.actionData) {//促销活动
-      //   console.log(_this.actionData)
-      //     if(_this.actionData.discountFlag == "1") {
-      //       console.log('折扣',this.actionCost.discountMoney)
-      //       cuMoney = parseFloat(this.actionCost.discountMoney);
-      //     }
-      //     if (_this.actionData.cashFlag == "1") {
-      //       console.log('折扣',this.actionCost.money)
-      //       cuMoney = parseFloat(this.actionCost.money);
-      //     }
-      // }
-      // if(_this.conponResponse){//优惠券
-      //   if (_this.conponResponse.couponModality === "0") {
-      //     disMoney = parseFloat(this.conponDiscountMoney);
-      //   }
-      //   if (_this.conponResponse.couponModality === "1") {
-      //     disMoney = parseFloat(this.conponResponse.amount);
-      //   }
-      // }
       
-      // if (_this.memberShipDisCount * 10 < 10 &&_this.memberShipDisCount != "") {
-      //   _this.discountFlag = 0;
-      //   console.warn('销售价格'+countSale,'应收金额'+realCount,'折扣金额'+disMoney,'促销活动'+cuMoney,)
-      //   memberShipDisCountSale = countSale - realCount - disMoney - cuMoney;
-      // }
-      // _this.memberShipDisCountSale = parseFloat(memberShipDisCountSale).toFixed(2); //会员优惠金额
-      // _this.packageNum = packageNum;
       realCount-=parseFloat(_this.$route.params.datas.moneyPaid)
+      if(_this.$route.params.datas.moneyPaid>0){
+        
+      }
       _this.amountSale = parseFloat(countSale).toFixed(2); //原价合计
       _this.saleCount = parseFloat(realCount).toFixed(2); //应付合计
       _this.discountSale = parseFloat(discountSale).toFixed(2);

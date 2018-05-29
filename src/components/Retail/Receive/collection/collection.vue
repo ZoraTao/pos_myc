@@ -137,11 +137,11 @@
               }
             })
           },
-          clear(){
+          clean(){
               this.qualified='1';
               this.inputArea='';
               this.eyes=null;
-              _this.$emit('closedialog');
+              this.$emit('closedialog');
           },
           receive(bool){
             const _this = this ;
@@ -172,6 +172,7 @@
                   });
                 }
               },error:function(err){
+                console.log(err)
                   _this.$message({
                     type: "error",
                     message: err,

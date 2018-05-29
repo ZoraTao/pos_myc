@@ -215,6 +215,7 @@
       //从子组件监听弹窗的状态
       getDialogStatus(val) {
         this.isShowNewComplaints = val;
+        this.getComplainsList();
       },
       getDetDialogStatus(val) {
         this.isShow = val;

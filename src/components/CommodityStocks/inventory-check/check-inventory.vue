@@ -163,7 +163,7 @@
       background
       class="am-ft-right mgt10"
       layout="prev, pager, next" 
-      @current-change="readDetail"
+      @current-change="readDetail()"
       :page-size="10"
       :total="count"
       :current-page.sync="nub">

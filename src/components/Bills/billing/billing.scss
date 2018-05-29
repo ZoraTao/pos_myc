@@ -743,7 +743,7 @@
 
 .replaceShop {
     .el-input__inner {
-        width: 120px !important;
+        width: 115px !important;
     }
     .el-form-item__label {
         margin-right: 10px !important;
@@ -1065,6 +1065,9 @@
         overflow: hidden;
         .newShopHead_opt {
             float: left;
+            .el-select{
+                width: 120px;
+            }
         }
     }
     .newShopHead>.newShopHead_opt:nth-child(2) {

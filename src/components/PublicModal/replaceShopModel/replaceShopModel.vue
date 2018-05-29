@@ -92,8 +92,9 @@ export default {
             url:'pos-api/orderTemp/getOrderTempList',
             data:{
               orderNo:_this.orderId,
-              searchCode:'',orderType:'',saleTimeStart:'',saleTimeEnd:'',
-              status:"'3','4','51'",nub:0,size:5,
+              searchCode:'',
+              orderType:'',saleTimeStart:'',saleTimeEnd:'',
+              status:"",nub:0,size:5,
             },
             success:function(res){
               if(res.code == 1){
@@ -101,7 +102,7 @@ export default {
                 if(res.data.orderTempList.length>0){
                   _this.$router.push({
                   name:_this.nowPage.name
-                ,params:{datas:res.data.orderTempList[0],reason:_this.reason,desc:_this.message}});
+                ,params:{datas:res.data.orderTempList[0],reason:_this.reason,desc:_this.message,from:'billing'}});
                 _this.$bus.$emit('createTab', _this.nowPage);
                 }else{
                   _this.$message({

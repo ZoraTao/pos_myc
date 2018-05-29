@@ -128,7 +128,7 @@ export default {
           this.initBrand();
       },
       selectThis(value){//选择镜片 传值
-        value.discount = 10;
+        value.discount = 1;
         // value.skuName = '';
         value.realSale=value.price;
         console.log(value)
@@ -136,7 +136,7 @@ export default {
         this.$emit('selectSku',value);
       },
       selectThisa(row,event){//双击
-        row.discount = 10;
+        row.discount = 1;
         // value.skuName = '';
         row.realSale=row.price;
         this.childrenCleanSelectRHModal();
