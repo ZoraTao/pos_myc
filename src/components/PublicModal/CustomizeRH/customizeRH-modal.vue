@@ -127,6 +127,7 @@
 // customizeNo:定做单编号
 // }
 import _ from "lodash";
+import { debounce } from '../../../utils/other';
 export default {
   name: "CustomizeRHModal",
   data() {
@@ -198,7 +199,6 @@ export default {
     },
     initSelect(type){
             var _this = this;
-            
           var id = '';
           switch ((type).toString()) {
             case '1'://类别默认
@@ -327,7 +327,7 @@ export default {
       }
       _this.customContent.price = parseFloat(_this.customContent.price);
       let users =  JSON.parse(sessionStorage.getItem("userData"));
-      console.log(1,_this.orgData)
+      // console.log(1,_this.orgData)
       _this.$myAjax({
           url:'pos-api/customize/addCustomize',
           data:{

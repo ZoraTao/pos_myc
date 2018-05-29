@@ -1517,7 +1517,6 @@ export default {
           _this.tableData.push(obj);
         }
       } else {
-        
         if (value.status == "1") {
           let title = "";
           if (this.custom == "right") {
@@ -1546,6 +1545,7 @@ export default {
           value.specificationid != ""? (value.skuName2 += value.specificationid): value.skuName2;
           value.sku = "--";
           // value.orderPromotionId='';
+          console.log(value.discount)
         } else if (value.status == "2") {
           let title = "自带";
           if (value.where == "2") {
@@ -1572,12 +1572,8 @@ export default {
         }
       }
       console.warn("渲染后的value", value);
-      if (!nums && name != "package") {
-        value.nums = 1;
-      }
-      if (this.alldiscountBool) {
-        value.discount = parseFloat(_this.allDisCount).toFixed(2);
-      }
+      if (!nums && name != "package") value.nums = 1
+      if (this.alldiscountBool)value.discount = parseFloat(_this.allDisCount).toFixed(2);
       if (name != "package") {
         if(value.where =='left'){
             for(var i=0;i<_this.tableData.length;i++){
@@ -1687,6 +1683,7 @@ export default {
       let actionMoney = 0;
       let actionDiscount = 1;
       let money = 0;
+      console.log(this.tableData)
       for (var i = 0; i < _this.tableData.length; i++) {
         //获取每列商品总金额
         if (_this.tableData[i].status == 0 || _this.tableData[i].status == 1) {
@@ -1775,8 +1772,13 @@ export default {
           //   "活动金额" + data.actionMoney,
           //   "折扣" + discount
           // );
-          data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMoney)*discount)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);
+          if(data.status == 1){//定做不重算
+data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMoney)*(discount/(_this.memberShipDisCount||1))*data.discount)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);
           data.discount = data.realSale / data.price / data.nums;
+          }else{
+            data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMoney)*discount)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);
+          data.discount = data.realSale / data.price / data.nums;
+          }
           console.warn(
             "该商品折扣计算后" + data.discount,
             "最终价格" + data.realSale
@@ -2335,6 +2337,9 @@ export default {
       let _this = this;
       console.log(value);
       _this.customizeRH = true;
+        _this.$nextTick(() => {
+          _this.$refs.customs.firstDiscount();
+        });
       if (value == "left") {
         _this.custom = "left";
         _this.customText = "定做-左镜片";
