@@ -30,7 +30,11 @@
                   v-model="customContent.varietyName"
                   :fetch-suggestions="querySearch"
                   placeholder="请输入内容"
+                  ref="verietyInput"
+                  :trigger-on-focus="varietyBool"
+                  @focus="varietyBool = false"
                   @select="handleSelect">
+                  <i class="el-icon-sort el-input__icon" slot="suffix" @click="changeVarietyBool"></i>
                   <template slot-scope="{ item }">
                     <div class="name">{{ item.className }}</div>
                   </template>
@@ -38,7 +42,7 @@
         </div>
         <div class="customizeInputGroup  fn-left shops">
             <label>品种:</label>
-                <el-select v-model="customContent.brand" placeholder="请选择"
+                <!-- <el-select v-model="customContent.brand" placeholder="请选择"
                 @change="initSelect(4)">
                     <el-option
                     v-for="item in brandArray"
@@ -47,7 +51,21 @@
                     :value="item.productCategoryId">
                     <span style="float: left;display:block;width:100%;" @click="aler('brandid',item.className)" >{{ item.className }}</span>
                     </el-option>
-                </el-select>
+                </el-select> -->
+                <el-autocomplete
+                  popper-class="my-autocomplete"
+                  v-model="customContent.brandName"
+                  :fetch-suggestions="querySearchBrand"
+                  :trigger-on-focus="brandBool"
+                  ref="brandInput"
+                  @focus="brandBool = false"
+                  placeholder="请输入内容"
+                  @select="handleSelectBrand">
+                  <i class="el-icon-sort el-input__icon" slot="suffix" @click="changeBrandBool"></i>
+                  <template slot-scope="{ item }">
+                    <div class="name">{{ item.className }}</div>
+                  </template>
+                </el-autocomplete>
         </div>
         <div class="customizeInputGroup fn-left shops"  v-show="custom =='shop'">
             <label>规格型号:</label>
@@ -164,6 +182,8 @@ export default {
         brandid:'',//品种
         specificationid:'',//规格型号
       },
+      brandBool:false,
+      varietyBool:false,//控制自动显示 输入建议
       sphArray:null,
       cylArray:null,
       addArray:null,
@@ -195,20 +215,47 @@ export default {
     firstDiscount(){
       this.customContent.discount = this.memberShipDisCount==''?'10':(this.memberShipDisCount>1?parseFloat(this.memberShipDisCount).toFixed(2):parseFloat(this.memberShipDisCount*10).toFixed(2));
     },
+    changeBrandBool(ev){
+      const _this = this;
+          _this.brandBool= true;
+        setTimeout(function(){
+            _this.$refs.brandInput.focus();
+        },200)
+    },
+    changeVarietyBool(ev){
+        const _this = this;
+          _this.varietyBool= true;
+        setTimeout(function(){
+            _this.$refs.verietyInput.focus();
+        },200)
+    },
     aler(name,data){
-      console.log(name,data)
+      // console.log(name,data)
       if(name == 'classid'){
         this.customContent.classid = data;
-      }else if(name == 'varietyid'){
-        this.customContent.varietyid = data;
-      }else if(name == 'brandid'){
-        this.customContent.brandid = data;
-      }else if(name == 'specificationid'){
+      }
+      // else if(name == 'varietyid'){
+      //   this.customContent.varietyid = data;
+      // }else if(name == 'brandid'){
+      //   this.customContent.brandid = data;
+      // }else 
+      if(name == 'specificationid'){
         this.customContent.specificationid = data;
       }
     },
      querySearch(queryString, cb) {
         var restaurants = this.varietyArray;
+        if(Array.isArray(restaurants)){
+          if(restaurants.length==0)return
+        }
+        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        cb(results);
+      },
+      querySearchBrand(queryString, cb) {
+        var restaurants = this.brandArray;
+        if(Array.isArray(restaurants)){
+          if(restaurants.length==0) return
+        }
         var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
         cb(results);
       },
@@ -217,14 +264,17 @@ export default {
           return (restaurant.className.indexOf(queryString) != -1);
         };
       },
+       handleSelectBrand(item) {//选中后回调
+        this.customContent.brandName = item.className;
+        this.customContent.brand = item.productCategoryId;
+        this.customContent.brandid = item.className;
+        this.initSelect(4);
+      },
       handleSelect(item) {//选中后回调
-        console.log(item);
         this.customContent.varietyName = item.className;
+        this.customContent.varietyid = item.className;
         this.customContent.variety = item.productCategoryId;
         this.initSelect(3);
-      },
-      handleIconClick(ev) {//点击icon回调
-        console.log(ev);
       },
     initSelect(type){
             var _this = this;
@@ -239,6 +289,8 @@ export default {
                     }else{
                         _this.customContent.class='';
                     }
+                    _this.varietyBool = false;
+                    _this.brandBool = false;
                     _this.customContent.variety='';
                     _this.customContent.brand='';
                     _this.customContent.specification='';
@@ -249,6 +301,10 @@ export default {
                     _this.varietyArray=[];
                     _this.specificationArray=[];
                     _this.customContent.variety='';
+                    _this.customContent.varietyName='';
+                    _this.varietyBool = false;
+                    _this.brandBool = false;
+                    _this.customContent.brandName='';
                     _this.customContent.brand='';
                     _this.customContent.specification='';
                   break;
@@ -256,6 +312,7 @@ export default {
                     id=_this.customContent.variety;
                     _this.brandArray=[];
                     _this.specificationArray=[];
+                    _this.brandBool = false;
                     _this.customContent.brand='';
                     _this.customContent.specification='';
                   break;
@@ -356,7 +413,6 @@ export default {
       }
       _this.customContent.price = parseFloat(_this.customContent.price);
       let users =  JSON.parse(sessionStorage.getItem("userData"));
-      // console.log(1,_this.orgData)
       _this.$myAjax({
           url:'pos-api/customize/addCustomize',
           data:{
@@ -444,7 +500,9 @@ export default {
   .el-table th {
     background: #fff !important;
   }
-
+  .el-autocomplete{
+    width: 116px;
+  }
   .modal-content-center {
     padding: 15px 20px;
     overflow: hidden;
