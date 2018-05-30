@@ -115,8 +115,18 @@ export default {
         });
     },
     replace(){
+      let user = this.LoginData.user;
+      let pass = this.LoginData.pass;
       if(this.LoginSystem == 1){
-        location.href="http://myc.qineasy.cn/oms_myc/login.jsp"
+        if(user ==''||pass==""){
+           this.$message({
+            type: "error",
+            message: "请填写账号密码",
+            showClose: true
+          });
+          return
+        }
+        location.href=`http://myc.qineasy.cn/oms_myc/?userName=${user}&passWord=${pass}`
       }
     },
     goHome(){

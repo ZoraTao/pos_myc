@@ -566,4 +566,7 @@ export default {
     }
   }
 }
+.el-icon-sort{
+  cursor: pointer;
+}
 </style>
