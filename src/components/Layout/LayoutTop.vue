@@ -13,11 +13,21 @@
           {{i.text}}
           <i v-if="i.text != '首页'" class="el-icon-close"  @click="closeTab(index)" ></i>
         </li>
-        <li class="more" v-show="items.length==6">更多</li>
+        <li class="more" v-if="moreArr.length>0">
+          <el-dropdown trigger="click">
+          <span class="el-dropdown-link">
+            更多<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+            <el-dropdown-menu slot="dropdown" >
+              <el-dropdown-item v-for="(item,ind) in moreArr" :command="item.url" :key="item.name">
+                <p @click="changeTab(item,ind,'more')" class="topClass">{{item.text}}</p>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </li>
       </ul>
       <div class="header-top-right" >
         <a href="javascript:;" class="am-ft-FF2601">
-          <!-- <i class="el-icon-bell"></i> -->
           <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img%2Ficon_xiaoxi.png"/>
           您有一个折扣签批已审核
         </a>
@@ -54,8 +64,9 @@
 </template>
 
 <script>
-import {mapState} from  'vuex'
-import store from '../../vuex/store'
+import _ from 'lodash'
+import { mapState } from "vuex";
+import store from "../../vuex/store";
 import { judgeCode } from "../../utils/other";
 
 export default {
@@ -64,8 +75,9 @@ export default {
     return {
       items: [],
       busData: "",
-      showUser:{},
+      showUser: {},
       toggle: true,
+      moreArr:[],
       BeforeShow: [
         {
           text: "首页",
@@ -78,22 +90,22 @@ export default {
   },
   beforeMount() {},
   created() {
-    this.$store.commit('LOGIN_GET');
+    this.$store.commit("LOGIN_GET");
     this.showUser = JSON.parse(sessionStorage.getItem("userData"));
   },
   methods: {
     //退出
-    getout(data){
-      if(data == 'goout'){
-        this.$store.commit('CLEAR_LOCAL_STORAGE');
-        this.$router.push({path:'/login'});
-        if(window.hasOwnProperty('qineasyjsbridge')){
+    getout(data) {
+      if (data == "goout") {
+        this.$store.commit("CLEAR_LOCAL_STORAGE");
+        this.$router.push({ path: "/login" });
+        if (window.hasOwnProperty("qineasyjsbridge")) {
           qineasyjsbridge.Close();
         }
       }
     },
     //切换tab
-    changeTab(items) {
+    changeTab(items,where,from) {
       let _this = this;
       if (_this.toggle == true) {
         _this.items.forEach(function(element) {
@@ -102,14 +114,28 @@ export default {
             element.isActive = true;
           }
         });
+        _this.moreArr.forEach(function(element) {
+          element.isActive = false;
+        });
+      }
+      if(from === 'more'){
+          let itemsLast = _.clone(_this.items[_this.items.length-1]);//拿到最后一个
+          let data = _.clone(items)
+          _this.items.splice(_this.items.length-1,1)
+          _this.moreArr.splice(where,1)
+          _this.moreArr.push(itemsLast)
+          data.isActive = true
+          _this.items.push(data);
+           sessionStorage.setItem("items2", JSON.stringify(_this.moreArr));
+          sessionStorage.setItem("items", JSON.stringify(_this.items));
+        }
         _this.$router.push({
           path: items.link,
           name: items.name,
           params: {}
         });
-      }
     },
-    
+
     //关闭tab
     closeTab(index) {
       var _this = this;
@@ -125,10 +151,17 @@ export default {
       let splitArrName = arr[index - 1].name;
       arr[index - 1].isActive = true;
       arr.splice(index, 1);
+      console.log(arr)
+      if(_this.moreArr.length>0){
+        let firstArr = _this.moreArr[0];
+        _this.moreArr.splice(0,1);
+        arr.push(firstArr)
+      }
       _this.items = arr;
+      sessionStorage.setItem("items2", JSON.stringify(_this.moreArr));
       sessionStorage.setItem("items", JSON.stringify(_this.items));
       _this.toggle = false;
-      setTimeout(function(){
+      setTimeout(function() {
         _this.toggle = true;
       }, 200);
       _this.$router.push({
@@ -161,13 +194,15 @@ export default {
     if (sessionStorage.getItem("items") == null) {
       sessionStorage.setItem("items", JSON.stringify(this.BeforeShow));
     }
+    if (sessionStorage.getItem("items2") != null) {
+      this.moreArr = JSON.parse(sessionStorage.getItem("items2"));
+    }
     this.items = JSON.parse(sessionStorage.getItem("items"));
-    // console.log(this.items);
-    
+
     //追加tab
     var _this = this;
     _this.$bus.$on("createTab", function(data) {
-      _this.items.forEach(function(element) {
+       _this.items.forEach(function(element) {
         element.isActive = false;
       });
       let arr = [];
@@ -188,17 +223,35 @@ export default {
           return false;
         }
       }
-      // console.log("触发了添加函数");
+        
       if(_this.items.length>5){
-          return
+        let add = true;//true为新添加的
+        for(var i=0;i<_this.moreArr.length;i++){
+            _this.moreArr[i].isActive = false;
+            if(_this.moreArr[i].text === data.text){
+              add = false;
+             return
+            }
+        }
+        if(add){//新的，添加
+          _this.moreArr.push({
+            text: data.text,
+            name: data.name,
+            url: data.link,
+            isActive: data.line
+          })
+        };
+        sessionStorage.setItem("items2", JSON.stringify(_this.moreArr));
+        return;
+      }else{
+        _this.items.push({
+          text: data.text,
+          name: data.name,
+          url: data.link,
+          isActive: data.line
+        });
+        sessionStorage.setItem("items", JSON.stringify(_this.items));
       }
-      _this.items.push({
-        text: data.text,
-        name: data.name,
-        url: data.link,
-        isActive: data.line
-      });
-      sessionStorage.setItem("items", JSON.stringify(_this.items));
     });
   }
 };
@@ -276,15 +329,16 @@ export default {
   z-index: 1;
   overflow: hidden;
   position: absolute;
-  right:0;top:0;
+  right: 0;
+  top: 0;
   height: 100%;
   text-align: right;
   color: #fff;
 }
-.header-top-right img{
-    height: 16px;
-    line-height: 30px;
-    vertical-align: text-bottom;
+.header-top-right img {
+  height: 16px;
+  line-height: 30px;
+  vertical-align: text-bottom;
 }
 .el-dropdown {
   font-size: 12px;
@@ -295,17 +349,34 @@ export default {
 .el-dropdown-link {
   color: #fff;
 }
-  .el-dropdown-menu__item{
-    line-height: 30px !important;
-    font-size: 12px !important;
-  }
-.more{
+.el-dropdown-menu__item {
+  line-height: 30px !important;
+  font-size: 12px !important;
+}
+.more {
   float: left;
   line-height: 30px;
-  color:#ffffff;
+  color: #ffffff;
   text-align: center;
   // display: inline-block;
   width: 80px;
-  background-color:rgba(32, 202, 235, 0.5);
+  background-color: rgba(32, 202, 235, 0.5);
+}
+.isActiveFont{
+  color:#fff;
+  background: linear-gradient(to right, #1c92d2, #f2fcfe)
+}
+.el-dropdown-menu__item{
+  padding:0 !important;
+}
+.topClass{
+    width: 120px;
+    text-align: center;
+  }
+.more{
+  .el-dropdown{
+    margin-right:0;
+  }
+  
 }
 </style>

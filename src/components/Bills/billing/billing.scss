@@ -1059,8 +1059,9 @@
     letter-spacing: 0;
     background: #fff;
     overflow: hidden;
+    min-height: 400px;
     .newShopHead {
-        margin-top: 20px;
+        margin-top: 20px;;
         line-height: 24px;
         overflow: hidden;
         .newShopHead_opt {
@@ -1191,7 +1192,7 @@
 
 .oldShop {
     margin-top: 10px;
-    height: 411px;
+    min-height: 411px;
     position: relative;
     background: #fff;
     .oldShop_head {

@@ -133,6 +133,50 @@
       this.ueserOrgId = ueserInfo.orgId;
     },
     methods: {
+      searchOrder(id){
+        const _this = this;
+        _this.$myAjax({
+          url:'pos-api/dRequisition/getDRequisitionList',
+          data:{
+              sourceType: '',//来源类型
+              requisitionNo: id,//调拨单编号
+              requisitionOrg: '',//调拨部门Id
+              outWarehId: '',//调出仓库Id
+              inWarehId: '',//调入仓库Id
+              requisitionTimeStart: '',//调拨日期始
+              requisitionTimeEnd: '',//调拨日期止
+              status: '3'
+          },
+          success:function(res){
+            if(res.code == 1){
+                if(res.data.dRequisitions.length>0){
+                    _this.openCheckIn = true;
+                    _this.requisitionId = res.data.dRequisitions[0].requisitionId;
+                    _this.requisitionNo = res.data.dRequisitions[0].requisitionNo;
+                    _this.getDRequisition();
+                }else{
+                      _this.$message({
+                      type:'warning',
+                      message:'未查找到该调拨单',
+                      showClose:true})
+                }
+            }else{
+              _this.$message({
+                type:'warning',
+                message:res.msg,
+                showClose:true})
+             }
+          },error:function(err){
+             console.error(err);
+             _this.$message({
+              type:'error',
+               message:err,
+              showClose:true
+            })
+          }
+        });
+        
+      },
       //分页
       handleCurrentChange(val) {
         this.nub = (`${val}`-1) * this.size;

@@ -76,11 +76,12 @@
       </el-col>
       <!--tab-->
       <el-col :span="24">
-        <div class="qrcode">
+        <div class="qrcode" v-show="qrStatus=='3'">
           <el-input
             class="scan-btn"
             placeholder="调拨单号"
-            v-model="enterCode">
+            v-model="formInline.requisitionNo"
+            @keydown.native.enter="toSearchCode(formInline.requisitionNo)">
             </el-input>
             <el-button class="scan-btn2" type="primary"><img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_saoma.png"/>
           </el-button>
@@ -93,7 +94,7 @@
             <pending-tune-out :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></pending-tune-out>
           </el-tab-pane>
           <el-tab-pane label="待调入" name="3">
-            <pending-tune-in :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></pending-tune-in>
+            <pending-tune-in ref='tuneIn' :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></pending-tune-in>
           </el-tab-pane>
           <el-tab-pane label="已完成" name="4">
             <completed-lists :listData="dRequisitionList" :listCounts="counts" :mypagination="pagination" :tabchange="handleClick"></completed-lists>
@@ -125,6 +126,7 @@
     },
     data() {
       return {
+        qrStatus:'',
         activeName: '1',
         enterCode:'',
         dRequisitionList: [],//调拨单数据
@@ -160,6 +162,8 @@
       },
       //tab切换
       handleClick(tab, event) {
+        this.formInline.requisitionNo = '';
+        this.qrStatus = tab.name;
         if (tab.name == 5) {
           this.getInquireList({status: ''});
         } else {
@@ -180,6 +184,12 @@
           name: 'transfer-order-add',
           params: {}
         })
+      },
+      toSearchCode(id){
+          const _this = this;
+          _this.$nextTick(()=>{
+              _this.$refs.tuneIn.searchOrder(id);
+          })
       },
       //查询调拨单列表
       getInquireList(params) {

@@ -28,7 +28,7 @@
                           <div style="width:9%;text-align:center;">操作</div>
                       </div>
                       <div class="tbody">
-                          <div v-for="(item,index) in tableData" :key="item.itemId" class="tbodyTr">
+                          <div v-for="(item,index) in tableData" :key="item.orderItemId" class="tbodyTr">
                               <div style="width:58%;">
                                 <div class="backShopImgTag">
                                   <img src="https://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/icon_tui.png" alt="">
@@ -77,7 +77,7 @@
                         <div style="width:9%;text-align:center;">操作</div>
                     </div>
                     <div class="tbody">
-                        <div v-for="(item,index) in tableData" :key="item.itemId" class="tbodyTr">
+                        <div v-for="(item,index) in tableData" :key="item.orderItemId" class="tbodyTr">
                             <div style="width:58%;">{{item.skuName2}}</div>
                             <div style="width:8%;">{{item.nums}}</div>
                             <div style="width:8%;">{{item.price}}</div>
@@ -157,34 +157,36 @@
             <div class="selectEyeglass">
                 <el-select size="mini" v-model="optometryId" placeholder="" @change="getPrescriptions()">
                     <el-option
-                    v-for="item in optometryList"
+                    v-for="(item,index) in optometryList"
                     :key="item.prescriptionId"
                     :label="item.prescriptionTime+' 验光师：'+item.optometrist"
                     :value="item.prescriptionId">
                     </el-option>
                 </el-select>
             </div>
-            <div class="eyeglassTable">
+           <div class="eyeglassTable">
                 <el-table
-                    v-for="value in includeOptometryData"
-                    :key="value.name"
+                    v-for="(value,index) in includeOptometryData"
+                    :key="value[index].name"
                     :data="value.item"
-                    v-if="value.item[0].lData != ''||value.item[0].rData != ''"
                     size="small"
                     align="left"
                     style="width: 100%;">
                     <el-table-column
                     :label="value.name"
                     >
-                        <template slot-scope="scope">
+                         <template slot-scope="scope">
+                            <span v-if="scope.row.keys == 'cyl'">柱镜</span>
+                            <span v-if="scope.row.keys == 'sph'">球镜</span>
                             <span v-if="scope.row.keys == 'add'">下加光</span>
                             <span v-if="scope.row.keys == 'ax'">轴位</span>
-                            <span v-if="scope.row.keys == 'cyl'">柱镜</span>
                             <span v-if="scope.row.keys == 'dpd'">远瞳距</span>
+                            <span v-if="scope.row.keys == 'jd'">基底</span>
+                            <span v-if="scope.row.keys == 'lj'">棱镜</span>
+                            <span v-if="scope.row.keys == 'jh'">基弧</span>
                             <span v-if="scope.row.keys == 'hpd'">瞳高</span>
                             <span v-if="scope.row.keys == 'npd'">近瞳距</span>
                             <span v-if="scope.row.keys == 'pd'">瞳距</span>
-                            <span v-if="scope.row.keys == 'sph'">球镜</span>
                             <span v-if="scope.row.keys == 'va'">矫正视力</span>
                         </template>
                     </el-table-column>
@@ -197,10 +199,10 @@
                     label="R">
                     </el-table-column>
                 </el-table>
-                <div class="oldGlassMess">
+                <div class="oldGlassMess" v-if="includeOptometryData&&optometryDetail">
                     <div class="oldGlassMessBox">
-                        <p>旧镜信息</p>
-                        <span>查看完整验光单</span>
+                        <p>旧镜信息 L:{{optometryDetail.originalL}} &nbsp;R:{{optometryDetail.originalR}} &nbsp;PD:{{optometryDetail.originalPd}}</p>
+                        <span style="curosr:pointer;" @click="toReadDetail(optometryDetail.prescriptionId)">查看完整验光单</span>
                     </div>
                 </div>
             </div>
@@ -236,6 +238,7 @@ export default {
         specialMemoOptions: [],
         specialMemo: null
       },
+      optometryDetail:null,
       packageIdArr:[],
       orderTemp: {
         memberId: "",
@@ -773,39 +776,39 @@ export default {
 
     //获取用户最后一次验光单信息,搜索会员后调用验光单信息
     getOptometryRecord() {
-      var _this = this;
-      _this
-        .$axios({
-          url:
-            "http://myc.qineasy.cn/pos-api/prescriptions/getPrescriptionsLately",
-          method: "post",
-          params: {
-            jsonObject: {
+      const _this = this;
+      _this.$myAjax({
+        url:'pos-api/prescriptions/getPrescriptionsLately',
+        data:{
               memberId: this.selectMember.memberInfo.memberId
-            },
-            keyParams: {
-              weChat: true
-            }
-          }
-        })
-        .then(function(response) {
-          if (response.data.code == 1 && response.data.data.eyes.length > 0) {
-            _this.optometryData = response.data.data.eyes;
-            _this.optometryId = response.data.data.prescriptions.prescriptionId;
-            _this.optometryTime =
-              response.data.data.prescriptions.prescriptionTime;
+        },
+        success:function(res){
+          if(res.code == 1 && res.data.eyes.length > 0){
+           _this.showSelectMember = false;
+            _this.isOptometryDialogVisible = true;
+            _this.optometryData = res.data.eyes;
+            _this.optometryDetail = res.data.prescriptions;
+            _this.optometryId = res.data.prescriptions.prescriptionId;
+            _this.optometryTime = res.data.prescriptions.prescriptionTime;
+            _this.appKey = res.data.prescriptions.appKey;
           } else {
+            _this.isOptometryDialogVisible = true;
             _this.$message({
               showClose: true,
-              message: response.data.msg,
+              message: res.msg,
               type: "warning"
             });
             _this.includeOptometryData = null;
+            _this.showSelectMember = false;
           }
-        })
-        .catch(function(error) {
-          console.info(error);
-        });
+        },error:function(err){
+           _this.$message({
+            type:'error',
+             message:err,
+            showClose:true
+          })
+        }
+      });
     },
     //选择会员子组件返回函数 获取用户信息
     getMemberInfo(value, bool) {
@@ -822,62 +825,69 @@ export default {
     //录入验光单信息
     includeOptometry() {
       var _this = this;
+      // console.log("录入验光单信息", _this.optometryData);
       if (_this.optometryData != null) {
         var tableArr = [];
         _this.optometryData.forEach(element => {
-          if (element.key != "0" && element.key != "1") {
-            var tArr = [];
-            var keys = [];
-            var lData = [];
-            var rData = [];
-            for (var item in element.value[1]) {
-              delete element.value[0].leftRight;
-              delete element.value[0].perscriptionType;
-              delete element.value[0].prescriptionId;
-              delete element.value[0].prescriptionEye;
-              delete element.value[0].nub;
-              delete element.value[0].size;
-              delete element.value[1].nub;
-              delete element.value[1].size;
-              delete element.value[1].prescriptionEye;
-              delete element.value[1].leftRight;
-              delete element.value[1].perscriptionType;
-              delete element.value[1].prescriptionId;
-
-              tArr.push({
-                keys: item,
-                lData: element.value[0][item],
-                rData: element.value[1][item]
-              });
+          // if (element.key != "0" && element.key != "1") {
+          var tArr = [];
+          var keys = [];
+          var lData = [];
+          var rData = [];
+          for (var item in element.value[1]) {
+            delete element.value[0].leftRight;
+            delete element.value[0].perscriptionType;
+            delete element.value[0].prescriptionId;
+            delete element.value[0].prescriptionEye;
+            delete element.value[0].nub;
+            delete element.value[0].size;
+            delete element.value[1].nub;
+            delete element.value[1].size;
+            delete element.value[1].prescriptionEye;
+            delete element.value[1].leftRight;
+            delete element.value[1].perscriptionType;
+            delete element.value[1].prescriptionId;
+            if (element.value[0][item] != "" || element.value[1][item] != "") {
+              if (item != "leftRight") {
+                tArr.push({
+                  keys: item,
+                  lData: element.value[0][item],
+                  rData: element.value[1][item]
+                });
+              }
             }
-            var name;
-            switch (element.key.toString()) {
-              // case '0':
-              //     name='检影';
-              //     break;
-              // case '1':
-              //     name='主观';
-              //     break;
-              case "2":
-                name = "远用";
-                break;
-              case "3":
-                name = "近用";
-                break;
-              case "4":
-                name = "渐进";
-                break;
-              case "5":
-                name = "隐形";
-                break;
-              default:
-                break;
-            }
+          }
+          var name;
+          switch (element.key.toString()) {
+            case "0":
+              name = "远用";
+              break;
+            case "1":
+              name = "近用";
+              break;
+            // case "2":
+            //     name = "主观";
+            //   break;
+            // case "3":
+            //     name = "客观";
+            // break;
+            // case "4":
+            //   name = "渐进";
+            //   break;
+            // case "5":
+            //   name = "隐形";
+            // break;
+            default:
+              break;
+          }
+          if (name) {
             tableArr.push({ item: tArr, name: name });
           }
+          // }
         });
+
         if (tableArr) _this.includeOptometryData = tableArr;
-        // console.log(_this.includeOptometryData)
+        console.log(_this.includeOptometryData)
       }
     },
     //取单操作

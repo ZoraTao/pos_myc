@@ -16,7 +16,7 @@
         </div>
         <div class="customizeInputGroup fn-left shops">
             <label>品牌:</label>
-                <el-select v-model="customContent.variety" placeholder="请选择" @change="initSelect(3)">
+                <!-- <el-select v-model="customContent.variety" placeholder="请选择" @change="initSelect(3)">
                     <el-option
                     v-for="item in varietyArray"
                     :key="item.className"
@@ -24,7 +24,17 @@
                     :value="item.productCategoryId">
                     <span style="float: left;display:block;width:100%;" @click="aler('varietyid',item.className)" >{{ item.className }}</span>
                     </el-option>
-                </el-select>
+                </el-select> -->
+                <el-autocomplete
+                  popper-class="my-autocomplete"
+                  v-model="customContent.varietyName"
+                  :fetch-suggestions="querySearch"
+                  placeholder="请输入内容"
+                  @select="handleSelect">
+                  <template slot-scope="{ item }">
+                    <div class="name">{{ item.className }}</div>
+                  </template>
+                </el-autocomplete>
         </div>
         <div class="customizeInputGroup  fn-left shops">
             <label>品种:</label>
@@ -137,10 +147,12 @@ export default {
         value1: "",//球镜
         value2: "",//柱镜
         value3: "",//下加光
-        specification:'',//规格
-        brand:'',//品牌
-        variety:'',//品种
         class:'',//类别
+        variety:'',//品牌
+        varietyName:'',//品牌
+        brand:'',//品种
+        brandName:'',//品种
+        specification:'',//规格
         customMessage: "",
         price: "", //原价
         nums: "1", //数量
@@ -181,8 +193,6 @@ export default {
   },
   methods: {
     firstDiscount(){
-      console.log('触发')
-      console.log(this.memberShipDisCount)
       this.customContent.discount = this.memberShipDisCount==''?'10':(this.memberShipDisCount>1?parseFloat(this.memberShipDisCount).toFixed(2):parseFloat(this.memberShipDisCount*10).toFixed(2));
     },
     aler(name,data){
@@ -197,6 +207,25 @@ export default {
         this.customContent.specificationid = data;
       }
     },
+     querySearch(queryString, cb) {
+        var restaurants = this.varietyArray;
+        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (restaurant) => {
+          return (restaurant.className.indexOf(queryString) != -1);
+        };
+      },
+      handleSelect(item) {//选中后回调
+        console.log(item);
+        this.customContent.varietyName = item.className;
+        this.customContent.variety = item.productCategoryId;
+        this.initSelect(3);
+      },
+      handleIconClick(ev) {//点击icon回调
+        console.log(ev);
+      },
     initSelect(type){
             var _this = this;
           var id = '';
@@ -238,6 +267,7 @@ export default {
               default:
                   break;
           }
+          if(id ==""&&type!=1) return
             _this.$axios({
                 url: 'http://myc.qineasy.cn/pos-api/productCategory/list',
                 method: 'post',
@@ -303,7 +333,6 @@ export default {
           }
         }
       } else {
-        console.log("不是价格");
       }
     },
     commitCustom() {

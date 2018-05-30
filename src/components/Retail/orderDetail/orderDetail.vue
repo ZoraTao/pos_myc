@@ -16,7 +16,7 @@
           <div>
               <span>开单时间：<i>{{(orderData.ordertemp.createTime).substring(0,19)}}</i></span>
               <span>销售部门：<i>{{orderData.ordertemp.shopName}}</i></span>
-              <span>&nbsp;&nbsp;销售：<i>李四</i></span>
+              <span>&nbsp;&nbsp;销售：<i>{{orderData.ordertemp.salesName}}</i></span>
           </div>
           <div>
               <span>会员姓名：<i>{{orderData.ordertemp.name}}</i></span>

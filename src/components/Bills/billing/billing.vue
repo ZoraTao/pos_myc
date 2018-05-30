@@ -118,7 +118,7 @@
                                 v-model="tableData[scope.$index].nums"
                                 type="number"
                                 min='1'
-                                :disabled="tableData[scope.$index].status == '2' || tableData[scope.$index].status == '3'|| tableData[scope.$index].status == '4'||tableData[scope.$index].numDisabled"
+                                :disabled="tableData[scope.$index].status == '1'||tableData[scope.$index].status == '2' || tableData[scope.$index].status == '3'|| tableData[scope.$index].status == '4'||tableData[scope.$index].numDisabled"
                                 @change="changeNums(scope.row,scope.$index);"
                                 ></el-input>
                             </span>
@@ -325,9 +325,10 @@
                 <el-button type="primary" @click="reprint=true">补打</el-button>
                 <el-button type="primary">预览</el-button>
                 <el-button type="primary" @click="hangOrder" >取单</el-button>
-                <!-- <el-badge :value="3" class="item"> -->
-                <el-badge  class="item">
-                    <el-button type="primary" @click="endorsementFn();">签批</el-button>
+                <el-badge :value="3" class="item">
+                  <el-badge  class="item">
+                      <el-button type="primary" @click="endorsementFn();">签批</el-button>
+                  </el-badge>
                 </el-badge>
             </div>
             <div class="fn-right">
@@ -876,7 +877,7 @@ export default {
       if (data) {
         this.packagePrice =
           parseFloat(this.packagePrice) + parseFloat(data.package.packagePrice);
-        console.log(this.packagePrice);
+        // console.log(this.packagePrice);
         this.selectSku(data, null, "package");
       }
       this.packageGoods = false;
@@ -1096,7 +1097,7 @@ export default {
     //取镜公司地点
     sameComType(value) {
       let _this = this;
-      console.log(value);
+      // console.log(value);
       _this.orgDatas = value;
       _this.orderTemp.glassesAddress = value.shopAddr; //下单门店地址
     },
@@ -1112,7 +1113,6 @@ export default {
       let _this = this;
       if (status === "back") {
         _this.backShop = bool;
-        console.log(_this.$refs);
         if (bool) {
           _this.$nextTick(() => {
             _this.$refs.backShopRefs.searchReason();
@@ -1285,11 +1285,9 @@ export default {
         // console.log('else')
       }
       if (degress && bool) {
-        console.log(1, degress, bool);
         _this.searchStr = degress;
       } else if (degress == undefined && bool == undefined) {
         //如果不是镜片度数搜索
-        // console.log(2,degress,bool)
         _this.searchStr = "";
       }
       let code = [];
@@ -1346,12 +1344,11 @@ export default {
     },
     //商品镜片列表点击查询
     rhtWareHouse(value) {
-      // console.log(value)
+      console.log(value)
       this.selectProductSku.wareh = value.wareh || "";
       this.selectProductSku.product = value.product || "";
       this.selectProductSku.categoryCode = value.categoryCode || "";
       const _this = this;
-      console.log(value);
       if (_this.searchStr) {
         _this.searchStr = value.product;
       }
@@ -1479,7 +1476,6 @@ export default {
       let _this = this;
       if (name == "package") {
         //套餐产品
-        console.log(value.data);
         this.packageIdArr.push(value.package);
         let valueShop = value.data;
         for (var i = 0; i < valueShop.length; i++) {
@@ -1545,7 +1541,6 @@ export default {
           value.specificationid != ""? (value.skuName2 += value.specificationid): value.skuName2;
           value.sku = "--";
           // value.orderPromotionId='';
-          console.log(value.discount)
         } else if (value.status == "2") {
           let title = "自带";
           if (value.where == "2") {
@@ -1683,7 +1678,6 @@ export default {
       let actionMoney = 0;
       let actionDiscount = 1;
       let money = 0;
-      console.log(this.tableData)
       for (var i = 0; i < _this.tableData.length; i++) {
         //获取每列商品总金额
         if (_this.tableData[i].status == 0 || _this.tableData[i].status == 1) {
@@ -1867,11 +1861,11 @@ data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMon
       if (_this.actionData) {//促销活动
         console.log(_this.actionData)
           if(_this.actionData.discountFlag == "1") {
-            console.log('折扣',this.actionCost.discountMoney)
+            // console.log('折扣',this.actionCost.discountMoney)
             cuMoney = parseFloat(this.actionCost.discountMoney);
           }
           if (_this.actionData.cashFlag == "1") {
-            console.log('折扣',this.actionCost.money)
+            // console.log('折扣',this.actionCost.money)
             cuMoney = parseFloat(this.actionCost.money);
           }
       }
@@ -1893,7 +1887,7 @@ data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMon
       _this.memberShipDisCountSale = parseFloat(memberShipDisCountSale).toFixed(2); //会员优惠金额
       _this.packageNum = packageNum;
       _this.amountSale = (Math.floor((countSale)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2); //原价合计
-      _this.saleCount = (Math.floor((parseFloat(realCount)+parseFloat(_this.extraMoney))*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2); //应付合计
+      _this.saleCount = (Math.floor((parseFloat(realCount))*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2); //应付合计
       _this.discountSale = (Math.floor((discountSale)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2);
       _this.numCount = n;
     },
@@ -2515,13 +2509,13 @@ data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMon
         }
       }
       let times = 0;
-      if (_this.glassesTimeValue < 4) {
-        times = 86400000 * _this.glassesTimeValue;
-        // console.log(_this.glassesTimeValue);
-        let nowTimes = Date.parse(new Date());
-        this.orderTemp.glassesTime =
-          allDate.TimetoDateDay(nowTimes + times) +" " + allDate.timetoDateSecond(nowTimes + times);
-      }
+      // if (_this.glassesTimeValue < 4) {
+      //   times = 86400000 * _this.glassesTimeValue;
+      //   // console.log(_this.glassesTimeValue);
+      //   let nowTimes = Date.parse(new Date());
+      //   this.orderTemp.glassesTime =
+      //     allDate.TimetoDateDay(nowTimes + times) +" " + allDate.timetoDateSecond(nowTimes + times);
+      // }
       var jsonObject = {
         memberId: memberId, //会员id
         prescriptionsId: _this.optometryId, //验光单id
@@ -2779,10 +2773,9 @@ data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMon
     }else if(zero == 2){//抹角
         this.zero = 0;
     }
-    console.log(this.zero)
     let getTime= parseFloat(JSON.parse(sessionStorage.getItem('userData')).getTime);
     this.orderTemp.glassesTime = new Date(Date.parse(new Date())+getTime*3600000);
-    this.defaultTimes = new Date(Date.parse(new Date())+getTime*3600000);
+    this.defaultTimes = allDate.TimetoDateDay(Date.parse(new Date())+getTime*3600000);
     this.getPrivateSelect();
     this.getCompanyList(true);
     this.getPublicSelect(5, this.publicSelcet.glassesTypeOptions);
