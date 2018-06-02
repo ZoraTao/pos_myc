@@ -19,8 +19,11 @@
                         <el-date-picker
                         v-model="orderTemp.singleSupTime"
                         class="placeHolder"
+                        :disabled="orderDisabled"
+                        :default-value="defaultTimes"
                         @change="modifyDataStyle"
                         align="left"
+                        value-format="yyyy-MM-dd"
                         ref="datapick"
                         style="width: 130px;"
                         placeholder='选择日期'>
@@ -318,12 +321,12 @@
         </div>
         <div class="buttonGroup flex1">
             <div class="fn-left">
-                <el-button type="primary">手工单[S]</el-button>
+                <el-button type="primary" @click="orderDisabled = false">手工单[S]</el-button>
                 <el-button type="primary">赠送[S]</el-button>
                 <el-button type="primary" @click="backShoping('back',true)">退货[T]</el-button>
                 <el-button type="primary" @click="backShoping('replace',true)">换货</el-button>
                 <el-button type="primary" @click="reprint=true">补打</el-button>
-                <el-button type="primary">预览</el-button>
+                <el-button type="primary" @click="preview=true">预览</el-button>
                 <el-button type="primary" @click="hangOrder" >取单</el-button>
                 <el-badge :value="3" class="item">
                   <el-badge  class="item">
@@ -585,7 +588,18 @@
             </div>
         </div>
     </el-dialog>
-
+    <el-dialog title="预览" :visible.sync="preview" width="900px">
+          <preview 
+          :memberInfo="selectMember.memberInfo" 
+          :orderTemp="orderTemp" 
+          :optometryId="optometryId" 
+          :tableData = 'tableData' 
+          :publicSelcet="publicSelcet"
+          :otherMoney="extraMoney"
+          :users="users"
+          :saleCount="saleCount"
+          ></preview>
+    </el-dialog>
     <el-dialog
         custom-class="noheader am-ft-center"
         title="登录人签批"
@@ -622,15 +636,15 @@
     <el-button type="primary" @click="changeDiscountModel('true')">确 定</el-button>
 </el-dialog>
     <el-dialog class="reprint" title="补打" :visible.sync="reprint" width="900px">
-        <ReprintModal></ReprintModal>
+        <ReprintModal ref="reprint"></ReprintModal>
         <!-- <div class="receiptsData">
             <h4>补打记录</h4>
             <p>2017-12-15 15:34 hz3046 销售补打</p>
             <p>2017-12-15 15:34 hz3046 销售补打</p>
         </div> -->
           <span slot="footer" class="dialog-footer">
-            <el-button @click="reprint = false;">取消</el-button>
-            <el-button type="primary" @click="reprint = false">打印</el-button>
+            <el-button @click="print('reprint',false)">取消</el-button>
+            <el-button type="primary" @click="print('reprint',false)">打印</el-button>
         </span>
     </el-dialog>
     <el-dialog class="addMember" title="添加会员" :visible.sync="addMember" width="800px">
@@ -668,6 +682,7 @@ import withShopModal from "../../PublicModal/withShop/withShop-modal.vue";
 import backshopModel from "../../PublicModal/backShopModel/backShopModel.vue";
 import replaceShopModel from "../../PublicModal/replaceShopModel/replaceShopModel.vue";
 import CashierModal from "../../Retail/Cashier/CashierModal/cashier-modal.vue";
+import preview from '../preview/preview.vue'
 export default {
   name: "billing",
   data() {
@@ -752,6 +767,7 @@ export default {
         add: ""
       },
       orgPeople: [], //本店员工
+      orderDisabled :true,
       optometryId: "",
       defaultTimes: new Date(Date.parse(new Date())),
       type: "",
@@ -836,6 +852,7 @@ export default {
       addMember: false,
       isNotMember: false,
       showGetBill: false,
+      preview:false,
       showSelectShop: false,
       showSelectRH: false,
       showNewOptometry: false,
@@ -867,6 +884,7 @@ export default {
     ReprintModal,
     AddMember,
     cuActions,
+    preview,
     backshopModel,
     replaceShopModel
   },
@@ -973,6 +991,18 @@ export default {
           this.selectSku(obj);
         }
       }
+    },
+    print(name,bool){
+      try{
+        this[name]=bool;
+      }catch(e){
+        console.error(e)
+      }
+      const _this = this;
+      _this.$nextTick(()=>{
+        _this.$refs.reprint.print();
+      })
+      
     },
     //整单折扣改变
     changeDiscountModel(bool) {
@@ -1215,6 +1245,7 @@ export default {
         // return false;
       }
       var _this = this;
+      
       // Object.keys(_this.selectProductSku).forEach(element => {
       //    _this.selectProductSku[element]
       // });
@@ -1231,6 +1262,34 @@ export default {
       } else if (_this.appKey == "1") {
         //近用
         appkey = 0;
+      }
+      if(degress){
+        if(degress.length>8){
+          _this.$myAjax({
+            url:'pos-api/stockCode/stockCodeList',
+            data:{
+              uniqueCode:degress
+            },
+            success:function(res){
+              if(res.code == 1){
+                 console.warn(res.data)
+              }else{
+                _this.$message({
+                  type:'warning',
+                  message:res.msg,
+                  showClose:true})
+               }
+            },error:function(err){
+               console.error(err);
+               _this.$message({
+                type:'error',
+                 message:err,
+                showClose:true
+              })
+            }
+          });
+          return
+        }
       }
       if (type == 1) {
         this.selectProductSku.selectSP = "";
@@ -1767,11 +1826,11 @@ export default {
           //   "折扣" + discount
           // );
           if(data.status == 1){//定做不重算
-data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMoney)*(discount/(_this.memberShipDisCount||1))*data.discount)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);
-          data.discount = data.realSale / data.price / data.nums;
+            data.realSale=(Math.floor(((data.nums * data.price - data.coupon - data.actionMoney)*(discount/(_this.memberShipDisCount||1))*data.discount)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2);
+            data.discount = data.realSale / data.price / data.nums;
           }else{
-            data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMoney)*discount)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);
-          data.discount = data.realSale / data.price / data.nums;
+            data.realSale=(Math.floor(((data.nums * data.price - data.coupon - data.actionMoney)*discount)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2);
+            data.discount = data.realSale / data.price / data.nums;
           }
           console.warn(
             "该商品折扣计算后" + data.discount,
@@ -1818,9 +1877,9 @@ data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMon
         for (var i = 0; i < _this.tableData.length; i++) {
           let data = _this.tableData[i];
           if(data.discount>1){
-            data.realSale = Math.floor((data.nums * data.discount * data.price / 10)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);;
+            data.realSale =( Math.floor((data.nums * data.discount * data.price / 10)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2);
           }else{
-            data.realSale = Math.floor((data.nums * data.discount * data.price)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero);
+            data.realSale = (Math.floor((data.nums * data.discount * data.price)*Math.pow(10,_this.zero))/Math.pow(10,_this.zero)).toFixed(2);
           }
           _this.tableData.splice(i, 1, data);
         }
@@ -2300,6 +2359,7 @@ data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMon
           url:'member-api/member/addMember',
           data:formdata,
           success:function(res){
+            console.error(res)
             if(res.code == 1){
                _this.addMember = false;
               _this.MemberInfoForAdd(res.data.memberId);
@@ -2767,7 +2827,7 @@ data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMon
   created() {
     let zero= JSON.parse(sessionStorage.getItem('userData')).removeType;
     if(zero == 0 ){//不抹零
-        this.zero = 3;
+        this.zero = 2;
     }else if(zero == 1){//抹分
         this.zero = 1;
     }else if(zero == 2){//抹角
@@ -2778,12 +2838,12 @@ data.realSale=Math.floor(((data.nums * data.price - data.coupon - data.actionMon
     this.defaultTimes = allDate.TimetoDateDay(Date.parse(new Date())+getTime*3600000);
     this.getPrivateSelect();
     this.getCompanyList(true);
+    this.users = JSON.parse(sessionStorage.getItem("userData"));
     this.getPublicSelect(5, this.publicSelcet.glassesTypeOptions);
     this.changesSelect(1);
   },
   mounted() {
     let _this = this;
-    _this.users = JSON.parse(sessionStorage.getItem("userData"));
     if (_this.$route.params.datas) {
       console.log("重新开单参数", _this.$route.params.datas);
       _this.openOrder(_this.$route.params.datas);

@@ -270,8 +270,8 @@
     <el-dialog class="reprint" title="补打" :visible.sync="reprint" width="900px">
         <reprint ref="reprintModelRef" :orderIdFromServerAfter = 'orderId'></reprint>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="reprint = false;">取消</el-button>
-            <el-button type="primary" @click="reprint = false">打印</el-button>
+            <el-button @click="print('reprint', false)">取消</el-button>
+            <el-button type="primary" @click="print('reprint', false)">打印</el-button>
         </span>
     </el-dialog>   
   </section>
@@ -346,6 +346,14 @@ import reprint from "../../../PublicModal/Reprint/reprint-modal";
           }
         })
         this.getOrderList();
+      },
+      print(name,bool){
+        this[name]=bool;
+        try{
+          window.print();
+        }catch(e){
+
+        }
       },
       consoleOrder(data){
         const _this = this;

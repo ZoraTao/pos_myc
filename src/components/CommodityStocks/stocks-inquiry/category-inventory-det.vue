@@ -176,11 +176,13 @@
             })
           })
       },
+     
       //分页
       handleCurrentChange(val) {
         this.nub = (`${val}` - 1) * this.size;
         this.getCategoryInventory();
       },
+      
       //合计
       getSummaries(param) {
         const {columns, data} = param;

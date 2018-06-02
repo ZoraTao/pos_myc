@@ -32,7 +32,7 @@
             <button class="col_blue_bg_white find_btn mgr10">
                 导出
             </button>
-            <button class="col_blue_bg_white find_btn">
+            <button class="col_blue_bg_white find_btn" @click="print()">
                 打印
             </button>
         </div>
@@ -40,7 +40,7 @@
     <div class="optometry_content optometry_content">
         <!--验光列表-->
         <div class="h100">
-            <div class="list_name">验光预约列表 (23)</div>
+            <div class="list_name">验光预约列表</div>
                 <el-table
                     :data="tableData3"
                     size="small"
@@ -116,6 +116,11 @@
                     optometrist: "李四四"
                 }]
             };
+        },
+        methods:{
+            print(){
+                window.print();
+            }
         },
         created: function() {
             for (var i = 0; i < 10; i++) {

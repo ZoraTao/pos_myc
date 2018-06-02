@@ -159,6 +159,7 @@
         moresearch: false,
         goCategoryInventory: false,
         categoryCode1: [],//类别
+        readyClick:false,
         categoryCode2: [],//品牌
         categoryCode3: [],//品种
         categoryLevel:{//类别+品牌+品种
@@ -324,11 +325,22 @@
       },
       //根据搜索条件查询
       onSubmit() {
-        this.getStocksList();
-        this.getCategoryList();
-        this.getVarietyList();
-        this.getCodeInventList();
-        this.getMixInventList();
+        if(!this.readyClick){
+          this.$message({
+              showClose: true,
+              message: '数据加载中，请稍后',
+              type: 'warning'
+            })
+            return
+        }
+        const _this = this;
+        _this.$nextTick(()=>{
+          _this.getStocksList();
+          _this.getCategoryList();
+          _this.getVarietyList();
+          _this.getCodeInventList();
+          _this.getMixInventList();
+        })
       },
       //切换搜索模式
       changeSearch(v) {
@@ -477,6 +489,7 @@
               })
               return false;
             }else {
+          that.readyClick = true;
              that.stocksData = response.data.data.list;
              that.stocksCount = parseInt(response.data.data.count);
              // console.info(response.data.data)
@@ -496,24 +509,33 @@
       },
       //获取库存明细--类别列表
       getCategoryList(){
-        var categoryMethod = this.$refs.category;
-        categoryMethod.getCategoryInventory();
-        categoryMethod.getSum();
+        const  _this = this;
+        _this.$nextTick(()=>{
+        console.log(_this.$refs)
+          _this.$refs.category.getCategoryInventory();
+          _this.$refs.category.getSum();
+        })
       },
       //获取库存明细--品种列表
       getVarietyList(){
-        var varietyMethod = this.$refs.variety;
-        varietyMethod.getVarietyDetList();
+        const  _this = this;
+        _this.$nextTick(()=>{
+          this.$refs.variety.getVarietyDetList();
+        })
       },
       //获取库存明细--编码列表
       getCodeInventList(){
-        var codeInventMethod = this.$refs.codeInvent;
-        codeInventMethod.getCodeStockList();
+        const  _this = this;
+        _this.$nextTick(()=>{
+          _this.$refs.codeInvent.getCodeStockList();
+        })
       },
       //获取库存明细--仓库+编码+有效期批号列表
       getMixInventList(){
-        var mixInventMethod = this.$refs.mixInvent;
-        mixInventMethod.getCodeStockList();
+        const  _this = this;
+        _this.$nextTick(()=>{
+          _this.$refs.mixInvent.getCodeStockList();
+        });
       },
     },
     computed: {

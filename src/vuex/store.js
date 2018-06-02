@@ -22,6 +22,7 @@ const mutations = {
         state.user = '';
         sessionStorage.removeItem('userData'); 
         sessionStorage.removeItem('items'); 
+        sessionStorage.removeItem('items2'); 
     }
 }
 

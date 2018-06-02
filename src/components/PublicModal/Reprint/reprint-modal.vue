@@ -29,12 +29,13 @@
             <label>会员卡号:</label><span class="nopText">{{orderDetail.memberId}}</span>
         </div>
         
-    </div>                   
-    <div class="reprintContent" v-if="orderDetail">
+    </div>
+             
+    <div class="reprintContent" id='print' ref="printDiv" v-if="orderDetail">
         <div class="reprintBasicInfo">
             <div class=""><span>产品名称：装配眼镜(定配眼镜)</span></div>
             <div class=""><span>检验合格</span></div>
-            <div class=""><span>生产日期：                年           月          日</span></div>
+            <div class=""><span>生产日期：年月日</span></div>
         </div>
         <div class="reprintEwm">
             <img src="http://myc-pos.oss-cn-hangzhou.aliyuncs.com/img/ewm.png"/>
@@ -159,9 +160,9 @@
                     label="原单价">
                 </el-table-column>
                 <el-table-column
-                    prop="discountRate"
                     align="center"
                     label="折扣">
+                    <template slot-scope="scope">{{(scope.row.discountRate*10).toFixed(2)}}</template>
                 </el-table-column>
                 <el-table-column
                     prop="money"
@@ -291,6 +292,27 @@ export default {
 
               }
           })
+      },
+      print(){
+        const _this = this;
+        var docStr = document.getElementById('print');
+                console.log(docStr)
+        var newWindow = window.open("打印窗口","_blank");
+        newWindow.document.write(docStr.innerHTML);
+        newWindow.document.close();
+        newWindow.print();
+        newWindow.close();
+        // document.body.innerHTML = docStr;
+        // var oldstr = document.body.innerHTML;
+        // window.print()
+        // document.body.innerHTML = oldstr
+        // return false
+        // _this.$print({
+        //   printable: 'print',
+        //   type: 'html',
+        //   // 继承原来的所有样式
+        //   targetStyles: ['*']
+        // })
       },
       searchMember(memberId){
           const _this = this;

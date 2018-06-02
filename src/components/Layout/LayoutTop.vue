@@ -366,9 +366,12 @@ export default {
   color:#fff;
   background: linear-gradient(to right, #1c92d2, #f2fcfe)
 }
-.el-dropdown-menu__item{
+.more{
+  .el-dropdown-menu__item{
   padding:0 !important;
 }
+}
+
 .topClass{
     width: 120px;
     text-align: center;

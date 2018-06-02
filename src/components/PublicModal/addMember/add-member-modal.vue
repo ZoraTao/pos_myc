@@ -4,7 +4,7 @@
       <el-row :gutter="20">
         <el-col :span="6">
           <el-form-item style="margin-left:10px;" label="类型：" prop="type">
-            <el-select v-model="addMemberForm.type" filterable placeholder="请选择" style="width: 120px">
+            <el-select v-model="addMemberForm.cardId" filterable placeholder="请选择" style="width: 120px">
               <el-option
                 v-for="item in memberType"
                 :key="item.cardId"
@@ -230,7 +230,6 @@
       //向父组件传送的数据
       sendToParent() {
         const _this = this;
-        console.log('准备接受啦1',_this.addMemberForm)
         if(_this.addMemberForm.name != ''){
         _this.$emit('listenToChild', _this.addMemberForm)
         }
@@ -388,7 +387,6 @@
               })
               return false;
             }else {
-              console.info(response.data.data)
               that.memberType = response.data.data.cardList;
             }
 

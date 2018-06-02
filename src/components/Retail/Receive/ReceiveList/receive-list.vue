@@ -104,7 +104,7 @@
                                 <td v-if="index==0" :rowspan="order.orderItems.length" class="rowspan_td">
                                     <el-button type="primary" v-if="searchForm.status=='51'&&order.showFlag" @click="showReceiveFn(order)">扫码装袋</el-button>
                                     <p type="primary" v-if="searchForm.status=='51'&&!order.showFlag">已转库出</p>
-                                    <p class="toBaseOut" v-if="order.tobase" @click="toBase(order)">申请库出</p>
+                                    <p class="toBaseOut" v-if="order.tobase&&order.showFlag" @click="toBase(order)">申请库出</p>
                                     <el-button type="primary" v-if="searchForm.status=='56'" @click="openDialog(order);">确认收件</el-button>
                                 </td>
                             </tr>

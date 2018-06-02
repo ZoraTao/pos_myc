@@ -257,6 +257,7 @@ export default {
                 _this.showModal=true;
                 setTimeout(() => {
                     _this.showModal=false;
+                    window.print();
                     _this.getOrderList();
                 }, 1000);
             }else{

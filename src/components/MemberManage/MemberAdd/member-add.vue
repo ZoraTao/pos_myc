@@ -1,6 +1,6 @@
 <template>
   <div class="add-member-box">
-    <AddMember :submit="isSubmit" v-on:listenToChild="showData"></AddMember>
+    <AddMember   ref="addmember" :submit="isSubmit" v-on:listenToChild="showData"></AddMember>
     <el-button type="primary" size="small" class="mgt20 mgl20" @click="isSubmit=!isSubmit">保存并提交</el-button>
   </div>
 </template>
@@ -18,6 +18,12 @@
       return {
         isSubmit:false,
       }
+    },
+    created(){
+      const _this = this;
+      _this.$nextTick(()=>{
+        _this.$refs.addmember.initData();
+      })
     },
     methods: {
       //从子组件取到的数据
@@ -39,18 +45,27 @@
             }
           })
             .then(function (response) {
-              console.info(response.data.data)
-              that.$message({
-                showClose: true,
-                message: '新增会员成功',
-                type: 'success'
-              });
-              setTimeout(() => {
-                that.$router.push({
-                  name: 'memberIndex',
-                  path: '/base/memberIndex'
-                })
-              }, 2000)
+              if(response.data.code == 1){
+                  console.info(response.data.data)
+                  that.$message({
+                    showClose: true,
+                    message: '新增会员成功',
+                    type: 'success'
+                  });
+                  setTimeout(() => {
+                    that.$router.push({
+                      name: 'memberIndex',
+                      path: '/base/memberIndex'
+                    })
+                  }, 2000)
+                  return
+              }else{
+                that.$message({
+                    showClose: true,
+                    message: response.data.message,
+                    type: 'warning'
+                  });
+              }
             })
             .catch(function (error) {
               console.info(error)

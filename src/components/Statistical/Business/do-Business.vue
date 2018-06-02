@@ -21,7 +21,7 @@
               <el-button plain>查询</el-button>
       </el-col>
       <el-col :span="4" :offset="10">
-              <el-button plain>打印</el-button>
+              <el-button plain @click="print()">打印</el-button>
               <el-button plain>导出</el-button>
       </el-col>
       
@@ -128,6 +128,9 @@
       }
     },
     methods: {
+      print(){
+        window.print();
+      },
       costom(){
         return {height:'40px'}
       }

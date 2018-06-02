@@ -32,7 +32,7 @@
             <button class="col_blue_bg_white find_btn mgr10">
                 导出
             </button>
-            <button class="col_blue_bg_white find_btn">
+            <button class="col_blue_bg_white find_btn" @click="print()">
                 打印
             </button>
         </div>
@@ -157,6 +157,10 @@
                     inventory: "1",
                     remainingTime: "302"
                 });
+            }
+        },methods:{
+            print(){
+                window.print();
             }
         }
     };

@@ -13,8 +13,9 @@ import VueAreaLinkage from 'vue-area-linkage'
 import VueContextMenu from 'vue-contextmenu'
 import 'vue-contextmenu/style/css/font-awesome.min.css'
 import globaMethods from './utils/mainMethods.js'
-
-Vue.prototype.$axios = axios
+// import Print from 'print-js'
+Vue.prototype.$axios = axios;
+// Vue.prototype.$print = Print;
 
 Vue.config.productionTip = false
 
